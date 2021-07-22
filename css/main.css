@@ -1,0 +1,107 @@
+body{
+    font-family: 'Courier New', 'Microsoft Yahei', Courier, monospace;
+    font-size: 1.1em;
+    background-image: url("../img/background.jpg");
+    background-size: 100% 100%;
+    background-attachment: fixed;
+    margin: 0;
+}
+
+div {
+    display: block;
+}
+
+a {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.floatleft {
+    float: left;
+    margin: auto 0 auto 0;
+}
+
+.floatright {
+    float: right;
+    margin: auto 0 auto 0;
+}
+
+.inline {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.card {
+    background-color: rgba(240, 240, 240, 0.5);
+    margin: 0.4em 0.3em 0.4em 0.3em;
+    padding-top: 3%;
+    padding-bottom: 2%;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+
+.card h1, .card h2, .card h3 {
+    text-align: center;
+}
+.card table {
+    text-align: center;
+}
+
+#header {
+    width: 100%;
+    margin: 0;
+    top: 0;
+    left: 0;
+    padding: 0;
+    background-color: rgba(56, 200, 123, 0.5);
+    position: relative;
+}
+
+#navbar a {
+    margin: 0;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: 0.7em;
+    padding-bottom: 0.7em;
+    text-align: center;
+    text-decoration: none;
+    color: #efefef;
+    font-weight: bold;
+}
+
+#navbar a.strong {
+    font-size: 1.3em;
+}
+
+#navbar a:hover {
+    background-color: rgba(56, 200, 123, 0.85);
+}
+
+#main {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+}
+
+#left {
+    width: 70%;
+    margin: 0;
+}
+
+#right {
+    width: 30%;
+    margin: 0;
+}
+
+#avatar {
+    text-align: center;
+}
+
+#image {
+    width: 70%;
+    height: 70%;
+    margin: 1% auto 1% auto;
+}
