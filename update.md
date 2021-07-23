@@ -13,3 +13,7 @@ updated highlightjs in content
 ## VERSION 0.4
 
 updated 'app' category
+
+### VERSION 0.4.1
+
+fix a bug
