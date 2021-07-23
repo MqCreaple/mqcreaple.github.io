@@ -23,6 +23,11 @@ a:hover {
     text-decoration: underline;
 }
 
+button {
+    transition: color .4s;
+    cursor: pointer;
+}
+
 .floatleft {
     float: left;
     margin: auto 0 auto 0;
