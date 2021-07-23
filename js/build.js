@@ -17,11 +17,10 @@ $(document).ready(function() {
         /*
         load the head of the webpage, and #header, #avatar, #footer
          */
-        $("head").load("/include/head.html", function() {
-            $("title").append(
-                title + " | {{author}} - {{description}}"
-            );
-            run(this);
+        $.get("/include/head.html", function(head) {
+            $("head").append(head);
+            $("title").append(" | {{author}} - {{description}}");
+            run("head");
         });
         $.when(
             $.get("/include/header.html", function(header) {
