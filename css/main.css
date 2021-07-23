@@ -12,8 +12,15 @@ div {
 }
 
 a {
+    color: #000000;
     text-decoration: none;
     cursor: pointer;
+    transition: color .4s;
+}
+
+a:hover {
+    color: #efefef;
+    text-decoration: underline;
 }
 
 .floatleft {
@@ -48,6 +55,28 @@ a {
     text-align: center;
 }
 
+.card.notification {
+    background-color: rgba(56, 240, 245, 0.5);
+    color: #efefef;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.card.blog {
+    cursor: pointer;
+    text-align: center;
+    transition: background-color .4s;
+}
+
+.card.blog:hover {
+    background-color: rgba(240, 240, 240, 0.85);
+}
+
+#container {
+    display: flex;
+    flex-direction: column;
+}
+
 #header {
     width: 100%;
     margin: 0;
@@ -68,6 +97,7 @@ a {
     text-decoration: none;
     color: #efefef;
     font-weight: bold;
+    transition: background-color .4s;
 }
 
 #navbar a.strong {
@@ -98,10 +128,30 @@ a {
 
 #avatar {
     text-align: center;
+    display: flex;
+    flex-direction: column;
 }
 
 #image {
-    width: 70%;
-    height: 70%;
+    width: 60%;
+    height: 60%;
     margin: 1% auto 1% auto;
+}
+
+#accounts {
+    font-size: 1.6em;
+}
+
+#accounts a {
+    margin: 2%;
+}
+
+#footer {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: rgba(215, 215, 215, 0.75);
+    font-size: 0.7em;
+    text-align: center;
+    color: #444;
 }

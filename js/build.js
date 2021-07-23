@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-    $.getJSON("../config.json", function(config) {
+    $.getJSON("/config.json", function(config) {
         /**
          * Search for all patterns like {{key}} in the document
          * and replace it with the corresponding value in config
@@ -17,20 +17,20 @@ $(document).ready(function() {
         /*
         load the head of the webpage, and #header, #avatar, #footer
          */
-        $("head").load("../include/head.html", function() {
+        $("head").load("/include/head.html", function() {
             $("title").append(
                 title + " | {{author}} - {{description}}"
             );
             run(this);
         });
         $.when(
-            $.get("../include/header.html", function(header) {
+            $.get("/include/header.html", function(header) {
                 $("#container").prepend(header);
             }),
-            $.get("../include/avatar.html", function(avatar) {
+            $.get("/include/avatar.html", function(avatar) {
                 $("#right").append(avatar);
             }),
-            $.get("../include/footer.html", function(footer) {
+            $.get("/include/footer.html", function(footer) {
                 $("#container").append(footer);
             })
         ).done(function() {
