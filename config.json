@@ -1,9 +1,14 @@
 {
     "author": "NYTxx",
-    "icon": "icon.png",
+    "icon": "https://nytxx.github.io/icon.png",
     "title": "My Blog | NYTxx",
     "description": "pay more attention to the beauty of formulas!",
-    "version": "0.2",
+    "version": "0.2.1",
     "url": "https://nytxx.github.io",
-    "github-repo": "https://github.com/NYTxx/nytxx.github.io"
+    "github-repo": "https://github.com/NYTxx/nytxx.github.io",
+
+    "github-account": "NYTxx",
+    "email": "tom_geng@sina.com",
+    "bilibili-account": "NYTxx",
+    "bilibili-id": "507017613"
 }
