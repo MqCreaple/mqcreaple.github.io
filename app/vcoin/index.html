@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <title>Virtual Coin</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="vcoin.css">
+</head>
+<body>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/build.js"></script>
+    <script src="vcoin.js"></script>
+
+    <div id="container">
+        <div id="main">
+            <div id="left">
+                <div class="card">
+                    <h1>Virtual Coin</h1>
+                    <div class="center">
+                        <p class="warn">
+                            the Virtual Coin is only for times you really can't make up your mind,
+                            don't use this tool in your everyday decision!
+                        </p>
+                        <button id="throw" onclick="random();">throw a coin</button>
+                    </div>
+                    <div id="choice">
+                        <p class="left coin" id="head">H</p>
+                        <p class="right coin" id="tail">T</p>
+                    </div>
+                </div>
+            </div>
+            <div id="right"></div>
+        </div>
+    </div>
+</body>
+</html>
