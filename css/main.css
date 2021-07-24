@@ -38,6 +38,7 @@ code {
 }
 
 blockquote {
+    text-indent: 2em;
     color: #3a3a3a;
 }
 

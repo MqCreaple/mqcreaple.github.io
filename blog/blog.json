@@ -12,5 +12,12 @@
         "created": "2021-7-24",
         "last-modified": "2021-7-24",
         "tag": ["computer", "lazy"]
+    },
+    {
+        "id": "writing-software",
+        "title": "如何选择写作软件？",
+        "created": "2021-7-24",
+        "last-modified": "2021-7-24",
+        "tag": ["computer", "writing"]
     }
 ]
