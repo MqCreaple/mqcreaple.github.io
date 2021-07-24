@@ -19,6 +19,9 @@ $(document).ready(function() {
          */
         $.get("/include/head.html", function(head) {
             $("head").append(head);
+            if($("#article").length > 0) {
+                $("#article").prepend("<h1>" + $("title").text() + "</h1>");
+            }
             $("title").append(" | {{author}} - {{description}}");
             run("head");
         });

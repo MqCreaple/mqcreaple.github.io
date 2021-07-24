@@ -5,5 +5,12 @@
         "created": "2021-7-23",
         "last-modified": "2021-7-23",
         "tag": ["test", "me"]
+    },
+    {
+        "id": "lazy",
+        "title": "驾驭计算机，你需要——懒",
+        "created": "2021-7-24",
+        "last-modified": "2021-7-24",
+        "tag": ["computer", "lazy"]
     }
 ]

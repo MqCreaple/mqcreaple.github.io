@@ -23,6 +23,10 @@ a:hover {
     text-decoration: underline;
 }
 
+abbr {
+    text-decoration: none;
+}
+
 button {
     transition: color .4s;
     cursor: pointer;
@@ -31,6 +35,18 @@ button {
 code {
     font-size: 1em;
     font-family: Consolas, monospace;
+}
+
+blockquote {
+    color: #3a3a3a;
+}
+
+blockquote::before {
+    content: "「";
+}
+
+blockquote::after {
+    content: "」";
 }
 
 .floatleft {
