@@ -7,6 +7,8 @@ $(document).ready(function() {
                 });
                 $("#left").prepend(th);
             });
+            //TODO search by tag
+            //TODO sort blog
         });
     });
 });

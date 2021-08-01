@@ -17,7 +17,14 @@
         "id": "writing-software",
         "title": "如何选择写作软件？",
         "created": "2021-7-24",
-        "last-modified": "2021-7-24",
-        "tag": ["computer", "writing"]
+        "last-modified": "2021-7-25",
+        "tag": ["computer", "writing", "blog"]
+    },
+    {
+        "id": "google-0",
+        "title": "Basic Techniques to Use Google",
+        "created": "2021-8-1",
+        "last-modified": "2021-8-1",
+        "tag": ["google", "research", "search engine"]
     }
 ]

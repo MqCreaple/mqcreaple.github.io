@@ -17,3 +17,7 @@ updated 'app' category
 ### VERSION 0.4.1
 
 fix a bug
+
+### VERSION 0.4.2
+
+update abbreviation \[\[img-link\]\] for images

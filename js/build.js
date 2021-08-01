@@ -8,7 +8,7 @@ $(document).ready(function() {
          */
         function run(block) {
             var text = $(block).html();
-            text = text.replace(/\{\{([\w\-]+?)\}\}/gm, function(m, key, s, txt) {
+            text = text.replace(/\{\{([\w\-\.]+?)\}\}/gm, function(m, key, s, txt) {
                 return config[key];
             });
             $(block).html(text);
@@ -38,5 +38,19 @@ $(document).ready(function() {
         ).done(function() {
             run("#container");
         });
+
+        /*
+        for articles:
+         */
+        if($("#article").length > 0) {
+            var article = $("#article").html();
+            article = article.replace(/\[\[([\w\-\.]+?)\]\]/gm, function(m, url, s, txt) {
+                return "<img src=\"/img/" + url + "\" alt=\"" + url + "\">";
+            });
+            $("#article").html(article);
+        }
+
+        //TODO LaTeX
+        //TODO basic markdown in articles
     });
 });
