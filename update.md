@@ -1,18 +1,18 @@
 ## VERSION 0.3
 
-updated 'blog' category, add 'about me' page
+update 'blog' category, add 'about me' page
 
 ### VERSION 0.3.1
 
-updated 404 page
+update 404 page
 
 ### VERSION 0.3.2
 
-updated highlightjs in content
+add plugin 'highlightjs' in content
 
 ## VERSION 0.4
 
-updated 'app' category
+update 'app' category
 
 ### VERSION 0.4.1
 
@@ -21,3 +21,7 @@ fix a bug
 ### VERSION 0.4.2
 
 update abbreviation \[\[img-link\]\] for images
+
+## VERSION 0.5
+
+add blog 'sort by' function

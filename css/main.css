@@ -55,6 +55,14 @@ img {
     max-width: 80%;
 }
 
+input[type=text], select {
+    background-color: rgba(0, 0, 0, 0);
+    border: 1px solid #000000;
+    padding: 1px;
+    max-width: 100%;
+    font-size: 1.1em;
+}
+
 .floatleft {
     float: left;
     margin: auto 0 auto 0;
