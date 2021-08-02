@@ -14,11 +14,15 @@
             <div id="left"></div>
             <div id="right">
                 <div class="card">
-                    <form>
+                    <form id="show" style="text-align: center; line-height: 2.5em;">
                         Sort By: <select id="sort">
-                            <option value="created">created</option>
-                            <option value="last-modified">last modified</option>
                             <option value="title">title</option>
+                            <option value="created" selected>created</option>
+                            <option value="last-modified">last modified</option>
+                        </select><br />
+                        Order: <select id="order">
+                            <option value="0">ascend ↑</option>
+                            <option value="1" selected>descend ↓</option>
                         </select>
                     </form>
                 </div>

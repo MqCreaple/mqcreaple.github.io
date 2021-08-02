@@ -50,7 +50,6 @@ $(document).ready(function() {
             $("#article").html(article);
         }
 
-        //TODO LaTeX
         //TODO basic markdown in articles
     });
 });

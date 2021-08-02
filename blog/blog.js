@@ -6,7 +6,7 @@ $(document).ready(function() {
              * @param {string} what 
              * @returns 
              */
-             function sortBy(what) {
+             function sortBy(what, order) {
                  /**
                   * merge sort
                   * @param {string} what 
@@ -14,17 +14,17 @@ $(document).ready(function() {
                   * @param {int} right 
                   * @returns 
                   */
-                function mergeSort(what, left, right) {
+                function mergeSort(what, order, left, right) {
                     if(left == right) return [];
                     if(right - left == 1) {
                         return [blogs[left]];
                     }
                     var mid = (left + right) / 2;
-                    var l = mergeSort(what, left, mid);
-                    var r = mergeSort(what, mid, right);
+                    var l = mergeSort(what, order, left, mid);
+                    var r = mergeSort(what, order, mid, right);
                     var ans = [], i = left, j = mid;
                     while(i < mid && j < right) {
-                        if(l[i - left][what] < r[j - mid][what]) {
+                        if(l[i - left][what] < r[j - mid][what] ^ order) {
                             ans.push(l[i - left]);
                             i++;
                         } else {
@@ -42,23 +42,23 @@ $(document).ready(function() {
                     }
                     return ans;
                 }
-                return mergeSort(what, 0, blogs.length);
+                return mergeSort(what, order, 0, blogs.length);
             }
             /**
              * show blogs
              */
             function showBlog() {
                 $("#left").html("");
-                $.each(sortBy($("#sort").val()), function(i, blog) {
+                $.each(sortBy($("#sort").val(), $("#order").val()), function(i, blog) {
                     var th = template.replace(/\{\%\s([\w-]+?)\s\%\}/g, function(m, key, s, txt) {
                         return blog[key];
                     });
-                    $("#left").prepend(th);
+                    $("#left").append(th);
                 });
             }
 
             showBlog();
-            $("#sort").change(showBlog);
+            $("#show").change(showBlog);
             //TODO search by tag
         });
     });
