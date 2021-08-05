@@ -8,7 +8,7 @@ $(document).ready(function() {
          */
         function run(block) {
             var text = $(block).html();
-            text = text.replace(/\{\{([\w\-\.]+?)\}\}/gm, function(m, key, s, txt) {
+            text = text.replace(/\{\{([\w\-\.\/]+?)\}\}/gm, function(m, key, s, txt) {
                 return config[key];
             });
             $(block).html(text);
@@ -44,9 +44,13 @@ $(document).ready(function() {
          */
         if($("#article").length > 0) {
             var article = $("#article").html();
-            article = article.replace(/\[\[([\w\-\.]+?)\]\]/gm, function(m, url, s, txt) {
+            article = article.replace(/\[\[([\w\-\.\/\:]+?)\]\]/gm, function(m, url, s, txt) {
+                if(url.startsWith("http://") || url.startsWith("https://") || url.startsWith("www.")) {
+                    return "<img src=\"" + url + "\" alt=\"" + url + "\">";
+                }
                 return "<img src=\"/img/" + url + "\" alt=\"" + url + "\">";
             });
+            article = article.replace("#[", "[").replace("#]", "]");
             $("#article").html(article);
         }
 

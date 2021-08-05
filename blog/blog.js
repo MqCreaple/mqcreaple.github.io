@@ -4,12 +4,14 @@ $(document).ready(function() {
             /**
              * sort by certain keyword
              * @param {string} what 
+             * @param {int} order
              * @returns 
              */
              function sortBy(what, order) {
                  /**
                   * merge sort
                   * @param {string} what 
+                  * @param {int} order 
                   * @param {int} left 
                   * @param {int} right 
                   * @returns 
@@ -19,7 +21,7 @@ $(document).ready(function() {
                     if(right - left == 1) {
                         return [blogs[left]];
                     }
-                    var mid = (left + right) / 2;
+                    var mid = Math.floor((left + right) / 2);
                     var l = mergeSort(what, order, left, mid);
                     var r = mergeSort(what, order, mid, right);
                     var ans = [], i = left, j = mid;
