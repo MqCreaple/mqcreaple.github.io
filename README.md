@@ -5,6 +5,6 @@ My personal blog page
 tools used in the blog:
 
 - [jquery](https://jquery.com/): blog construction
-- [Font-Awesome](https://fontawesome.com/): nice-looking icons
+- [Font-Awesome](https://fontawesome.com/): icons
 - [highlightjs](https://highlightjs.org/): code highlighting
 - [mathjax](https://www.mathjax.org/): math equation display
