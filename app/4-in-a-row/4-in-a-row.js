@@ -1,6 +1,17 @@
+function showPlayer() {
+    if(currentPlayer == 1) {
+        $("#player1").addClass("current-player");
+        $("#player2").removeClass("current-player");
+    } else {
+        $("#player2").addClass("current-player");
+        $("#player1").removeClass("current-player");
+    }
+}
 function isOneWin(x, y, z) {
     function alertWin() {
         alert("Player " + currentPlayer + " wins! Congratulations!");
+        console.log(playHistory);
+        //TODO highlight the row with four same pieces
     }
     // x constant | y cosntant | z constant
     var winX = true, winY = true, winZ = true;
@@ -100,8 +111,22 @@ function addPiece(x, y, z) {
     $("#c"+x+y+z).html(text[currentPlayer]);
     $("#c"+x+y+z).addClass("t");
     map[x][y][z] = currentPlayer;
+    playHistory.push([x, y, z]);
     gameEnd = isOneWin(x, y, z);
     currentPlayer = 3 - currentPlayer;
+    showPlayer();
+}
+
+function withdraw() {
+    if(playHistory.length > 0) {
+        var t = playHistory.pop();
+        map[t[0]][t[1]][t[2]] = 0;
+        $("#c"+t[0]+t[1]+t[2]).removeClass("t");
+        $("#c"+t[0]+t[1]+t[2]).html(text[0]);
+        currentPlayer = 3-currentPlayer;
+        showPlayer();
+        if(gameEnd) gameEnd = false;
+    }
 }
 
 $(document).ready(function() {
@@ -122,4 +147,5 @@ $(document).ready(function() {
             }
         }
     }
+    showPlayer();
 });

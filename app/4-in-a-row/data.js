@@ -1,4 +1,4 @@
-const text = ["&nbsp;", "x", "o"];
+const text = ["&nbsp;", "<span class=\"x\"></span>", "<span class=\"o\"></span>"];
 
 let gameEnd = false;
 let map = [
@@ -15,4 +15,5 @@ let map = [
         [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0],
     ],
 ];
+let playHistory = [];
 let currentPlayer = 1;
