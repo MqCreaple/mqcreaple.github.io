@@ -68,6 +68,14 @@ select {
     text-align: center;
 }
 
+table {
+    text-align: center;
+}
+
+td {
+    padding: 1%;
+}
+
 .floatleft {
     float: left;
     margin: auto 0 auto 0;
@@ -94,9 +102,6 @@ select {
 }
 
 .card h1, .card h2, .card h3 {
-    text-align: center;
-}
-.card table {
     text-align: center;
 }
 

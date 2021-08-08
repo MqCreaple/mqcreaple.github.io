@@ -3,7 +3,7 @@
         "id": "aboutme",
         "title": "About Me",
         "created": "2021-7-23",
-        "last-modified": "2021-7-23",
+        "last-modified": "2021-8-8",
         "tag": ["test", "me"]
     },
     {
@@ -33,5 +33,12 @@
         "created": "2021-8-4",
         "last-modified": "2021-8-5",
         "tag": ["calculus", "math", "derivative"]
+    },
+    {
+        "id": "scifi-inspiration-0",
+        "title": "[科幻脑洞] AI和人类的归宿",
+        "created": "2021-8-8",
+        "last-modified": "2021-8-8",
+        "tag": ["science fiction", "AI", "universe"]
     }
 ]
