@@ -25,3 +25,7 @@ update abbreviation \[\[img-link\]\] for images
 ## VERSION 0.5
 
 add blog 'sort by' function
+
+### VERSION 0.5.1
+
+updated to font awesome 5.15
