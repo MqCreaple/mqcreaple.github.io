@@ -40,5 +40,12 @@
         "created": "2021-8-8",
         "last-modified": "2021-8-8",
         "tag": ["science fiction", "AI", "universe"]
+    },
+    {
+        "id": "julia-rope-simulation",
+        "title": "Julia 对绳索振动的模拟",
+        "created": "2021-8-9",
+        "last-modified": "2021-8-9",
+        "tag": ["simulation", "julia", "physics", "computation"]
     }
 ]
