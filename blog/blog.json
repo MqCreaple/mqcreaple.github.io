@@ -47,5 +47,12 @@
         "created": "2021-8-9",
         "last-modified": "2021-8-9",
         "tag": ["simulation", "julia", "physics", "computation"]
+    },
+    {
+        "id": "juliayyds",
+        "title": "盘点亿些Julia人性化的设计",
+        "created": "2021-8-11",
+        "last-modified": "2021-8-12",
+        "tag": ["julia", "python", "computation"]
     }
 ]

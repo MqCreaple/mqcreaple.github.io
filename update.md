@@ -29,3 +29,7 @@ add blog 'sort by' function
 ### VERSION 0.5.1
 
 updated to font awesome 5.15
+
+### VERSION 0.5.2
+
+fix a bug on blog sorting

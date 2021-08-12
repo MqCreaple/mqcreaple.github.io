@@ -7,7 +7,15 @@ $(document).ready(function() {
              * @param {int} order
              * @returns 
              */
-             function sortBy(what, order) {
+            function sortBy(what, order) {
+                function compare(a, b) {
+                    let da = Date.parse(a);
+                    let db = Date.parse(b);
+                    if(isNaN(da) || isNaN(db)) {
+                        return a < b;
+                    }
+                    return da < db;
+                }
                  /**
                   * merge sort
                   * @param {string} what 
@@ -26,7 +34,7 @@ $(document).ready(function() {
                     var r = mergeSort(what, order, mid, right);
                     var ans = [], i = left, j = mid;
                     while(i < mid && j < right) {
-                        if(l[i - left][what] < r[j - mid][what] ^ order) {
+                        if(compare(l[i - left][what], r[j - mid][what]) ^ order) {
                             ans.push(l[i - left]);
                             i++;
                         } else {
