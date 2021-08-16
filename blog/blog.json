@@ -54,5 +54,12 @@
         "created": "2021-8-11",
         "last-modified": "2021-8-12",
         "tag": ["julia", "python", "computation"]
+    },
+    {
+        "id": "complex-number",
+        "title": "对于复数的另一种理解",
+        "created": "2021-8-16",
+        "last-modified": "2021-8-16",
+        "tag": ["math", "complex number"]
     }
 ]
