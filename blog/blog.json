@@ -61,5 +61,12 @@
         "created": "2021-8-16",
         "last-modified": "2021-8-16",
         "tag": ["math", "complex number"]
+    },
+    {
+        "id": "q-rsqrt-alg",
+        "title": "位运算的极致——快速平方根倒数算法",
+        "created": "2021-8-27",
+        "last-modified": "2021-8-27",
+        "tag": ["C++", "algorithm", "bitwise operation"]
     }
 ]
