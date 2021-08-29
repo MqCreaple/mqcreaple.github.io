@@ -31,7 +31,7 @@
         "id": "extremum",
         "title": "函数极值综述",
         "created": "2021-8-4",
-        "last-modified": "2021-8-5",
+        "last-modified": "2021-8-29",
         "tag": ["calculus", "math", "derivative"]
     },
     {
@@ -66,7 +66,7 @@
         "id": "q-rsqrt-alg",
         "title": "位运算的极致——快速平方根倒数算法",
         "created": "2021-8-27",
-        "last-modified": "2021-8-27",
+        "last-modified": "2021-8-29",
         "tag": ["C++", "algorithm", "bitwise operation"]
     }
 ]

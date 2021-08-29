@@ -12,9 +12,10 @@
         <div id="main">
             <div id="left">
                 <div class="card" id="article">
-                    <p><strong>快速平方根倒数算法</strong>，最早见于1999年的3D游戏Quake III Arena的源代码中。该算法一经公布，立刻因它的巧妙而被广为流传</p>
+                    <p><strong>快速平方根倒数算法</strong><sup><a href="#ref1-b" id="ref1">[1]</a></sup>，最早见于1999年的3D游戏Quake III Arena的源代码中。该算法一经公布，立刻因它的巧妙而被广为流传</p>
                     <p>在当时，计算机的算力和算法还没有现在这样厉害，浮点数乘除法的计算代价都很高，更不要说平方根了。</p>
                     <p>另一方面，3D物理引擎几乎要求你每时每刻都要计算各种平方根。比如，计算力矢量在某个方向上的分量，需要计算\(\hat v=\dfrac{\vec v}{||\vec v||}\)，就会用到平方根倒数</p>
+                    <p>温馨提示：请先阅读文章的最后一段，接着再从头开始阅读</p>
                     <h2>代码</h2>
                     <p>这是一般人写出来的：</p>
                     <pre><code class="language-c">float rsqrt(float x) {
@@ -54,7 +55,7 @@
                     <p>比如，你的数字是\((101101.01101)_2\)，那么就这样写：</p>
                     
                     <pre><code class="plaintext">0 0 0 0 0 0 0 0   0 0 1 0 1 1 0 1  .  0 1 1 0 1 0 0 0   0 0 0 0 0 0 0 0</code></pre>
-                    <p>小数的加减法也很简单，因为小数点永远固定，只需要将他们全都当作整数进行加减即可</p>
+                    <p>小数的加减法也很简单，因为小数点永远固定，只需要忽略掉小数点，将他们全都当作整数进行加减即可</p>
                     <p>这就是<strong>定点数</strong>，小数点在某一个固定位置不会移动</p>
                     <p>
                         与之对应的，则是<strong>浮点数</strong>，这个名词在学习C语言时应该听了无数遍了。
@@ -165,6 +166,17 @@ y = *(float*) &amp;i;</code></pre>
                     <p>现在早已不是1999年了，<strong>算法的改进让任何编程语言的内置函数都无法轻易被超越</strong></p>
                     <p>如果你用C语言或者C++进行测试的话，你会发现库函数<code>sqrt(x)</code>的速度要远远超过上面的算法</p>
                     <p>但是，把这个算法当作一个精致的艺术品反复观赏，也是一件挺有意思的事情，你也可以从里面学到不少</p>
+                </div>
+                <div class="card citation">
+                    <h2>参考资料</h2>
+                    <ol>
+                        <li id="ref1-b">
+                            <a href="#ref1">^</a>
+                            wikipedia:
+                            <a href="https://en.wikipedia.org/wiki/Fast_inverse_square_root">
+                                fast inverse square root
+                        </a></li>
+                    </ol>
                 </div>
             </div>
             <div id="right"></div>
