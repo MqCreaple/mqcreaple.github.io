@@ -1,43 +1,82 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html>
 <head>
-    <title>About Me</title>
-    <meta charset="utf-8">
+<title></title>
+<meta charset="utf-8">
+<meta name="author" content="NYTxx">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/icon.png">
+<link rel="stylesheet" href="/css/main.css">
+
+<!-- font awesome -->
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+<!-- MathJax -->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<!-- highlightjs -->
+<script src="/js/highlight.min.js"></script>
+<link rel="stylesheet" href="/css/github-dark.min.css">
+<script>hljs.highlightAll();</script>
 </head>
 <body>
-    <script src="/js/jquery.min.js"></script>
-    <script src="/js/build.js"></script>
+<div id='container'>
+    <div id="header">
+    <div id="navbar" class="inline">
+        <a href="/" class="strong">My Blog | NYTxx</a>
+        <a href="/blog/aboutme/"><i class="fa fa-user"></i>about me</a>
+        <a href="/blog/"><i class="far fa-file-alt"></i>blog</a>
+        <a href="/app/"><i class="fa fa-th"></i>app</a>
+    </div>
+</div>
+    <div id='main'>
+        <div id='left'>
+        <div class='card article'>
+        <h1>About Me</h1>
+<ul>
+<li><p>Minecraft三年玩家</p>
+</li>
+<li><p>物理狂热爱好者</p>
+</li>
+<li><p>物竞新手，刚学到一轮</p>
+</li>
+<li><p>信竞AFO选手，正在考虑重新入坑</p>
+</li>
+<li><p>会C&#43;&#43;和Java，但只会一点点。python和julia在学且在用</p>
+</li>
+</ul>
+<p>你还能在哪看到我？</p>
+<ul>
+<li><p>github: <a href="https://github.com/NYTxx">NYTxx</a></p>
+</li>
+<li><p>bilibili: <a href="https://space.bilibili.com/507017613">creaple</a></p>
+</li>
+<li><p>zhihu: <a href="https://www.zhihu.com/people/gmq12">gmq12</a></p>
+</li>
+</ul>
+<p>当然还有我的邮箱：<a href="mailto:tom_geng@sina.com">tom_geng@sina.com</a></p>
 
-    <div id="container">
-        <div id="main">
-            <div id="left">
-                <div class="card" id="article">
-                    <ul>
-                        <li>Minecraft三年玩家</li>
-                        <li>物理狂热爱好者</li>
-                        <li>物竞新手，刚学到一轮</li>
-                        <li>信竞<abbr title="Away From OI">AFO</abbr>选手，正在考虑重新入坑</li>
-                        <li>会C++和Java，但只会一点点。python和julia在学且在用</li>
-                    </ul>
-                    <p>你还能在哪看到我？</p>
-                    <ul>
-                        <li>
-                            <i class="fab fa-github"></i>
-                            github: <a href="github.com/{{github-accout}}">{{github-account}}</a>
-                        </li>
-                        <li>
-                            bilibili: <a href="space.bilibili.com/{{bilibili-id}}">{{bilibili-account}}</a>
-                        </li>
-                        <li>
-                            <i class="fab fa-zhihu"></i>
-                            zhihu: <a href="https://www.zhihu.com/people/{{zhihu-account}}">{{zhihu-account}}</a>
-                        </li>
-                    </ul>
-                    <p>当然还有我的邮箱：<a href="mailto:{{email}}">{{email}}</a></p>
-                </div>
-            </div>
-            <div id="right"></div>
+        </div>
+        </div>
+        <div id='right'>
+        <div class="card" id="avatar">
+    <img src="/icon.png" alt="avatar" id="image">
+    <a href="/blog/aboutme/" id="name">NYTxx</a>
+    <div class="inline" id="accounts">
+        <a href="https://github.com/NYTxx"><i class="fab fa-github"></i></a>
+        <a href="https://space.bilibili.com/507017613"><i class="fa fa-bold"></i></a>
+        <a href="https://www.zhihu.com/people/gmq12"><i class="fab fa-zhihu"></i></a>
+        <a href="mailto:tom_geng@sina.com"><i class="fa fa-envelope"></i></a>
+    </div>
+</div>
         </div>
     </div>
+    <div id="footer">
+    <div style="margin: 2%">
+        <p>Copyright &copy; GMQ 2021, Blog of NYTxx (gmq12), version 0.5.2 </p>
+    </div>
+</div>
+</div>
 </body>
 </html>

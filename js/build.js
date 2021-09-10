@@ -8,9 +8,7 @@ $(document).ready(function() {
          */
         function run(block) {
             var text = $(block).html();
-            text = text.replace(/\{\{([\w\-\.\/]+?)\}\}/gm, function(m, key, s, txt) {
-                return config[key];
-            });
+            text = text.replace(/\{\{([\w\-\.\/]+?)\}\}/gm, m => config[m]);
             $(block).html(text);
         }
 
