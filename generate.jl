@@ -24,9 +24,11 @@ for markdown_file in files
     filep = replace(filep, r"\{\{[\w\-\.\/]+?\}\}" => s -> config[s])
     md = Markdown.parse(filep)
     md_html = Markdown.html(md)
+    md_title = match(r"<h1>(.+?)<\/h1>", md_html).captures[1]
     full_html = """<!DOCTYPE html>
 <html>
 <head>
+<title>$md_title | NYTxx</title>
 $head
 </head>
 <body>
@@ -49,7 +51,7 @@ $head
     open("../blog/$(match(r"[\w\-\/]+", markdown_file).match)/index.html", "w") do target
         write(target, full_html)
     end
-    println("file $markdown_file loaded")
+    println("file ($markdown_file | $md_title) loaded")
     close(file)
 end
 

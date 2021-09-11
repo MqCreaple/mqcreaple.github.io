@@ -1,87 +1,126 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html>
 <head>
-    <title>盘点亿些Julia人性化的设计</title>
-    <meta charset="utf-8">
+<title>盘点亿些Julia人性化的设计 | NYTxx</title>
+<meta charset="utf-8">
+<meta name="author" content="NYTxx">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/icon.png">
+<link rel="stylesheet" href="/css/main.css">
+
+<!-- font awesome -->
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+<!-- MathJax -->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<!-- highlightjs -->
+<script src="/js/highlight.min.js"></script>
+<link rel="stylesheet" href="/css/github-dark.min.css">
+<script>hljs.highlightAll();</script>
 </head>
 <body>
-    <script src="/js/jquery.min.js"></script>
-    <script src="/js/build.js"></script>
-
-    <div id="container">
-        <div id="main">
-            <div id="left">
-                <div class="card" id="article">
-                    <h2>Symbols</h2>
-                    <h3>1. Greek Letters</h3>
-                    <p>Python:</p>
-                    <pre><code class="python">alpha = 1
-beta = 2
-gamma = 3</code></pre>
-                    <p>Julia:</p>
-                    <pre><code class="julia">α = 1      # type "\alpha" and press [tab]
-β = 2
-γ = 3</code></pre>
-                    <h3>2. constants</h3>
-                    <p>Python:</p>
-                    <pre><code class="python">import math
-print(math.pi)
-print(math.e)</code></pre>
-                    <p>Julia:</p>
-                    <pre><code class="julia">println(π)     # "\pi"
-println(ℯ)     # "\euler"</code></pre>
-                    <h3>3. Operators</h3>
-                    <p>Python:</p>
-                    <pre><code class="python">3*x**2+2*x+1
-sqrt(x)</code></pre>
-                    <p>Julia:</p>
-                    <pre><code class="julia">3x^2+2x+1
-√x  &lt;==&gt;  sqrt(x)</code></pre>
-                    <h2>Arrays | Vectors</h2>
-                    <h3>1. loop</h3>
-                    <p>Python:</p>
-                    <pre><code class="python">import numpy as np
-arr = np.array([1, 2, 3, 4, 5])
+<div id='container'>
+    <div id="header">
+    <div id="navbar" class="inline">
+        <a href="/" class="strong">My Blog | NYTxx</a>
+        <a href="/blog/aboutme/"><i class="fa fa-user"></i>about me</a>
+        <a href="/blog/"><i class="far fa-file-alt"></i>blog</a>
+        <a href="/app/"><i class="fa fa-th"></i>app</a>
+    </div>
+</div>
+    <div id='main'>
+        <div id='left'>
+        <div class='card article'>
+        <h1>盘点亿些Julia人性化的设计</h1>
+<h2>Symbols</h2>
+<h3>1. Greek Letters</h3>
+<p>Python:</p>
+<pre><code class="language-python">alpha &#61; 1
+beta &#61; 2
+gamma &#61; 3</code></pre>
+<p>Julia:</p>
+<pre><code class="language-julia">α &#61; 1      # type &quot;\alpha&quot; and press &#91;tab&#93;
+β &#61; 2
+γ &#61; 3</code></pre>
+<h3>2. constants</h3>
+<p>Python:</p>
+<pre><code class="language-python">import math
+print&#40;math.pi&#41;
+print&#40;math.e&#41;</code></pre>
+<p>Julia:</p>
+<pre><code class="language-julia">println&#40;π&#41;     # &quot;\pi&quot;
+println&#40;ℯ&#41;     # &quot;\euler&quot;</code></pre>
+<h3>3. Operators</h3>
+<p>Python:</p>
+<pre><code class="language-python">3*x**2&#43;2*x&#43;1
+sqrt&#40;x&#41;</code></pre>
+<p>Julia:</p>
+<pre><code class="language-julia">3x^2&#43;2x&#43;1
+√x  &lt;&#61;&#61;&gt;  sqrt&#40;x&#41;</code></pre>
+<h2>Arrays | Vectors</h2>
+<h3>1. loop</h3>
+<p>Python:</p>
+<pre><code class="language-python">import numpy as np
+arr &#61; np.array&#40;&#91;1, 2, 3, 4, 5&#93;&#41;
 for a in arr:
-    print(a)</code></pre>
-                    <p>Julia:</p>
-                    <pre><code class="julia">arr = [1, 2, 3, 4, 5]
-for a ∈ arr       # a "\in" arr
-    println(a)
+    print&#40;a&#41;</code></pre>
+<p>Julia:</p>
+<pre><code class="language-julia">arr &#61; &#91;1, 2, 3, 4, 5&#93;
+for a ∈ arr       # a &quot;\in&quot; arr
+    println&#40;a&#41;
 end</code></pre>
-                    <h3>2. vector operation</h3>
-                    <p>Python:</p>
-                    <pre><code class="python">import numpy as np
-np.add([1, 2, 3], 1)
-np.add([1, 2, 3], [4, 5, 6])
-np.multiply([1, 2, 3], 2)
-np.multiply([1, 2], [3, 4])
-def f(x):
-    return 2 * x + 1
-map(f, [1, 2, 3, 4])</code></pre>
-                    <p>Julia:</p>
-                    <pre><code class="julia">[1, 2, 3] .+ 1
-[1, 2, 3] + [4, 5, 6]
-[1, 2, 3] * 2
-[1, 2] .* [3, 4]
-f(x) = 2x + 1
-f.([1, 2, 3, 4])</code></pre>
-                    <h3>3. Matrix</h3>
-                    <p>Python:</p>
-                    <pre><code class="python">import numpy as np
-A = np.array([[1, 2], [3, 4]])
-B = np.array([[5, 6], [7, 8]])
-C = A.dot(B)
-D = A.transpose()</code></pre>
-                    <p>Julia:</p>
-                    <pre><code class="julia">A = [1 2 ; 3 4]
-B = [5 6 ; 7 8]
-C = A * B
-D = A'</code></pre>
-                </div>
-            </div>
-            <div id="right"></div>
+<h3>2. vector operation</h3>
+<p>Python:</p>
+<pre><code class="language-python">import numpy as np
+np.add&#40;&#91;1, 2, 3&#93;, 1&#41;
+np.add&#40;&#91;1, 2, 3&#93;, &#91;4, 5, 6&#93;&#41;
+np.multiply&#40;&#91;1, 2, 3&#93;, 2&#41;
+np.multiply&#40;&#91;1, 2&#93;, &#91;3, 4&#93;&#41;
+def f&#40;x&#41;:
+    return 2 * x &#43; 1
+map&#40;f, &#91;1, 2, 3, 4&#93;&#41;</code></pre>
+<p>Julia:</p>
+<pre><code class="language-julia">&#91;1, 2, 3&#93; .&#43; 1
+&#91;1, 2, 3&#93; &#43; &#91;4, 5, 6&#93;
+&#91;1, 2, 3&#93; * 2
+&#91;1, 2&#93; .* &#91;3, 4&#93;
+f&#40;x&#41; &#61; 2x &#43; 1
+f.&#40;&#91;1, 2, 3, 4&#93;&#41;</code></pre>
+<h3>3. Matrix</h3>
+<p>Python:</p>
+<pre><code class="language-python">import numpy as np
+A &#61; np.array&#40;&#91;&#91;1, 2&#93;, &#91;3, 4&#93;&#93;&#41;
+B &#61; np.array&#40;&#91;&#91;5, 6&#93;, &#91;7, 8&#93;&#93;&#41;
+C &#61; A.dot&#40;B&#41;
+D &#61; A.transpose&#40;&#41;</code></pre>
+<p>Julia:</p>
+<pre><code class="language-julia">A &#61; &#91;1 2 ; 3 4&#93;
+B &#61; &#91;5 6 ; 7 8&#93;
+C &#61; A * B
+D &#61; A&#39;</code></pre>
+
+        </div>
+        </div>
+        <div id='right'>
+        <div class="card" id="avatar">
+    <img src="/icon.png" alt="avatar" id="image">
+    <a href="/blog/aboutme/" id="name">NYTxx</a>
+    <div class="inline" id="accounts">
+        <a href="https://github.com/NYTxx"><i class="fab fa-github"></i></a>
+        <a href="https://space.bilibili.com/507017613"><i class="fa fa-bold"></i></a>
+        <a href="https://www.zhihu.com/people/gmq12"><i class="fab fa-zhihu"></i></a>
+        <a href="mailto:tom_geng@sina.com"><i class="fa fa-envelope"></i></a>
+    </div>
+</div>
         </div>
     </div>
+    <div id="footer">
+    <div style="margin: 2%">
+        <p>Copyright &copy; GMQ 2021, Blog of NYTxx (gmq12), version 1.0 </p>
+    </div>
+</div>
+</div>
 </body>
 </html>

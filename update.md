@@ -33,3 +33,7 @@ updated to font awesome 5.15
 ### VERSION 0.5.2
 
 fix a bug on blog sorting
+
+## Version 1.0
+
+Use markdown translator to write html

@@ -51,7 +51,5 @@ $(document).ready(function() {
             article = article.replace("#[", "[").replace("#]", "]");
             $("#article").html(article);
         }
-
-        //TODO basic markdown in articles
     });
 });
