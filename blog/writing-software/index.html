@@ -13,7 +13,17 @@
 
 <!-- MathJax -->
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        showProcessingMessages: false,
+        tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code','a'],
+        }
+    });
+</script>
 
 <!-- highlightjs -->
 <script src="/js/highlight.min.js"></script>
@@ -68,9 +78,9 @@
 <h3><a href="https://tiddlywiki.com/">TiddlyWiki</a></h3>
 <p>TiddlyWiki适合用来管理以文字、代码、数学公式为主的文章，适合有一定编程基础的人使用</p>
 <p>没有专门的客户端，它的所有内容全都被加载到了一个大小不超过5M的html文件中，用浏览器就可以打开和编辑，这使得它很容易保存和分享</p>
-<p>有着非常强大的标签搜索整理功能，例如可以用一个 &quot;&#91;tag&#91;A&#93;-&#91;B&#93;&#93;&quot; 快速过滤包含A但不包含B的条目。条目之间的链接也可以用 &quot;&#91;&#91;&#93;&#93;&quot; 方便地实现</p>
+<p>有着非常强大的标签搜索整理功能，例如可以用一个 "[tag[A]-[B]]" 快速过滤包含A但不包含B的条目。条目之间的链接也可以用 "[[]]" 方便地实现</p>
 <p>内置一个很有意思的标记语言，其功能与html不相上下，但比html简洁得多</p>
-<p>有许多插件。如果你足够强，还可以开发一个插件，虽然我太菜了&#40;￣﹏￣；&#41;</p>
+<p>有许多插件。如果你足够强，还可以开发一个插件，虽然我太菜了(￣﹏￣；)</p>
 <h3><a href="https://evernote.com/">EverNote</a> 或 <a href="https://www.yinxiang.com/">印象笔记</a></h3>
 <p>EverNote适合各种需求的写作，零基础即可使用</p>
 <p>支持一系列快捷键，操作也很直观便捷</p>
@@ -84,7 +94,7 @@
 <p>不同于大部分Markdown编辑器的双窗口界面，Typora将“编辑”和“预览”两个功能合二为一，实时预览</p>
 <p>自带LaTeX支持，Mermaid流程图绘制等markdown插件</p>
 <p>有着完备的用户偏好设置，完全不用担心上手困难</p>
-<p>支持便捷的图片插入，包括Ctrl&#43;V和直接拖动图片</p>
+<p>支持便捷的图片插入，包括Ctrl+V和直接拖动图片</p>
 <p>当然，它没有给你提供现成的云服务，你需要寻找其它云来存储文件</p>
 
         </div>

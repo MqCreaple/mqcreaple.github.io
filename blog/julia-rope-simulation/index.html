@@ -13,7 +13,17 @@
 
 <!-- MathJax -->
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        showProcessingMessages: false,
+        tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code','a'],
+        }
+    });
+</script>
 
 <!-- highlightjs -->
 <script src="/js/highlight.min.js"></script>
@@ -34,7 +44,7 @@
         <div id='left'>
         <div class='card article'>
         <h1>Julia 对绳索震动的模拟</h1>
-<h2>仿真结果&#43;代码</h2>
+<h2>仿真结果+代码</h2>
 <p>且看老夫打一遍 松果——弹抖——闪电鞭！</p>
 <p>这是慢打：</p>
 <p><img src="/img/julia-1.gif" alt="julia-1" /></p>
@@ -44,86 +54,86 @@
 <p>然后是代码：</p>
 <pre><code class="language-julia"># Vector2D.jl
 module Vector2D
-import Base:&#43;,-,*,/
+import Base:+,-,*,/
 import Base:length, LinRange
-export Vec2D, length, un, &#43;, -, *, /, LinRange
+export Vec2D, length, un, +, -, *, /, LinRange
 
 struct Vec2D
     x::Float64
     y::Float64
 end
-Vec2D&#40;&#41; &#61; Vec2D&#40;0, 0&#41;
+Vec2D() = Vec2D(0, 0)
 
-length&#40;a::Vec2D&#41;::Float64 &#61; √&#40;a.x^2 &#43; a.y^2&#41;
-un&#40;a::Vec2D&#41; &#61; Vec2D&#40;a.x / √&#40;a.x^2&#43;a.y^2&#41;, a.y / √&#40;a.x^2&#43;a.y^2&#41;&#41;
-&#43;&#40;a::Vec2D, b::Vec2D&#41; &#61; Vec2D&#40;a.x&#43;b.x, a.y&#43;b.y&#41;
--&#40;a::Vec2D, b::Vec2D&#41; &#61; Vec2D&#40;a.x-b.x, a.y-b.y&#41;
-*&#40;a::Vec2D, b::Float64&#41; &#61; Vec2D&#40;a.x*b, a.y*b&#41;
-/&#40;a::Vec2D, b::Float64&#41; &#61; Vec2D&#40;a.x/b, a.y/b&#41;
-LinRange&#40;l::Vec2D, r::Vec2D, n::Integer&#41; &#61; Vec2D.&#40;LinRange&#40;l.x, r.x, n&#41;, LinRange&#40;l.y, r.y, n&#41;&#41;
+length(a::Vec2D)::Float64 = √(a.x^2 + a.y^2)
+un(a::Vec2D) = Vec2D(a.x / √(a.x^2+a.y^2), a.y / √(a.x^2+a.y^2))
++(a::Vec2D, b::Vec2D) = Vec2D(a.x+b.x, a.y+b.y)
+-(a::Vec2D, b::Vec2D) = Vec2D(a.x-b.x, a.y-b.y)
+*(a::Vec2D, b::Float64) = Vec2D(a.x*b, a.y*b)
+/(a::Vec2D, b::Float64) = Vec2D(a.x/b, a.y/b)
+LinRange(l::Vec2D, r::Vec2D, n::Integer) = Vec2D.(LinRange(l.x, r.x, n), LinRange(l.y, r.y, n))
 end</code></pre>
 <pre><code class="language-julia"># simu.jl
-push&#33;&#40;LOAD_PATH,&quot;.&quot;&#41;
+push!(LOAD_PATH,".")
 using Plots
 using Printf
 using Vector2D
 
-left &#61; Vec2D&#40;-1, 0&#41;   # left end
-right &#61; Vec2D&#40;1, 0&#41;   # right end
+left = Vec2D(-1, 0)   # left end
+right = Vec2D(1, 0)   # right end
 
-m &#61; 0.05              # total mass
-k &#61; 10.               # stiffness factor
-n &#61; 90                # number of mass points on a string
-r &#61; Vector&#40;LinRange&#40;left, right, n&#41;&#41;   # position of each mass point
-v &#61; repeat&#40;&#91;Vec2D&#40;&#41;&#93;, n&#41;               # velocity of each mass point
-t  &#61; 0.                # current time
-dt &#61; 0.002             # time duration for every loop
-originLength &#61; length&#40;r&#91;2&#93;-r&#91;1&#93;&#41;
+m = 0.05              # total mass
+k = 10.               # stiffness factor
+n = 90                # number of mass points on a string
+r = Vector(LinRange(left, right, n))   # position of each mass point
+v = repeat([Vec2D()], n)               # velocity of each mass point
+t  = 0.                # current time
+dt = 0.002             # time duration for every loop
+originLength = length(r[2]-r[1])
 
 @gif for rep ∈ 1:10000
     global λ, k, n, r, v, originLength, t, dt
-    deltaR &#61; &#91;
-        r&#91;i&#43;1&#93; - r&#91;i&#93;
-        for i in 1:length&#40;r&#41;-1
-    &#93;
+    deltaR = [
+        r[i+1] - r[i]
+        for i in 1:length(r)-1
+    ]
 
     ## calculate force on each point ##
-    F &#61; repeat&#40;&#91;Vec2D&#40;&#41;&#93;, n&#41;
-    for i ∈ 1:length&#40;r&#41;
-        if i &#61;&#61; 1 || i &#61;&#61; length&#40;r&#41;
+    F = repeat([Vec2D()], n)
+    for i ∈ 1:length(r)
+        if i == 1 || i == length(r)
             continue
         else
-            F&#91;i&#93; &#61; un&#40;deltaR&#91;i&#93;&#41; * &#40;length&#40;deltaR&#91;i&#93;&#41;-originLength&#41; * k -
-                    un&#40;deltaR&#91;i-1&#93;&#41; * &#40;length&#40;deltaR&#91;i-1&#93;&#41;-originLength&#41; * k
+            F[i] = un(deltaR[i]) * (length(deltaR[i])-originLength) * k -
+                    un(deltaR[i-1]) * (length(deltaR[i-1])-originLength) * k
         end
     end
-    if rep &lt;&#61; 50
-        F&#91;n÷2&#93; &#61; F&#91;n÷2&#93; &#43; Vec2D&#40;0, 0.02&#41;
+    if rep <= 50
+        F[n÷2] = F[n÷2] + Vec2D(0, 0.02)
     end
 
     ## update time dt ##
-    v &#61; v &#43; &#40;F./&#40;m/n&#41;&#41;.*dt
-    r &#61; r &#43; v.*dt
-    t &#61; t &#43; dt
+    v = v + (F./(m/n)).*dt
+    r = r + v.*dt
+    t = t + dt
 
     ## plot ##
-    plot&#40;
-        map&#40;&#40;v&#41; -&gt; v.x, r&#41;,
-        map&#40;&#40;v&#41; -&gt; v.y, r&#41;,
-        label&#61;&quot;time&#61;&quot; * @sprintf&#40;&quot;&#37;.3f&quot;, t&#41;,
-        ylims&#61;&#40;-0.14, 0.14&#41;
-    &#41;
+    plot(
+        map((v) -> v.x, r),
+        map((v) -> v.y, r),
+        label="time=" * @sprintf("%.3f", t),
+        ylims=(-0.14, 0.14)
+    )
 end every 25</code></pre>
 <p>前排提醒：代码运行大约需要1分钟，请耐心等待。。。</p>
 <h2>方法</h2>
 <ol>
 <li><p>将绳索看作由弹簧依次连接的<code>n</code>个质点</p>
 </li>
-<li><p>使用数组<code>r&#91;&#93;</code>记录每个质点的位置，数组<code>v&#91;&#93;</code>记录每个质点的速度</p>
+<li><p>使用数组<code>r[]</code>记录每个质点的位置，数组<code>v[]</code>记录每个质点的速度</p>
 </li>
 <li><p>定义变量<code>dt</code>，代表一个微小时间间隔</p>
 </li>
-<li><p>每一次循环，计算每个质点的受力<code>F&#91;&#93;</code>，其中端点增加一个特判</p>
+<li><p>每一次循环，计算每个质点的受力<code>F[]</code>，其中端点增加一个特判</p>
 </li>
 <li><p>接着依次更新<code>v</code>和<code>r</code>，最后画出来即可</p>
 </li>

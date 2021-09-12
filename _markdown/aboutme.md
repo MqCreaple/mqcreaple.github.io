@@ -8,8 +8,8 @@
 
 你还能在哪看到我？
 
-- github: [{{github-account}}](https://github.com/{{github-account}})
+- <i class="fab fa-github"></i>github: [{{github-account}}](https://github.com/{{github-account}})
 - bilibili: [{{bilibili-account}}](https://space.bilibili.com/{{bilibili-id}})
-- zhihu: [{{zhihu-account}}](https://www.zhihu.com/people/{{zhihu-account}})
+- <i class="fab fa-zhihu"></i>zhihu: [{{zhihu-account}}](https://www.zhihu.com/people/{{zhihu-account}})
 
 当然还有我的邮箱：[{{email}}](mailto:{{email}})

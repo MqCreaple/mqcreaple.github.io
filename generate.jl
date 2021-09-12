@@ -1,6 +1,8 @@
 using JSON
 using Markdown
 
+Markdown.htmlesc(io::IO, str::AbstractString) = print(io, str)
+
 file_config = open("config.json")
 config = JSON.parse(file_config)
 html_head = open("include/head.html")

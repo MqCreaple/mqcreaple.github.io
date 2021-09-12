@@ -68,5 +68,12 @@
         "created": "2021-8-27",
         "last-modified": "2021-8-29",
         "tag": ["C++", "algorithm", "bitwise operation"]
+    },
+    {
+        "id": "derivative-m",
+        "title": "算法化求导",
+        "created": "2021-9-11",
+        "last-modified": "2021-9-12",
+        "tag": ["calculus", "algorithm"]
     }
 ]

@@ -13,7 +13,17 @@
 
 <!-- MathJax -->
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        showProcessingMessages: false,
+        tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code','a'],
+        }
+    });
+</script>
 
 <!-- highlightjs -->
 <script src="/js/highlight.min.js"></script>
@@ -43,16 +53,16 @@
 </li>
 <li><p>信竞AFO选手，正在考虑重新入坑</p>
 </li>
-<li><p>会C&#43;&#43;和Java，但只会一点点。python和julia在学且在用</p>
+<li><p>会C++和Java，但只会一点点。python和julia在学且在用</p>
 </li>
 </ul>
 <p>你还能在哪看到我？</p>
 <ul>
-<li><p>github: <a href="https://github.com/NYTxx">NYTxx</a></p>
+<li><p><i class="fab fa-github"></i>github: <a href="https://github.com/NYTxx">NYTxx</a></p>
 </li>
 <li><p>bilibili: <a href="https://space.bilibili.com/507017613">creaple</a></p>
 </li>
-<li><p>zhihu: <a href="https://www.zhihu.com/people/gmq12">gmq12</a></p>
+<li><p><i class="fab fa-zhihu"></i>zhihu: <a href="https://www.zhihu.com/people/gmq12">gmq12</a></p>
 </li>
 </ul>
 <p>当然还有我的邮箱：<a href="mailto:tom_geng@sina.com">tom_geng@sina.com</a></p>

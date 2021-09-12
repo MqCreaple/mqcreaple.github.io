@@ -13,7 +13,17 @@
 
 <!-- MathJax -->
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        showProcessingMessages: false,
+        tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code','a'],
+        }
+    });
+</script>
 
 <!-- highlightjs -->
 <script src="/js/highlight.min.js"></script>
