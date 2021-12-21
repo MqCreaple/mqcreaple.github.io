@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>About Me | NYTxx</title>
+<title>为何非弹性碰撞下动量守恒而能量不守恒？ | NYTxx</title>
 <meta charset="utf-8">
 <meta name="author" content="NYTxx">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -43,29 +43,35 @@
     <div id='main'>
         <div id='left'>
         <div class='card article'>
-        <h1>About Me</h1>
-<ul>
-<li><p>Minecraft三年玩家</p>
+        <h1>为何非弹性碰撞下动量守恒而能量不守恒？</h1>
+<h2>1. 模拟</h2>
+<p>假设现在有两种不同的分子，同种分子之间有引力，异种分子之间有斥力。</p>
+<p>我们使用一个理想模型：同种分子之间的使用弹簧连接，弹簧会主动维护一个固定长度；异种分子之间的斥力满足平方反比定律。具体公式如下：</p>
+:$
+<p>\mathbf{F<em>1}=k</em>1(\mathbf r<em>{12} - \mathbf l</em>0) $</p>
+:$
+<p>\mathbf{F<em>2}=k</em>2\cdot\frac{\mathbf r<em>{12}}{r</em>{12}^2} $</p>
+<p>模拟结果如下：</p>
+<ol>
+<li>$k_1:k_2=5:1$
+<p>，近似为理想刚体的弹性碰撞</p>
 </li>
-<li><p>物理狂热爱好者</p>
+</ol>
+<p><img src="/img/sim_animation1.gif" alt="animation1" /></p>
+<ol start="2">
+<li>$k_1:k_2=1:1$
 </li>
-<li><p>物竞新手，刚学到一轮</p>
+</ol>
+<p><img src="/img/sim_animation2.gif" alt="animation2" /></p>
+<ol start="3">
+<li>$k_1:k_2=0.75:1$
+<p>，碰撞为塑性碰撞</p>
 </li>
-<li><p>信竞AFO选手，正在考虑重新入坑</p>
-</li>
-<li><p>会C++和Java，但只会一点点。python和julia在学且在用</p>
-</li>
-</ul>
-<p>你还能在哪看到我？</p>
-<ul>
-<li><p><i class="fab fa-github"></i>github: <a href="https://github.com/MqCreaple">MqCreaple</a></p>
-</li>
-<li><p>bilibili: <a href="https://space.bilibili.com/507017613">creaple</a></p>
-</li>
-<li><p><i class="fab fa-zhihu"></i>zhihu: <a href="https://www.zhihu.com/people/gmq12">gmq12</a></p>
-</li>
-</ul>
-<p>当然还有我的邮箱：<a href="mailto:gmq14159@gmail.com">gmq14159@gmail.com</a></p>
+</ol>
+<p><img src="/img/sim_animation3.gif" alt="animation3" /></p>
+<h2>分析</h2>
+<p>从这些模拟动画中可以看出在塑性碰撞之后，分子自身产生了微小振动，将一部分能量转化成了分子的振动动能（即内能）。这就是我们问题的答案：塑性碰撞将宏观物体的能量转化成了微观分子的能量，因此宏观上能量减少了。</p>
+<p>值得注意的是，分子的振动并不能带走宏观物体的动量，因为分子的振动是随机的，并且在各个方向上出现的概率相等，因此统计上分子的动量之和应当为0。这也是为什么不论在弹性还是在塑性碰撞中，物体的动量都是守恒的。</p>
 
         </div>
         </div>
