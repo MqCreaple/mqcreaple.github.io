@@ -75,5 +75,12 @@
         "created": "2021-9-11",
         "last-modified": "2021-9-12",
         "tag": ["calculus", "algorithm"]
+    },
+    {
+        "id": "simulation2",
+        "title": "为何非弹性碰撞下动量守恒而能量不守恒？",
+        "created": "2021-12-19",
+        "last-modified": "2021-12-20",
+        "tag": ["simulation", "physics"]
     }
 ]
