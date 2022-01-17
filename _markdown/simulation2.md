@@ -6,13 +6,9 @@
 
 我们使用一个理想模型：同种分子之间的使用弹簧连接，弹簧会主动维护一个固定长度；异种分子之间的斥力满足平方反比定律。具体公式如下：
 
-$$
-\mathbf{F_1}=k_1(\mathbf r_{12} - \mathbf l_0)
-$$
+$$\mathbf{F_1}=k_1(\mathbf r_{12} - \mathbf l_0)$$
 
-$$
-\mathbf{F_2}=k_2\cdot\frac{\mathbf r_{12}}{r_{12}^2}
-$$
+$$\mathbf{F_2}=k_2\cdot\frac{\mathbf r_{12}}{r_{12}^2}$$
 
 模拟结果如下：
 
