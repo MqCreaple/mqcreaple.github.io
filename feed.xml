@@ -1,0 +1,1022 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-03-01T22:02:48-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Blog | MqCreaple</title><subtitle>pay more attention to the beauty of formulas!</subtitle><entry><title type="html">2.0公告 &amp;amp; jekyll介绍</title><link href="http://localhost:4000/blog/2022/03/01/jekyll.html" rel="alternate" type="text/html" title="2.0公告 &amp;amp; jekyll介绍" /><published>2022-03-01T00:00:00-05:00</published><updated>2022-03-01T00:00:00-05:00</updated><id>http://localhost:4000/blog/2022/03/01/jekyll</id><content type="html" xml:base="http://localhost:4000/blog/2022/03/01/jekyll.html"><![CDATA[<h2 id="公告">公告</h2>
+
+<p>大约有三四个月没有发新的博客了，不知道还有没有人看。。。</p>
+
+<p>自从这个版本之后，我将舍弃我自己做的那个博客文章发布系统，而采用一个现成的工具：<a href="https://jekyllrb.com/">jekyll</a>。主要原因嘛，就是<del>懒得继续写代码</del>jekyll做的比我自己写的系统好用。毕竟造别人已经造过的轮子是无意义的（</p>
+
+<p>现在旧版博客文章还没有完全迁移过来，以后也会陆陆续续全部搞完。</p>
+
+<h2 id="jekyll介绍">Jekyll介绍</h2>
+
+<p>Jekyll的<a href="https://jekyllrb.com/">官方网站</a>上也有详细的文档，第一次使用的话完全可以照着文档操作。我在这里也简单地介绍一下：</p>
+
+<ol>
+  <li>Jekyll是用<a href="https://www.ruby-lang.org/">Ruby</a>写成的，安装前请先确保电脑上有ruby环境和ruby的包管理工具<a href="https://rubygems.org/">rubygems</a>。</li>
+  <li>使用如下指令安装Jekyll：
+    <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">gem install bundler jekyll
+</span></code></pre></div>    </div>
+  </li>
+  <li>接下来使用如下指令创建新工程：
+    <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">jekyll new 工程名称
+</span></code></pre></div>    </div>
+  </li>
+  <li>进入目录，你应该看到这样的目录结构
+    <pre><code class="language-filetree">.
+├── 404.html
+├── Gemfile
+├── Gemfile.lock
+├── _config.yml
+├── about.markdown
+├── index.markdown
+└── _posts
+    └── xxxx-xx-xx-welcome-to-jekyll.markdown
+</code></pre>
+    <p>简单解释一下：</p>
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">_config.yml</code>存放了这个工程的基本信息，比如博客标题、描述、作者的邮箱等，也可以在<code class="language-plaintext highlighter-rouge">_config.yml</code>上面继续添加新的信息。</li>
+      <li><code class="language-plaintext highlighter-rouge">Gemfile</code>和<code class="language-plaintext highlighter-rouge">Gemfile.lock</code>是一些关于Gem的信息，可以暂时不用管。</li>
+      <li><code class="language-plaintext highlighter-rouge">404.html</code>是404错误页面，如果用户试图访问一个你没有写过的页面，就会自动跳转到这个页面上。</li>
+      <li><code class="language-plaintext highlighter-rouge">index.markdown</code>(写成<code class="language-plaintext highlighter-rouge">index.md</code>也可以被系统识别)是博客的主页，即在浏览器输入博客地址后第一个看见的页面。</li>
+      <li><code class="language-plaintext highlighter-rouge">about.markdown</code>(同上，<code class="language-plaintext highlighter-rouge">about.md</code>也被允许)是个人介绍页面。</li>
+      <li><code class="language-plaintext highlighter-rouge">_posts</code>文件夹下放各个博客文章，每个文章都是一个Markdown文件。文章的文件名都应该是<code class="language-plaintext highlighter-rouge">YYYY-MM-dd-TITLE.md</code>格式，即4位年份、2为月份、2位日期，后面跟着文章标题，空格用<code class="language-plaintext highlighter-rouge">-</code>代替。</li>
+    </ul>
+  </li>
+  <li>Jekyll会将所有在根目录下和<code class="language-plaintext highlighter-rouge">_posts</code>目录下的Markdown文件全部编译成HTML，连同其他文件放在<code class="language-plaintext highlighter-rouge">_site</code>目录下。也就是说，进行编译后，<code class="language-plaintext highlighter-rouge">_site</code>文件夹下就是一个完整的网站，各个博客会被按照类别和日期整理起来。
+    <div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">bundle exec jekyll serve
+</span></code></pre></div>    </div>
+    <p>会进行编译并且将<code class="language-plaintext highlighter-rouge">_site</code>目录下的网站运行在<a href="http://localhost:4000/">http://localhost:4000/</a>上。当服务程序跑起来时，<code class="language-plaintext highlighter-rouge">_posts</code>下的Markdown文件发生改动也会实时编译并更改对应的网页内容。</p>
+  </li>
+  <li>Jekyll的Markdown，准确来说是“加强版Markdown”。每个Markdown文件都有一个header，像这样：
+    <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="na">layout</span><span class="pi">:</span> <span class="s">post</span>
+<span class="na">title</span><span class="pi">:</span> <span class="s">XXX-XXX</span>
+<span class="na">permalink</span><span class="pi">:</span> <span class="s">/aaa/bbb/</span>
+<span class="na">category</span><span class="pi">:</span> <span class="s">blog</span>
+<span class="nn">---</span>
+</code></pre></div>    </div>
+    <p>其中<code class="language-plaintext highlighter-rouge">title</code>后面的内容会被自动添加为文件的一级标题，因此并不需要在写Markdown时再写一遍标题。
+ <code class="language-plaintext highlighter-rouge">category</code>是文件的类别，比如这里是<code class="language-plaintext highlighter-rouge">blog</code>的话就会在编译为HTML时将其放在<code class="language-plaintext highlighter-rouge">_site/blog/</code>文件夹下。
+ <code class="language-plaintext highlighter-rouge">layout</code>是页面的布局方式，Jekyll有一些预定义的layout，比如<code class="language-plaintext highlighter-rouge">home</code>, <code class="language-plaintext highlighter-rouge">post</code>, <code class="language-plaintext highlighter-rouge">page</code>等，也可以自己定义布局方式，比如两列布局、三列布局，但这需要一定的HTML基础。
+ 默认情况下，编译后的Markdown文件会被放在<code class="language-plaintext highlighter-rouge">年/月/日/标题.html</code>目录下。如果不想放在这里，可以更改<code class="language-plaintext highlighter-rouge">permalink</code>变量。上例中文件就会被放在<code class="language-plaintext highlighter-rouge">/aaa/bbb/标题.html</code>。</p>
+  </li>
+  <li>
+    <p>Markdown文件中还可以使用变量。形如<code class="language-plaintext highlighter-rouge">{{site._____}}</code>的字符串会在编译时被替换成<code class="language-plaintext highlighter-rouge">_config.yml</code>里对应的值，例如在我的定义下：</p>
+
+    <div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code> My email is {{site.email}}
+</code></pre></div>    </div>
+
+    <p>就会变成：</p>
+    <div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code> My email is gmq14159@gmail.com
+</code></pre></div>    </div>
+    <p>类似的，<code class="language-plaintext highlighter-rouge">{{page.____}}</code>可以返回Markdown Header里面的对应变量值。详细解释请看<a href="https://jekyllrb.com/docs/variables/">Jekyll官方文档</a>。</p>
+  </li>
+</ol>
+
+<p>关于Jekyll就先讲这么多，更多的信息也可以在网上找到。</p>]]></content><author><name></name></author><category term="blog" /><category term="bulletin" /><category term="jekyll" /><category term="writing" /><summary type="html"><![CDATA[公告]]></summary></entry><entry><title type="html">为何非弹性碰撞下动量守恒而能量不守恒？</title><link href="http://localhost:4000/blog/2021/12/19/simulation2.html" rel="alternate" type="text/html" title="为何非弹性碰撞下动量守恒而能量不守恒？" /><published>2021-12-19T00:00:00-05:00</published><updated>2021-12-19T00:00:00-05:00</updated><id>http://localhost:4000/blog/2021/12/19/simulation2</id><content type="html" xml:base="http://localhost:4000/blog/2021/12/19/simulation2.html"><![CDATA[<h2 id="1-模拟">1. 模拟</h2>
+
+<p>假设现在有两种不同的分子，同种分子之间有引力，异种分子之间有斥力。</p>
+
+<p>我们使用一个理想模型：同种分子之间的使用弹簧连接，弹簧会主动维护一个固定长度$l_0$；异种分子之间的斥力满足平方反比定律。具体公式如下：</p>
+
+\[\bm F_1=k_1(\bm r_{12} - \bm l_0)\]
+
+\[\bm F_2=k_2\cdot\frac{\bm r_{12}}{r_{12}^2}\]
+
+<p>模拟结果如下：</p>
+
+<ol>
+  <li>$k_1:k_2=5:1$，近似为理想刚体的弹性碰撞</li>
+</ol>
+
+<p><img src="/img/sim_animation1.gif" alt="animation1" /></p>
+
+<ol>
+  <li>$k_1:k_2=1:1$</li>
+</ol>
+
+<p><img src="/img/sim_animation2.gif" alt="animation2" /></p>
+
+<ol>
+  <li>$k_1:k_2=0.75:1$，碰撞为塑性碰撞</li>
+</ol>
+
+<p><img src="/img/sim_animation3.gif" alt="animation3" /></p>
+
+<h2 id="分析">分析</h2>
+
+<p>从这些模拟动画中可以看出在塑性碰撞之后，分子自身产生了微小振动，将一部分能量转化成了分子的振动动能（即内能）。这就是我们问题的答案：塑性碰撞将宏观物体的能量转化成了微观分子的能量，因此宏观上能量减少了。</p>
+
+<p>值得注意的是，分子的振动并不能带走宏观物体的动量，因为分子的振动是随机的，并且在各个方向上出现的概率相等，因此统计上分子的动量之和应当为0。这也是为什么不论在弹性还是在塑性碰撞中，物体的动量都是守恒的。</p>]]></content><author><name></name></author><category term="blog" /><category term="physics" /><category term="simulation" /><summary type="html"><![CDATA[1. 模拟]]></summary></entry><entry><title type="html">算法化求导</title><link href="http://localhost:4000/blog/2021/09/11/derivative-m.html" rel="alternate" type="text/html" title="算法化求导" /><published>2021-09-11T00:00:00-04:00</published><updated>2021-09-11T00:00:00-04:00</updated><id>http://localhost:4000/blog/2021/09/11/derivative-m</id><content type="html" xml:base="http://localhost:4000/blog/2021/09/11/derivative-m.html"><![CDATA[<p>求导是一种算符，输入一个表达式，输出另一个表达式</p>
+
+<p>我们学过求导的运算法则，例如$(u+v)’=u’+v’$等等，将这些法则运用于某个表达式，即可实现算法化求导</p>
+
+<p>首先，我们要从表达式树说起</p>
+
+<h2 id="表达式树">表达式树</h2>
+
+<p>任何一个表达式，都可以被拆解成一棵二叉树，其中叶节点为数字或字母，非叶节点则为运算符和函数</p>
+
+<p>例如如下的表达式：</p>
+
+\[f(x)=3x^2+2\sin(x)\]
+
+<p>可以被拆解成如下的表达式树：</p>
+
+<div class="mermaid">
+graph TD
+A((+)) --&gt; B((*))
+A --&gt; C((*))
+B --&gt; D[3]
+B --&gt; E((^))
+E --&gt; F[x]
+E --&gt; G[2]
+C --&gt; H[2]
+C --&gt; I((sin))
+I --&gt; J[x]
+</div>
+
+<p>计算$f(x)$的过程也很简单，只需要将所有未知数都替换成某个特定的值$x_0$，接着从下往上递归，将所有非叶节点替换为计算结果，最后根节点的数值就是答案了</p>
+
+<p>以上面的表达式树为例，如果我们想要计算$f\left(\dfrac{\pi}{2}\right)$的数值，首先把所有$x$换成$\dfrac\pi2$</p>
+
+<div class="mermaid">
+graph TD
+A((+)) --&gt; B((*))
+A --&gt; C((*))
+B --&gt; D[3]
+B --&gt; E((^))
+E --&gt; F[π/2]
+E --&gt; G[2]
+C --&gt; H[2]
+C --&gt; I((sin))
+I --&gt; J[π/2]
+</div>
+
+<p>接下来从下向上递归计算。先将$\left(\dfrac\pi2\right)^2$替换为$\dfrac{\pi^2}{4}$，将$\sin\left(\dfrac\pi2\right)$替换为$1$</p>
+
+<div class="mermaid">
+graph TD
+A((+)) --&gt; B((*))
+A --&gt; C((*))
+B --&gt; D[3]
+B --&gt; E[π^2/4]
+C --&gt; F[2]
+C --&gt; G[1]
+</div>
+
+<p>继续重复上述操作：</p>
+
+<div class="mermaid">
+graph TD
+A((+)) --&gt; B[3π^2/4]
+A --&gt; C[2]
+</div>
+
+<p>最终得到答案：$\dfrac{3\pi^2}{4}+2$</p>
+
+<h2 id="树上操作求导">树上操作&amp;求导</h2>
+
+<p>我们暂且使用：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Node</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">operator</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Node</span> <span class="n">left</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Node</span> <span class="n">right</span><span class="o">;</span>
+    <span class="nc">Node</span><span class="o">(</span><span class="kt">char</span> <span class="n">operator</span><span class="o">,</span> <span class="nc">Node</span> <span class="n">left</span><span class="o">,</span> <span class="nc">Node</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">operator</span> <span class="o">=</span> <span class="n">operator</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">left</span> <span class="o">=</span> <span class="n">left</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">right</span> <span class="o">=</span> <span class="n">right</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>来表示一个表达式树的非叶节点</p>
+
+<h3 id="加减法">加减法</h3>
+
+<p>我们不妨从最简单的加法运算开始考虑</p>
+
+<p>当某个节点是<code class="language-plaintext highlighter-rouge">+</code>运算时，我们不妨设左右两端的表达式分别为$f(x)$和$g(x)$，即函数$h(x)=f(x)+g(x)$</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    +
+   / \
+f(x) g(x)
+</code></pre></div></div>
+
+<p>（<em>省流大师</em></p>
+
+<p>那么，根据导数的运算律，我们可以得到：</p>
+
+\[h'(x)=(f+g)'(x)=f'(x)+g'(x)\]
+
+<p>也就是说，先分别计算这棵表达式树的左右子树的导数，接着将它们套在一个<code class="language-plaintext highlighter-rouge">+</code>节点上，就是这个表达式树的导数</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                 +               +
+derivative {    / \    } =     /   \
+             f(x) g(x)     f'(x)  g'(x)
+</code></pre></div></div>
+
+<p>写成代码的形式，就是：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">operator</span> <span class="o">==</span> <span class="s">"+"</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nf">Node</span><span class="o">(</span>
+        <span class="s">"+"</span><span class="o">,</span>
+        <span class="n">derivative</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">),</span>
+        <span class="n">derivative</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">)</span>
+    <span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>对于减法，也是同理：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                 -               -
+derivative {    / \    } =     /   \
+             f(x) g(x)     f'(x)  g'(x)
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">operator</span> <span class="o">==</span> <span class="s">"-"</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nf">Node</span><span class="o">(</span>
+        <span class="s">"-"</span><span class="o">,</span>
+        <span class="n">derivative</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">),</span>
+        <span class="n">derivative</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">)</span>
+    <span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="乘法除法">乘法&amp;除法</h3>
+
+<p>乘法运算则略微复杂一些。如果$h(x)=f(x)g(x)$，根据运算律。有：</p>
+
+\[h'(x)=f(x)g'(x)+g(x)f'(x)\]
+
+<p>也就是：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                                   +
+                 *              /     \
+derivative {    / \    } =    *         *
+             f(x) g(x)      /   \     /   \
+                         f(x) g'(x) g(x) f'(x)
+</code></pre></div></div>
+
+<p>写成代码：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">operator</span> <span class="o">==</span> <span class="s">"*"</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nf">Node</span><span class="o">(</span>
+        <span class="s">"-"</span><span class="o">,</span>
+        <span class="k">new</span> <span class="nf">Node</span><span class="o">(</span>
+            <span class="s">"*"</span><span class="o">,</span>
+            <span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">,</span>
+            <span class="n">derivative</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">)</span>
+        <span class="o">),</span>
+        <span class="k">new</span> <span class="nf">Node</span><span class="o">(</span>
+            <span class="s">"*"</span><span class="o">,</span>
+            <span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">,</span>
+            <span class="n">derivative</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">)</span>
+        <span class="o">)</span>
+    <span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>除法则更复杂一些：</p>
+
+\[\left(\dfrac{f(x)}{g(x)}\right)'=\dfrac{f'(x)g(x)-f(x)g'(x)}{g(x)^2}\]
+
+<p>也就是：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">operator</span> <span class="o">==</span> <span class="s">"/"</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nf">Node</span><span class="o">(</span>
+        <span class="s">"/"</span><span class="o">,</span>
+        <span class="k">new</span> <span class="nf">Node</span><span class="o">(</span>
+            <span class="s">"-"</span><span class="o">,</span>
+            <span class="k">new</span> <span class="nf">Node</span><span class="o">(</span>
+                <span class="s">"*"</span>
+                <span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">,</span>
+                <span class="n">derivative</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">)</span>
+            <span class="o">),</span>
+            <span class="k">new</span> <span class="nf">Node</span><span class="o">(</span>
+                <span class="s">"*"</span><span class="o">,</span>
+                <span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">,</span>
+                <span class="n">derivative</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">)</span>
+            <span class="o">)</span>
+        <span class="o">),</span>
+        <span class="k">new</span> <span class="nf">Node</span><span class="o">(</span>
+            <span class="s">"^"</span><span class="o">,</span>
+            <span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">,</span>
+            <span class="k">new</span> <span class="nf">NumberNode</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+        <span class="o">)</span>
+    <span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="乘方">乘方</h3>
+
+<p>到了乘方这里，事情就有点难办了</p>
+
+<p>我们知道指数函数的导数公式$(a^x)’=a^x\ln a$，也知道幂函数的导数公式$(x^a)’=ax^{a-1}$，但是现在问题是：未知数可能同时出现在底数和指数上</p>
+
+<p>换句话说，我们想要求的是：</p>
+
+\[\left(f(x)^{g(x)}\right)'\]
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                 ^
+derivative {    / \    } = ?
+             f(x) g(x)
+</code></pre></div></div>
+
+<p>这里我们要用到一点小技巧</p>
+
+<p>首先令</p>
+
+\[y=f(x)^{g(x)}\]
+
+<p>接着，两边同时求对数：</p>
+
+\[\ln y=\ln f(x)^{g(x)}=g(x)\ln f(x)\]
+
+<p>接下来，两边对$x$求导，得到：</p>
+
+\[\dfrac{\mathrm d\ln y}{\mathrm dx}=\dfrac{\mathrm d(g(x)\ln f(x))}{\mathrm dx}\]
+
+<p>对等式左侧使用链式求导法则：</p>
+
+\[\dfrac{\mathrm d\ln y}{\mathrm dx}=\dfrac{\mathrm d\ln y}{\mathrm dy}\cdot\dfrac{\mathrm dy}{\mathrm dx}=\dfrac1y\cdot\dfrac{\mathrm dy}{\mathrm dx}\]
+
+<p>同时对等式右侧使用导数的乘法法则：</p>
+
+\[\dfrac{\mathrm d(g(x)\ln f(x))}{\mathrm dx}=g(x)\dfrac{\mathrm d\ln f(x)}{\mathrm df(x)}\dfrac{\mathrm df(x)}{\mathrm dx}+\ln f(x)\cdot\dfrac{\mathrm dg(x)}{\mathrm dx}=\dfrac{g(x)}{f(x)}f'(x)+g'(x)\ln f(x)\]
+
+<p>最终我们得到：</p>
+
+\[\dfrac1y\cdot y'=\dfrac{g(x)}{f(x)}f'(x)+g'(x)\ln f(x)\]
+
+<p>$y’$即为所求，因此将等式左侧的$\dfrac1y$乘到右侧，并将$y$替换为$f(x)^{g(x)}$，我们得到：</p>
+
+\[y'=\left(f(x)^{g(x)}\right)'=f(x)^{g(x)}\left(\dfrac{g(x)}{f(x)}f'(x)+g'(x)\ln f(x)\right)\]
+
+<p>这就是两个表达式乘方的导数</p>
+
+<p>由于这玩意实在太长，它的代码形式和表达式树形式我就不列出来了。大家只需要知道这玩意能算出来就行了</p>
+
+<h3 id="叶节点的处理">叶节点的处理</h3>
+
+<p>当我们运算到叶节点（即常数和变量）时，就可以直接按照如下方法处理：</p>
+
+\[\text{返回值}=\begin{cases}1, \text{节点值}=\text{求导变量}\\0, \text{节点值}\neq\text{求导变量}\end{cases}\]
+
+<p>对$x$求导时，只有$x’$会返回$1$，其余情况（常数的导数，其他变量对$x$的导数）都会返回$0$</p>
+
+<h2 id="优化">优化</h2>
+
+<p>我们不妨随便找一个函数进行一下运算，比如：</p>
+
+\[f(x)=x^2\]
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  ^
+ / \
+x   2
+</code></pre></div></div>
+
+<p>代入之前得到的指数求导表达式：</p>
+
+\[(x^2)'=x^2(2'\cdot\ln x+\dfrac2x\cdot x')\]
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        ×
+    /       \
+  ^           +
+ / \       /     \
+x   2    ×         *
+       /   \      / \
+    (2)'   ln    ÷   x'
+           |    / \
+           x   2   x
+</code></pre></div></div>
+
+<p>接着根据叶节点的处理规则，将$2’$替换成$0$，将$x’$替换成$1$，得到了表达式树：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        ×
+    /       \
+  ^           +
+ / \       /     \
+x   2    ×         *
+       /   \      / \
+      0    ln    ÷   1
+           |    / \
+           x   2   x
+</code></pre></div></div>
+
+<p>可以看到，表达式树中有许多诸如<code class="language-plaintext highlighter-rouge">×0</code>，<code class="language-plaintext highlighter-rouge">×1</code>，<code class="language-plaintext highlighter-rouge">÷1</code>之类的冗余表达。为了去除这些冗余，我们需要对表达式树进行优化</p>
+
+<h3 id="初级优化">初级优化</h3>
+
+<ul>
+  <li>节点的所有子节点均为常数时，直接合并计算，例如$2+3$直接合并为$5$</li>
+  <li>加法：$a+0=0+a=a$</li>
+  <li>减法：$a-0=a$, $0-a=-a$, $a-a=0$</li>
+  <li>乘法：$a\times0=0$, $a\times1=a$</li>
+  <li>除法：$a/0=\text{NaN}$, $a/1=a$, $0/a=0$, $a/a=1$</li>
+  <li>乘方：$a^0=1$, $a^1=a$, $0^a=0$, $1^a=1$</li>
+  <li>其它：$\ln1=0$, $\sin\pi=0$等</li>
+</ul>
+
+<h3 id="中级优化">中级优化</h3>
+
+<p>涉及到某个节点和它的一级子节点</p>
+
+<ul>
+  <li>加减法：$a+(-b)=a-b$</li>
+  <li>乘除法：$a\times(1/b)=a/b$</li>
+  <li>乘方：$(a^n)/a=a^{n-1}$</li>
+  <li>对数：$a^{\log_ab}=b$</li>
+  <li>…</li>
+</ul>
+
+<h3 id="高级优化">高级优化</h3>
+
+<p>这些优化本身不一定能够让式子变得更加简洁，它要求机器能够判断展开后表达式是否能够进一步化简</p>
+
+<ul>
+  <li>乘法分配律：$(a+b)c=ac+bc$</li>
+  <li>乘方运算律：$a^{b+c}=a^b+a^c$</li>
+  <li>对数运算律：$\log(ab)=\log a+\log b$</li>
+  <li>…</li>
+</ul>]]></content><author><name></name></author><category term="blog" /><category term="math" /><category term="calculus" /><category term="algorithm" /><summary type="html"><![CDATA[求导是一种算符，输入一个表达式，输出另一个表达式]]></summary></entry><entry><title type="html">位运算的极致——快速平方根倒数算法</title><link href="http://localhost:4000/blog/2021/08/27/q-rsqrt-alg.html" rel="alternate" type="text/html" title="位运算的极致——快速平方根倒数算法" /><published>2021-08-27T00:00:00-04:00</published><updated>2021-08-27T00:00:00-04:00</updated><id>http://localhost:4000/blog/2021/08/27/q-rsqrt-alg</id><content type="html" xml:base="http://localhost:4000/blog/2021/08/27/q-rsqrt-alg.html"><![CDATA[<p>快速平方根倒数算法，最早见于1999年的3D游戏Quake III Arena的源代码中。该算法一经公布，立刻因它的巧妙而被广为流传</p>
+
+<p>在当时，计算机的算力和算法还没有现在这样厉害，浮点数乘除法的计算代价都很高，更不要说平方根了。</p>
+
+<p>另一方面，3D物理引擎几乎要求你每时每刻都要计算各种平方根。比如，计算力矢量在某个方向上的分量，需要计算$\hat v=\dfrac{\vec v}{\mid\vec v\mid}$，就会用到平方根倒数</p>
+
+<p>温馨提示：请先阅读文章的最后一段，接着再从头开始阅读</p>
+
+<h2 id="代码">代码</h2>
+
+<p>这是一般人写出来的：</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">float</span> <span class="nf">rsqrt</span><span class="p">(</span><span class="kt">float</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>看起来人畜无害，不是吗？</p>
+
+<p>但是注意，在当时，sqrt函数使用的算法本身就很慢，导致使用上面的函数计算平方根倒数效率极低</p>
+
+<p>而下面这个，是Quake使用的快速平方根倒数算法：</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">float</span> <span class="nf">q_rsqrt</span><span class="p">(</span><span class="kt">float</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">long</span> <span class="n">i</span><span class="p">;</span>
+    <span class="kt">float</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">float</span> <span class="n">threehalves</span> <span class="o">=</span> <span class="mf">1.5</span><span class="n">F</span><span class="p">;</span>
+
+    <span class="n">x2</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="mf">0.5</span><span class="n">F</span><span class="p">;</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">long</span><span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">y</span><span class="p">;</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mh">0x5f3759df</span> <span class="o">-</span> <span class="p">(</span><span class="n">i</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">float</span><span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">i</span><span class="p">;</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">*</span> <span class="p">(</span><span class="n">threehalves</span> <span class="o">-</span> <span class="p">(</span><span class="n">x2</span> <span class="o">*</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span><span class="p">));</span>
+    <span class="c1">// y = y * (threehalves - (x2 * y * y));</span>
+
+    <span class="k">return</span> <span class="n">y</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>看完是不是一脸问号？没关系，任何人看完都会一脸问号，因为这个算法<strong>真——的——很——离——谱——</strong></p>
+
+<p>前置知识</p>
+
+<ul>
+  <li>知道C和C++中的指针</li>
+  <li>知道电脑使用二进制存储信息</li>
+  <li>知道什么是导数</li>
+</ul>
+
+<p>（下方高能预警）</p>
+
+<h2 id="1-浮点数的计算机表示">#1 浮点数的计算机表示</h2>
+
+<p>假设现在你有一个二进制小数，可是计算机并不认识小数，你该怎么办呢？</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>_ _ _ _ _ _ _ _   _ _ _ _ _ _ _ _   _ _ _ _ _ _ _ _   _ _ _ _ _ _ _ _
+</code></pre></div></div>
+
+<p>容易想到，我只要在某一个地方点一个小数点，小数点左边的作为整数位，右边的作为小数位，问题就解决了</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>_ _ _ _ _ _ _ _   _ _ _ _ _ _ _ _  .  _ _ _ _ _ _ _ _   _ _ _ _ _ _ _ _
+</code></pre></div></div>
+
+<p>比如，你的数字是$(101101.01101)_2$，那么就这样写：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+0 0 0 0 0 0 0 0   0 0 1 0 1 1 0 1  .  0 1 1 0 1 0 0 0   0 0 0 0 0 0 0 0
+</code></pre></div></div>
+
+<p>小数的加减法也很简单，因为小数点永远固定，只需要忽略掉小数点，将他们全都当作整数进行加减即可</p>
+
+<p>这就是<strong>定点数</strong>，小数点在某一个固定位置不会移动</p>
+
+<p>与之对应的，则是<strong>浮点数</strong>，这个名词在学习C语言时应该听了无数遍了。 浮点数的字面意思是：<strong>小数点能够移动</strong></p>
+
+<p>可能这样不太直观，我们先回想一下科学计数法：一个数可以被分解成一个1到10之间的小数和某个10的次幂之积</p>
+
+\[34567.89=3.456789\times 10^{4}\]
+
+<p>我们只需要记住这个序列，以及次幂，或者说是小数点的位置，即可确定这个数</p>
+
+<p>对于二进制数，也可以进行类比，只不过底数不再是10，而是2：</p>
+
+\[(101101.01101)_2=(1.0110101101)_2\times 2^{(101)_2}\]
+
+<p>那么，另一个思路来了：我们可以直接存储<strong>有效数字</strong>和<strong>小数点位置</strong>。这就是浮点数</p>
+
+<p>当然，不难注意到，有效数字的开头一定不能是0，否则一定可以写成另一个数字乘上2的负数次方。 例如：</p>
+
+\[(0.01011)_2=(1.011)_2\times 2^{(-10)_2}\]
+
+<p>而二进制中，除了0，那么必然是1。也就是说，<strong>二进制有效数字的第一位必须是1</strong>，我们可以不用存储这一位了。</p>
+
+<p>最后，为了能够表示负数，需要单独拿出来一位二进制作为符号位（0为正，1为负）。我们得到了浮点数的IEEE754规则：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>S   E E E E E E E E   M M M M M M M M M M M M M M M M M M M M M
+</code></pre></div></div>
+
+<p>第1位是符号位$S$，是0或者1</p>
+
+<p>第2到9位是指数位$E$，E的范围是0到255，会自动减去127，否则无法表示负数指数，也就是说它的实际值应该是-127到128</p>
+
+<p>第10到32位是有效数字位$M$，共23位，运算时需要在在前面脑补和小数点</p>
+
+<p>也就是说，这一串二进制所表示的浮点数实际值等于：</p>
+
+\[(-1)^S\times 2^{E-127}\times (1+\dfrac{M}{2^23})\]
+
+<h2 id="2-算法的第一部分">#2 算法的第一部分</h2>
+
+<p>说完了预备知识之后，接下来，进入平方根倒数的求解过程</p>
+
+<p>显然负数不可能有平方根，因此我们可以默认输入的x必须是正数，也就是首位为0</p>
+
+<p>如果平方根不好求的话，我们不妨先算一下x的<strong>对数</strong></p>
+
+<p>你也许会说，难道对数不应该更难计算吗？没关系，请看下面：</p>
+
+<p>\(x=(1+\dfrac{M}{2^{23}})\times2^{E-127}\)
+\(\log_2(x)=\log_2(1+\dfrac{M}{2^{23}})+\log_2(2^{E-127})\)
+\(\qquad=\log_2(1+\dfrac{M}{2^{23}})+E-127\)</p>
+
+<p>现在式子还是有点复杂，不妨对它取一个近似：当$a\in[0,1]$时，$\log(1+a)$可以近似成$a$加上某个常数$\sigma$</p>
+
+\[\log(1+a)\approx a+\sigma\]
+
+<p><img src="/img/q-rsqrt-0.jpg" alt="q-rsqrt-0" /></p>
+
+<p>绿色曲线为$\log_2(1+x)$，黄色直线为$x+\sigma$，其中$\sigma$大约为$0.043$左右，通过微积分可以算出准确值，这里就不写了</p>
+
+<p>有了这个知识，原式可以近似成：</p>
+
+\[\log_2(x)\approx \dfrac{M}{2^{23}}+\sigma+E-127\]
+
+\[\log_2(x)=\dfrac1{2^{23}}(M+E\cdot2^{23})-(127-\sigma)\]
+
+<p>为什么要这样整理呢？我们不妨考虑另一件事：如果我们<em>强行将这个浮点数的每一位按照整数解读</em>，会得到什么呢？</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0   E E E E E E E E M M M M M M M M M M M M M M M M M M M M M
+</code></pre></div></div>
+
+<p>第一位是符号位，而后面31位是数字位，最终我们得到：</p>
+
+\[\bar x=\overline{EM}=E\cdot2^{23}+M\]
+
+<p>暂且将这个数称为浮点数的<strong>整数值</strong>。不难看出刚刚推导$\log_2(x)$时就产生了一个一摸一样的表达式！接着将$\bar x$代回原式，得到：</p>
+
+\[\log_2x\approx\dfrac{\bar x}{2^{23}}-(127-\sigma)\]
+
+<p>现在，我们知道了：<strong>浮点数的对数，约等于它的整数值减去某一个常数</strong></p>
+
+<p>这样我们就能理解之前代码中的这个步骤了：</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">i</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">long</span><span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">y</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>这其实就是在计算浮点数的整数值！ 注意，直接写<code class="language-plaintext highlighter-rouge">i = (long) y;</code>是错的，因为这样计算机会返回浮点数取整的值</p>
+
+<p>那么有了这个结论，求出平方根倒数就很简单了：</p>
+
+\[\log y=\log_2(\dfrac1{\sqrt{x}})=-\dfrac12\log_2(x)\approx\dfrac12(127-\sigma)-\dfrac12\dfrac{\bar x}{2^{23}}\]
+
+<p>那么$y$的整数值为：</p>
+
+\[\bar y\approx2^{23}\log_2y+2^{23}(127-\sigma)\]
+
+<p>其中<code class="language-plaintext highlighter-rouge">0x5F3759DF</code>就是大名鼎鼎的“魔法值”。最后只需要将$\bar y$再强行转换成浮点数即可</p>
+
+<p>以上就是算法的第一部分</p>
+
+<p>当然，这里还有另一个技巧：<code class="language-plaintext highlighter-rouge">i &gt;&gt; 1</code>表示将整数$i$整个向右移动1个二进制位，也就是将$i$除以2</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>i    = 00011011 01101100      &gt;&gt;&gt; right shift 1 digit
+i&gt;&gt;1 = 00001101 10110110
+</code></pre></div></div>
+
+<p>综上所述，代码：</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">i</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">long</span><span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">y</span><span class="p">;</span>
+<span class="n">i</span> <span class="o">=</span> <span class="mh">0x5F3759DF</span> <span class="o">-</span> <span class="p">(</span><span class="n">i</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">);</span>
+<span class="n">y</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">float</span><span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">i</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>你能试试求出64位浮点数的“魔法值”吗？</p>
+
+<h2 id="3-代码的第二部分">#3 代码的第二部分</h2>
+
+<p>注意到上面的所有推导，使用的全部是<strong>约等于号</strong>，而不是等于号，因此计算出来的这个数字仍然有一定的误差</p>
+
+<p>后续，我们接着使用牛顿迭代法求出精确解。假设现在我们有一个函数$f$，目标是求出它的根，而我们只知道一个距离这个根比较近的一个点，怎么办？</p>
+
+<p><img src="/img/q-rsqrt-1.jpg" alt="q-rsqrt-1" /></p>
+
+<p>（建议改成：很近</p>
+
+<p>现在，我们作一条$A$点上的切线，切线与横轴的交点作为第一轮迭代的结果</p>
+
+<p><img src="/img/q-rsqrt-2.jpg" alt="q-rsqrt-2" /></p>
+
+<p>可以看到迭代后的点离函数的根已经近了很多</p>
+
+<p><img src="/img/q-rsqrt-3.jpg" alt="q-rsqrt-3" /></p>
+
+<p>我们还可以将一轮迭代的结果作为新的起点，进行第二轮迭代，接着第三轮、第四轮、……，最终就可以无限接近函数的根，并且迭代的收敛速度非常快</p>
+
+<p>那么对于“求解平方根倒数”的这个例子，我们可以构造一个函数：</p>
+
+\[f(y)=\dfrac1{y^2}-x\]
+
+<p>令$x$为一个常数，而$y$为变量，那么我们的任务就是求解这个函数的根</p>
+
+<p>那么，从$y_0$开始，采用上面的方法迭代，即</p>
+
+\[y_{n+1}=y_n-\dfrac{f(y_n)}{f'(y_n)}\]
+
+<p>代入$f(y)=\dfrac1{y^2}-x$，得到：</p>
+
+\[y_{n+1}=\dfrac{y_n(3-xy_n^2)}{2}=y_n\left(\dfrac32-\dfrac12xy_n^2\right)\]
+
+<p>这也就是函数最下方那个奇怪的表达式的含义：</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">*</span> <span class="p">(</span><span class="n">threehalves</span> <span class="o">-</span> <span class="p">(</span><span class="n">x2</span> <span class="o">*</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>经过一轮迭代，已经差不多能将误差控制在小数点后4位左右了，如果想要更加精确，也可以接着进行2、3、4轮迭代</p>
+
+<p>以上就是算法的全过程，最后再贴一遍完整代码：</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">float</span> <span class="nf">q_rsqrt</span><span class="p">(</span><span class="kt">float</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">long</span> <span class="n">i</span><span class="p">;</span>
+    <span class="kt">float</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">float</span> <span class="n">threehalves</span> <span class="o">=</span> <span class="mf">1.5</span><span class="n">F</span><span class="p">;</span>
+
+    <span class="n">x2</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="mf">0.5</span><span class="n">F</span><span class="p">;</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">long</span><span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">y</span><span class="p">;</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mh">0x5f3759df</span> <span class="o">-</span> <span class="p">(</span><span class="n">i</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">float</span><span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">i</span><span class="p">;</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">*</span> <span class="p">(</span><span class="n">threehalves</span> <span class="o">-</span> <span class="p">(</span><span class="n">x2</span> <span class="o">*</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span><span class="p">));</span>
+    <span class="c1">// y = y * (threehalves - (x2 * y * y));</span>
+
+    <span class="k">return</span> <span class="n">y</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="这个算法有什么意义">这个算法有什么意义？</h2>
+
+<p>如果你认真看完了上面的全过程，我要遗憾的告诉你：<strong>你可能永远也用不上它</strong></p>
+
+<p>现在早已不是1999年了，算法的改进让<strong>任何编程语言的内置函数都无法轻易被超越</strong></p>
+
+<p>如果你用C语言或者C++进行测试的话，你会发现库函数<code class="language-plaintext highlighter-rouge">sqrt(x)</code>的速度要远远超过上面的算法</p>
+
+<p>但是，把这个算法当作一个精致的艺术品反复观赏，也是一件挺有意思的事情，你也可以从里面学到不少</p>]]></content><author><name></name></author><category term="blog" /><category term="C++" /><category term="algorithm" /><category term="bitoperation" /><summary type="html"><![CDATA[快速平方根倒数算法，最早见于1999年的3D游戏Quake III Arena的源代码中。该算法一经公布，立刻因它的巧妙而被广为流传]]></summary></entry><entry><title type="html">盘点亿些Julia人性化的设计</title><link href="http://localhost:4000/blog/2021/08/11/juliayyds.html" rel="alternate" type="text/html" title="盘点亿些Julia人性化的设计" /><published>2021-08-11T00:00:00-04:00</published><updated>2021-08-11T00:00:00-04:00</updated><id>http://localhost:4000/blog/2021/08/11/juliayyds</id><content type="html" xml:base="http://localhost:4000/blog/2021/08/11/juliayyds.html"><![CDATA[<h2 id="symbols">Symbols</h2>
+
+<h3 id="1-greek-letters">1. Greek Letters</h3>
+
+<p>Python:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mi">3</span>
+</code></pre></div></div>
+
+<p>Julia:</p>
+
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">α</span> <span class="o">=</span> <span class="mi">1</span>      <span class="c"># type "\alpha" and press [tab]</span>
+<span class="n">β</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">γ</span> <span class="o">=</span> <span class="mi">3</span>
+</code></pre></div></div>
+
+<h3 id="2-constants">2. constants</h3>
+
+<p>Python:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">math</span>
+<span class="k">print</span><span class="p">(</span><span class="n">math</span><span class="p">.</span><span class="n">pi</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">math</span><span class="p">.</span><span class="n">e</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Julia:</p>
+
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">println</span><span class="x">(</span><span class="nb">π</span><span class="x">)</span>     <span class="c"># "\pi"</span>
+<span class="n">println</span><span class="x">(</span><span class="nb">ℯ</span><span class="x">)</span>     <span class="c"># "\euler"</span>
+</code></pre></div></div>
+
+<h3 id="3-operators">3. Operators</h3>
+
+<p>Python:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">3</span><span class="o">*</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span>
+<span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Julia:</p>
+
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">3</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="o">+</span><span class="mi">2</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span>
+<span class="n">√x</span>  <span class="o">&lt;==&gt;</span>  <span class="n">sqrt</span><span class="x">(</span><span class="n">x</span><span class="x">)</span>
+</code></pre></div></div>
+
+<h2 id="arrays--vectors">Arrays | Vectors</h2>
+
+<h3 id="1-loop">1. loop</h3>
+
+<p>Python:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Julia:</p>
+
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">arr</span> <span class="o">=</span> <span class="x">[</span><span class="mi">1</span><span class="x">,</span> <span class="mi">2</span><span class="x">,</span> <span class="mi">3</span><span class="x">,</span> <span class="mi">4</span><span class="x">,</span> <span class="mi">5</span><span class="x">]</span>
+<span class="k">for</span> <span class="n">a</span> <span class="n">∈</span> <span class="n">arr</span>       <span class="c"># a "\in" arr</span>
+    <span class="n">println</span><span class="x">(</span><span class="n">a</span><span class="x">)</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h3 id="2-vector-operation">2. vector operation</h3>
+
+<p>Python:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="n">np</span><span class="p">.</span><span class="n">add</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">np</span><span class="p">.</span><span class="n">add</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="n">np</span><span class="p">.</span><span class="n">multiply</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">np</span><span class="p">.</span><span class="n">multiply</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="nb">map</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+</code></pre></div></div>
+
+<p>Julia:</p>
+
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="x">[</span><span class="mi">1</span><span class="x">,</span> <span class="mi">2</span><span class="x">,</span> <span class="mi">3</span><span class="x">]</span> <span class="o">.+</span> <span class="mi">1</span>
+<span class="x">[</span><span class="mi">1</span><span class="x">,</span> <span class="mi">2</span><span class="x">,</span> <span class="mi">3</span><span class="x">]</span> <span class="o">+</span> <span class="x">[</span><span class="mi">4</span><span class="x">,</span> <span class="mi">5</span><span class="x">,</span> <span class="mi">6</span><span class="x">]</span>
+<span class="x">[</span><span class="mi">1</span><span class="x">,</span> <span class="mi">2</span><span class="x">,</span> <span class="mi">3</span><span class="x">]</span> <span class="o">*</span> <span class="mi">2</span>
+<span class="x">[</span><span class="mi">1</span><span class="x">,</span> <span class="mi">2</span><span class="x">]</span> <span class="o">.*</span> <span class="x">[</span><span class="mi">3</span><span class="x">,</span> <span class="mi">4</span><span class="x">]</span>
+<span class="n">f</span><span class="x">(</span><span class="n">x</span><span class="x">)</span> <span class="o">=</span> <span class="mi">2</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="n">f</span><span class="o">.</span><span class="x">([</span><span class="mi">1</span><span class="x">,</span> <span class="mi">2</span><span class="x">,</span> <span class="mi">3</span><span class="x">,</span> <span class="mi">4</span><span class="x">])</span>
+</code></pre></div></div>
+
+<h3 id="3-matrix">3. Matrix</h3>
+
+<p>Python:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]])</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">A</span><span class="p">.</span><span class="n">dot</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+<span class="n">D</span> <span class="o">=</span> <span class="n">A</span><span class="p">.</span><span class="n">transpose</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Julia:</p>
+
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">A</span> <span class="o">=</span> <span class="x">[</span><span class="mi">1</span> <span class="mi">2</span> <span class="x">;</span> <span class="mi">3</span> <span class="mi">4</span><span class="x">]</span>
+<span class="n">B</span> <span class="o">=</span> <span class="x">[</span><span class="mi">5</span> <span class="mi">6</span> <span class="x">;</span> <span class="mi">7</span> <span class="mi">8</span><span class="x">]</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">A</span> <span class="o">*</span> <span class="n">B</span>
+<span class="n">D</span> <span class="o">=</span> <span class="n">A</span><span class="err">'</span>
+</code></pre></div></div>]]></content><author><name></name></author><category term="blog" /><category term="julia" /><category term="python" /><summary type="html"><![CDATA[Symbols]]></summary></entry><entry><title type="html">Julia对绳索振动的模拟</title><link href="http://localhost:4000/blog/2021/08/09/julia-rope-simulation.html" rel="alternate" type="text/html" title="Julia对绳索振动的模拟" /><published>2021-08-09T00:00:00-04:00</published><updated>2021-08-09T00:00:00-04:00</updated><id>http://localhost:4000/blog/2021/08/09/julia-rope-simulation</id><content type="html" xml:base="http://localhost:4000/blog/2021/08/09/julia-rope-simulation.html"><![CDATA[<h2 id="仿真结果代码">仿真结果+代码</h2>
+
+<p>且看老夫打一遍 松果——弹抖——闪电鞭！</p>
+
+<p>这是慢打：</p>
+
+<p><img src="/img/julia-1.gif" alt="julia-1" /></p>
+
+<p>这是快打：</p>
+
+<p><img src="/img/julia-2.gif" alt="julia-2" /></p>
+
+<p><img src="/img/mabaoguo.gif" alt="松果弹抖闪电便" /></p>
+
+<p>然后是代码：</p>
+
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Vector2D.jl</span>
+<span class="k">module</span> <span class="n">Vector2D</span>
+<span class="k">import</span> <span class="n">Base</span><span class="o">:+</span><span class="x">,</span><span class="o">-</span><span class="x">,</span><span class="o">*</span><span class="x">,</span><span class="o">/</span>
+<span class="k">import</span> <span class="n">Base</span><span class="o">:</span><span class="n">length</span><span class="x">,</span> <span class="kt">LinRange</span>
+<span class="k">export</span> <span class="n">Vec2D</span><span class="x">,</span> <span class="n">length</span><span class="x">,</span> <span class="n">un</span><span class="x">,</span> <span class="o">+</span><span class="x">,</span> <span class="o">-</span><span class="x">,</span> <span class="o">*</span><span class="x">,</span> <span class="o">/</span><span class="x">,</span> <span class="kt">LinRange</span>
+
+<span class="k">struct</span><span class="nc"> Vec2D</span>
+    <span class="n">x</span><span class="o">::</span><span class="kt">Float64</span>
+    <span class="n">y</span><span class="o">::</span><span class="kt">Float64</span>
+<span class="k">end</span>
+<span class="n">Vec2D</span><span class="x">()</span> <span class="o">=</span> <span class="n">Vec2D</span><span class="x">(</span><span class="mi">0</span><span class="x">,</span> <span class="mi">0</span><span class="x">)</span>
+
+<span class="n">length</span><span class="x">(</span><span class="n">a</span><span class="o">::</span><span class="n">Vec2D</span><span class="x">)</span><span class="o">::</span><span class="kt">Float64</span> <span class="o">=</span> <span class="n">√</span><span class="x">(</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span> <span class="o">+</span> <span class="n">a</span><span class="o">.</span><span class="n">y</span><span class="o">^</span><span class="mi">2</span><span class="x">)</span>
+<span class="n">un</span><span class="x">(</span><span class="n">a</span><span class="o">::</span><span class="n">Vec2D</span><span class="x">)</span> <span class="o">=</span> <span class="n">Vec2D</span><span class="x">(</span><span class="n">a</span><span class="o">.</span><span class="n">x</span> <span class="o">/</span> <span class="n">√</span><span class="x">(</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="o">+</span><span class="n">a</span><span class="o">.</span><span class="n">y</span><span class="o">^</span><span class="mi">2</span><span class="x">),</span> <span class="n">a</span><span class="o">.</span><span class="n">y</span> <span class="o">/</span> <span class="n">√</span><span class="x">(</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="o">+</span><span class="n">a</span><span class="o">.</span><span class="n">y</span><span class="o">^</span><span class="mi">2</span><span class="x">))</span>
+<span class="o">+</span><span class="x">(</span><span class="n">a</span><span class="o">::</span><span class="n">Vec2D</span><span class="x">,</span> <span class="n">b</span><span class="o">::</span><span class="n">Vec2D</span><span class="x">)</span> <span class="o">=</span> <span class="n">Vec2D</span><span class="x">(</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="o">+</span><span class="n">b</span><span class="o">.</span><span class="n">x</span><span class="x">,</span> <span class="n">a</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="n">b</span><span class="o">.</span><span class="n">y</span><span class="x">)</span>
+<span class="o">-</span><span class="x">(</span><span class="n">a</span><span class="o">::</span><span class="n">Vec2D</span><span class="x">,</span> <span class="n">b</span><span class="o">::</span><span class="n">Vec2D</span><span class="x">)</span> <span class="o">=</span> <span class="n">Vec2D</span><span class="x">(</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="o">-</span><span class="n">b</span><span class="o">.</span><span class="n">x</span><span class="x">,</span> <span class="n">a</span><span class="o">.</span><span class="n">y</span><span class="o">-</span><span class="n">b</span><span class="o">.</span><span class="n">y</span><span class="x">)</span>
+<span class="o">*</span><span class="x">(</span><span class="n">a</span><span class="o">::</span><span class="n">Vec2D</span><span class="x">,</span> <span class="n">b</span><span class="o">::</span><span class="kt">Float64</span><span class="x">)</span> <span class="o">=</span> <span class="n">Vec2D</span><span class="x">(</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="o">*</span><span class="n">b</span><span class="x">,</span> <span class="n">a</span><span class="o">.</span><span class="n">y</span><span class="o">*</span><span class="n">b</span><span class="x">)</span>
+<span class="o">/</span><span class="x">(</span><span class="n">a</span><span class="o">::</span><span class="n">Vec2D</span><span class="x">,</span> <span class="n">b</span><span class="o">::</span><span class="kt">Float64</span><span class="x">)</span> <span class="o">=</span> <span class="n">Vec2D</span><span class="x">(</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="o">/</span><span class="n">b</span><span class="x">,</span> <span class="n">a</span><span class="o">.</span><span class="n">y</span><span class="o">/</span><span class="n">b</span><span class="x">)</span>
+<span class="kt">LinRange</span><span class="x">(</span><span class="n">l</span><span class="o">::</span><span class="n">Vec2D</span><span class="x">,</span> <span class="n">r</span><span class="o">::</span><span class="n">Vec2D</span><span class="x">,</span> <span class="n">n</span><span class="o">::</span><span class="kt">Integer</span><span class="x">)</span> <span class="o">=</span> <span class="n">Vec2D</span><span class="o">.</span><span class="x">(</span><span class="kt">LinRange</span><span class="x">(</span><span class="n">l</span><span class="o">.</span><span class="n">x</span><span class="x">,</span> <span class="n">r</span><span class="o">.</span><span class="n">x</span><span class="x">,</span> <span class="n">n</span><span class="x">),</span> <span class="kt">LinRange</span><span class="x">(</span><span class="n">l</span><span class="o">.</span><span class="n">y</span><span class="x">,</span> <span class="n">r</span><span class="o">.</span><span class="n">y</span><span class="x">,</span> <span class="n">n</span><span class="x">))</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># simu.jl</span>
+<span class="n">push!</span><span class="x">(</span><span class="nb">LOAD_PATH</span><span class="x">,</span><span class="s">"."</span><span class="x">)</span>
+<span class="k">using</span> <span class="n">Plots</span>
+<span class="k">using</span> <span class="n">Printf</span>
+<span class="k">using</span> <span class="n">Vector2D</span>
+
+<span class="n">left</span> <span class="o">=</span> <span class="n">Vec2D</span><span class="x">(</span><span class="o">-</span><span class="mi">1</span><span class="x">,</span> <span class="mi">0</span><span class="x">)</span>   <span class="c"># left end</span>
+<span class="n">right</span> <span class="o">=</span> <span class="n">Vec2D</span><span class="x">(</span><span class="mi">1</span><span class="x">,</span> <span class="mi">0</span><span class="x">)</span>   <span class="c"># right end</span>
+
+<span class="n">m</span> <span class="o">=</span> <span class="mf">0.05</span>              <span class="c"># total mass</span>
+<span class="n">k</span> <span class="o">=</span> <span class="mf">10.</span>               <span class="c"># stiffness factor</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">90</span>                <span class="c"># number of mass points on a string</span>
+<span class="n">r</span> <span class="o">=</span> <span class="kt">Vector</span><span class="x">(</span><span class="kt">LinRange</span><span class="x">(</span><span class="n">left</span><span class="x">,</span> <span class="n">right</span><span class="x">,</span> <span class="n">n</span><span class="x">))</span>   <span class="c"># position of each mass point</span>
+<span class="n">v</span> <span class="o">=</span> <span class="n">repeat</span><span class="x">([</span><span class="n">Vec2D</span><span class="x">()],</span> <span class="n">n</span><span class="x">)</span>               <span class="c"># velocity of each mass point</span>
+<span class="n">t</span>  <span class="o">=</span> <span class="mf">0.</span>                <span class="c"># current time</span>
+<span class="n">dt</span> <span class="o">=</span> <span class="mf">0.002</span>             <span class="c"># time duration for every loop</span>
+<span class="n">originLength</span> <span class="o">=</span> <span class="n">length</span><span class="x">(</span><span class="n">r</span><span class="x">[</span><span class="mi">2</span><span class="x">]</span><span class="o">-</span><span class="n">r</span><span class="x">[</span><span class="mi">1</span><span class="x">])</span>
+
+<span class="nd">@gif</span> <span class="k">for</span> <span class="n">rep</span> <span class="n">∈</span> <span class="mi">1</span><span class="o">:</span><span class="mi">10000</span>
+    <span class="kd">global</span> <span class="n">λ</span><span class="x">,</span> <span class="n">k</span><span class="x">,</span> <span class="n">n</span><span class="x">,</span> <span class="n">r</span><span class="x">,</span> <span class="n">v</span><span class="x">,</span> <span class="n">originLength</span><span class="x">,</span> <span class="n">t</span><span class="x">,</span> <span class="n">dt</span>
+    <span class="n">deltaR</span> <span class="o">=</span> <span class="x">[</span>
+        <span class="n">r</span><span class="x">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="x">]</span> <span class="o">-</span> <span class="n">r</span><span class="x">[</span><span class="n">i</span><span class="x">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">length</span><span class="x">(</span><span class="n">r</span><span class="x">)</span><span class="o">-</span><span class="mi">1</span>
+    <span class="x">]</span>
+
+    <span class="c">## calculate force on each point ##</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="n">repeat</span><span class="x">([</span><span class="n">Vec2D</span><span class="x">()],</span> <span class="n">n</span><span class="x">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="n">∈</span> <span class="mi">1</span><span class="o">:</span><span class="n">length</span><span class="x">(</span><span class="n">r</span><span class="x">)</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">1</span> <span class="o">||</span> <span class="n">i</span> <span class="o">==</span> <span class="n">length</span><span class="x">(</span><span class="n">r</span><span class="x">)</span>
+            <span class="n">continue</span>
+        <span class="k">else</span>
+            <span class="n">F</span><span class="x">[</span><span class="n">i</span><span class="x">]</span> <span class="o">=</span> <span class="n">un</span><span class="x">(</span><span class="n">deltaR</span><span class="x">[</span><span class="n">i</span><span class="x">])</span> <span class="o">*</span> <span class="x">(</span><span class="n">length</span><span class="x">(</span><span class="n">deltaR</span><span class="x">[</span><span class="n">i</span><span class="x">])</span><span class="o">-</span><span class="n">originLength</span><span class="x">)</span> <span class="o">*</span> <span class="n">k</span> <span class="o">-</span>
+                    <span class="n">un</span><span class="x">(</span><span class="n">deltaR</span><span class="x">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="x">])</span> <span class="o">*</span> <span class="x">(</span><span class="n">length</span><span class="x">(</span><span class="n">deltaR</span><span class="x">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="x">])</span><span class="o">-</span><span class="n">originLength</span><span class="x">)</span> <span class="o">*</span> <span class="n">k</span>
+        <span class="k">end</span>
+    <span class="k">end</span>
+    <span class="k">if</span> <span class="n">rep</span> <span class="o">&lt;=</span> <span class="mi">50</span>
+        <span class="n">F</span><span class="x">[</span><span class="n">n÷2</span><span class="x">]</span> <span class="o">=</span> <span class="n">F</span><span class="x">[</span><span class="n">n÷2</span><span class="x">]</span> <span class="o">+</span> <span class="n">Vec2D</span><span class="x">(</span><span class="mi">0</span><span class="x">,</span> <span class="mf">0.02</span><span class="x">)</span>
+    <span class="k">end</span>
+
+    <span class="c">## update time dt ##</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">v</span> <span class="o">+</span> <span class="x">(</span><span class="n">F</span><span class="o">./</span><span class="x">(</span><span class="n">m</span><span class="o">/</span><span class="n">n</span><span class="x">))</span><span class="o">.*</span><span class="n">dt</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">r</span> <span class="o">+</span> <span class="n">v</span><span class="o">.*</span><span class="n">dt</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="n">dt</span>
+
+    <span class="c">## plot ##</span>
+    <span class="n">plot</span><span class="x">(</span>
+        <span class="n">map</span><span class="x">((</span><span class="n">v</span><span class="x">)</span> <span class="o">-&gt;</span> <span class="n">v</span><span class="o">.</span><span class="n">x</span><span class="x">,</span> <span class="n">r</span><span class="x">),</span>
+        <span class="n">map</span><span class="x">((</span><span class="n">v</span><span class="x">)</span> <span class="o">-&gt;</span> <span class="n">v</span><span class="o">.</span><span class="n">y</span><span class="x">,</span> <span class="n">r</span><span class="x">),</span>
+        <span class="n">label</span><span class="o">=</span><span class="s">"time="</span> <span class="o">*</span> <span class="nd">@sprintf</span><span class="x">(</span><span class="s">"%.3f"</span><span class="x">,</span> <span class="n">t</span><span class="x">),</span>
+        <span class="n">ylims</span><span class="o">=</span><span class="x">(</span><span class="o">-</span><span class="mf">0.14</span><span class="x">,</span> <span class="mf">0.14</span><span class="x">)</span>
+    <span class="x">)</span>
+<span class="k">end</span> <span class="n">every</span> <span class="mi">25</span>
+</code></pre></div></div>
+
+<p>前排提醒：代码运行大约需要1分钟，请耐心等待。。。</p>
+
+<h2 id="方法">方法</h2>
+
+<ol>
+  <li>将绳索看作由弹簧依次连接的<code class="language-plaintext highlighter-rouge">n</code>个质点</li>
+  <li>使用数组<code class="language-plaintext highlighter-rouge">r[]</code>记录每个质点的位置，数组<code class="language-plaintext highlighter-rouge">v[]</code>记录每个质点的速度</li>
+  <li>定义变量<code class="language-plaintext highlighter-rouge">dt</code>，代表一个微小时间间隔</li>
+  <li>每一次循环，计算每个质点的受力<code class="language-plaintext highlighter-rouge">F[]</code>，其中端点增加一个特判</li>
+  <li>接着依次更新<code class="language-plaintext highlighter-rouge">v</code>和<code class="language-plaintext highlighter-rouge">r</code>，最后画出来即可</li>
+</ol>
+
+<h2 id="失败案例集锦">失败案例集锦</h2>
+
+<p><img src="/img/julia-fail-1.gif" alt="fail-1" /></p>
+
+<p><img src="/img/julia-fail-2.gif" alt="fail-2" /></p>
+
+<p><img src="/img/julia-fail-3.gif" alt="fail-3" /></p>]]></content><author><name></name></author><category term="blog" /><category term="julia" /><category term="simulation" /><summary type="html"><![CDATA[仿真结果+代码]]></summary></entry><entry><title type="html">如何选择写作软件？</title><link href="http://localhost:4000/blog/2021/07/25/writing-software.html" rel="alternate" type="text/html" title="如何选择写作软件？" /><published>2021-07-25T00:00:00-04:00</published><updated>2021-07-25T00:00:00-04:00</updated><id>http://localhost:4000/blog/2021/07/25/writing-software</id><content type="html" xml:base="http://localhost:4000/blog/2021/07/25/writing-software.html"><![CDATA[<h2 id="为什么需要写作软件">为什么需要写作软件？</h2>
+
+<p>不是只有作家才需要写作软件。无论是文章，还是你的学习笔记、实验记录、所思所想，写作软件都可以非常方便地管理它们。</p>
+
+<p>写作软件可以做到许多纸质笔记本难以做到的事情，比如你可以：</p>
+
+<ul>
+  <li>更便捷地插入图像，视频，链接</li>
+  <li>将作品分享到互联网上</li>
+  <li>将作品同步至云，防止丢失</li>
+  <li>在多个平台（电脑，手机，iPad等）上进行编辑</li>
+  <li>使用搜索功能快速地检索文章</li>
+  <li>可以随时修改和撤回</li>
+</ul>
+
+<p>当然，写作软件也有一定的缺点：</p>
+
+<ul>
+  <li>没有电脑/没有网的时候，你会很崩溃</li>
+  <li>流程图、思维导图这些东西，电脑不方便编辑</li>
+  <li>给人的感觉方面，电脑上的文字不如纸上的文字更亲切</li>
+</ul>
+
+<h2 id="我该选择怎样的写作软件">我该选择怎样的写作软件？</h2>
+
+<p>对于如何筛选写作软件这个问题，我给出的核心要求是：<strong>你的大脑是用来想问题的，不是用来浪费在操作细节上的</strong></p>
+
+<p>因此，<strong>我不推荐按钮操作的富文本编辑器</strong>，比如Word, OneNote等。因为在书写时你需要频繁地使用鼠标点击按钮进行编辑，这会大大降低你的写作速度和写作热情</p>
+
+<p>强烈建议大家使用支持markdown的写作软件，markdown是我目前用过最顺手的文本编辑语言，没有之一</p>
+
+<p>推荐几个写作软件：</p>
+
+<h3 id="tiddlywiki"><a href="https://tiddlywiki.com/">TiddlyWiki</a></h3>
+
+<p>TiddlyWiki适合用来管理以文字、代码、数学公式为主的文章，适合有一定编程基础的人使用</p>
+
+<p>没有专门的客户端，它的所有内容全都被加载到了一个大小不超过5M的html文件中，用浏览器就可以打开和编辑，这使得它很容易保存和分享</p>
+
+<p>有着非常强大的标签搜索整理功能，例如可以用一个 “[tag[A]-[B]]” 快速过滤包含A但不包含B的条目。条目之间的链接也可以用 “[[]]” 方便地实现</p>
+
+<p>内置一个很有意思的标记语言，其功能与html不相上下，但比html简洁得多</p>
+
+<p>有许多插件。如果你足够强，还可以开发一个插件，虽然我太菜了(￣﹏￣；)</p>
+
+<h3 id="evernote-或-印象笔记"><a href="https://evernote.com/">EverNote</a> 或 <a href="https://www.yinxiang.com/">印象笔记</a></h3>
+
+<p>EverNote适合各种需求的写作，零基础即可使用</p>
+
+<p>支持一系列快捷键，操作也很直观便捷</p>
+
+<p>置入图片和网页非常方便，自带的截图工具也很给力</p>
+
+<p>使用笔记本来管理不同类别的笔记</p>
+
+<p>电脑和手机都有相应客户端，可以多平台编辑</p>
+
+<p>我也没用过几次，就不过多评论了。。。</p>
+
+<p>注意：国际版的EverNote和中国版的印象笔记账号不通用</p>
+
+<h3 id="typora"><a href="https://www.typora.io/">Typora</a></h3>
+
+<p>Typora是一个功能完备且用户友好的Markdown编辑器</p>
+
+<p>不同于大部分Markdown编辑器的双窗口界面，Typora将“编辑”和“预览”两个功能合二为一，实时预览</p>
+
+<p>自带LaTeX支持，Mermaid流程图绘制等markdown插件</p>
+
+<p>有着完备的用户偏好设置，完全不用担心上手困难</p>
+
+<p>支持便捷的图片插入，包括Ctrl+V和直接拖动图片</p>
+
+<p>当然，它没有给你提供现成的云服务，你需要寻找其它云来存储文件</p>
+
+<p><em>2021-12-15补：Typora现在开始收费了</em></p>]]></content><author><name></name></author><category term="blog" /><category term="use-computer-well writing blog" /><summary type="html"><![CDATA[为什么需要写作软件？]]></summary></entry><entry><title type="html">驾驭计算机，你需要——懒</title><link href="http://localhost:4000/blog/2021/07/24/lazy.html" rel="alternate" type="text/html" title="驾驭计算机，你需要——懒" /><published>2021-07-24T00:00:00-04:00</published><updated>2021-07-24T00:00:00-04:00</updated><id>http://localhost:4000/blog/2021/07/24/lazy</id><content type="html" xml:base="http://localhost:4000/blog/2021/07/24/lazy.html"><![CDATA[<p><strong>懒/lazy</strong>其实不一定是个贬义词，恰恰相反，它是推动人类社会进步和提升工作效率的一个重要的品质。</p>
+
+<p>懒，即在<strong>不影响结果的情况下，尽可能少地耗费时间和精力</strong></p>
+
+<p>懒<strong>并不是懒惰</strong>，“懒”的一大前提是不影响最后的产出</p>
+
+<p>懒，要求你有一定的<strong>探索精神</strong>，需要不断尝试更简单、更便捷的道路</p>
+
+<p>懒，甚至有时候需要<strong>黑客精神</strong>，在无路可走的时候创造一条路</p>
+
+<p>懒，还要求你<strong>不能被错误和异常击倒</strong>，在突发事件后损失最小</p>
+
+<p>懒，要求你多去寻找那些“<strong>一劳永逸</strong>”的事情</p>
+
+<p>懒，要求你<strong>把机械化、重复化的工作交给机器</strong>，而不是自己</p>
+
+<p>懒，要求你在使用计算机时——</p>
+
+<ul>
+  <li>多使用快捷键，少碰鼠标</li>
+  <li>多使用“搜索”功能，不要每次都挨个找</li>
+  <li>使用计算机脚本来简化一些重复性的操作</li>
+  <li>习惯把重要文件放在云上，而不是全部存放在本地</li>
+  <li>拿到一个软件之后，先打开设置，把操作模式变得顺手</li>
+  <li>多使用命令行，能在命令行内解决就不要打开图形界面</li>
+</ul>
+
+<p>懒，要求你在写程序时——</p>
+
+<ul>
+  <li>简单的、一次性的功能，使用脚本语言实现</li>
+  <li>数据和内容分开，例如使用config存放重要数据，修改时直接更改config即可</li>
+  <li>善于使用工程建构工具，而不是手动管理</li>
+</ul>]]></content><author><name></name></author><category term="blog" /><category term="use-computer-well" /><category term="lazy" /><summary type="html"><![CDATA[懒/lazy其实不一定是个贬义词，恰恰相反，它是推动人类社会进步和提升工作效率的一个重要的品质。]]></summary></entry></feed>

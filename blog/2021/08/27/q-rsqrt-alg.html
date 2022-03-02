@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>位运算的极致——快速平方根倒数算法 | Blog MqCreaple</title>
+<meta name="generator" content="Jekyll v4.2.1" />
+<meta property="og:title" content="位运算的极致——快速平方根倒数算法" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="快速平方根倒数算法，最早见于1999年的3D游戏Quake III Arena的源代码中。该算法一经公布，立刻因它的巧妙而被广为流传" />
+<meta property="og:description" content="快速平方根倒数算法，最早见于1999年的3D游戏Quake III Arena的源代码中。该算法一经公布，立刻因它的巧妙而被广为流传" />
+<link rel="canonical" href="http://localhost:4000/blog/2021/08/27/q-rsqrt-alg.html" />
+<meta property="og:url" content="http://localhost:4000/blog/2021/08/27/q-rsqrt-alg.html" />
+<meta property="og:site_name" content="Blog MqCreaple" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-08-27T00:00:00-04:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="位运算的极致——快速平方根倒数算法" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2021-08-27T00:00:00-04:00","datePublished":"2021-08-27T00:00:00-04:00","description":"快速平方根倒数算法，最早见于1999年的3D游戏Quake III Arena的源代码中。该算法一经公布，立刻因它的巧妙而被广为流传","headline":"位运算的极致——快速平方根倒数算法","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blog/2021/08/27/q-rsqrt-alg.html"},"url":"http://localhost:4000/blog/2021/08/27/q-rsqrt-alg.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Blog | MqCreaple" /><!-- custom contents -->
+    <link rel="icon" href="/favicon.png" />
+
+    <!-- font awesome -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css" crossorigin="anonymous" />
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, {
+                // customised options
+                // • auto-render specific keys, e.g.:
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ],
+                // • rendering keys, e.g.:
+                throwOnError : false
+            });
+        });
+    </script>
+
+    <!-- mermaid -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+</head>
+  <body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Blog | MqCreaple</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About Me</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">位运算的极致——快速平方根倒数算法</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2021-08-27T00:00:00-04:00" itemprop="datePublished">Aug 27, 2021
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>快速平方根倒数算法，最早见于1999年的3D游戏Quake III Arena的源代码中。该算法一经公布，立刻因它的巧妙而被广为流传</p>
+
+<p>在当时，计算机的算力和算法还没有现在这样厉害，浮点数乘除法的计算代价都很高，更不要说平方根了。</p>
+
+<p>另一方面，3D物理引擎几乎要求你每时每刻都要计算各种平方根。比如，计算力矢量在某个方向上的分量，需要计算$\hat v=\dfrac{\vec v}{\mid\vec v\mid}$，就会用到平方根倒数</p>
+
+<p>温馨提示：请先阅读文章的最后一段，接着再从头开始阅读</p>
+
+<h2 id="代码">代码</h2>
+
+<p>这是一般人写出来的：</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">float</span> <span class="nf">rsqrt</span><span class="p">(</span><span class="kt">float</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>看起来人畜无害，不是吗？</p>
+
+<p>但是注意，在当时，sqrt函数使用的算法本身就很慢，导致使用上面的函数计算平方根倒数效率极低</p>
+
+<p>而下面这个，是Quake使用的快速平方根倒数算法：</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">float</span> <span class="nf">q_rsqrt</span><span class="p">(</span><span class="kt">float</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">long</span> <span class="n">i</span><span class="p">;</span>
+    <span class="kt">float</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">float</span> <span class="n">threehalves</span> <span class="o">=</span> <span class="mf">1.5</span><span class="n">F</span><span class="p">;</span>
+
+    <span class="n">x2</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="mf">0.5</span><span class="n">F</span><span class="p">;</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">long</span><span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">y</span><span class="p">;</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mh">0x5f3759df</span> <span class="o">-</span> <span class="p">(</span><span class="n">i</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">float</span><span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">i</span><span class="p">;</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">*</span> <span class="p">(</span><span class="n">threehalves</span> <span class="o">-</span> <span class="p">(</span><span class="n">x2</span> <span class="o">*</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span><span class="p">));</span>
+    <span class="c1">// y = y * (threehalves - (x2 * y * y));</span>
+
+    <span class="k">return</span> <span class="n">y</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>看完是不是一脸问号？没关系，任何人看完都会一脸问号，因为这个算法<strong>真——的——很——离——谱——</strong></p>
+
+<p>前置知识</p>
+
+<ul>
+  <li>知道C和C++中的指针</li>
+  <li>知道电脑使用二进制存储信息</li>
+  <li>知道什么是导数</li>
+</ul>
+
+<p>（下方高能预警）</p>
+
+<h2 id="1-浮点数的计算机表示">#1 浮点数的计算机表示</h2>
+
+<p>假设现在你有一个二进制小数，可是计算机并不认识小数，你该怎么办呢？</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>_ _ _ _ _ _ _ _   _ _ _ _ _ _ _ _   _ _ _ _ _ _ _ _   _ _ _ _ _ _ _ _
+</code></pre></div></div>
+
+<p>容易想到，我只要在某一个地方点一个小数点，小数点左边的作为整数位，右边的作为小数位，问题就解决了</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>_ _ _ _ _ _ _ _   _ _ _ _ _ _ _ _  .  _ _ _ _ _ _ _ _   _ _ _ _ _ _ _ _
+</code></pre></div></div>
+
+<p>比如，你的数字是$(101101.01101)_2$，那么就这样写：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+0 0 0 0 0 0 0 0   0 0 1 0 1 1 0 1  .  0 1 1 0 1 0 0 0   0 0 0 0 0 0 0 0
+</code></pre></div></div>
+
+<p>小数的加减法也很简单，因为小数点永远固定，只需要忽略掉小数点，将他们全都当作整数进行加减即可</p>
+
+<p>这就是<strong>定点数</strong>，小数点在某一个固定位置不会移动</p>
+
+<p>与之对应的，则是<strong>浮点数</strong>，这个名词在学习C语言时应该听了无数遍了。 浮点数的字面意思是：<strong>小数点能够移动</strong></p>
+
+<p>可能这样不太直观，我们先回想一下科学计数法：一个数可以被分解成一个1到10之间的小数和某个10的次幂之积</p>
+
+\[34567.89=3.456789\times 10^{4}\]
+
+<p>我们只需要记住这个序列，以及次幂，或者说是小数点的位置，即可确定这个数</p>
+
+<p>对于二进制数，也可以进行类比，只不过底数不再是10，而是2：</p>
+
+\[(101101.01101)_2=(1.0110101101)_2\times 2^{(101)_2}\]
+
+<p>那么，另一个思路来了：我们可以直接存储<strong>有效数字</strong>和<strong>小数点位置</strong>。这就是浮点数</p>
+
+<p>当然，不难注意到，有效数字的开头一定不能是0，否则一定可以写成另一个数字乘上2的负数次方。 例如：</p>
+
+\[(0.01011)_2=(1.011)_2\times 2^{(-10)_2}\]
+
+<p>而二进制中，除了0，那么必然是1。也就是说，<strong>二进制有效数字的第一位必须是1</strong>，我们可以不用存储这一位了。</p>
+
+<p>最后，为了能够表示负数，需要单独拿出来一位二进制作为符号位（0为正，1为负）。我们得到了浮点数的IEEE754规则：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>S   E E E E E E E E   M M M M M M M M M M M M M M M M M M M M M
+</code></pre></div></div>
+
+<p>第1位是符号位$S$，是0或者1</p>
+
+<p>第2到9位是指数位$E$，E的范围是0到255，会自动减去127，否则无法表示负数指数，也就是说它的实际值应该是-127到128</p>
+
+<p>第10到32位是有效数字位$M$，共23位，运算时需要在在前面脑补和小数点</p>
+
+<p>也就是说，这一串二进制所表示的浮点数实际值等于：</p>
+
+\[(-1)^S\times 2^{E-127}\times (1+\dfrac{M}{2^23})\]
+
+<h2 id="2-算法的第一部分">#2 算法的第一部分</h2>
+
+<p>说完了预备知识之后，接下来，进入平方根倒数的求解过程</p>
+
+<p>显然负数不可能有平方根，因此我们可以默认输入的x必须是正数，也就是首位为0</p>
+
+<p>如果平方根不好求的话，我们不妨先算一下x的<strong>对数</strong></p>
+
+<p>你也许会说，难道对数不应该更难计算吗？没关系，请看下面：</p>
+
+<p>\(x=(1+\dfrac{M}{2^{23}})\times2^{E-127}\)
+\(\log_2(x)=\log_2(1+\dfrac{M}{2^{23}})+\log_2(2^{E-127})\)
+\(\qquad=\log_2(1+\dfrac{M}{2^{23}})+E-127\)</p>
+
+<p>现在式子还是有点复杂，不妨对它取一个近似：当$a\in[0,1]$时，$\log(1+a)$可以近似成$a$加上某个常数$\sigma$</p>
+
+\[\log(1+a)\approx a+\sigma\]
+
+<p><img src="/img/q-rsqrt-0.jpg" alt="q-rsqrt-0" /></p>
+
+<p>绿色曲线为$\log_2(1+x)$，黄色直线为$x+\sigma$，其中$\sigma$大约为$0.043$左右，通过微积分可以算出准确值，这里就不写了</p>
+
+<p>有了这个知识，原式可以近似成：</p>
+
+\[\log_2(x)\approx \dfrac{M}{2^{23}}+\sigma+E-127\]
+
+\[\log_2(x)=\dfrac1{2^{23}}(M+E\cdot2^{23})-(127-\sigma)\]
+
+<p>为什么要这样整理呢？我们不妨考虑另一件事：如果我们<em>强行将这个浮点数的每一位按照整数解读</em>，会得到什么呢？</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0   E E E E E E E E M M M M M M M M M M M M M M M M M M M M M
+</code></pre></div></div>
+
+<p>第一位是符号位，而后面31位是数字位，最终我们得到：</p>
+
+\[\bar x=\overline{EM}=E\cdot2^{23}+M\]
+
+<p>暂且将这个数称为浮点数的<strong>整数值</strong>。不难看出刚刚推导$\log_2(x)$时就产生了一个一摸一样的表达式！接着将$\bar x$代回原式，得到：</p>
+
+\[\log_2x\approx\dfrac{\bar x}{2^{23}}-(127-\sigma)\]
+
+<p>现在，我们知道了：<strong>浮点数的对数，约等于它的整数值减去某一个常数</strong></p>
+
+<p>这样我们就能理解之前代码中的这个步骤了：</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">i</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">long</span><span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">y</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>这其实就是在计算浮点数的整数值！ 注意，直接写<code class="language-plaintext highlighter-rouge">i = (long) y;</code>是错的，因为这样计算机会返回浮点数取整的值</p>
+
+<p>那么有了这个结论，求出平方根倒数就很简单了：</p>
+
+\[\log y=\log_2(\dfrac1{\sqrt{x}})=-\dfrac12\log_2(x)\approx\dfrac12(127-\sigma)-\dfrac12\dfrac{\bar x}{2^{23}}\]
+
+<p>那么$y$的整数值为：</p>
+
+\[\bar y\approx2^{23}\log_2y+2^{23}(127-\sigma)\]
+
+<p>其中<code class="language-plaintext highlighter-rouge">0x5F3759DF</code>就是大名鼎鼎的“魔法值”。最后只需要将$\bar y$再强行转换成浮点数即可</p>
+
+<p>以上就是算法的第一部分</p>
+
+<p>当然，这里还有另一个技巧：<code class="language-plaintext highlighter-rouge">i &gt;&gt; 1</code>表示将整数$i$整个向右移动1个二进制位，也就是将$i$除以2</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>i    = 00011011 01101100      &gt;&gt;&gt; right shift 1 digit
+i&gt;&gt;1 = 00001101 10110110
+</code></pre></div></div>
+
+<p>综上所述，代码：</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">i</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">long</span><span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">y</span><span class="p">;</span>
+<span class="n">i</span> <span class="o">=</span> <span class="mh">0x5F3759DF</span> <span class="o">-</span> <span class="p">(</span><span class="n">i</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">);</span>
+<span class="n">y</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">float</span><span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">i</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>你能试试求出64位浮点数的“魔法值”吗？</p>
+
+<h2 id="3-代码的第二部分">#3 代码的第二部分</h2>
+
+<p>注意到上面的所有推导，使用的全部是<strong>约等于号</strong>，而不是等于号，因此计算出来的这个数字仍然有一定的误差</p>
+
+<p>后续，我们接着使用牛顿迭代法求出精确解。假设现在我们有一个函数$f$，目标是求出它的根，而我们只知道一个距离这个根比较近的一个点，怎么办？</p>
+
+<p><img src="/img/q-rsqrt-1.jpg" alt="q-rsqrt-1" /></p>
+
+<p>（建议改成：很近</p>
+
+<p>现在，我们作一条$A$点上的切线，切线与横轴的交点作为第一轮迭代的结果</p>
+
+<p><img src="/img/q-rsqrt-2.jpg" alt="q-rsqrt-2" /></p>
+
+<p>可以看到迭代后的点离函数的根已经近了很多</p>
+
+<p><img src="/img/q-rsqrt-3.jpg" alt="q-rsqrt-3" /></p>
+
+<p>我们还可以将一轮迭代的结果作为新的起点，进行第二轮迭代，接着第三轮、第四轮、……，最终就可以无限接近函数的根，并且迭代的收敛速度非常快</p>
+
+<p>那么对于“求解平方根倒数”的这个例子，我们可以构造一个函数：</p>
+
+\[f(y)=\dfrac1{y^2}-x\]
+
+<p>令$x$为一个常数，而$y$为变量，那么我们的任务就是求解这个函数的根</p>
+
+<p>那么，从$y_0$开始，采用上面的方法迭代，即</p>
+
+\[y_{n+1}=y_n-\dfrac{f(y_n)}{f'(y_n)}\]
+
+<p>代入$f(y)=\dfrac1{y^2}-x$，得到：</p>
+
+\[y_{n+1}=\dfrac{y_n(3-xy_n^2)}{2}=y_n\left(\dfrac32-\dfrac12xy_n^2\right)\]
+
+<p>这也就是函数最下方那个奇怪的表达式的含义：</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">*</span> <span class="p">(</span><span class="n">threehalves</span> <span class="o">-</span> <span class="p">(</span><span class="n">x2</span> <span class="o">*</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>经过一轮迭代，已经差不多能将误差控制在小数点后4位左右了，如果想要更加精确，也可以接着进行2、3、4轮迭代</p>
+
+<p>以上就是算法的全过程，最后再贴一遍完整代码：</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">float</span> <span class="nf">q_rsqrt</span><span class="p">(</span><span class="kt">float</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">long</span> <span class="n">i</span><span class="p">;</span>
+    <span class="kt">float</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">float</span> <span class="n">threehalves</span> <span class="o">=</span> <span class="mf">1.5</span><span class="n">F</span><span class="p">;</span>
+
+    <span class="n">x2</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="mf">0.5</span><span class="n">F</span><span class="p">;</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">long</span><span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">y</span><span class="p">;</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mh">0x5f3759df</span> <span class="o">-</span> <span class="p">(</span><span class="n">i</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="kt">float</span><span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">i</span><span class="p">;</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">*</span> <span class="p">(</span><span class="n">threehalves</span> <span class="o">-</span> <span class="p">(</span><span class="n">x2</span> <span class="o">*</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span><span class="p">));</span>
+    <span class="c1">// y = y * (threehalves - (x2 * y * y));</span>
+
+    <span class="k">return</span> <span class="n">y</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="这个算法有什么意义">这个算法有什么意义？</h2>
+
+<p>如果你认真看完了上面的全过程，我要遗憾的告诉你：<strong>你可能永远也用不上它</strong></p>
+
+<p>现在早已不是1999年了，算法的改进让<strong>任何编程语言的内置函数都无法轻易被超越</strong></p>
+
+<p>如果你用C语言或者C++进行测试的话，你会发现库函数<code class="language-plaintext highlighter-rouge">sqrt(x)</code>的速度要远远超过上面的算法</p>
+
+<p>但是，把这个算法当作一个精致的艺术品反复观赏，也是一件挺有意思的事情，你也可以从里面学到不少</p>
+
+  </div><a class="u-url" href="/blog/2021/08/27/q-rsqrt-alg.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Blog | MqCreaple</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Blog | MqCreaple</li><li><a class="u-email" href="mailto:gmq14159@gmail.com">gmq14159@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/mqcreaple"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">mqcreaple</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>pay more attention to the beauty of formulas!</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

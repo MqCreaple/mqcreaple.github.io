@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>算法化求导 | Blog MqCreaple</title>
+<meta name="generator" content="Jekyll v4.2.1" />
+<meta property="og:title" content="算法化求导" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="求导是一种算符，输入一个表达式，输出另一个表达式" />
+<meta property="og:description" content="求导是一种算符，输入一个表达式，输出另一个表达式" />
+<link rel="canonical" href="http://localhost:4000/blog/2021/09/11/derivative-m.html" />
+<meta property="og:url" content="http://localhost:4000/blog/2021/09/11/derivative-m.html" />
+<meta property="og:site_name" content="Blog MqCreaple" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-09-11T00:00:00-04:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="算法化求导" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2021-09-11T00:00:00-04:00","datePublished":"2021-09-11T00:00:00-04:00","description":"求导是一种算符，输入一个表达式，输出另一个表达式","headline":"算法化求导","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blog/2021/09/11/derivative-m.html"},"url":"http://localhost:4000/blog/2021/09/11/derivative-m.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Blog | MqCreaple" /><!-- custom contents -->
+    <link rel="icon" href="/favicon.png" />
+
+    <!-- font awesome -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css" crossorigin="anonymous" />
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, {
+                // customised options
+                // • auto-render specific keys, e.g.:
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ],
+                // • rendering keys, e.g.:
+                throwOnError : false
+            });
+        });
+    </script>
+
+    <!-- mermaid -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+</head>
+  <body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Blog | MqCreaple</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About Me</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">算法化求导</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2021-09-11T00:00:00-04:00" itemprop="datePublished">Sep 11, 2021
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>求导是一种算符，输入一个表达式，输出另一个表达式</p>
+
+<p>我们学过求导的运算法则，例如$(u+v)’=u’+v’$等等，将这些法则运用于某个表达式，即可实现算法化求导</p>
+
+<p>首先，我们要从表达式树说起</p>
+
+<h2 id="表达式树">表达式树</h2>
+
+<p>任何一个表达式，都可以被拆解成一棵二叉树，其中叶节点为数字或字母，非叶节点则为运算符和函数</p>
+
+<p>例如如下的表达式：</p>
+
+\[f(x)=3x^2+2\sin(x)\]
+
+<p>可以被拆解成如下的表达式树：</p>
+
+<div class="mermaid">
+graph TD
+A((+)) --&gt; B((*))
+A --&gt; C((*))
+B --&gt; D[3]
+B --&gt; E((^))
+E --&gt; F[x]
+E --&gt; G[2]
+C --&gt; H[2]
+C --&gt; I((sin))
+I --&gt; J[x]
+</div>
+
+<p>计算$f(x)$的过程也很简单，只需要将所有未知数都替换成某个特定的值$x_0$，接着从下往上递归，将所有非叶节点替换为计算结果，最后根节点的数值就是答案了</p>
+
+<p>以上面的表达式树为例，如果我们想要计算$f\left(\dfrac{\pi}{2}\right)$的数值，首先把所有$x$换成$\dfrac\pi2$</p>
+
+<div class="mermaid">
+graph TD
+A((+)) --&gt; B((*))
+A --&gt; C((*))
+B --&gt; D[3]
+B --&gt; E((^))
+E --&gt; F[π/2]
+E --&gt; G[2]
+C --&gt; H[2]
+C --&gt; I((sin))
+I --&gt; J[π/2]
+</div>
+
+<p>接下来从下向上递归计算。先将$\left(\dfrac\pi2\right)^2$替换为$\dfrac{\pi^2}{4}$，将$\sin\left(\dfrac\pi2\right)$替换为$1$</p>
+
+<div class="mermaid">
+graph TD
+A((+)) --&gt; B((*))
+A --&gt; C((*))
+B --&gt; D[3]
+B --&gt; E[π^2/4]
+C --&gt; F[2]
+C --&gt; G[1]
+</div>
+
+<p>继续重复上述操作：</p>
+
+<div class="mermaid">
+graph TD
+A((+)) --&gt; B[3π^2/4]
+A --&gt; C[2]
+</div>
+
+<p>最终得到答案：$\dfrac{3\pi^2}{4}+2$</p>
+
+<h2 id="树上操作求导">树上操作&amp;求导</h2>
+
+<p>我们暂且使用：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Node</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">operator</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Node</span> <span class="n">left</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Node</span> <span class="n">right</span><span class="o">;</span>
+    <span class="nc">Node</span><span class="o">(</span><span class="kt">char</span> <span class="n">operator</span><span class="o">,</span> <span class="nc">Node</span> <span class="n">left</span><span class="o">,</span> <span class="nc">Node</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">operator</span> <span class="o">=</span> <span class="n">operator</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">left</span> <span class="o">=</span> <span class="n">left</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">right</span> <span class="o">=</span> <span class="n">right</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>来表示一个表达式树的非叶节点</p>
+
+<h3 id="加减法">加减法</h3>
+
+<p>我们不妨从最简单的加法运算开始考虑</p>
+
+<p>当某个节点是<code class="language-plaintext highlighter-rouge">+</code>运算时，我们不妨设左右两端的表达式分别为$f(x)$和$g(x)$，即函数$h(x)=f(x)+g(x)$</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    +
+   / \
+f(x) g(x)
+</code></pre></div></div>
+
+<p>（<em>省流大师</em></p>
+
+<p>那么，根据导数的运算律，我们可以得到：</p>
+
+\[h'(x)=(f+g)'(x)=f'(x)+g'(x)\]
+
+<p>也就是说，先分别计算这棵表达式树的左右子树的导数，接着将它们套在一个<code class="language-plaintext highlighter-rouge">+</code>节点上，就是这个表达式树的导数</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                 +               +
+derivative {    / \    } =     /   \
+             f(x) g(x)     f'(x)  g'(x)
+</code></pre></div></div>
+
+<p>写成代码的形式，就是：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">operator</span> <span class="o">==</span> <span class="s">"+"</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nf">Node</span><span class="o">(</span>
+        <span class="s">"+"</span><span class="o">,</span>
+        <span class="n">derivative</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">),</span>
+        <span class="n">derivative</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">)</span>
+    <span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>对于减法，也是同理：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                 -               -
+derivative {    / \    } =     /   \
+             f(x) g(x)     f'(x)  g'(x)
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">operator</span> <span class="o">==</span> <span class="s">"-"</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nf">Node</span><span class="o">(</span>
+        <span class="s">"-"</span><span class="o">,</span>
+        <span class="n">derivative</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">),</span>
+        <span class="n">derivative</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">)</span>
+    <span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="乘法除法">乘法&amp;除法</h3>
+
+<p>乘法运算则略微复杂一些。如果$h(x)=f(x)g(x)$，根据运算律。有：</p>
+
+\[h'(x)=f(x)g'(x)+g(x)f'(x)\]
+
+<p>也就是：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                                   +
+                 *              /     \
+derivative {    / \    } =    *         *
+             f(x) g(x)      /   \     /   \
+                         f(x) g'(x) g(x) f'(x)
+</code></pre></div></div>
+
+<p>写成代码：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">operator</span> <span class="o">==</span> <span class="s">"*"</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nf">Node</span><span class="o">(</span>
+        <span class="s">"-"</span><span class="o">,</span>
+        <span class="k">new</span> <span class="nf">Node</span><span class="o">(</span>
+            <span class="s">"*"</span><span class="o">,</span>
+            <span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">,</span>
+            <span class="n">derivative</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">)</span>
+        <span class="o">),</span>
+        <span class="k">new</span> <span class="nf">Node</span><span class="o">(</span>
+            <span class="s">"*"</span><span class="o">,</span>
+            <span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">,</span>
+            <span class="n">derivative</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">)</span>
+        <span class="o">)</span>
+    <span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>除法则更复杂一些：</p>
+
+\[\left(\dfrac{f(x)}{g(x)}\right)'=\dfrac{f'(x)g(x)-f(x)g'(x)}{g(x)^2}\]
+
+<p>也就是：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">operator</span> <span class="o">==</span> <span class="s">"/"</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nf">Node</span><span class="o">(</span>
+        <span class="s">"/"</span><span class="o">,</span>
+        <span class="k">new</span> <span class="nf">Node</span><span class="o">(</span>
+            <span class="s">"-"</span><span class="o">,</span>
+            <span class="k">new</span> <span class="nf">Node</span><span class="o">(</span>
+                <span class="s">"*"</span>
+                <span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">,</span>
+                <span class="n">derivative</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">)</span>
+            <span class="o">),</span>
+            <span class="k">new</span> <span class="nf">Node</span><span class="o">(</span>
+                <span class="s">"*"</span><span class="o">,</span>
+                <span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">,</span>
+                <span class="n">derivative</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">)</span>
+            <span class="o">)</span>
+        <span class="o">),</span>
+        <span class="k">new</span> <span class="nf">Node</span><span class="o">(</span>
+            <span class="s">"^"</span><span class="o">,</span>
+            <span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">,</span>
+            <span class="k">new</span> <span class="nf">NumberNode</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+        <span class="o">)</span>
+    <span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="乘方">乘方</h3>
+
+<p>到了乘方这里，事情就有点难办了</p>
+
+<p>我们知道指数函数的导数公式$(a^x)’=a^x\ln a$，也知道幂函数的导数公式$(x^a)’=ax^{a-1}$，但是现在问题是：未知数可能同时出现在底数和指数上</p>
+
+<p>换句话说，我们想要求的是：</p>
+
+\[\left(f(x)^{g(x)}\right)'\]
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                 ^
+derivative {    / \    } = ?
+             f(x) g(x)
+</code></pre></div></div>
+
+<p>这里我们要用到一点小技巧</p>
+
+<p>首先令</p>
+
+\[y=f(x)^{g(x)}\]
+
+<p>接着，两边同时求对数：</p>
+
+\[\ln y=\ln f(x)^{g(x)}=g(x)\ln f(x)\]
+
+<p>接下来，两边对$x$求导，得到：</p>
+
+\[\dfrac{\mathrm d\ln y}{\mathrm dx}=\dfrac{\mathrm d(g(x)\ln f(x))}{\mathrm dx}\]
+
+<p>对等式左侧使用链式求导法则：</p>
+
+\[\dfrac{\mathrm d\ln y}{\mathrm dx}=\dfrac{\mathrm d\ln y}{\mathrm dy}\cdot\dfrac{\mathrm dy}{\mathrm dx}=\dfrac1y\cdot\dfrac{\mathrm dy}{\mathrm dx}\]
+
+<p>同时对等式右侧使用导数的乘法法则：</p>
+
+\[\dfrac{\mathrm d(g(x)\ln f(x))}{\mathrm dx}=g(x)\dfrac{\mathrm d\ln f(x)}{\mathrm df(x)}\dfrac{\mathrm df(x)}{\mathrm dx}+\ln f(x)\cdot\dfrac{\mathrm dg(x)}{\mathrm dx}=\dfrac{g(x)}{f(x)}f'(x)+g'(x)\ln f(x)\]
+
+<p>最终我们得到：</p>
+
+\[\dfrac1y\cdot y'=\dfrac{g(x)}{f(x)}f'(x)+g'(x)\ln f(x)\]
+
+<p>$y’$即为所求，因此将等式左侧的$\dfrac1y$乘到右侧，并将$y$替换为$f(x)^{g(x)}$，我们得到：</p>
+
+\[y'=\left(f(x)^{g(x)}\right)'=f(x)^{g(x)}\left(\dfrac{g(x)}{f(x)}f'(x)+g'(x)\ln f(x)\right)\]
+
+<p>这就是两个表达式乘方的导数</p>
+
+<p>由于这玩意实在太长，它的代码形式和表达式树形式我就不列出来了。大家只需要知道这玩意能算出来就行了</p>
+
+<h3 id="叶节点的处理">叶节点的处理</h3>
+
+<p>当我们运算到叶节点（即常数和变量）时，就可以直接按照如下方法处理：</p>
+
+\[\text{返回值}=\begin{cases}1, \text{节点值}=\text{求导变量}\\0, \text{节点值}\neq\text{求导变量}\end{cases}\]
+
+<p>对$x$求导时，只有$x’$会返回$1$，其余情况（常数的导数，其他变量对$x$的导数）都会返回$0$</p>
+
+<h2 id="优化">优化</h2>
+
+<p>我们不妨随便找一个函数进行一下运算，比如：</p>
+
+\[f(x)=x^2\]
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  ^
+ / \
+x   2
+</code></pre></div></div>
+
+<p>代入之前得到的指数求导表达式：</p>
+
+\[(x^2)'=x^2(2'\cdot\ln x+\dfrac2x\cdot x')\]
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        ×
+    /       \
+  ^           +
+ / \       /     \
+x   2    ×         *
+       /   \      / \
+    (2)'   ln    ÷   x'
+           |    / \
+           x   2   x
+</code></pre></div></div>
+
+<p>接着根据叶节点的处理规则，将$2’$替换成$0$，将$x’$替换成$1$，得到了表达式树：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        ×
+    /       \
+  ^           +
+ / \       /     \
+x   2    ×         *
+       /   \      / \
+      0    ln    ÷   1
+           |    / \
+           x   2   x
+</code></pre></div></div>
+
+<p>可以看到，表达式树中有许多诸如<code class="language-plaintext highlighter-rouge">×0</code>，<code class="language-plaintext highlighter-rouge">×1</code>，<code class="language-plaintext highlighter-rouge">÷1</code>之类的冗余表达。为了去除这些冗余，我们需要对表达式树进行优化</p>
+
+<h3 id="初级优化">初级优化</h3>
+
+<ul>
+  <li>节点的所有子节点均为常数时，直接合并计算，例如$2+3$直接合并为$5$</li>
+  <li>加法：$a+0=0+a=a$</li>
+  <li>减法：$a-0=a$, $0-a=-a$, $a-a=0$</li>
+  <li>乘法：$a\times0=0$, $a\times1=a$</li>
+  <li>除法：$a/0=\text{NaN}$, $a/1=a$, $0/a=0$, $a/a=1$</li>
+  <li>乘方：$a^0=1$, $a^1=a$, $0^a=0$, $1^a=1$</li>
+  <li>其它：$\ln1=0$, $\sin\pi=0$等</li>
+</ul>
+
+<h3 id="中级优化">中级优化</h3>
+
+<p>涉及到某个节点和它的一级子节点</p>
+
+<ul>
+  <li>加减法：$a+(-b)=a-b$</li>
+  <li>乘除法：$a\times(1/b)=a/b$</li>
+  <li>乘方：$(a^n)/a=a^{n-1}$</li>
+  <li>对数：$a^{\log_ab}=b$</li>
+  <li>…</li>
+</ul>
+
+<h3 id="高级优化">高级优化</h3>
+
+<p>这些优化本身不一定能够让式子变得更加简洁，它要求机器能够判断展开后表达式是否能够进一步化简</p>
+
+<ul>
+  <li>乘法分配律：$(a+b)c=ac+bc$</li>
+  <li>乘方运算律：$a^{b+c}=a^b+a^c$</li>
+  <li>对数运算律：$\log(ab)=\log a+\log b$</li>
+  <li>…</li>
+</ul>
+
+  </div><a class="u-url" href="/blog/2021/09/11/derivative-m.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Blog | MqCreaple</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Blog | MqCreaple</li><li><a class="u-email" href="mailto:gmq14159@gmail.com">gmq14159@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/mqcreaple"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">mqcreaple</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>pay more attention to the beauty of formulas!</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

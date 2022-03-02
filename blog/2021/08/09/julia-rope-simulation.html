@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Julia对绳索振动的模拟 | Blog MqCreaple</title>
+<meta name="generator" content="Jekyll v4.2.1" />
+<meta property="og:title" content="Julia对绳索振动的模拟" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="仿真结果+代码" />
+<meta property="og:description" content="仿真结果+代码" />
+<link rel="canonical" href="http://localhost:4000/blog/2021/08/09/julia-rope-simulation.html" />
+<meta property="og:url" content="http://localhost:4000/blog/2021/08/09/julia-rope-simulation.html" />
+<meta property="og:site_name" content="Blog MqCreaple" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-08-09T00:00:00-04:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Julia对绳索振动的模拟" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2021-08-09T00:00:00-04:00","datePublished":"2021-08-09T00:00:00-04:00","description":"仿真结果+代码","headline":"Julia对绳索振动的模拟","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blog/2021/08/09/julia-rope-simulation.html"},"url":"http://localhost:4000/blog/2021/08/09/julia-rope-simulation.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Blog | MqCreaple" /><!-- custom contents -->
+    <link rel="icon" href="/favicon.png" />
+
+    <!-- font awesome -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css" crossorigin="anonymous" />
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, {
+                // customised options
+                // • auto-render specific keys, e.g.:
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ],
+                // • rendering keys, e.g.:
+                throwOnError : false
+            });
+        });
+    </script>
+
+    <!-- mermaid -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+</head>
+  <body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Blog | MqCreaple</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About Me</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Julia对绳索振动的模拟</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2021-08-09T00:00:00-04:00" itemprop="datePublished">Aug 9, 2021
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h2 id="仿真结果代码">仿真结果+代码</h2>
+
+<p>且看老夫打一遍 松果——弹抖——闪电鞭！</p>
+
+<p>这是慢打：</p>
+
+<p><img src="/img/julia-1.gif" alt="julia-1" /></p>
+
+<p>这是快打：</p>
+
+<p><img src="/img/julia-2.gif" alt="julia-2" /></p>
+
+<p><img src="/img/mabaoguo.gif" alt="松果弹抖闪电便" /></p>
+
+<p>然后是代码：</p>
+
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Vector2D.jl</span>
+<span class="k">module</span> <span class="n">Vector2D</span>
+<span class="k">import</span> <span class="n">Base</span><span class="o">:+</span><span class="x">,</span><span class="o">-</span><span class="x">,</span><span class="o">*</span><span class="x">,</span><span class="o">/</span>
+<span class="k">import</span> <span class="n">Base</span><span class="o">:</span><span class="n">length</span><span class="x">,</span> <span class="kt">LinRange</span>
+<span class="k">export</span> <span class="n">Vec2D</span><span class="x">,</span> <span class="n">length</span><span class="x">,</span> <span class="n">un</span><span class="x">,</span> <span class="o">+</span><span class="x">,</span> <span class="o">-</span><span class="x">,</span> <span class="o">*</span><span class="x">,</span> <span class="o">/</span><span class="x">,</span> <span class="kt">LinRange</span>
+
+<span class="k">struct</span><span class="nc"> Vec2D</span>
+    <span class="n">x</span><span class="o">::</span><span class="kt">Float64</span>
+    <span class="n">y</span><span class="o">::</span><span class="kt">Float64</span>
+<span class="k">end</span>
+<span class="n">Vec2D</span><span class="x">()</span> <span class="o">=</span> <span class="n">Vec2D</span><span class="x">(</span><span class="mi">0</span><span class="x">,</span> <span class="mi">0</span><span class="x">)</span>
+
+<span class="n">length</span><span class="x">(</span><span class="n">a</span><span class="o">::</span><span class="n">Vec2D</span><span class="x">)</span><span class="o">::</span><span class="kt">Float64</span> <span class="o">=</span> <span class="n">√</span><span class="x">(</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span> <span class="o">+</span> <span class="n">a</span><span class="o">.</span><span class="n">y</span><span class="o">^</span><span class="mi">2</span><span class="x">)</span>
+<span class="n">un</span><span class="x">(</span><span class="n">a</span><span class="o">::</span><span class="n">Vec2D</span><span class="x">)</span> <span class="o">=</span> <span class="n">Vec2D</span><span class="x">(</span><span class="n">a</span><span class="o">.</span><span class="n">x</span> <span class="o">/</span> <span class="n">√</span><span class="x">(</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="o">+</span><span class="n">a</span><span class="o">.</span><span class="n">y</span><span class="o">^</span><span class="mi">2</span><span class="x">),</span> <span class="n">a</span><span class="o">.</span><span class="n">y</span> <span class="o">/</span> <span class="n">√</span><span class="x">(</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="o">+</span><span class="n">a</span><span class="o">.</span><span class="n">y</span><span class="o">^</span><span class="mi">2</span><span class="x">))</span>
+<span class="o">+</span><span class="x">(</span><span class="n">a</span><span class="o">::</span><span class="n">Vec2D</span><span class="x">,</span> <span class="n">b</span><span class="o">::</span><span class="n">Vec2D</span><span class="x">)</span> <span class="o">=</span> <span class="n">Vec2D</span><span class="x">(</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="o">+</span><span class="n">b</span><span class="o">.</span><span class="n">x</span><span class="x">,</span> <span class="n">a</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="n">b</span><span class="o">.</span><span class="n">y</span><span class="x">)</span>
+<span class="o">-</span><span class="x">(</span><span class="n">a</span><span class="o">::</span><span class="n">Vec2D</span><span class="x">,</span> <span class="n">b</span><span class="o">::</span><span class="n">Vec2D</span><span class="x">)</span> <span class="o">=</span> <span class="n">Vec2D</span><span class="x">(</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="o">-</span><span class="n">b</span><span class="o">.</span><span class="n">x</span><span class="x">,</span> <span class="n">a</span><span class="o">.</span><span class="n">y</span><span class="o">-</span><span class="n">b</span><span class="o">.</span><span class="n">y</span><span class="x">)</span>
+<span class="o">*</span><span class="x">(</span><span class="n">a</span><span class="o">::</span><span class="n">Vec2D</span><span class="x">,</span> <span class="n">b</span><span class="o">::</span><span class="kt">Float64</span><span class="x">)</span> <span class="o">=</span> <span class="n">Vec2D</span><span class="x">(</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="o">*</span><span class="n">b</span><span class="x">,</span> <span class="n">a</span><span class="o">.</span><span class="n">y</span><span class="o">*</span><span class="n">b</span><span class="x">)</span>
+<span class="o">/</span><span class="x">(</span><span class="n">a</span><span class="o">::</span><span class="n">Vec2D</span><span class="x">,</span> <span class="n">b</span><span class="o">::</span><span class="kt">Float64</span><span class="x">)</span> <span class="o">=</span> <span class="n">Vec2D</span><span class="x">(</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="o">/</span><span class="n">b</span><span class="x">,</span> <span class="n">a</span><span class="o">.</span><span class="n">y</span><span class="o">/</span><span class="n">b</span><span class="x">)</span>
+<span class="kt">LinRange</span><span class="x">(</span><span class="n">l</span><span class="o">::</span><span class="n">Vec2D</span><span class="x">,</span> <span class="n">r</span><span class="o">::</span><span class="n">Vec2D</span><span class="x">,</span> <span class="n">n</span><span class="o">::</span><span class="kt">Integer</span><span class="x">)</span> <span class="o">=</span> <span class="n">Vec2D</span><span class="o">.</span><span class="x">(</span><span class="kt">LinRange</span><span class="x">(</span><span class="n">l</span><span class="o">.</span><span class="n">x</span><span class="x">,</span> <span class="n">r</span><span class="o">.</span><span class="n">x</span><span class="x">,</span> <span class="n">n</span><span class="x">),</span> <span class="kt">LinRange</span><span class="x">(</span><span class="n">l</span><span class="o">.</span><span class="n">y</span><span class="x">,</span> <span class="n">r</span><span class="o">.</span><span class="n">y</span><span class="x">,</span> <span class="n">n</span><span class="x">))</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># simu.jl</span>
+<span class="n">push!</span><span class="x">(</span><span class="nb">LOAD_PATH</span><span class="x">,</span><span class="s">"."</span><span class="x">)</span>
+<span class="k">using</span> <span class="n">Plots</span>
+<span class="k">using</span> <span class="n">Printf</span>
+<span class="k">using</span> <span class="n">Vector2D</span>
+
+<span class="n">left</span> <span class="o">=</span> <span class="n">Vec2D</span><span class="x">(</span><span class="o">-</span><span class="mi">1</span><span class="x">,</span> <span class="mi">0</span><span class="x">)</span>   <span class="c"># left end</span>
+<span class="n">right</span> <span class="o">=</span> <span class="n">Vec2D</span><span class="x">(</span><span class="mi">1</span><span class="x">,</span> <span class="mi">0</span><span class="x">)</span>   <span class="c"># right end</span>
+
+<span class="n">m</span> <span class="o">=</span> <span class="mf">0.05</span>              <span class="c"># total mass</span>
+<span class="n">k</span> <span class="o">=</span> <span class="mf">10.</span>               <span class="c"># stiffness factor</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">90</span>                <span class="c"># number of mass points on a string</span>
+<span class="n">r</span> <span class="o">=</span> <span class="kt">Vector</span><span class="x">(</span><span class="kt">LinRange</span><span class="x">(</span><span class="n">left</span><span class="x">,</span> <span class="n">right</span><span class="x">,</span> <span class="n">n</span><span class="x">))</span>   <span class="c"># position of each mass point</span>
+<span class="n">v</span> <span class="o">=</span> <span class="n">repeat</span><span class="x">([</span><span class="n">Vec2D</span><span class="x">()],</span> <span class="n">n</span><span class="x">)</span>               <span class="c"># velocity of each mass point</span>
+<span class="n">t</span>  <span class="o">=</span> <span class="mf">0.</span>                <span class="c"># current time</span>
+<span class="n">dt</span> <span class="o">=</span> <span class="mf">0.002</span>             <span class="c"># time duration for every loop</span>
+<span class="n">originLength</span> <span class="o">=</span> <span class="n">length</span><span class="x">(</span><span class="n">r</span><span class="x">[</span><span class="mi">2</span><span class="x">]</span><span class="o">-</span><span class="n">r</span><span class="x">[</span><span class="mi">1</span><span class="x">])</span>
+
+<span class="nd">@gif</span> <span class="k">for</span> <span class="n">rep</span> <span class="n">∈</span> <span class="mi">1</span><span class="o">:</span><span class="mi">10000</span>
+    <span class="kd">global</span> <span class="n">λ</span><span class="x">,</span> <span class="n">k</span><span class="x">,</span> <span class="n">n</span><span class="x">,</span> <span class="n">r</span><span class="x">,</span> <span class="n">v</span><span class="x">,</span> <span class="n">originLength</span><span class="x">,</span> <span class="n">t</span><span class="x">,</span> <span class="n">dt</span>
+    <span class="n">deltaR</span> <span class="o">=</span> <span class="x">[</span>
+        <span class="n">r</span><span class="x">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="x">]</span> <span class="o">-</span> <span class="n">r</span><span class="x">[</span><span class="n">i</span><span class="x">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">length</span><span class="x">(</span><span class="n">r</span><span class="x">)</span><span class="o">-</span><span class="mi">1</span>
+    <span class="x">]</span>
+
+    <span class="c">## calculate force on each point ##</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="n">repeat</span><span class="x">([</span><span class="n">Vec2D</span><span class="x">()],</span> <span class="n">n</span><span class="x">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="n">∈</span> <span class="mi">1</span><span class="o">:</span><span class="n">length</span><span class="x">(</span><span class="n">r</span><span class="x">)</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">1</span> <span class="o">||</span> <span class="n">i</span> <span class="o">==</span> <span class="n">length</span><span class="x">(</span><span class="n">r</span><span class="x">)</span>
+            <span class="n">continue</span>
+        <span class="k">else</span>
+            <span class="n">F</span><span class="x">[</span><span class="n">i</span><span class="x">]</span> <span class="o">=</span> <span class="n">un</span><span class="x">(</span><span class="n">deltaR</span><span class="x">[</span><span class="n">i</span><span class="x">])</span> <span class="o">*</span> <span class="x">(</span><span class="n">length</span><span class="x">(</span><span class="n">deltaR</span><span class="x">[</span><span class="n">i</span><span class="x">])</span><span class="o">-</span><span class="n">originLength</span><span class="x">)</span> <span class="o">*</span> <span class="n">k</span> <span class="o">-</span>
+                    <span class="n">un</span><span class="x">(</span><span class="n">deltaR</span><span class="x">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="x">])</span> <span class="o">*</span> <span class="x">(</span><span class="n">length</span><span class="x">(</span><span class="n">deltaR</span><span class="x">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="x">])</span><span class="o">-</span><span class="n">originLength</span><span class="x">)</span> <span class="o">*</span> <span class="n">k</span>
+        <span class="k">end</span>
+    <span class="k">end</span>
+    <span class="k">if</span> <span class="n">rep</span> <span class="o">&lt;=</span> <span class="mi">50</span>
+        <span class="n">F</span><span class="x">[</span><span class="n">n÷2</span><span class="x">]</span> <span class="o">=</span> <span class="n">F</span><span class="x">[</span><span class="n">n÷2</span><span class="x">]</span> <span class="o">+</span> <span class="n">Vec2D</span><span class="x">(</span><span class="mi">0</span><span class="x">,</span> <span class="mf">0.02</span><span class="x">)</span>
+    <span class="k">end</span>
+
+    <span class="c">## update time dt ##</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">v</span> <span class="o">+</span> <span class="x">(</span><span class="n">F</span><span class="o">./</span><span class="x">(</span><span class="n">m</span><span class="o">/</span><span class="n">n</span><span class="x">))</span><span class="o">.*</span><span class="n">dt</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">r</span> <span class="o">+</span> <span class="n">v</span><span class="o">.*</span><span class="n">dt</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="n">dt</span>
+
+    <span class="c">## plot ##</span>
+    <span class="n">plot</span><span class="x">(</span>
+        <span class="n">map</span><span class="x">((</span><span class="n">v</span><span class="x">)</span> <span class="o">-&gt;</span> <span class="n">v</span><span class="o">.</span><span class="n">x</span><span class="x">,</span> <span class="n">r</span><span class="x">),</span>
+        <span class="n">map</span><span class="x">((</span><span class="n">v</span><span class="x">)</span> <span class="o">-&gt;</span> <span class="n">v</span><span class="o">.</span><span class="n">y</span><span class="x">,</span> <span class="n">r</span><span class="x">),</span>
+        <span class="n">label</span><span class="o">=</span><span class="s">"time="</span> <span class="o">*</span> <span class="nd">@sprintf</span><span class="x">(</span><span class="s">"%.3f"</span><span class="x">,</span> <span class="n">t</span><span class="x">),</span>
+        <span class="n">ylims</span><span class="o">=</span><span class="x">(</span><span class="o">-</span><span class="mf">0.14</span><span class="x">,</span> <span class="mf">0.14</span><span class="x">)</span>
+    <span class="x">)</span>
+<span class="k">end</span> <span class="n">every</span> <span class="mi">25</span>
+</code></pre></div></div>
+
+<p>前排提醒：代码运行大约需要1分钟，请耐心等待。。。</p>
+
+<h2 id="方法">方法</h2>
+
+<ol>
+  <li>将绳索看作由弹簧依次连接的<code class="language-plaintext highlighter-rouge">n</code>个质点</li>
+  <li>使用数组<code class="language-plaintext highlighter-rouge">r[]</code>记录每个质点的位置，数组<code class="language-plaintext highlighter-rouge">v[]</code>记录每个质点的速度</li>
+  <li>定义变量<code class="language-plaintext highlighter-rouge">dt</code>，代表一个微小时间间隔</li>
+  <li>每一次循环，计算每个质点的受力<code class="language-plaintext highlighter-rouge">F[]</code>，其中端点增加一个特判</li>
+  <li>接着依次更新<code class="language-plaintext highlighter-rouge">v</code>和<code class="language-plaintext highlighter-rouge">r</code>，最后画出来即可</li>
+</ol>
+
+<h2 id="失败案例集锦">失败案例集锦</h2>
+
+<p><img src="/img/julia-fail-1.gif" alt="fail-1" /></p>
+
+<p><img src="/img/julia-fail-2.gif" alt="fail-2" /></p>
+
+<p><img src="/img/julia-fail-3.gif" alt="fail-3" /></p>
+
+  </div><a class="u-url" href="/blog/2021/08/09/julia-rope-simulation.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Blog | MqCreaple</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Blog | MqCreaple</li><li><a class="u-email" href="mailto:gmq14159@gmail.com">gmq14159@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/mqcreaple"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">mqcreaple</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>pay more attention to the beauty of formulas!</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

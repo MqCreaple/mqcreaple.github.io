@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>为何非弹性碰撞下动量守恒而能量不守恒？ | Blog MqCreaple</title>
+<meta name="generator" content="Jekyll v4.2.1" />
+<meta property="og:title" content="为何非弹性碰撞下动量守恒而能量不守恒？" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="1. 模拟" />
+<meta property="og:description" content="1. 模拟" />
+<link rel="canonical" href="http://localhost:4000/blog/2021/12/19/simulation2.html" />
+<meta property="og:url" content="http://localhost:4000/blog/2021/12/19/simulation2.html" />
+<meta property="og:site_name" content="Blog MqCreaple" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-12-19T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="为何非弹性碰撞下动量守恒而能量不守恒？" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2021-12-19T00:00:00-05:00","datePublished":"2021-12-19T00:00:00-05:00","description":"1. 模拟","headline":"为何非弹性碰撞下动量守恒而能量不守恒？","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blog/2021/12/19/simulation2.html"},"url":"http://localhost:4000/blog/2021/12/19/simulation2.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Blog | MqCreaple" /><!-- custom contents -->
+    <link rel="icon" href="/favicon.png" />
+
+    <!-- font awesome -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- katex -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css" crossorigin="anonymous" />
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, {
+                // customised options
+                // • auto-render specific keys, e.g.:
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ],
+                // • rendering keys, e.g.:
+                throwOnError : false
+            });
+        });
+    </script>
+
+    <!-- mermaid -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+</head>
+  <body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Blog | MqCreaple</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About Me</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">为何非弹性碰撞下动量守恒而能量不守恒？</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2021-12-19T00:00:00-05:00" itemprop="datePublished">Dec 19, 2021
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h2 id="1-模拟">1. 模拟</h2>
+
+<p>假设现在有两种不同的分子，同种分子之间有引力，异种分子之间有斥力。</p>
+
+<p>我们使用一个理想模型：同种分子之间的使用弹簧连接，弹簧会主动维护一个固定长度$l_0$；异种分子之间的斥力满足平方反比定律。具体公式如下：</p>
+
+\[\bm F_1=k_1(\bm r_{12} - \bm l_0)\]
+
+\[\bm F_2=k_2\cdot\frac{\bm r_{12}}{r_{12}^2}\]
+
+<p>模拟结果如下：</p>
+
+<ol>
+  <li>$k_1:k_2=5:1$，近似为理想刚体的弹性碰撞</li>
+</ol>
+
+<p><img src="/img/sim_animation1.gif" alt="animation1" /></p>
+
+<ol>
+  <li>$k_1:k_2=1:1$</li>
+</ol>
+
+<p><img src="/img/sim_animation2.gif" alt="animation2" /></p>
+
+<ol>
+  <li>$k_1:k_2=0.75:1$，碰撞为塑性碰撞</li>
+</ol>
+
+<p><img src="/img/sim_animation3.gif" alt="animation3" /></p>
+
+<h2 id="分析">分析</h2>
+
+<p>从这些模拟动画中可以看出在塑性碰撞之后，分子自身产生了微小振动，将一部分能量转化成了分子的振动动能（即内能）。这就是我们问题的答案：塑性碰撞将宏观物体的能量转化成了微观分子的能量，因此宏观上能量减少了。</p>
+
+<p>值得注意的是，分子的振动并不能带走宏观物体的动量，因为分子的振动是随机的，并且在各个方向上出现的概率相等，因此统计上分子的动量之和应当为0。这也是为什么不论在弹性还是在塑性碰撞中，物体的动量都是守恒的。</p>
+
+  </div><a class="u-url" href="/blog/2021/12/19/simulation2.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Blog | MqCreaple</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Blog | MqCreaple</li><li><a class="u-email" href="mailto:gmq14159@gmail.com">gmq14159@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/mqcreaple"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">mqcreaple</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>pay more attention to the beauty of formulas!</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
