@@ -21,7 +21,8 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"mqcreaple"},"dateModified":"2022-03-01T00:00:00-05:00","datePublished":"2022-03-01T00:00:00-05:00","description":"公告","headline":"2.0公告 &amp; jekyll介绍","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blog/2022/03/01/jekyll.html"},"url":"http://localhost:4000/blog/2022/03/01/jekyll.html"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/css/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="My Blog | MqCreaple" /><!-- custom contents -->
+<link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/highlight.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="My Blog | MqCreaple" /><!-- custom contents -->
     <link rel="icon" href="/favicon.png" />
 
     <!-- font awesome -->
@@ -51,6 +52,9 @@
     <!-- mermaid -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
     <script>mermaid.initialize({startOnLoad:true});</script>
+
+    <!-- gitalk -->
+    
 </head>
   
     <body>
@@ -123,10 +127,14 @@
 <span class="na">category</span><span class="pi">:</span> <span class="s">blog</span>
 <span class="nn">---</span>
 </code></pre></div>    </div>
-    <p>其中<code class="language-plaintext highlighter-rouge">title</code>后面的内容会被自动添加为文件的一级标题，因此并不需要在写Markdown时再写一遍标题。
- <code class="language-plaintext highlighter-rouge">category</code>是文件的类别，比如这里是<code class="language-plaintext highlighter-rouge">blog</code>的话就会在编译为HTML时将其放在<code class="language-plaintext highlighter-rouge">_site/blog/</code>文件夹下。
- <code class="language-plaintext highlighter-rouge">layout</code>是页面的布局方式，Jekyll有一些预定义的layout，比如<code class="language-plaintext highlighter-rouge">home</code>, <code class="language-plaintext highlighter-rouge">post</code>, <code class="language-plaintext highlighter-rouge">page</code>等，也可以自己定义布局方式，比如两列布局、三列布局，但这需要一定的HTML基础。
- 默认情况下，编译后的Markdown文件会被放在<code class="language-plaintext highlighter-rouge">年/月/日/标题.html</code>目录下。如果不想放在这里，可以更改<code class="language-plaintext highlighter-rouge">permalink</code>变量。上例中文件就会被放在<code class="language-plaintext highlighter-rouge">/aaa/bbb/标题.html</code>。</p>
+    <p>其中</p>
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">title</code>后面的内容会被自动添加为文件的一级标题，因此并不需要在写Markdown时再写一遍标题。</li>
+      <li><code class="language-plaintext highlighter-rouge">category</code>是文件的类别，比如这里是<code class="language-plaintext highlighter-rouge">blog</code>的话就会在编译为HTML时将其放在<code class="language-plaintext highlighter-rouge">_site/blog/</code>文件夹下。</li>
+      <li><code class="language-plaintext highlighter-rouge">layout</code>是页面的布局方式，Jekyll有一些预定义的layout，比如<code class="language-plaintext highlighter-rouge">home</code>, <code class="language-plaintext highlighter-rouge">post</code>, <code class="language-plaintext highlighter-rouge">page</code>等，也可以自己定义布局方式，比如两列布局、三列布局，但这需要一定的HTML基础。</li>
+      <li>默认情况下，编译后的Markdown文件会被放在<code class="language-plaintext highlighter-rouge">年/月/日/标题.html</code>目录下。如果不想放在这里，可以更改<code class="language-plaintext highlighter-rouge">permalink</code>变量。上例中文件就会被放在<code class="language-plaintext highlighter-rouge">/aaa/bbb/标题.html</code>。
+ 还有一些其他可以定义的头部参数，详见官网。</li>
+    </ul>
   </li>
   <li>
     <p>Markdown文件中还可以使用变量。形如<code class="language-plaintext highlighter-rouge">{{site._____}}</code>的字符串会在编译时被替换成<code class="language-plaintext highlighter-rouge">_config.yml</code>里对应的值，例如在我的定义下：</p>

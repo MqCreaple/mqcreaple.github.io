@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-03-02T13:41:24-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">My Blog | MqCreaple</title><subtitle>pay more attention to the beauty of formulas!</subtitle><author><name>mqcreaple</name></author><entry><title type="html">2.0公告 &amp;amp; jekyll介绍</title><link href="http://localhost:4000/blog/2022/03/01/jekyll.html" rel="alternate" type="text/html" title="2.0公告 &amp;amp; jekyll介绍" /><published>2022-03-01T00:00:00-05:00</published><updated>2022-03-01T00:00:00-05:00</updated><id>http://localhost:4000/blog/2022/03/01/jekyll</id><content type="html" xml:base="http://localhost:4000/blog/2022/03/01/jekyll.html"><![CDATA[<h2 id="公告">公告</h2>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-03-03T17:44:03-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">My Blog | MqCreaple</title><subtitle>pay more attention to the beauty of formulas!</subtitle><author><name>mqcreaple</name></author><entry><title type="html">2.0公告 &amp;amp; jekyll介绍</title><link href="http://localhost:4000/blog/2022/03/01/jekyll.html" rel="alternate" type="text/html" title="2.0公告 &amp;amp; jekyll介绍" /><published>2022-03-01T00:00:00-05:00</published><updated>2022-03-01T00:00:00-05:00</updated><id>http://localhost:4000/blog/2022/03/01/jekyll</id><content type="html" xml:base="http://localhost:4000/blog/2022/03/01/jekyll.html"><![CDATA[<h2 id="公告">公告</h2>
 
 <p>大约有三四个月没有发新的博客了，不知道还有没有人看。。。</p>
 
@@ -54,10 +54,14 @@
 <span class="na">category</span><span class="pi">:</span> <span class="s">blog</span>
 <span class="nn">---</span>
 </code></pre></div>    </div>
-    <p>其中<code class="language-plaintext highlighter-rouge">title</code>后面的内容会被自动添加为文件的一级标题，因此并不需要在写Markdown时再写一遍标题。
- <code class="language-plaintext highlighter-rouge">category</code>是文件的类别，比如这里是<code class="language-plaintext highlighter-rouge">blog</code>的话就会在编译为HTML时将其放在<code class="language-plaintext highlighter-rouge">_site/blog/</code>文件夹下。
- <code class="language-plaintext highlighter-rouge">layout</code>是页面的布局方式，Jekyll有一些预定义的layout，比如<code class="language-plaintext highlighter-rouge">home</code>, <code class="language-plaintext highlighter-rouge">post</code>, <code class="language-plaintext highlighter-rouge">page</code>等，也可以自己定义布局方式，比如两列布局、三列布局，但这需要一定的HTML基础。
- 默认情况下，编译后的Markdown文件会被放在<code class="language-plaintext highlighter-rouge">年/月/日/标题.html</code>目录下。如果不想放在这里，可以更改<code class="language-plaintext highlighter-rouge">permalink</code>变量。上例中文件就会被放在<code class="language-plaintext highlighter-rouge">/aaa/bbb/标题.html</code>。</p>
+    <p>其中</p>
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">title</code>后面的内容会被自动添加为文件的一级标题，因此并不需要在写Markdown时再写一遍标题。</li>
+      <li><code class="language-plaintext highlighter-rouge">category</code>是文件的类别，比如这里是<code class="language-plaintext highlighter-rouge">blog</code>的话就会在编译为HTML时将其放在<code class="language-plaintext highlighter-rouge">_site/blog/</code>文件夹下。</li>
+      <li><code class="language-plaintext highlighter-rouge">layout</code>是页面的布局方式，Jekyll有一些预定义的layout，比如<code class="language-plaintext highlighter-rouge">home</code>, <code class="language-plaintext highlighter-rouge">post</code>, <code class="language-plaintext highlighter-rouge">page</code>等，也可以自己定义布局方式，比如两列布局、三列布局，但这需要一定的HTML基础。</li>
+      <li>默认情况下，编译后的Markdown文件会被放在<code class="language-plaintext highlighter-rouge">年/月/日/标题.html</code>目录下。如果不想放在这里，可以更改<code class="language-plaintext highlighter-rouge">permalink</code>变量。上例中文件就会被放在<code class="language-plaintext highlighter-rouge">/aaa/bbb/标题.html</code>。
+ 还有一些其他可以定义的头部参数，详见官网。</li>
+    </ul>
   </li>
   <li>
     <p>Markdown文件中还可以使用变量。形如<code class="language-plaintext highlighter-rouge">{{site._____}}</code>的字符串会在编译时被替换成<code class="language-plaintext highlighter-rouge">_config.yml</code>里对应的值，例如在我的定义下：</p>

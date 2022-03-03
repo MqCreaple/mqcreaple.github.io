@@ -20,7 +20,8 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","author":{"@type":"Person","name":"mqcreaple"},"description":"pay more attention to the beauty of formulas!","headline":"My Blog MqCreaple","name":"My Blog MqCreaple","url":"http://localhost:4000/"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/css/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="My Blog | MqCreaple" /><!-- custom contents -->
+<link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/highlight.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="My Blog | MqCreaple" /><!-- custom contents -->
     <link rel="icon" href="/favicon.png" />
 
     <!-- font awesome -->
@@ -50,6 +51,12 @@
     <!-- mermaid -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
     <script>mermaid.initialize({startOnLoad:true});</script>
+
+    <!-- gitalk -->
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>  
+    
 </head>
   
     <body>
@@ -81,7 +88,10 @@
 </span><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
 
 <span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Hello, Jekyll!"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="cm">/**
+     * this is a multiline comment
+     */</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Hello, Jekyll!"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="c1">//! this is a single line comment</span>
 <span class="p">}</span>
 </code></pre></div></div>
 
@@ -177,6 +187,18 @@
                         </div>
                     </div>
                     
+                    <div class="card" id="gitalk-container"></div>
+                    <script>
+                        var gitalk = new Gitalk({
+                            clientID: '0be504f6ada9cd00b6f8',
+                            clientSecret: '4dc3501940136fbf0065e8f18e5f5a72c8f60475',
+                            repo: 'mqcreaple.github.io',
+                            owner: 'MqCreaple',
+                            admin: ['MqCreaple'],
+                            id:window.location.pathname,
+                        });
+                        gitalk.render('gitalk-container');
+                    </script>
                 </div>
                 <div id="right">
                     <div class="card" id="avatar">
