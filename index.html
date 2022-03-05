@@ -72,29 +72,82 @@
             <div id="main">
                 <div id="left">
 
+                    <!-- notification page -->
                     
                     <div class="card notification">
                         <p>new blog system 2.1 is powered by Jekyll!</p>
                     </div>
                     
 
+                    <!-- main article -->
                     <div class="card article">
                         <h1></h1>
-                        <p>LaTeX test: $c = \pm\sqrt{a^2 + b^2}$</p>
+                        <p>是我没错了（仅供娱乐）：</p>
 
-<p>code test:</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Me</span> <span class="kd">extends</span> <span class="nc">Person</span> <span class="kd">implements</span> <span class="nc">Konjac</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">Random</span> <span class="no">RANDOM</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Radnom</span><span class="o">();</span>
+    <span class="kd">private</span> <span class="nc">Person</span><span class="o">[</span><span class="mi">2</span><span class="o">]</span> <span class="n">parents</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Person</span><span class="o">&gt;</span> <span class="n">friends</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">secrets</span><span class="o">;</span>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
-</span><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+    <span class="c1">// 打招呼时</span>
+    <span class="kd">public</span> <span class="nc">Action</span> <span class="nf">greeting</span><span class="o">(</span><span class="nc">Person</span> <span class="n">person</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Action</span> <span class="n">result</span><span class="o">;</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">friends</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="n">person</span><span class="o">))</span> <span class="o">{</span>
+            <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Action</span><span class="o">&gt;</span> <span class="n">choices</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">();</span>
+            <span class="n">choices</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="nc">SayAction</span><span class="o">(</span><span class="s">"您太强了"</span><span class="o">));</span>
+            <span class="n">choices</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="nc">TouchAction</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">getHead</span><span class="o">()));</span>
+            <span class="n">choices</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="nc">ThumbUpAction</span><span class="o">());</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">getObjectOnHand</span><span class="o">()</span> <span class="k">instanceof</span> <span class="nc">Snack</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">choices</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="nc">BaiPiaoAction</span><span class="o">());</span> <span class="c1">// 白嫖的零食是最香的（doge</span>
+            <span class="o">}</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">choices</span><span class="o">[</span><span class="no">RANDOM</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="n">choices</span><span class="o">.</span><span class="na">size</span><span class="o">())]</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SayAction</span><span class="o">(</span><span class="s">"Hello!"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+    <span class="o">}</span>
 
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="cm">/**
-     * this is a multiline comment
-     */</span>
-    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Hello, Jekyll!"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="c1">//! this is a single line comment</span>
-<span class="p">}</span>
+    <span class="c1">// 讲话时</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">speak</span><span class="o">(</span><span class="nc">List</span><span class="o">&lt;</span><span class="nc">Person</span><span class="o">&gt;</span> <span class="n">audiences</span><span class="o">,</span> <span class="nc">String</span> <span class="n">content</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">audience</span><span class="o">.</span><span class="na">length</span> <span class="o">&gt;=</span> <span class="mi">10</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">SocialAnxietyException</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="c1">// 学习时</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">study</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Person</span><span class="o">&gt;</span> <span class="n">people</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">getPersonAroundMe</span><span class="o">();</span>
+        <span class="k">if</span><span class="o">(!</span><span class="n">people</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="n">parent</span><span class="o">[</span><span class="mi">0</span><span class="o">])</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">people</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="n">parent</span><span class="o">[</span><span class="mi">1</span><span class="o">]))</span> <span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">touchFish</span><span class="o">();</span>     <span class="c1">//开始摸鱼</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">readBook</span><span class="o">();</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">doHomework</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Me</span> <span class="n">me</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Me</span><span class="o">();</span>
+        <span class="c1">//我的现状</span>
+        <span class="k">while</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">me</span><span class="o">.</span><span class="na">study</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
 </code></pre></div></div>
 
+                    </div>
+
+                    <!-- link to every posts -->
+                    
+                    <div class="card blog" onclick="window.open('/blog/2022/03/04/git.html')">
+                        <h2>git原理简介</h2>
+                        <div class="inline">
+                            <p><i class="fa fa-calendar"></i>2022/03/04</p>
+                            <p><i class="fa fa-tag"></i>
+                                computer&nbsp;git&nbsp;github&nbsp;
+                            </p>
+                        </div>
                     </div>
                     
                     <div class="card blog" onclick="window.open('/blog/2022/03/01/jekyll.html')">
@@ -187,6 +240,8 @@
                         </div>
                     </div>
                     
+
+                    <!-- gitalk -->
                     <div class="card" id="gitalk-container"></div>
                     <script>
                         var gitalk = new Gitalk({
@@ -201,6 +256,7 @@
                     </script>
                 </div>
                 <div id="right">
+                    <!-- avatar -->
                     <div class="card" id="avatar">
     <img src="/favicon.png" alt="avatar" id="image">
     <a href="/blog/aboutme/" id="name">mqcreaple</a>

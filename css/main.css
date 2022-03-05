@@ -38,16 +38,11 @@ code {
 }
 
 blockquote {
-    text-indent: 2em;
     color: #3a3a3a;
-}
-
-blockquote::before {
-    content: "「";
-}
-
-blockquote::after {
-    content: "」";
+    background-color: rgba(255, 253, 220, 0.6);
+    border-left: 0.4em solid #959595;
+    padding: 2px 15px;
+    margin: 0;
 }
 
 iframe {

@@ -7,3 +7,4 @@
 - [jekyll](https://jekyllrb.com/)
 - [katex](https://katex.org/)
 - [font awesome](https://fontawesome.com/)
+- [gitalk](https://gitalk.github.io/)
