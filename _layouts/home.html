@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% include head.html %}
+    <title>{{page.title}} - {{site.title}}</title>
+    <!-- Gitalk -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+</head>
+<body>
+<div id='container'>
+    {% include header.html %}
+    <div id='main'>
+        <div id='left'>
+            <div class="card">
+                <h1>我的博客 {{site.title}}</h1>
+                {{content}}
+            </div>
+            {% for post in site.posts %}
+            <div class="card blog" onclick="window.open('./{{post.url}}')">
+                <h2>{{post.title}}</h2>
+                <div class="inline">
+                    <p><i class="fas fa-calendar-alt"></i>{{post.date | date_to_string: "ordinal"}}</p>
+                    <p><i class="fas fa-tag"></i>{{post.tags | join: ' '}}</p>
+                </div>
+            </div>
+            {% endfor %}
+            <!-- Gitalk -->
+            <div class="card" id="gitalk-container"></div>
+            <script>
+                var gitalk = new Gitalk({
+                    clientID: '0be504f6ada9cd00b6f8',
+                    clientSecret: '4dc3501940136fbf0065e8f18e5f5a72c8f60475',
+                    repo: 'mqcreaple.github.io',
+                    owner: 'MqCreaple',
+                    admin: ['MqCreaple'],
+                    id: window.location.pathname,
+                });
+                gitalk.render('gitalk-container');
+            </script>
+        </div>
+        <div id='right'>
+            {% include avatar.html %}
+        </div>
+    </div>
+    {% include footer.html %}
+</div>
+</body>
+</html>

@@ -1,0 +1,35 @@
+title: My Blog | MqCreaple
+author: MqCreaple
+email: gmq14159@gmail.com
+description: pay more attention to the beauty of formulas!
+baseurl: ""
+url: "https://mqcreaple.github.io/"
+github_username:  MqCreaple
+
+# Build settings
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-katex
+exclude:
+  - README.md
+
+# katex configuration
+katex:
+  js_path: "./js"  # Path used to search for katex.min.js
+  rendering_options:
+    # Default KaTeX rendering options. See https://github.com/Khan/KaTeX#rendering-options
+    throw_error: true                       # throwOnError - set to false if you want rendering to output error as text rather than a build error
+    error_color: "#cc0000"                  # errorColor
+
+kramdown:
+  syntax_highlighter: nil
+  math_engine: null
+
+# custom
+
+version: "2.2"
+icon: "/favicon.png"
+bilibili_username: mqcreaple
+bilibili_id: 507017613
+zhihu_username: gmq12
