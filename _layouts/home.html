@@ -2,7 +2,7 @@
 <html>
 <head>
     {% include head.html %}
-    <title>{{page.title}} - {{site.title}}</title>
+    <title>home - {{site.title}}</title>
     <!-- Gitalk -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
     <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
@@ -12,6 +12,13 @@
     {% include header.html %}
     <div id='main'>
         <div id='left'>
+            <!-- notification -->
+            {% if page.notification %}
+            <div class="card notification">
+                <p>{{page.notification}}</p>
+            </div>
+            {% endif %}
+
             <div class="card">
                 <h1>我的博客 {{site.title}}</h1>
                 {{content}}

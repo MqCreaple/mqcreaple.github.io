@@ -1,4 +1,226 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="https://mqcreaple.github.io//feed.xml" rel="self" type="application/atom+xml" /><link href="https://mqcreaple.github.io//" rel="alternate" type="text/html" /><updated>2022-08-18T08:49:41-04:00</updated><id>https://mqcreaple.github.io//feed.xml</id><title type="html">My Blog | MqCreaple</title><subtitle>pay more attention to the beauty of formulas!</subtitle><author><name>MqCreaple</name></author><entry><title type="html">git原理简介</title><link href="https://mqcreaple.github.io//blog/2022/03/04/git.html" rel="alternate" type="text/html" title="git原理简介" /><published>2022-03-04T00:00:00-05:00</published><updated>2022-03-04T00:00:00-05:00</updated><id>https://mqcreaple.github.io//blog/2022/03/04/git</id><content type="html" xml:base="https://mqcreaple.github.io//blog/2022/03/04/git.html"><![CDATA[<p>相信大家都对<a href="https://git-scm.com/">git</a>耳熟能详了。Git是一个简单易用的版本管理工具，用户可以在git中修改文件、提交commit（更新到本地仓库）、同步远程仓库等。本篇文章将主要讨论git更新文件和提交commit背后的原理。</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="https://mqcreaple.github.io//feed.xml" rel="self" type="application/atom+xml" /><link href="https://mqcreaple.github.io//" rel="alternate" type="text/html" /><updated>2022-08-18T15:31:36-04:00</updated><id>https://mqcreaple.github.io//feed.xml</id><title type="html">My Blog | MqCreaple</title><subtitle>pay more attention to the beauty of formulas!</subtitle><author><name>MqCreaple</name></author><entry><title type="html">埃氏筛的复杂度计算</title><link href="https://mqcreaple.github.io//blog/2022/08/18/eto.html" rel="alternate" type="text/html" title="埃氏筛的复杂度计算" /><published>2022-08-18T00:00:00-04:00</published><updated>2022-08-18T00:00:00-04:00</updated><id>https://mqcreaple.github.io//blog/2022/08/18/eto</id><content type="html" xml:base="https://mqcreaple.github.io//blog/2022/08/18/eto.html"><![CDATA[<p><strong>埃拉托斯特尼筛法（Sieve of Erastosthenis）</strong>，简称<strong>埃氏筛</strong>，是一种可以在极少时间复杂度内算出$n$以内的所有质数的算法。</p>
+
+<h2 id="0-算法流程">#0 算法流程</h2>
+
+<p>对于一个给定的整数$n$，从2开始执行以下操作：</p>
+
+<ol>
+  <li>将该数标记为质数</li>
+  <li>将所有该数的倍数标记为“非质数”</li>
+  <li>找到下一个不被标记为“非质数”的数，重复步骤1</li>
+</ol>
+
+<p>算法的逻辑很简单，代码也极其简短。以C语言为例：</p>
+
+<pre><code class="language-c">int sieve(int n, int *ans) {
+    int found = 0;         // 已经找到多少个质数
+    bool p[n];             // 标记。0为质数，1为非质数
+    
+    memset(p, 0, n);       // 清空标记数组
+    for(int i = 2; i &lt; n; i++) {
+        if(p[i]) {
+            // i已经被标记为非质数，跳过
+            continue;
+        }
+        ans[found++] = i;  // i为质数，添加至答案数组中
+        for(int j = 2; i * j &lt; n; j++) {
+            p[i] = 1;      // 将所有i的倍数标记为“非质数”
+        }
+    }
+    
+    return found;
+}
+</code></pre>
+
+<h2 id="1-初步分析">#1 初步分析</h2>
+
+<p>那么这个算法的时间复杂度如何计算呢？</p>
+
+<p>我们不妨追踪一下算法的执行过程：</p>
+
+<ul>
+  <li>首先从$2$开始，算法遍历了所有$1$到$n$中$2$的倍数，也就是进行了$\frac{n}{2}$步操作</li>
+  <li>接下来找到下一个质数：$3$。算法又遍历了$1$到$n$中$3$的倍数，进行了$\frac{n}{3}$步操作</li>
+  <li>再然后，跳过$4$找到下一个质数$5$，遍历了$1$到$n$中$5$的倍数，进行了$\frac{n}{5}$步操作</li>
+  <li>……</li>
+</ul>
+
+<p>那么最后一共执行了多少步操作？答案是一个无穷级数之和：</p>
+
+<div class="kdmath">$$
+\frac{n}{2}+\frac{n}{3}+\frac{n}{5}+\frac{n}{7}+\frac{n}{11}+\cdots
+$$</div>
+
+<p>将$n$提出来，并将剩余项写成求和符号，就是：</p>
+
+<div class="kdmath">$$
+n\cdot\sum_{p\text{ is prime}}\frac 1{p}
+$$</div>
+
+<p>问题来了，后面这个无穷级数怎么求？</p>
+
+<h2 id="2-何为时间复杂度">#2 何为时间复杂度？</h2>
+
+<p>可能大部分人会以为这是一个困难的数论问题，但是不要忘了，计算时间复杂度的时候，只需要考虑<strong>数据趋近无穷的趋势</strong>，而<strong>不用考虑具体数值</strong>。</p>
+
+<p>那么如何定义“趋势”？我们不妨借鉴一下小学二年级的高数知识：</p>
+
+<blockquote>
+  <p>如果两个数列$a_n$和$b_n$满足</p>
+
+  <div class="kdmath">$$
+\lim_{n\rightarrow\infty}\frac{a_n}{b_n}=c
+$$</div>
+
+  <p>其中$c$为一个常数且不为$0$，那么这两个数列称为<strong>同阶无穷大</strong>，记作$a_n \sim b_n$。</p>
+</blockquote>
+
+<p>根据同阶无穷大定义时间复杂度的大$O$记号了：</p>
+
+<blockquote>
+  <p>对于某个算法，如果它只有一个输入$N$，那么将$N$依次代入从$1$开始的所有自然数，记$t_i$为输入数字$i$时算法的运行时间（或者说“执行的操作数”），那么可以得到一个数列${t_N}$。</p>
+
+  <p>假如存在一个<em>简单表达式</em>$q_N$，使得</p>
+
+  <div class="kdmath">$$
+t_N\sim q_N
+$$</div>
+
+  <p>那么记这个算法的时间复杂度为$O(q_N)$。</p>
+</blockquote>
+
+<p>思考题：根据同阶无穷大的定义，证明：</p>
+<ul>
+  <li>$O(N^2+2N)\sim O(N^2)$</li>
+</ul>
+
+<h2 id="3-无穷级数">#3 无穷级数</h2>
+
+<p>即便有了这样的定义，我们就将问题化解为了：<em>寻找一个简单表达式，使得它和“<strong>所有质数的倒数和</strong>”是同阶无穷大</em>。</p>
+
+<p>在这之前，我们可以使用一个已经被证明过的结论：质数分布是$O(N\log N)$的。记第$n$个质数为$p_n$，则：</p>
+
+<div class="kdmath">$$
+p_n\sim n\ln n
+$$</div>
+
+<p>从这里还不能完全得出我们想要的结论，但我们已经可以对开头提到的无穷级数进行化简了：</p>
+
+<div class="kdmath">$$
+\sum_{n=1}^\infty \frac 1{p_n}\sim \sum_{n=1}^\infty \frac 1{n\ln n}
+$$</div>
+
+<blockquote>
+  <p>引理1：若$a_n, b_n$为同阶无穷小，即$a_n\sim b_n$，则</p>
+
+  <div class="kdmath">$$
+\sum_{n=1}^\infty a_n\sim \sum_{n=1}^\infty b_n
+$$</div>
+
+  <p>证明：根据同阶无穷小的定义，可得：</p>
+
+  <div class="kdmath">$$
+\lim_{n\rightarrow\infty}\frac{a_n}{b_n}=c
+$$</div>
+
+  <p>根据极限的$\epsilon-N$定义，对于任给的$\epsilon\gt0$，总存在$N\gt0$，使得所有$n\gt N$都有：</p>
+
+  <div class="kdmath">$$
+c-\epsilon \lt \frac{a_n}{b_n}\lt c+\epsilon
+$$</div>
+
+  <p>因为$n$可以取任何大于$N$的值，再根据恒等式$\frac{a}{b}\lt\frac{a+b}{c+d}\lt\frac{c}{d}$，可以将所有形如$\frac{a_n}{b_n}$的分式合并而不影响其性质：</p>
+
+  <div class="kdmath">$$
+c-\epsilon \lt \frac{\sum_{n=N}^\infty a_n}{\sum_{n=N}^\infty b_n} \lt c+\epsilon
+$$</div>
+
+  <p>换句话说，存在$N\gt0$使得</p>
+
+  <div class="kdmath">$$
+\frac{\sum_{n=N}^\infty a_n}{\sum_{n=N}^\infty b_n}
+$$</div>
+
+  <p>是有限且非0的。</p>
+
+  <p>又因为$\sum_{n=1}^{N-1}a_n$和$\sum_{n=1}^{N-1}b_n$是有限的，所以</p>
+
+  <div class="kdmath">$$
+\frac{\sum_{n=1}^{N-1}a_n}{\sum_{n=1}^{N-1}b_n}
+$$</div>
+
+  <p>是有限的。</p>
+
+  <p>根据恒等式$\frac{a}{b}\lt\frac{a+b}{c+d}\lt\frac{c}{d}$，可以得到：</p>
+
+  <div class="kdmath">$$
+\frac{\sum_{n=1}^{N-1}a_n + \sum_{n=N}^\infty a_n}{\sum_{n=1}^{N-1}b_n + \sum_{n=N}^\infty b_n}=\frac{\sum_{n=1}^\infty a_n}{\sum_{n=1}^\infty b_n}
+$$</div>
+
+  <p>一定也是有限且非0的。证毕。</p>
+</blockquote>
+
+<p>经过此次化简，至少题目看起来像道代数题而不是数论题了，但无穷级数$\sum_{n=1}^\infty \frac 1{n\ln n}$仍然让人没有头绪。</p>
+
+<blockquote>
+  <p>引理2：对于一个单调函数$f(n)$</p>
+
+  <div class="kdmath">$$
+\sum_{n=1}^\infty f(n) \sim \int_1^\infty f(n)\mathrm dn
+$$</div>
+
+  <p>证明：</p>
+
+  <p><img src="/img/eto-0.png" alt="eto-0" /></p>
+
+  <div class="kdmath">$$
+\int_1^\infty f(n)\mathrm dn=\sum_{k=1}^\infty \int_k^{k+1}f(n)\mathrm dn
+$$</div>
+
+  <p>不妨假设函数$f(n)\gt0$，则$f(n)$单调减。又因为$\lim_{n\rightarrow\infty}f(n)=0$，因此：</p>
+
+  <div class="kdmath">$$
+\begin{align*}
+& \sum_{k=1}^\infty f(k)-\sum_{k=1}^\infty \int_k^{k+1}f(n)\mathrm dn \\
+= & \sum_{k=1}^\infty\left[ f(k)-\int_k^{k+1}f(n)\mathrm dn \right] \\
+\le & \sum_{k=1}^\infty[ f(k)-f(k+1) ] \\
+= & f(1) - 0 \\
+= & f(1)
+\end{align*}
+$$</div>
+
+  <p>也就是说$\sum_{n=1}^\infty f(n)$和$\int_1^\infty f(x)\mathrm dx$之间至多相差常数$f(1)$，又因为两者均不为$0$，那么两者之比一定有限且非$0$。</p>
+
+  <p>证毕</p>
+</blockquote>
+
+<p>有了这个结论，我们就能直接得到：</p>
+
+<div class="kdmath">$$
+\sum_{n=1}^\infty \frac 1{n\ln n} \sim \int_1^\infty \frac{\mathrm dn}{n\ln n}\sim \ln\ln n
+$$</div>
+
+<p>回到最初的问题：</p>
+
+<div class="kdmath">$$
+N\cdot\sum_{p\text{ is a prime}}p \sim N\sum_{n=1}^\infty \frac 1{n\ln n} \sim N\ln\ln N
+$$</div>
+
+<p>也就是说，埃氏筛的时间复杂度是$O(N\log\log N)$级别的。</p>
+
+<h2 id="思考题">思考题</h2>
+
+<ol>
+  <li>（简单）请用本文提到的定理证明：
+<span class="kdmath">$\sum_{n=1}^\infty\frac 1n \sim \ln n$</span></li>
+  <li>（困难）请不用本文提到的方法证明题目1</li>
+</ol>
+
+<h2 id="参考资料">参考资料</h2>
+
+<p>[1] “Sieve of Eratosthenes.” <em>Wikipedia</em>, <a href="https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes">https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes</a>. Accessed 18 Aug. 2022.</p>
+
+<p>[2] “Distribution of Primes.” <em>Brilliant</em>, <a href="https://brilliant.org/wiki/distribution-of-primes/">https://brilliant.org/wiki/distribution-of-primes/</a>. Accessed 18 Aug. 2022.</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="algorithm" /><category term="math" /><category term="time-complexity" /><summary type="html"><![CDATA[埃拉托斯特尼筛法（Sieve of Erastosthenis），简称埃氏筛，是一种可以在极少时间复杂度内算出$n$以内的所有质数的算法。]]></summary></entry><entry><title type="html">git原理简介</title><link href="https://mqcreaple.github.io//blog/2022/03/04/git.html" rel="alternate" type="text/html" title="git原理简介" /><published>2022-03-04T00:00:00-05:00</published><updated>2022-03-04T00:00:00-05:00</updated><id>https://mqcreaple.github.io//blog/2022/03/04/git</id><content type="html" xml:base="https://mqcreaple.github.io//blog/2022/03/04/git.html"><![CDATA[<p>相信大家都对<a href="https://git-scm.com/">git</a>耳熟能详了。Git是一个简单易用的版本管理工具，用户可以在git中修改文件、提交commit（更新到本地仓库）、同步远程仓库等。本篇文章将主要讨论git更新文件和提交commit背后的原理。</p>
 
 <p>前置知识：git基本操作，详见<a href="https://www.runoob.com/git/">runoob</a>和<a href="https://www.w3schools.com/git/">w3schools</a>。</p>
 
@@ -1351,37 +1573,4 @@ end every 25
 
 <p>当然，它没有给你提供现成的云服务，你需要寻找其它云来存储文件</p>
 
-<p>2021-12-15补：Typora现在开始收费了</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="use-computer-well" /><category term="writing" /><category term="blog" /><summary type="html"><![CDATA[为什么需要写作软件？]]></summary></entry><entry><title type="html">驾驭计算机，你需要——懒</title><link href="https://mqcreaple.github.io//blog/2021/07/24/lazy.html" rel="alternate" type="text/html" title="驾驭计算机，你需要——懒" /><published>2021-07-24T00:00:00-04:00</published><updated>2021-07-24T00:00:00-04:00</updated><id>https://mqcreaple.github.io//blog/2021/07/24/lazy</id><content type="html" xml:base="https://mqcreaple.github.io//blog/2021/07/24/lazy.html"><![CDATA[<p><strong>懒/lazy</strong>其实不一定是个贬义词，恰恰相反，它是推动人类社会进步和提升工作效率的一个重要的品质。</p>
-
-<p>懒，即在<strong>不影响结果的情况下，尽可能少地耗费时间和精力</strong></p>
-
-<p>懒<strong>并不是懒惰</strong>，“懒”的一大前提是不影响最后的产出</p>
-
-<p>懒，要求你有一定的<strong>探索精神</strong>，需要不断尝试更简单、更便捷的道路</p>
-
-<p>懒，甚至有时候需要<strong>黑客精神</strong>，在无路可走的时候创造一条路</p>
-
-<p>懒，还要求你<strong>不能被错误和异常击倒</strong>，在突发事件后损失最小</p>
-
-<p>懒，要求你多去寻找那些“<strong>一劳永逸</strong>”的事情</p>
-
-<p>懒，要求你把机械化、重复化的工作<strong>交给机器</strong>，而不是自己</p>
-
-<p>懒，要求你在使用计算机时——</p>
-
-<ul>
-  <li>多使用快捷键，少碰鼠标</li>
-  <li>多使用“搜索”功能，不要每次都挨个找</li>
-  <li>使用计算机脚本来简化一些重复性的操作</li>
-  <li>习惯把重要文件放在云上，而不是全部存放在本地</li>
-  <li>拿到一个软件之后，先打开设置，把操作模式变得顺手</li>
-  <li>多使用命令行，能在命令行内解决就不要打开图形界面</li>
-</ul>
-
-<p>懒，要求你在写程序时——</p>
-
-<ul>
-  <li>简单的、一次性的功能，使用脚本语言实现</li>
-  <li>数据和内容分开，例如使用配置文件存放重要数据</li>
-  <li>善于使用工程建构工具，而不是手动管理</li>
-</ul>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="use-computer-well" /><category term="lazy" /><summary type="html"><![CDATA[懒/lazy其实不一定是个贬义词，恰恰相反，它是推动人类社会进步和提升工作效率的一个重要的品质。]]></summary></entry></feed>
+<p>2021-12-15补：Typora现在开始收费了</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="use-computer-well" /><category term="writing" /><category term="blog" /><summary type="html"><![CDATA[为什么需要写作软件？]]></summary></entry></feed>
