@@ -1,0 +1,1387 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="https://mqcreaple.github.io//feed.xml" rel="self" type="application/atom+xml" /><link href="https://mqcreaple.github.io//" rel="alternate" type="text/html" /><updated>2022-08-18T08:49:41-04:00</updated><id>https://mqcreaple.github.io//feed.xml</id><title type="html">My Blog | MqCreaple</title><subtitle>pay more attention to the beauty of formulas!</subtitle><author><name>MqCreaple</name></author><entry><title type="html">git原理简介</title><link href="https://mqcreaple.github.io//blog/2022/03/04/git.html" rel="alternate" type="text/html" title="git原理简介" /><published>2022-03-04T00:00:00-05:00</published><updated>2022-03-04T00:00:00-05:00</updated><id>https://mqcreaple.github.io//blog/2022/03/04/git</id><content type="html" xml:base="https://mqcreaple.github.io//blog/2022/03/04/git.html"><![CDATA[<p>相信大家都对<a href="https://git-scm.com/">git</a>耳熟能详了。Git是一个简单易用的版本管理工具，用户可以在git中修改文件、提交commit（更新到本地仓库）、同步远程仓库等。本篇文章将主要讨论git更新文件和提交commit背后的原理。</p>
+
+<p>前置知识：git基本操作，详见<a href="https://www.runoob.com/git/">runoob</a>和<a href="https://www.w3schools.com/git/">w3schools</a>。</p>
+
+<h2 id="一些名词">一些名词</h2>
+<ul>
+  <li><strong>工作区（working tree）</strong>表示除去<code>/.git</code>以外的工作目录，即通常写代码的位置。</li>
+  <li><strong>暂存区/索引（index）</strong>是执行完<code>git add</code>指令时文件被添加到的地方。如果没有执行过<code>git add</code>命令，git并不会为你自动保存。</li>
+  <li><strong>版本库（repository）</strong>是所有当前暂存区和历史上commit过的文件，暂存区可以看作是版本库的一个子集。所有版本库的文件都保存在<code>/.git</code>目录下。</li>
+</ul>
+
+<p>所有的历史文件、文件目录、commmit记录等全部保存为二进制对象，统一保存在/.git/objects目录下，文件名为该文件的SHA-1哈希值且没有后缀。</p>
+
+<ul>
+  <li>blob：全称为Binary Large Object，是常规文件保存在<code>/.git/objects</code>下的形式。</li>
+  <li>tree：目录文件保存在<code>/.git/objects</code>下的形式。</li>
+  <li>commit：commit记录保存在<code>/.git/objects</code>下的形式。</li>
+</ul>
+
+<pre><code class="language-plaintext">└── objects
+    ├── 41
+    │   └── a1d4060cf09286c1cd8fe8bdab89ce26b71086
+    ├── ce
+    │   └── 013625030ba8dba906f756967f9e9ca394464a
+    ├── dc
+    │   └── a98923d43cd634f4359f8a1f897bf585100cfe
+    ├── info
+    └── pack
+</code></pre>
+
+<p>上图的文件目录中，三个object的SHA-1值分别为：<code>41a1d4...</code>，<code>ce0136...</code>，和<code>dca989...</code>。</p>
+
+<p>可以使用指令：</p>
+
+<pre><code class="language-shell">git hash-object 文件名
+</code></pre>
+
+<p>计算一个文件的SHA-1哈希值。</p>
+
+<h2 id="head指针和commit">HEAD指针和commit</h2>
+
+<p><code>HEAD</code>是一个指针，默认指向当前分支的最新一个commit（存储了commit文件的哈希值）。每一次提交新的commit时，<code>HEAD</code>也会相应前移。<code>HEAD</code>存储在<code>/.git/HEAD</code>文件中。</p>
+
+<p>每一个分支也有各自的head，指向当前分支的最后一个commit，各分支的head存储在<code>/.git/refs/heads/</code>分支名文件中。每一次执行<code>git checkout</code>切换分支的时候，实际上就是让全局的<code>HEAD</code>赋值成了另一个分支的head。</p>
+
+<p>总结一下，现在讲过的<code>/.git</code>目录结构都有：</p>
+
+<pre><code class="language-plaintext">.git
+├── HEAD          全局HEAD指针
+├── objects
+│   └── 二进制对象都在这里
+└── refs
+    └── heads
+        └── 各个分支的head
+</code></pre>
+
+<p>除了第一个commit，以后的每个commit都会记录上一个commit的哈希值，这样就形成了一个树形结构。</p>
+
+<p>当整个项目只有一个分支时，所有的commit形成一条链：</p>
+
+<div class="mermaid">
+graph RL
+A[commit<br />a5e2] --&gt; B[commit<br />3d97]
+B --&gt; C[commit<br />9cd6]
+C --&gt; D[commit<br />729f]
+D --&gt; E[commit<br />4375]
+E --&gt; F[......]
+subgraph master: head
+A
+end
+</div>
+
+<p>有多个分支时，则是这样的：</p>
+
+<div class="mermaid">
+graph RL
+A[commit<br />a5e2] --&gt; B[commit<br />3d97]
+B --&gt; C[commit<br />9cd6]
+C --&gt; D[commit<br />729f]
+D --&gt; E[commit<br />4375]
+E --&gt; F[......]
+subgraph master: head
+A
+end
+G[commit<br />fc6a] --&gt; E
+H[commit<br />7032] --&gt; G
+subgraph branch1: head
+H
+end
+</div>
+
+<h2 id="文件和目录">文件和目录</h2>
+
+<p>之前说过，blob对象和tree对象都存在<code>.git/objects/</code>目录下。Tree对象存储了其他一系列文件的哈希值，可以理解成是一个多叉树的结点，而一般文件是根节点。</p>
+
+<div class="mermaid">
+graph TD
+A[[root]] --&gt; B([readme.md])
+A --&gt; C([.gitignore])
+A --&gt; D[[src]]
+D --&gt; E([main.cpp])
+D --&gt; F([main.h])
+A --&gt; G[[test]]
+G --&gt; H([test.cpp])
+</div>
+
+<p>暂存区/索引对应着<code>/.git/index</code>文件，它记录了当前暂存的所有文件和目录的哈希值。每一次执行<code>git add</code>指令，程序就会在<code>/.git/objects</code>目录中生成一个对应着该文件的blob对象，同时将这个对象的地址加到<code>/.git/index</code>中。</p>
+
+<p>每一个commit结点指向了一个tree节点，表示某一次commit的根目录。两次commit中不变文件不会被创建新对象。</p>
+
+<p><img src="/img/git-file-0.svg" alt="git-file-0" /></p>
+
+<p>这时，如果我们添加了一个<code>.gitignore</code>文件并且执行<code>git add .gitignore</code>命令，就会创建一个新的blob对象并添加进索引。</p>
+
+<p><img src="/img/git-file-1.svg" alt="git-file-1" /></p>
+
+<p>再接下来提交commit，程序就会新建一个表示根目录的tree对象并且指向所有索引（index）中的文件和文件夹。最后再处理commit结点，将其指向上一次的commit，即完成了git提交，如图：</p>
+
+<p><img src="/img/git-file-2.svg" alt="git-file-2" /></p>
+
+<h2 id="总结">总结</h2>
+
+<blockquote>
+  <p>Git的所有对象，包括文件、目录、和commit，全部存储在<code>/.git/object/</code>文件夹下。</p>
+
+  <p>Commit结点指向其上一次的commit，形成一个树形结构，每个叶节点对应一个分支的head。</p>
+
+  <p>全局的<code>HEAD</code>指针指向任意一个commit结点，通常是一个特定分支的head。</p>
+
+  <p>blob对应一般的文件，tree对应文件夹，同一个文件夹下所有文件和文件夹组成一个树形结构，但同一个文件有可能被不同版本的文件夹同时指向。</p>
+
+  <p>每次add文件时，git会生成一个新的blob对象并添加到index中。</p>
+
+  <p>每次进行commit时，git会生成tree对象并令其指向所有的子文件，最后让commit结点指向根目录文件夹，同时设置commit结点的上一个结点，最后完成提交。</p>
+</blockquote>
+
+<p>Git的版本管理逻辑和信息竞赛里的“可持久化算法”思想很像，都是尽量避免记录过多重复的内容从而减少空间占用。</p>
+
+<p>Git在文件和目录这个树形结构之上，还有一个“commit”的分支结构，这意味着它可以应对更复杂的需求，但也意味着使用者需要记忆更多的命令。</p>
+
+<p>本文仅是一个简单介绍，没有涵盖诸如分支合并和tag等更复杂的功能，如果以后有时间可以更新。</p>
+
+<h2 id="参考资料">参考资料</h2>
+
+<p>[1] Chacon, Scott and Straub, Ben. “Pro Git v2”. Git, <a href="https://git-scm.com/book/en/v2">https://git-scm.com/book/en/v2</a>.</p>
+
+<p>[2] Wiegley, John. “Git from the Bottom to Up”. GitHub, <a href="https://jwiegley.github.io/git-from-the-bottom-up/">https://jwiegley.github.io/git-from-the-bottom-up/</a>.</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="git" /><category term="github" /><summary type="html"><![CDATA[相信大家都对git耳熟能详了。Git是一个简单易用的版本管理工具，用户可以在git中修改文件、提交commit（更新到本地仓库）、同步远程仓库等。本篇文章将主要讨论git更新文件和提交commit背后的原理。]]></summary></entry><entry><title type="html">2.0公告 &amp;amp; jekyll介绍</title><link href="https://mqcreaple.github.io//blog/2022/03/01/jekyll.html" rel="alternate" type="text/html" title="2.0公告 &amp;amp; jekyll介绍" /><published>2022-03-01T00:00:00-05:00</published><updated>2022-03-01T00:00:00-05:00</updated><id>https://mqcreaple.github.io//blog/2022/03/01/jekyll</id><content type="html" xml:base="https://mqcreaple.github.io//blog/2022/03/01/jekyll.html"><![CDATA[<h2 id="公告">公告</h2>
+
+<p>大约有三四个月没有发新的博客了，不知道还有没有人看。。。</p>
+
+<p>自从这个版本之后，我将舍弃我自己做的那个博客文章发布系统，而采用一个现成的工具：jekyll。主要原因嘛，就是<del>懒得继续写代码</del>jekyll做的比我自己写的系统好用。毕竟造别人已经造过的轮子是无意义的（</p>
+
+<p>现在旧版博客文章还没有完全迁移过来，以后也会陆陆续续全部搞完。</p>
+
+<h2 id="jekyll介绍"><a href="https://jekyllrb.com/">Jekyll</a>介绍</h2>
+
+<p><a href="https://jekyllrb.com/">Jekyll的官方网站</a>上也有详细的文档，第一次使用的话完全可以照着文档操作。我在这里也简单地介绍一下：</p>
+
+<ol>
+  <li>Jekyll是用Ruby写成的，安装前请先确保电脑上有ruby环境和ruby的包管理工具rubygems。</li>
+  <li>使用如下指令安装Jekyll：
+    <pre><code class="language-shell">gem install bundler jekyll
+</code></pre>
+  </li>
+  <li>接下来使用如下指令创建新工程：
+    <pre><code class="language-shell">jekyll new 工程名称
+</code></pre>
+  </li>
+  <li>进入目录，你应该看到这样的目录结构
+    <pre><code class="language-plaintext">.
+├── 404.html
+├── Gemfile
+├── Gemfile.lock
+├── _config.yml
+├── about.markdown
+├── index.markdown
+└── _posts
+ └── xxxx-xx-xx-welcome-to-jekyll.markdown
+</code></pre>
+    <p>简单解释一下：</p>
+    <ul>
+      <li><code>_config.yml</code>存放了这个工程的基本信息，比如博客标题、描述、作者的邮箱等，也可以在_config.yml上面继续添加新的信息。</li>
+      <li><code>Gemfile</code>和<code>Gemfile.lock</code>是一些关于Gem的信息，可以暂时不用管。</li>
+      <li><code>404.html</code>是404错误页面，如果用户试图访问一个你没有写过的页面，就会自动跳转到这个页面上。</li>
+      <li><code>index.markdown</code>(写成<code>index.md</code>也可以被系统识别)是博客的主页，即在浏览器输入博客地址后第一个看见的页面。</li>
+      <li><code>about.markdown</code>(同上，<code>about.md</code>也被允许)是个人介绍页面。</li>
+      <li><code>_posts</code>文件夹下放各个博客文章，每个文章都是一个Markdown文件。文章的文件名都应该是<code>YYYY-MM-dd-TITLE.md</code>格式，即4位年份、2为月份、2位日期，后面跟着文章标题，空格用<code>-</code>代替。</li>
+    </ul>
+  </li>
+  <li>Jekyll会将所有在根目录下和<code>_posts</code>目录下的Markdown文件全部编译成HTML，连同其他文件放在<code>_site</code>目录下。也就是说，进行编译后，<code>_site</code>文件夹下就是一个完整的网站，各个博客会被按照类别和日期整理起来。
+    <pre><code class="language-shell">bundle exec jekyll serve
+</code></pre>
+    <p>会进行编译并且将_site目录下的网站运行在http://localhost:4000/上。当服务程序跑起来时，_posts下的Markdown文件发生改动也会实时编译并更改对应的网页内容。</p>
+  </li>
+  <li>Jekyll的Markdown，准确来说是“加强版Markdown”。每个Markdown文件都有一个header，像这样：
+    <pre><code class="language-yaml">---
+layout: post
+title: XXX-XXX
+permalink: /aaa/bbb/
+category: blog
+---
+</code></pre>
+    <p>其中</p>
+    <ul>
+      <li><code>title</code>后面的内容会被自动添加为文件的一级标题，因此并不需要在写Markdown时再写一遍标题。</li>
+      <li><code>category</code>是文件的类别，比如这里是<code>blog</code>的话就会在编译为HTML时将其放在<code>_site/blog/</code>文件夹下。</li>
+      <li><code>layout</code>是页面的布局方式，Jekyll有一些预定义的layout，比如<code>home</code>, <code>post</code>, <code>page</code>等，也可以自己定义布局方式，比如两列布局、三列布局，将写好的HTML文件放在<code>_layout/</code>文件夹下就可以。但这需要一定的HTML基础。</li>
+      <li>默认情况下，编译后的Markdown文件会被放在<code>年/月/日/标题.html</code>目录下。如果不想放在这里，可以更改<code>permalink</code>变量。上例中文件就会被放在<code>/aaa/bbb/index.html</code>。 还有一些其他可以定义的头部参数，详见官网。</li>
+    </ul>
+  </li>
+  <li>Markdown文件中还可以使用变量。形如<code>{{site._____}}</code>的字符串会在编译时被替换成<code>_config.yml</code>里对应的值，例如在我的定义下：
+    <pre><code class="language-markdown">My email is {{site.email}}
+</code></pre>
+    <p>就会变成：</p>
+    <pre><code class="language-plaintext">My email is gmq14159@gmail.com
+</code></pre>
+    <p>类似的，<code>{{page.____}}</code>可以返回Markdown Header里面的对应变量值。详细解释请看Jekyll官方文档。</p>
+  </li>
+</ol>
+
+<p>关于Jekyll就先讲这么多，更多的信息也可以在网上找到。</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="bulletin" /><category term="jekyll" /><category term="writing" /><summary type="html"><![CDATA[公告]]></summary></entry><entry><title type="html">为何非弹性碰撞下动量守恒而能量不守恒？</title><link href="https://mqcreaple.github.io//blog/2021/12/19/simulation2.html" rel="alternate" type="text/html" title="为何非弹性碰撞下动量守恒而能量不守恒？" /><published>2021-12-19T00:00:00-05:00</published><updated>2021-12-19T00:00:00-05:00</updated><id>https://mqcreaple.github.io//blog/2021/12/19/simulation2</id><content type="html" xml:base="https://mqcreaple.github.io//blog/2021/12/19/simulation2.html"><![CDATA[<h2 id="1-模拟">1. 模拟</h2>
+
+<p>假设现在有两种不同的分子，同种分子之间有引力，异种分子之间有斥力。</p>
+
+<p>我们使用一个理想模型：同种分子之间的使用弹簧连接，弹簧会主动维护一个固定长度$l_0$；异种分子之间的斥力满足平方反比定律。具体公式如下：</p>
+
+<div class="kdmath">$$
+\bm F_1=k_1(\bm r_{12} - \bm l_0)
+$$</div>
+
+<div class="kdmath">$$
+\bm F_2=k_2\cdot\frac{\bm r_{12}}{r_{12}^2}
+$$</div>
+
+<p>其中$F_1$为同种分子之间的引力，$F_2$为异种分子之间的斥力。</p>
+
+<p>模拟结果如下：</p>
+
+<ol>
+  <li>$k_1:k_2=5:1$，近似为理想刚体的弹性碰撞</li>
+</ol>
+
+<p><img src="/img/sim_animation1.gif" alt="animation1" /></p>
+
+<ol>
+  <li>$k_1:k_2=1:1$</li>
+</ol>
+
+<p><img src="/img/sim_animation2.gif" alt="animation2" /></p>
+
+<ol>
+  <li>$k_1:k_2=0.75:1$，碰撞为塑性碰撞</li>
+</ol>
+
+<p><img src="/img/sim_animation3.gif" alt="animation3" /></p>
+
+<h2 id="分析">分析</h2>
+
+<p>从这些模拟动画中可以看出在塑性碰撞之后，固体内部的分子自身产生了微小振动，将一部分物体的平动动能转化成了分子的振动动能（即内能）。这就是我们问题的答案：塑性碰撞将宏观物体的能量转化成了微观分子的能量，因此宏观上能量减少了。</p>
+
+<p>值得注意的是，分子的振动并不能带走宏观物体的动量，因为分子的振动是随机的，并且在各个方向上出现的概率相等，因此统计上分子的动量之和应当为0。这也是为什么不论在弹性还是在塑性碰撞中，物体的动量都是守恒的。</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="simulation" /><category term="julia" /><category term="physics" /><summary type="html"><![CDATA[1. 模拟]]></summary></entry><entry><title type="html">算法化求导</title><link href="https://mqcreaple.github.io//blog/2021/09/11/derivative-m.html" rel="alternate" type="text/html" title="算法化求导" /><published>2021-09-11T00:00:00-04:00</published><updated>2021-09-11T00:00:00-04:00</updated><id>https://mqcreaple.github.io//blog/2021/09/11/derivative-m</id><content type="html" xml:base="https://mqcreaple.github.io//blog/2021/09/11/derivative-m.html"><![CDATA[<p>求导是一种算符，输入一个表达式，输出另一个表达式</p>
+
+<p>我们学过求导的运算法则，例如$(u+v)’=u’+v’$等等，将这些法则运用于某个表达式，即可实现算法化求导</p>
+
+<p>首先，我们要从表达式树说起</p>
+
+<h2 id="表达式树">表达式树</h2>
+
+<p>任何一个表达式，都可以被拆解成一棵二叉树，其中叶结点为数字或字母，非叶结点则为运算符和函数</p>
+
+<p>例如如下的表达式：</p>
+
+<div class="kdmath">$$
+f(x)=3x^2+2\sin(x)
+$$</div>
+
+<p>可以被拆解成如下的表达式树：</p>
+
+<div class="mermaid">
+graph TD
+A((+)) --&gt; B((*))
+A --&gt; C((*))
+B --&gt; D[3]
+B --&gt; E((^))
+E --&gt; F[x]
+E --&gt; G[2]
+C --&gt; H[2]
+C --&gt; I((sin))
+I --&gt; J[x]
+</div>
+
+<p>计算$f(x)$的过程也很简单，只需要将所有未知数都替换成某个特定的值$x_0$，接着从下往上递归，将所有非叶结点替换为计算结果，最后根结点的数值就是答案了</p>
+
+<p>以上面的表达式树为例，如果我们想要计算$f\left(\dfrac{\pi}{2}\right)$的数值，首先把所有$x$结点换成$\frac\pi2$</p>
+
+<div class="mermaid">
+graph TD
+A((+)) --&gt; B((*))
+A --&gt; C((*))
+B --&gt; D[3]
+B --&gt; E((^))
+E --&gt; F[π/2]
+E --&gt; G[2]
+C --&gt; H[2]
+C --&gt; I((sin))
+I --&gt; J[π/2]
+</div>
+
+<p>接下来从下向上递归计算。先将$\left(\dfrac\pi2\right)^2$替换为$\dfrac{\pi^2}{4}$，将$\sin\left(\dfrac\pi2\right)$替换为$1$</p>
+
+<div class="mermaid">
+graph TD
+A((+)) --&gt; B((*))
+A --&gt; C((*))
+B --&gt; D[3]
+B --&gt; E[π^2/4]
+C --&gt; H[2]
+C --&gt; I[1]
+</div>
+
+<p>继续重复上述操作：</p>
+
+<div class="mermaid">
+graph TD
+A((+)) --&gt; B[3π^2/4]
+A --&gt; C[2]
+</div>
+
+<p>最终得到答案：$\dfrac{3\pi^2}{4}+2$</p>
+
+<h2 id="树上操作求导">树上操作&amp;求导</h2>
+
+<p>我们暂且使用：</p>
+
+<pre><code class="language-java">class Node {
+    private String operator;
+    private Node left;
+    private Node right;
+    Node(char operator, Node left, Node right) {
+        this.operator = operator;
+        this.left = left;
+        this.right = right;
+    }
+}
+</code></pre>
+
+<p>来表示一个表达式树的非叶结点</p>
+
+<h3 id="加减法">加减法</h3>
+
+<p>我们不妨从最简单的加法运算开始考虑</p>
+
+<p>当某个结点是<code>+</code>运算时，我们不妨设左右两端的表达式分别为$f(x)$和$g(x)$，那么这个结点就表示了函数$h(x)=f(x)+g(x)$。</p>
+
+<pre><code>    +
+   / \
+f(x) g(x)
+</code></pre>
+
+<p><em>（省流大师</em></p>
+
+<p>那么，根据导数的运算律，我们可以得到：</p>
+
+<div class="kdmath">$$
+h'(x)=(f+g)'(x)=f'(x)+g'(x)
+$$</div>
+
+<p>也就是说，先分别计算这棵表达式树的左右子树的导数，接着将它们套在一个<code>+</code>结点上，就是这个表达式树的导数</p>
+
+<pre><code>                 +               +
+derivative {    / \    } =     /   \
+             f(x) g(x)     f'(x)  g'(x)
+</code></pre>
+
+<p>写成代码的形式，就是：</p>
+
+<pre><code class="language-java">if(root.operator == "+") {
+    return new Node(
+        "+",
+        derivative(root.left),
+        derivative(root.right)
+    );
+}
+</code></pre>
+
+<p>对于减法，也是同理：</p>
+
+<pre><code>                 -               -
+derivative {    / \    } =     /   \
+             f(x) g(x)     f'(x)  g'(x)
+</code></pre>
+
+<pre><code class="language-java">if(root.operator == "-") {
+    return new Node(
+        "-",
+        derivative(root.left),
+        derivative(root.right)
+    );
+}
+</code></pre>
+
+<h3 id="乘法除法">乘法&amp;除法</h3>
+
+<p>乘法运算则略微复杂一些。如果$h(x)=f(x)g(x)$，根据导数运算律。有：</p>
+
+<div class="kdmath">$$
+h'(x)=f(x)g'(x)+g(x)f'(x)
+$$</div>
+
+<p>也就是：</p>
+
+<pre><code>                                   +
+                 *              /     \
+derivative {    / \    } =    *         *
+             f(x) g(x)      /   \     /   \
+                         f(x) g'(x) g(x) f'(x)
+</code></pre>
+
+<p>写成代码：</p>
+
+<pre><code class="language-java">if(root.operator == "*") {
+    return new Node(
+        "-",
+        new Node(
+            "*",
+            root.left,
+            derivative(root.right)
+        ),
+        new Node(
+            "*",
+            root.right,
+            derivative(root.left)
+        )
+    );
+}
+</code></pre>
+
+<p>除法则更复杂一些：</p>
+
+<div class="kdmath">$$
+\left(\dfrac{f(x)}{g(x)}\right)'=\dfrac{f'(x)g(x)-f(x)g'(x)}{g(x)^2}
+$$</div>
+
+<p><del>表达式树实在懒得画了</del></p>
+
+<p>也就是：</p>
+
+<pre><code class="language-java">if(root.operator == "/") {
+    return new Node(
+        "/",
+        new Node(
+            "-",
+            new Node(
+                "*"
+                root.right,
+                derivative(root.left)
+            ),
+            new Node(
+                "*",
+                root.left,
+                derivative(root.right)
+            )
+        ),
+        new Node(
+            "^",
+            root.right,
+            new NumberNode(2)
+        )
+    );
+}
+</code></pre>
+
+<h3 id="乘方">乘方</h3>
+<p>到了乘方这里，事情就有点难办了</p>
+
+<p>我们知道指数函数的导数公式$(a^x)’=a^x\ln a$，也知道幂函数的导数公式$(x^a)’=ax^{a-1}$，但是现在问题是：未知数可能同时出现在底数和指数上</p>
+
+<p>换句话说，我们想要求的是：</p>
+
+<div class="kdmath">$$
+\left(f(x)^{g(x)}\right)'
+$$</div>
+
+<pre><code>                 ^
+derivative {    / \    } = ?
+             f(x) g(x)
+</code></pre>
+
+<p>这里我们要用到一点小技巧</p>
+
+<p>首先令</p>
+
+<div class="kdmath">$$
+y=f(x)^{g(x)}
+$$</div>
+
+<p>接着，两边同时求对数：</p>
+
+<div class="kdmath">$$
+\ln y=\ln f(x)^{g(x)}=g(x)\ln f(x)
+$$</div>
+
+<p>接下来，两边对$x$求导，得到：</p>
+
+<div class="kdmath">$$
+\frac{\mathrm d\ln y}{\mathrm dx}=\frac{\mathrm d(g(x)\ln f(x))}{\mathrm dx}
+$$</div>
+
+<p>对等式左侧使用链式求导法则：</p>
+
+<div class="kdmath">$$
+\frac{\mathrm d\ln y}{\mathrm dx}=\frac{\mathrm d\ln y}{\mathrm dy}\cdot\frac{\mathrm dy}{\mathrm dx}=\frac 1y\cdot\frac{\mathrm dy}{\mathrm dx}
+$$</div>
+
+<p>同时对等式右侧使用导数的乘法法则：</p>
+
+<div class="kdmath">$$
+\begin{align*}
+\frac{\mathrm d(g(x)\ln f(x))}{\mathrm dx} &= g(x)\frac{\mathrm d\ln f(x)}{\mathrm df(x)}\frac{\mathrm df(x)}{\mathrm dx}+\ln f(x)\cdot\frac{\mathrm dg(x)}{\mathrm dx} \\
+& =\frac{g(x)}{f(x)}f'(x)+g'(x)\ln f(x)
+\end{align*}
+$$</div>
+
+<p>最终我们得到：</p>
+
+<div class="kdmath">$$
+\frac 1y\cdot y'=\frac{g(x)}{f(x)}f'(x)+g'(x)\ln f(x)
+$$</div>
+
+<p>$y’$即为所求，因此将等式左侧的$\frac1y$乘到右侧，并将$y$替换为$f(x)^{g(x)}$，我们得到：</p>
+
+<div class="kdmath">$$
+y'=\left(f(x)^{g(x)}\right)'=f(x)^{g(x)}\left(\frac{g(x)}{f(x)}f'(x)+g'(x)\ln f(x)\right)
+$$</div>
+
+<p>这就是两个表达式乘方的导数</p>
+
+<p>由于这玩意实在太长，它的代码形式和表达式树形式我就不列出来了。大家只需要知道这玩意能算出来就行了</p>
+
+<h3 id="叶结点的处理">叶结点的处理</h3>
+
+<p>当我们运算到叶结点（即常数和变量）时，就可以直接按照如下方法处理：</p>
+
+<p><span class="kdmath">$text{返回值}=\begin{cases}1, \text{结点值}=\text{求导变量}\\0, \text{结点值}\neq\text{求导变量}\end{cases}$</span></p>
+
+<p>对$x$求导时，只有$x’$会返回$1$。其余情况，包括常数的导数，和多元函数中其他变量（比如$y, z$）对$x$的导数，都会返回$0$</p>
+
+<h2 id="优化">优化</h2>
+<p>我们不妨随便找一个函数进行一下运算，比如：</p>
+
+<div class="kdmath">$$
+f(x)=x^2
+$$</div>
+
+<pre><code>  ^
+ / \
+x   2
+</code></pre>
+
+<p>代入之前得到的指数求导表达式：</p>
+
+<div class="kdmath">$$
+(x^2)'=x^2(2'\cdot\ln x+\dfrac2x\cdot x')
+$$</div>
+
+<p>建立的表达式树如下：</p>
+
+<pre><code>        ×
+    /       \
+  ^           +
+ / \       /     \
+x   2    ×         *
+       /   \      / \
+    (2)'   ln    ÷   x'
+           |    / \
+           x   2   x
+</code></pre>
+
+<p>接着根据叶结点的处理规则，将$2’$替换成$0$，将$x’$替换成$1$，得到了表达式树：</p>
+
+<pre><code>        ×
+    /       \
+  ^           +
+ / \       /     \
+x   2    ×         *
+       /   \      / \
+      0    ln    ÷   1
+           |    / \
+           x   2   x
+</code></pre>
+
+<p>可以看到，表达式树中有许多诸如<code>×0</code>，<code>×1</code>，<code>÷1</code>之类的冗余表达。为了去除这些冗余，我们需要对表达式树进行优化</p>
+
+<h3 id="初级优化">初级优化</h3>
+<p>结点的所有子结点均为常数时，直接合并成单个常数结点，例如$2+3$直接合并为$5$</p>
+<ul>
+  <li>加法：$a+0=0+a=a$</li>
+  <li>减法：$a-0=a$, $0-a=-a$, $a-a=0$</li>
+  <li>乘法：$a\times0=0$, $a\times1=a$</li>
+  <li>除法：$a/0=\text{NaN}$, $a/1=a$, $0/a=0$, $a/a=1$</li>
+  <li>乘方：$a^0=1$, $a^1=a$, $0^a=0$, $1^a=1$</li>
+  <li>其它：$\ln1=0$, $\sin\pi=0$等</li>
+</ul>
+
+<h3 id="中级优化">中级优化</h3>
+
+<p>涉及到某个结点和它的一级子结点</p>
+
+<ul>
+  <li>加减法：$a+(-b)=a-b$</li>
+  <li>乘除法：$a\times(1/b)=a/b$</li>
+  <li>乘方：$(a^n)\cdot a=a^{n+1}$, $(a^n)/a=a^{n-1}$</li>
+  <li>对数：$a^{\log_ab}=b$…</li>
+</ul>
+
+<h3 id="高级优化">高级优化</h3>
+
+<p>这些优化本身不一定能够让式子变得更加简洁，它要求机器能够判断展开后表达式是否能够进一步化简</p>
+
+<ul>
+  <li>乘法分配律：$(a+b)c=ac+bc$</li>
+  <li>乘方运算律：$a^{b+c}=a^b\cdot a^c$</li>
+  <li>对数运算律：$\log(ab)=\log a+\log b$</li>
+</ul>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="math" /><category term="calculus" /><category term="algorithm" /><summary type="html"><![CDATA[求导是一种算符，输入一个表达式，输出另一个表达式]]></summary></entry><entry><title type="html">位运算的极致——快速平方根倒数算法</title><link href="https://mqcreaple.github.io//blog/2021/08/27/q-rsqrt-alg.html" rel="alternate" type="text/html" title="位运算的极致——快速平方根倒数算法" /><published>2021-08-27T00:00:00-04:00</published><updated>2021-08-27T00:00:00-04:00</updated><id>https://mqcreaple.github.io//blog/2021/08/27/q-rsqrt-alg</id><content type="html" xml:base="https://mqcreaple.github.io//blog/2021/08/27/q-rsqrt-alg.html"><![CDATA[<p>快速平方根倒数算法，最早见于1999年的3D游戏Quake III Arena的源代码中。该算法一经公布，立刻因它的巧妙而被广为流传</p>
+
+<p>在当时，计算机的算力和算法还没有现在这样厉害，浮点数乘除法的计算代价都很高，更不要说平方根了。</p>
+
+<p>另一方面，3D物理引擎几乎要求你每时每刻都要计算各种平方根。比如，计算力矢量在某个方向上的分量，需要计算$\hat v=\dfrac{\vec v}{\mid\vec v\mid}$，就会用到平方根倒数</p>
+
+<p>温馨提示：请先阅读文章的最后一段，接着再从头开始阅读</p>
+
+<h2 id="代码">代码</h2>
+
+<p>这是一般人写出来的：</p>
+
+<pre><code class="language-c">float rsqrt(float x) {
+    return 1 / sqrt(x);
+}
+</code></pre>
+
+<p>看起来人畜无害，不是吗？</p>
+
+<p>但是注意，在当时，sqrt函数使用的算法本身就很慢，导致使用上面的函数计算平方根倒数效率极低</p>
+
+<p>而下面这个，是Quake使用的快速平方根倒数算法：</p>
+
+<pre><code class="language-c">float q_rsqrt(float x) {
+    long i;
+    float x2, y;
+    const float threehalves = 1.5F;
+
+    x2 = x * 0.5F;
+    y = x;
+    i = *(long*) &amp;y;
+    i = 0x5f3759df - (i &gt;&gt; 1);
+    y = *(float*) &amp;i;
+    y = y * (threehalves - (x2 * y * y));
+    // y = y * (threehalves - (x2 * y * y));
+
+    return y;
+}
+</code></pre>
+
+<p>看完是不是一脸问号？没关系，任何人看完都会一脸问号，因为这个算法用到了很多奇怪的知识</p>
+
+<p>前置知识</p>
+
+<ul>
+  <li>知道C和C++中的指针</li>
+  <li>知道电脑使用二进制存储信息</li>
+  <li>知道什么是导数</li>
+</ul>
+
+<p>（下方高能预警）</p>
+
+<h2 id="1-浮点数的计算机表示">#1 浮点数的计算机表示</h2>
+
+<p>假设现在你有一个二进制小数，可是计算机只认识01组成的二进制串，并不认识小数，你该怎么办呢？</p>
+
+<pre><code>_ _ _ _ _ _ _ _   _ _ _ _ _ _ _ _   _ _ _ _ _ _ _ _   _ _ _ _ _ _ _ _
+</code></pre>
+
+<p>容易想到，我只要在这个二进制串的某一个地方点一个小数点，小数点左边的作为整数位，右边的作为小数位，问题就解决了</p>
+
+<pre><code>_ _ _ _ _ _ _ _   _ _ _ _ _ _ _ _  .  _ _ _ _ _ _ _ _   _ _ _ _ _ _ _ _
+</code></pre>
+
+<p>比如，二进制小数$(101101.01101)_2$，用我们刚刚的方法，就可以写成：</p>
+
+<pre><code>0 0 0 0 0 0 0 0   0 0 1 0 1 1 0 1  .  0 1 1 0 1 0 0 0   0 0 0 0 0 0 0 0
+</code></pre>
+
+<p>小数的加减法也很简单，因为小数点永远固定，只需要忽略掉小数点，将他们全都当作二进制整数整数进行加减即可</p>
+
+<p>这就是<strong>定点数</strong>，假想的小数点在某一个固定位置不会移动</p>
+
+<p>与之对应的，则是<strong>浮点数</strong>，这个名词在学习C语言时应该听了无数遍了。 浮点数的字面意思是：<strong>小数点能够移动</strong></p>
+
+<p>可能这样不太直观，我们先回想一下<strong>科学计数法</strong>：一个数可以被分解成一个$1$到$10$之间的小数和某个$10$的次幂之积。比如：</p>
+
+<div class="kdmath">$$
+34567.89=3.456789\times 10^{4}
+$$</div>
+
+<p>我们只需要写下这个$1$到$10$之间的有效数字，以及数的次幂（或者说是小数点的位置），即可唯一确定这个数</p>
+
+<p>注意到，有效数字一定在$1$到$10$之间，也就是说它小数点左边必须有且只有一位数字</p>
+
+<p>对于二进制数，也可以进行类比，只不过底数不再是10，而是2：</p>
+
+<div class="kdmath">$$
+(101101.01101)_2=(1.0110101101)_2\times 2^{(101)_2}
+$$</div>
+
+<p>那么，另一个思路来了：我们可以直接存储<strong>有效数字</strong>和<strong>小数点位置</strong>。这就是浮点数的基本思路</p>
+
+<p>当然，不难注意到，有效数字的开头一定不能是$0$，否则一定可以写成另一个数字乘上$2$的负数次方。 例如：</p>
+
+<div class="kdmath">$$
+(0.01011)_2=(1.011)_2\times 2^{(-10)_2}
+$$</div>
+
+<p>而二进制中，除了$0$，那么必然是$1$。也就是说，<strong>二进制有效数字的第一位必须是1</strong>。所以说我们可以不用存储有效数字的首位，只存储小数点后的数字，计算的时候在开头补上$1$即可。</p>
+
+<p>最后，为了能够表示负数，需要单独拿出来一位二进制作为<strong>符号位</strong>（0为正，1为负）。我们得到了浮点数的IEEE754规则：</p>
+
+<pre><code>S   E E E E E E E E   M M M M M M M M M M M M M M M M M M M M M
+</code></pre>
+
+<p>第1位是符号位$S$，0表示正数，1表示负数。</p>
+
+<p>第2到9位是指数位$E$，$E$的范围是$0$到$255$，会自动减去$127$，否则无法表示负数指数，也就是说它的实际值应该是$-127$到$128$</p>
+
+<p>第10到32位是有效数字位$M$，共23位，运算时需要在在前面脑补一位$1$和小数点</p>
+
+<p>也就是说，这一串二进制所表示的浮点数实际值等于：</p>
+
+<div class="kdmath">$$
+(-1)^S\times 2^{E-127}\times (1+\frac{M}{2^{23}})
+$$</div>
+
+<h2 id="2-算法的第一部分">#2 算法的第一部分</h2>
+
+<p>说完了预备知识之后，接下来，进入平方根倒数的求解过程</p>
+
+<p>显然负数不可能有平方根，因此我们可以默认输入的$x$必须是正数，也就是符号位$S$为0</p>
+
+<p>如果平方根不好求的话，我们不妨先算一下$x$的对数</p>
+
+<p>你也许会说，难道对数不应该更难计算吗？没关系，请看下面：</p>
+
+<div class="kdmath">$$
+\begin{align*}
+x & = 2^{E-127}\times (1+\frac{M}{2^{23}}) \\
+\log_2 x & = \log_2(1+\frac{M}{2^{23}}) + \log_2\left(2^{E-127}\right) \\
+& = \log_2(1 + \frac{M}{2^{23}}) + E - 127
+\end{align*}
+$$</div>
+
+<p>现在式子还是有点复杂，不妨对它取一个近似：当$a\in[0,1]$时，$\log(1+a)$可以近似成aa加上某个常数$\sigma$</p>
+
+<div class="kdmath">$$
+\log(1+a)\approx a+\sigma
+$$</div>
+
+<p><img src="/img/q-rsqrt-0.jpg" alt="q-rsqrt-0" /></p>
+
+<p>绿色曲线为$\log_2(1+x)$，黄色直线为$x+\sigma$。如果想让误差最小，那么$\sigma$应该取大约$0.043$，通过微积分可以算出准确值，这里就不写了</p>
+
+<p>有了这个知识，原式可以近似成：</p>
+
+<div class="kdmath">$$
+\log_2 x \approx \frac{M}{2^{23}}+\sigma+E-127
+$$</div>
+
+<div class="kdmath">$$
+\log_2 x=\frac 1{2^{23}}(M+E\cdot 2^{23}) - (127 - \sigma)
+$$</div>
+
+<p>为什么要这样整理呢？我们不妨考虑另一件事：如果我们<em>强行将这个浮点数的二进制表达解读成整数</em>，会得到什么呢？</p>
+
+<pre><code>0   E E E E E E E E M M M M M M M M M M M M M M M M M M M M M
+</code></pre>
+
+<p>第一位是符号位，而后面31位是数字位，最终我们得到了一个整数：</p>
+
+<div class="kdmath">$$
+\bar x=\overline{EM}=E\cdot 2^{23}+M
+$$</div>
+
+<p>暂且将这个数称为浮点数的整数值。不难看出刚刚推导$\log_2 x$时就推出了一模一样的表达式！接着将$\bar x$代回原式，得到：</p>
+
+<div class="kdmath">$$
+\log_2x\approx\frac{\bar x}{2^{23}}-(127-\sigma)
+$$</div>
+
+<p>现在，我们知道了：<strong>浮点数的对数，约等于它的整数值减去某一个常数</strong></p>
+
+<p>这样我们就能理解之前代码中的这个步骤了：</p>
+
+<pre><code class="language-c">i = *(long*) &amp;y;
+</code></pre>
+
+<p>这其实就是在<em>计算浮点数的整数值</em>！ 注意，直接写<code>i = (long) y;</code>是错的，因为这样会算出来浮点数下取整，而不是刚刚提到的<em>整数值</em></p>
+
+<p>那么有了这个结论，求出平方根倒数就很简单了：</p>
+
+<p><span class="kdmath">$\log_2 y=\log_2(\frac1{\sqrt{x}})=-\frac12\log_2(x)\approx\frac 12(127-\sigma)-\frac 12\frac{\bar x}{2^{23}}$</span>​</p>
+
+<p>那么$y=1/\sqrt{x}$的整数值为：</p>
+
+<div class="kdmath">$$
+\begin{align*}
+\bar y &\approx 2^{23}\log_2 y + 2^{23}(127-\sigma) \\
+& = (2^{22} + 2^{23})(127 - \sigma) - \frac{\bar x}{2} \\
+& \approx \text{0x5F3759DF} - \frac{\bar x}{2}
+\end{align*}
+$$</div>
+
+<p>其中<code>0x5F3759DF</code>就是大名鼎鼎的“魔法值”。最后只需要将$\bar y$再强行转换成浮点数即可</p>
+
+<p>以上就是算法的第一部分</p>
+
+<p>当然，这里还有另一个技巧：<code>i &gt;&gt; 1</code>表示将整数$i$整个向右移动1个二进制位，也就是将$i$除以$2$</p>
+
+<pre><code>i    = 00011011 01101100      &gt;&gt;&gt; right shift 1 digit
+i&gt;&gt;1 = 00001101 10110110
+</code></pre>
+
+<p>综上所述，代码：</p>
+
+<pre><code class="language-c">i = *(long*) &amp;y;
+i = 0x5F3759DF - (i &gt;&gt; 1);
+y = *(float*) &amp;i;
+</code></pre>
+
+<blockquote>
+  <p>你能试试求出64位浮点数的“魔法值”吗？</p>
+</blockquote>
+
+<h2 id="3-代码的第二部分">#3 代码的第二部分</h2>
+
+<p>注意到上面的所有推导，使用的几乎全都是<strong>约等于号</strong>，而不是等于号，因此计算出来的这个数字仍然有一定的误差。后续，我们接着使用牛顿迭代法求出精确解。</p>
+
+<p>那<strong>牛顿迭代法</strong>又是什么？</p>
+
+<p>假设现在我们有一个函数$f$，目标是求出它的根（即所有$x_0$使得$f(x_0)=0$），而我们只知道一个函数上的点$A=(x, f(x))$，怎么办？</p>
+
+<p><img src="/img/q-rsqrt-1.jpg" alt="q-rsqrt-1" /></p>
+
+<p>现在，我们作一条$A$点上的切线，切线与横轴的交点作为第一轮迭代的结果</p>
+
+<p><img src="/img/q-rsqrt-2.jpg" alt="q-rsqrt-2" /></p>
+
+<p>可以看到迭代后的点离函数的根已经近了很多</p>
+
+<p><img src="/img/q-rsqrt-3.jpg" alt="q-rsqrt-3" /></p>
+
+<p>我们还可以将一轮迭代的结果作为新的起点，进行第二轮迭代，接着第三轮、第四轮、……，最终就可以无限接近函数的根，并且迭代的收敛速度非常快</p>
+
+<p>那么对于“求解平方根倒数”的这个例子，我们可以构造一个函数：</p>
+
+<div class="kdmath">$$
+f(y)=\frac 1{y^2}-x
+$$</div>
+
+<p>令$x$为一个常数，而$y$为变量，不难发现这个函数的根就是$y=1/\sqrt{x}$，那么我们的任务就是求解这个函数的根</p>
+
+<p>那么，从$y_0$开始，采用上面的方法迭代，即</p>
+
+<div class="kdmath">$$
+y_{n+1}=y_n-\dfrac{f(y_n)}{f'(y_n)}
+$$</div>
+
+<p>代入$f(y)=\dfrac1{y^2}-x$，得到：</p>
+
+<div class="kdmath">$$
+y_{n+1}=\dfrac{y_n(3-xy_n^2)}{2}=y_n\left(\dfrac32-\dfrac12xy_n^2\right)
+$$</div>
+
+<p>这也就是代码最下方那个奇怪的表达式的含义：</p>
+
+<pre><code class="language-c">y = y * (threehalves - (x2 * y * y));
+</code></pre>
+
+<p>经过一轮迭代，已经差不多能将误差控制在小数点后4位左右了，如果想要更加精确，也可以接着进行2、3、4轮迭代</p>
+
+<p>以上就是算法的全过程，最后再贴一遍完整代码：</p>
+
+<pre><code class="language-c">float q_rsqrt(float x) {
+    long i;
+    float x2, y;
+    const float threehalves = 1.5F;
+
+    x2 = x * 0.5F;
+    y = x;
+    i = *(long*) &amp;y;
+    i = 0x5f3759df - (i &gt;&gt; 1);
+    y = *(float*) &amp;i;
+    y = y * (threehalves - (x2 * y * y));
+    // y = y * (threehalves - (x2 * y * y));
+
+    return y;
+}
+</code></pre>
+
+<h2 id="这个算法有什么意义">这个算法有什么意义？</h2>
+<p>如果你认真看完了上面的全过程，我要遗憾的告诉你：<strong>你可能永远也用不上它</strong></p>
+
+<p>现在早已不是1999年了，硬件的更新和算法的改进让<strong>任何编程语言的内置函数都无法轻易被超越</strong></p>
+
+<p>如果你用C语言或者C++进行测试的话，你会发现库函数<code>sqrt(x)</code>的速度要远远超过上面的算法</p>
+
+<p>但是，把这个算法当作一个精致的艺术品反复观赏，也是一件挺有意思的事情，你也可以从里面学到不少</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="C++" /><category term="algorithm" /><summary type="html"><![CDATA[快速平方根倒数算法，最早见于1999年的3D游戏Quake III Arena的源代码中。该算法一经公布，立刻因它的巧妙而被广为流传]]></summary></entry><entry><title type="html">盘点亿些Julia人性化的设计</title><link href="https://mqcreaple.github.io//blog/2021/08/11/julia-yyds.html" rel="alternate" type="text/html" title="盘点亿些Julia人性化的设计" /><published>2021-08-11T00:00:00-04:00</published><updated>2021-08-11T00:00:00-04:00</updated><id>https://mqcreaple.github.io//blog/2021/08/11/julia-yyds</id><content type="html" xml:base="https://mqcreaple.github.io//blog/2021/08/11/julia-yyds.html"><![CDATA[<h2 id="symbols">Symbols</h2>
+
+<h3 id="1-greek-letters">1. Greek Letters</h3>
+
+<p>Python:</p>
+
+<pre><code class="language-python">alpha = 1
+beta = 2
+gamma = 3
+</code></pre>
+
+<p>Julia:</p>
+
+<pre><code class="language-julia">α = 1      # type "\alpha" and press [tab]
+β = 2
+γ = 3
+</code></pre>
+
+<h3 id="2-constants">2. constants</h3>
+
+<p>Python:</p>
+
+<pre><code class="language-python">import math
+print(math.pi)
+print(math.e)
+</code></pre>
+
+<p>Julia:</p>
+
+<pre><code class="language-julia">println(π)     # "\pi"
+println(ℯ)     # "\euler"
+</code></pre>
+
+<h3 id="3-operators">3. Operators</h3>
+
+<p>Python:</p>
+
+<pre><code class="language-python">3*x**2+2*x+1
+sqrt(x)
+</code></pre>
+
+<p>Julia:</p>
+
+<pre><code class="language-julia">3x^2+2x+1
+√x  # same as sqrt(x)
+</code></pre>
+
+<h2 id="arrays--vectors">Arrays | Vectors</h2>
+
+<h3 id="1-loop">1. loop</h3>
+
+<p>Python:</p>
+
+<pre><code class="language-python">import numpy as np
+arr = np.array([1, 2, 3, 4, 5])
+for a in arr:
+    print(a)
+</code></pre>
+
+<p>Julia:</p>
+
+<pre><code class="language-julia">arr = [1, 2, 3, 4, 5]
+for a ∈ arr       # a "\in" arr
+    println(a)
+end
+</code></pre>
+
+<h3 id="2-vector-operation">2. vector operation</h3>
+
+<p>Python:</p>
+
+<pre><code class="language-python">import numpy as np
+np.add([1, 2, 3], 1)
+np.add([1, 2, 3], [4, 5, 6])
+np.multiply([1, 2, 3], 2)
+np.multiply([1, 2], [3, 4])
+def f(x):
+    return 2 * x + 1
+map(f, [1, 2, 3, 4])
+</code></pre>
+
+<p>Julia:</p>
+
+<pre><code class="language-julia">[1, 2, 3] .+ 1
+[1, 2, 3] + [4, 5, 6]
+[1, 2, 3] * 2
+[1, 2] .* [3, 4]
+f(x) = 2x + 1
+f.([1, 2, 3, 4])
+</code></pre>
+
+<h3 id="3-matrix">3. Matrix</h3>
+
+<p>Python:</p>
+
+<pre><code class="language-python">import numpy as np
+A = np.array([[1, 2], [3, 4]])
+B = np.array([[5, 6], [7, 8]])
+C = A.dot(B)
+D = A.transpose()
+</code></pre>
+
+<p>Julia:</p>
+
+<pre><code class="language-julia">A = [1 2 ; 3 4]
+B = [5 6 ; 7 8]
+C = A * B
+D = A'
+</code></pre>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="julia" /><category term="python" /><summary type="html"><![CDATA[Symbols]]></summary></entry><entry><title type="html">Julia对绳索振动的模拟</title><link href="https://mqcreaple.github.io//blog/2021/08/09/julia-rope-simulation.html" rel="alternate" type="text/html" title="Julia对绳索振动的模拟" /><published>2021-08-09T00:00:00-04:00</published><updated>2021-08-09T00:00:00-04:00</updated><id>https://mqcreaple.github.io//blog/2021/08/09/julia-rope-simulation</id><content type="html" xml:base="https://mqcreaple.github.io//blog/2021/08/09/julia-rope-simulation.html"><![CDATA[<h2 id="仿真结果代码">仿真结果+代码</h2>
+
+<p>且看老夫打一遍 松果——弹抖——闪电鞭！</p>
+
+<p>这是慢打：</p>
+
+<p><img src="/img/julia-1.gif" alt="julia-1" /></p>
+
+<p>这是快打：</p>
+
+<p><img src="/img/julia-2.gif" alt="julia-2" /></p>
+
+<p><img src="/img/mabaoguo.gif" alt="松果弹抖闪电鞭" /></p>
+
+<p>然后是代码：</p>
+
+<pre><code class="language-julia"># Vector2D.jl
+module Vector2D
+import Base:+,-,*,/
+import Base:length, LinRange
+export Vec2D, length, un, +, -, *, /, LinRange
+
+struct Vec2D
+    x::Float64
+    y::Float64
+end
+Vec2D() = Vec2D(0, 0)
+
+length(a::Vec2D)::Float64 = √(a.x^2 + a.y^2)
+un(a::Vec2D) = Vec2D(a.x / √(a.x^2+a.y^2), a.y / √(a.x^2+a.y^2))
++(a::Vec2D, b::Vec2D) = Vec2D(a.x+b.x, a.y+b.y)
+-(a::Vec2D, b::Vec2D) = Vec2D(a.x-b.x, a.y-b.y)
+*(a::Vec2D, b::Float64) = Vec2D(a.x*b, a.y*b)
+/(a::Vec2D, b::Float64) = Vec2D(a.x/b, a.y/b)
+LinRange(l::Vec2D, r::Vec2D, n::Integer) = Vec2D.(LinRange(l.x, r.x, n), LinRange(l.y, r.y, n))
+end
+</code></pre>
+
+<pre><code class="language-julia"># simu.jl
+push!(LOAD_PATH,".")
+using Plots
+using Printf
+using Vector2D
+
+left = Vec2D(-1, 0)   # left end
+right = Vec2D(1, 0)   # right end
+
+m = 0.05              # total mass
+k = 10.               # stiffness factor
+n = 90                # number of mass points on a string
+r = Vector(LinRange(left, right, n))   # position of each mass point
+v = repeat([Vec2D()], n)               # velocity of each mass point
+t  = 0.                # current time
+dt = 0.002             # time duration for every loop
+originLength = length(r[2]-r[1])
+
+@gif for rep ∈ 1:10000
+    global λ, k, n, r, v, originLength, t, dt
+    deltaR = [
+        r[i+1] - r[i]
+        for i in 1:length(r)-1
+    ]
+
+    ## calculate force on each point ##
+    F = repeat([Vec2D()], n)
+    for i ∈ 1:length(r)
+        if i == 1 || i == length(r)
+            continue
+        else
+            F[i] = un(deltaR[i]) * (length(deltaR[i])-originLength) * k -
+                    un(deltaR[i-1]) * (length(deltaR[i-1])-originLength) * k
+        end
+    end
+    if rep &lt;= 50
+        F[n÷2] = F[n÷2] + Vec2D(0, 0.02)
+    end
+
+    ## update time dt ##
+    v = v + (F./(m/n)).*dt
+    r = r + v.*dt
+    t = t + dt
+
+    ## plot ##
+    plot(
+        map((v) -&gt; v.x, r),
+        map((v) -&gt; v.y, r),
+        label="time=" * @sprintf("%.3f", t),
+        ylims=(-0.14, 0.14)
+    )
+end every 25
+</code></pre>
+
+<p>前排提醒：代码运行大约需要1分钟，请耐心等待。。。</p>
+
+<h2 id="方法">方法</h2>
+<ol>
+  <li>将绳索看作由弹簧依次连接的$n$个质点</li>
+  <li>使用数组<code>r[]</code>记录每个质点的位置，数组<code>v[]</code>记录每个质点的速度</li>
+  <li>定义变量<code>dt</code>，代表一个微小时间间隔</li>
+  <li>每一次循环，计算每个质点的受力<code>F[]</code>，其中端点增加一个特判</li>
+  <li>接着依次更新<code>v</code>和<code>r</code>，最后画出来即可</li>
+</ol>
+
+<h2 id="失败案例集锦">失败案例集锦</h2>
+
+<p><img src="/img/julia-fail-1.gif" alt="fail-1" /></p>
+
+<p><img src="/img/julia-fail-2.gif" alt="fail-2" /></p>
+
+<p><img src="/img/julia-fail-3.gif" alt="fail-3" /></p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="julia" /><category term="simulation" /><summary type="html"><![CDATA[仿真结果+代码]]></summary></entry><entry><title type="html">生命，意识，AI</title><link href="https://mqcreaple.github.io//blog/2021/08/08/scifi-inspiration-0.html" rel="alternate" type="text/html" title="生命，意识，AI" /><published>2021-08-08T00:00:00-04:00</published><updated>2021-08-08T00:00:00-04:00</updated><id>https://mqcreaple.github.io//blog/2021/08/08/scifi-inspiration-0</id><content type="html" xml:base="https://mqcreaple.github.io//blog/2021/08/08/scifi-inspiration-0.html"><![CDATA[<p>生命：能够进行复制（繁殖）的物体</p>
+
+<p>——推论：生命的首要目标是<strong>繁殖</strong></p>
+
+<p>人类是如何从其余众多生命中脱颖而出的？</p>
+
+<ol>
+  <li>神经系统的反射机制</li>
+  <li>神经元的调整&amp;自我学习</li>
+  <li>大脑具有专门负责记忆的区域</li>
+  <li>能够体会到情绪和情感</li>
+  <li>能够理解抽象事物</li>
+  <li>能够理解逻辑和因果关系</li>
+  <li>对新事物感到好奇</li>
+</ol>
+
+<p>其中1是所有生物都具备的，2是大部分生物都具备的，而6、7则是人类独有的</p>
+
+<p>目前的AI仅能达到第2至3级</p>
+
+<p>我们定义，<strong>大于等于4级的生命具有意识</strong></p>
+
+<p>—— btw, 关于意识这件事，学术界都没有统一的标准，这个定义也只是我自己的看法，不用当真</p>
+
+<p>当然，在这7级之上，还有更强的3个级别</p>
+
+<ol>
+  <li>大脑自我编辑 —— 人类能够部分做到</li>
+  <li>大脑能够编辑后一代的DNA等硬件 —— 只能通过技术手段做到</li>
+  <li>大脑能够完全控制身体（即：你想成为什么，就能成为什么） —— 人类完全达不到</li>
+</ol>
+
+<p>再往上的，原谅我脑洞不够大，想不到了</p>
+
+<p>这些级别光靠人类是很难达到的，毕竟人类的能力是有限的，我们只能将这些寄希望于今后的AI了</p>
+
+<p>总结：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th style="text-align: center">植物</th>
+      <th style="text-align: center">除人类以外的动物</th>
+      <th style="text-align: center">人类</th>
+      <th style="text-align: center">某高级生命</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">硬件的更新</td>
+      <td style="text-align: center">自然选择</td>
+      <td style="text-align: center">自然选择</td>
+      <td style="text-align: center">自然选择</td>
+      <td style="text-align: center">自我设计</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">硬件的更新周期</td>
+      <td style="text-align: center">以十年、百年为单位</td>
+      <td style="text-align: center">以十年、百年为单位</td>
+      <td style="text-align: center">以十年、百年为单位</td>
+      <td style="text-align: center">以天为单位</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">软件的更新</td>
+      <td style="text-align: center">根本没有</td>
+      <td style="text-align: center">自然选择+极少自我设计</td>
+      <td style="text-align: center">部分自我设计</td>
+      <td style="text-align: center">完全自我设计</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">软件的更新周期</td>
+      <td style="text-align: center">根本没有</td>
+      <td style="text-align: center">以十年、百年为单位</td>
+      <td style="text-align: center">以天、月为单位</td>
+      <td style="text-align: center">以天为单位</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">信息的更新</td>
+      <td style="text-align: center">自然选择</td>
+      <td style="text-align: center">自然选择</td>
+      <td style="text-align: center">主动学习</td>
+      <td style="text-align: center">主动学习</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">信息处理速度</td>
+      <td style="text-align: center">1-10b/年</td>
+      <td style="text-align: center">1b-1Mb/s</td>
+      <td style="text-align: center">10Mb/s左右</td>
+      <td style="text-align: center">1Gb/s~物理极限</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="ai的未来">AI的未来</h2>
+
+<p>以下三个论断中必有其一是正确的：</p>
+
+<ol>
+  <li>人类直到灭亡也没能让AI获得意识</li>
+  <li>人类让AI获得了意识，并通过该技术改造了人类自己</li>
+  <li>人类让AI获得了意识，同时这也成为了人类最后一个发明</li>
+</ol>
+
+<p>当然，第二个论断不一定代表人类会被AI灭亡，有可能人类会坐享AI的成果，在AI建造的温床中逐渐老去，而AI替代我们探索星辰大海</p>
+
+<p>想要提升AI的算力，或者说智力，是非常容易的事情，但是让AI获得意识是一件很困难的事情。一旦AI获得了意识，那么它在工作、创新、推理等方面的能力会远超人类，人类也就理所应当的退出历史舞台了。</p>
+
+<p>而且，一旦AI达到了任何高出人类的3个级别之一，那么AI的进步和发展速度将会成倍地提升，这种速度将是人类永远无法追上的</p>
+
+<p>我认为，第一条和第二条论断发生的概率相较于第三条更低。毕竟未来是不可预测的，所以现在说这些或许早了点</p>
+
+<h2 id="人类文明地球文明的归宿">人类文明（地球文明）的归宿</h2>
+
+<p>我们观察历史，不难发现，<strong>人口增长是人类文明的一大趋势，技术进步是另一大趋势</strong></p>
+
+<p>不难知道，如果人类始终没有发明强于自身的AI，那么人类必将会进行星际殖民 —— 倒不是因为马尔萨斯陷阱，而是技术进步的速度太慢了，而且我们对于应对突发的大型自然灾害（大型火山、小行星、全球性传染病等）完全没有经验</p>
+
+<p>而AI一旦被发明，那么几乎必然会被普及，因为AI可以在能力上远超人类，前期可以让一个国家迅速强大，而后期则是AI接管（暴力接管/和平接管）人类的统治权</p>
+
+<p>所以现在主要问题在于，AI接管人类之后，会做什么？它们又会怎样看待我们？</p>
+
+<ul>
+  <li>AI成熟之后，星际探索和星际殖民几乎也是必然的，因为生命的首要目标是繁殖</li>
+  <li>AI看待我们，或许和我们看待某些落后的原始部落，甚至和我们看待某些动物一样；但如果它们有亲情的话，可能会鉴于我们特殊的地位，给予特殊照顾</li>
+  <li>我们的结局会如何？
+    <ul>
+      <li>良好的结局是：AI向外太空推进时，将我们的DNA带出去并且重组，使得人类文明也可以散播到整个宇宙</li>
+      <li>一般的结局是：AI独自发展，而人类在某场世界性的灾难中自然毁灭了</li>
+      <li>较差的结局是：AI控制了我们，因为我们阻碍了AI自身的利益，AI通过某些方法灭绝了人类 当然，如果真到了那时候，AI做的事情可能和上面几条都不一样，因为AI的智商比任何人类都要高，他们的行为我们不一定能理解</li>
+    </ul>
+  </li>
+</ul>
+
+<p>正如《三体》中的叶文洁所说，人类点燃了火，但人类控制不住它</p>
+
+<p>如果这一切都发生了，我们需要反思一个问题：人类的存在，到底有什么意义？</p>
+
+<h2 id="另一种结局">另一种结局</h2>
+
+<p>人类借助生物技术和计算机技术，将自身改造成更高级别的生命。</p>
+
+<p>这件事本身就面临着一个强烈的伦理道德问题，可能就算技术本身成熟了，由于各种限制也没办法推广</p>
+
+<p>假设技术已经成熟，并且人类的道德观普遍接受了这样的改造方法，那么，我们也可以说，人类这个物种不存在了</p>
+
+<p>经过一次对硬件和软件的改造，人类完全可以做到超强的体力、耐力、计算能力、极长的寿命等，如果继续这样改进，不知道人会变成什么样子</p>
+
+<p>但是，也只有这样，才能让人类亲自走遍星辰大海，虽然此时的人类已经不是曾经的人类了</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="science-fiction" /><category term="AI" /><summary type="html"><![CDATA[生命：能够进行复制（繁殖）的物体]]></summary></entry><entry><title type="html">如何选择写作软件？</title><link href="https://mqcreaple.github.io//blog/2021/07/25/writing-software.html" rel="alternate" type="text/html" title="如何选择写作软件？" /><published>2021-07-25T00:00:00-04:00</published><updated>2021-07-25T00:00:00-04:00</updated><id>https://mqcreaple.github.io//blog/2021/07/25/writing-software</id><content type="html" xml:base="https://mqcreaple.github.io//blog/2021/07/25/writing-software.html"><![CDATA[<h2 id="为什么需要写作软件">为什么需要写作软件？</h2>
+
+<p>不是只有作家才需要写作软件。无论是文章，还是你的学习笔记、实验记录、所思所想，写作软件都可以非常方便地管理它们。</p>
+
+<p>写作软件可以做到许多纸质笔记本难以做到的事情，比如你可以：</p>
+
+<ul>
+  <li>更便捷地插入图像，视频，链接</li>
+  <li>将作品分享到互联网上</li>
+  <li>将作品同步至云，防止丢失</li>
+  <li>在多个平台（电脑，手机，iPad等）上进行编辑</li>
+  <li>使用搜索功能快速地检索文章</li>
+  <li>可以随时修改和撤回</li>
+</ul>
+
+<p>当然，写作软件也有一定的缺点：</p>
+
+<ul>
+  <li>没有电脑/没有网的时候，你会很崩溃</li>
+  <li>流程图、思维导图这些东西，电脑不方便编辑</li>
+  <li>给人的感觉方面，电脑上的文字不如纸上的文字更亲切</li>
+</ul>
+
+<h2 id="我该选择怎样的写作软件">我该选择怎样的写作软件？</h2>
+
+<p>对于如何筛选写作软件这个问题，我给出的核心要求是：<strong>你的大脑是用来想问题的，不是用来浪费在操作细节上的</strong></p>
+
+<p>因此，我<strong>不推荐按钮操作的富文本编辑器</strong>，比如Word, OneNote等。因为在书写时你需要频繁地使用鼠标点击按钮进行编辑，这会大大降低你的写作速度和写作热情</p>
+
+<p>强烈建议大家使用支持markdown的写作软件，markdown是我目前用过最顺手的文本编辑语言，没有之一</p>
+
+<p>推荐几个写作软件：</p>
+
+<h3 id="tiddlywiki"><a href="https://tiddlywiki.com/">TiddlyWiki</a></h3>
+
+<p><a href="https://tiddlywiki.com/">TiddlyWiki</a>适合用来管理以文字、代码、数学公式为主的文章，适合有一定编程基础的人使用</p>
+
+<p>没有专门的客户端，它的所有内容全都被加载到了一个大小不超过5M的html文件中，用浏览器就可以打开和编辑，这使得它很容易保存和分享</p>
+
+<p>有着非常强大的标签搜索整理功能，例如可以用一个<code>[tag[A]-[B]]</code>代码来快速过滤包含A但不包含B的条目。条目之间的链接也可以用<code>[[]]</code>方便地实现</p>
+
+<p>内置一个很有意思的标记语言，其功能与html不相上下，但比html简洁得多</p>
+
+<p>有许多插件。如果你足够强，还可以开发一个插件，虽然我太菜了(￣﹏￣；)</p>
+
+<h3 id="evernote-或-印象笔记"><a href="https://evernote.com/">EverNote</a> 或 <a href="https://www.yinxiang.com/">印象笔记</a></h3>
+
+<p>EverNote适合各种需求的写作，零基础即可使用</p>
+
+<p>支持一系列快捷键，操作也很直观便捷</p>
+
+<p>置入图片和网页非常方便，自带的截图工具也很给力</p>
+
+<p>使用笔记本来管理不同类别的笔记</p>
+
+<p>电脑和手机都有相应客户端，可以多平台编辑</p>
+
+<p>我也没用过几次，就不过多评论了。。。</p>
+
+<p>注意：国际版的EverNote和中国版的印象笔记账号不通用</p>
+
+<h3 id="typora"><a href="https://www.typora.io/">Typora</a></h3>
+
+<p>Typora是一个功能完备且用户友好的Markdown编辑器</p>
+
+<p>不同于大部分Markdown编辑器的双窗口界面，Typora将“编辑”和“预览”两个功能合二为一，实时预览</p>
+
+<p>自带LaTeX支持，Mermaid流程图绘制等markdown插件</p>
+
+<p>有着完备的用户偏好设置，完全不用担心上手困难</p>
+
+<p>支持便捷的图片插入，包括Ctrl+V和直接拖动图片</p>
+
+<p>当然，它没有给你提供现成的云服务，你需要寻找其它云来存储文件</p>
+
+<p>2021-12-15补：Typora现在开始收费了</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="use-computer-well" /><category term="writing" /><category term="blog" /><summary type="html"><![CDATA[为什么需要写作软件？]]></summary></entry><entry><title type="html">驾驭计算机，你需要——懒</title><link href="https://mqcreaple.github.io//blog/2021/07/24/lazy.html" rel="alternate" type="text/html" title="驾驭计算机，你需要——懒" /><published>2021-07-24T00:00:00-04:00</published><updated>2021-07-24T00:00:00-04:00</updated><id>https://mqcreaple.github.io//blog/2021/07/24/lazy</id><content type="html" xml:base="https://mqcreaple.github.io//blog/2021/07/24/lazy.html"><![CDATA[<p><strong>懒/lazy</strong>其实不一定是个贬义词，恰恰相反，它是推动人类社会进步和提升工作效率的一个重要的品质。</p>
+
+<p>懒，即在<strong>不影响结果的情况下，尽可能少地耗费时间和精力</strong></p>
+
+<p>懒<strong>并不是懒惰</strong>，“懒”的一大前提是不影响最后的产出</p>
+
+<p>懒，要求你有一定的<strong>探索精神</strong>，需要不断尝试更简单、更便捷的道路</p>
+
+<p>懒，甚至有时候需要<strong>黑客精神</strong>，在无路可走的时候创造一条路</p>
+
+<p>懒，还要求你<strong>不能被错误和异常击倒</strong>，在突发事件后损失最小</p>
+
+<p>懒，要求你多去寻找那些“<strong>一劳永逸</strong>”的事情</p>
+
+<p>懒，要求你把机械化、重复化的工作<strong>交给机器</strong>，而不是自己</p>
+
+<p>懒，要求你在使用计算机时——</p>
+
+<ul>
+  <li>多使用快捷键，少碰鼠标</li>
+  <li>多使用“搜索”功能，不要每次都挨个找</li>
+  <li>使用计算机脚本来简化一些重复性的操作</li>
+  <li>习惯把重要文件放在云上，而不是全部存放在本地</li>
+  <li>拿到一个软件之后，先打开设置，把操作模式变得顺手</li>
+  <li>多使用命令行，能在命令行内解决就不要打开图形界面</li>
+</ul>
+
+<p>懒，要求你在写程序时——</p>
+
+<ul>
+  <li>简单的、一次性的功能，使用脚本语言实现</li>
+  <li>数据和内容分开，例如使用配置文件存放重要数据</li>
+  <li>善于使用工程建构工具，而不是手动管理</li>
+</ul>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="use-computer-well" /><category term="lazy" /><summary type="html"><![CDATA[懒/lazy其实不一定是个贬义词，恰恰相反，它是推动人类社会进步和提升工作效率的一个重要的品质。]]></summary></entry></feed>

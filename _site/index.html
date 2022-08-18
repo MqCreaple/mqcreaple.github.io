@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+<meta name="author" content="MqCreaple">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.png">
+<link rel="stylesheet" href="/css/main.css">
+
+<!-- font awesome -->
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+<!-- katex -->
+<link rel="stylesheet" href="/css/katex.min.css">
+
+<!-- highlightjs -->
+<script src="/js/highlight.min.js"></script>
+<link rel="stylesheet" href="/css/github-dark.min.css">
+<script>hljs.highlightAll();</script>
+
+<!-- mermaid -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true});</script>
+    <title> - My Blog | MqCreaple</title>
+    <!-- Gitalk -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+</head>
+<body>
+<div id='container'>
+    
+<div id="header">
+    <div id="navbar" class="inline">
+        <a href="/" class="strong">My Blog | MqCreaple</a>
+        <a href="/aboutme/"><i class="fa fa-user"></i>about me</a>
+        <a href="/"><i class="far fa-file-alt"></i>blog</a>
+        <a href="/app/"><i class="fa fa-th"></i>app</a>
+    </div>
+</div>
+    <div id='main'>
+        <div id='left'>
+            <div class="card">
+                <h1>我的博客 My Blog | MqCreaple</h1>
+                <p>是我没错了（仅供娱乐）：</p>
+
+<pre><code class="language-java">class Me extends Person implements Konjac {
+    public static final Random RANDOM = new Random();
+    private Person[2] parents;
+    private List&lt;Person&gt; friends;
+    private List&lt;String&gt; secrets;
+
+    // 打招呼时
+    public Action greeting(Person person) {
+        Action result;
+        if(friends.contains(person)) {
+            List&lt;Action&gt; choices = new ArrayList();
+            choices.add(new SayAction("您太强了"));
+            choices.add(new TouchAction(person.getHead()));
+            choices.add(new ThumbUpAction());
+            if(person.getObjectOnHand() instanceof Snack) {
+                choices.add(new BaiPiaoAction()); // 白嫖的零食是最香的（doge
+            }
+            result = choices[RANDOM.nextInt(choices.size())]
+        } else {
+            result = new SayAction("Hello!");
+        }
+        return result;
+    }
+
+    // 讲话时
+    public void speak(List&lt;Person&gt; audiences, String content) {
+        if(audience.length &gt;= 10) {
+            throw new SocialAnxietyException();
+        }
+    }
+
+    // 学习时
+    public void study() {
+        List&lt;Person&gt; people = this.getPersonAroundMe();
+        if(!people.contains(parent[0]) &amp;&amp; !people.contains(parent[1])) {
+            this.touchFish();     //开始摸鱼
+        } else {
+            this.readBook();
+            this.doHomework();
+        }
+    }
+
+    public static void main(String[] args) {
+        Me me = new Me();
+        //我的现状
+        while(true) {
+            me.study();
+        }
+    }
+}
+</code></pre>
+
+            </div>
+            
+            <div class="card blog" onclick="window.open('.//blog/2022/03/04/git.html')">
+                <h2>git原理简介</h2>
+                <div class="inline">
+                    <p><i class="fas fa-calendar-alt"></i>4th Mar 2022</p>
+                    <p><i class="fas fa-tag"></i>git github</p>
+                </div>
+            </div>
+            
+            <div class="card blog" onclick="window.open('.//blog/2022/03/01/jekyll.html')">
+                <h2>2.0公告 & jekyll介绍</h2>
+                <div class="inline">
+                    <p><i class="fas fa-calendar-alt"></i>1st Mar 2022</p>
+                    <p><i class="fas fa-tag"></i>bulletin jekyll writing</p>
+                </div>
+            </div>
+            
+            <div class="card blog" onclick="window.open('.//blog/2021/12/19/simulation2.html')">
+                <h2>为何非弹性碰撞下动量守恒而能量不守恒？</h2>
+                <div class="inline">
+                    <p><i class="fas fa-calendar-alt"></i>19th Dec 2021</p>
+                    <p><i class="fas fa-tag"></i>simulation julia physics</p>
+                </div>
+            </div>
+            
+            <div class="card blog" onclick="window.open('.//blog/2021/09/11/derivative-m.html')">
+                <h2>算法化求导</h2>
+                <div class="inline">
+                    <p><i class="fas fa-calendar-alt"></i>11th Sep 2021</p>
+                    <p><i class="fas fa-tag"></i>math calculus algorithm</p>
+                </div>
+            </div>
+            
+            <div class="card blog" onclick="window.open('.//blog/2021/08/27/q-rsqrt-alg.html')">
+                <h2>位运算的极致——快速平方根倒数算法</h2>
+                <div class="inline">
+                    <p><i class="fas fa-calendar-alt"></i>27th Aug 2021</p>
+                    <p><i class="fas fa-tag"></i>C++ algorithm</p>
+                </div>
+            </div>
+            
+            <div class="card blog" onclick="window.open('.//blog/2021/08/11/julia-yyds.html')">
+                <h2>盘点亿些Julia人性化的设计</h2>
+                <div class="inline">
+                    <p><i class="fas fa-calendar-alt"></i>11th Aug 2021</p>
+                    <p><i class="fas fa-tag"></i>julia python</p>
+                </div>
+            </div>
+            
+            <div class="card blog" onclick="window.open('.//blog/2021/08/09/julia-rope-simulation.html')">
+                <h2>Julia对绳索振动的模拟</h2>
+                <div class="inline">
+                    <p><i class="fas fa-calendar-alt"></i>9th Aug 2021</p>
+                    <p><i class="fas fa-tag"></i>julia simulation</p>
+                </div>
+            </div>
+            
+            <div class="card blog" onclick="window.open('.//blog/2021/08/08/scifi-inspiration-0.html')">
+                <h2>生命，意识，AI</h2>
+                <div class="inline">
+                    <p><i class="fas fa-calendar-alt"></i>8th Aug 2021</p>
+                    <p><i class="fas fa-tag"></i>science-fiction AI</p>
+                </div>
+            </div>
+            
+            <div class="card blog" onclick="window.open('.//blog/2021/07/25/writing-software.html')">
+                <h2>如何选择写作软件？</h2>
+                <div class="inline">
+                    <p><i class="fas fa-calendar-alt"></i>25th Jul 2021</p>
+                    <p><i class="fas fa-tag"></i>use-computer-well writing blog</p>
+                </div>
+            </div>
+            
+            <div class="card blog" onclick="window.open('.//blog/2021/07/24/lazy.html')">
+                <h2>驾驭计算机，你需要——懒</h2>
+                <div class="inline">
+                    <p><i class="fas fa-calendar-alt"></i>24th Jul 2021</p>
+                    <p><i class="fas fa-tag"></i>use-computer-well lazy</p>
+                </div>
+            </div>
+            
+            <!-- Gitalk -->
+            <div class="card" id="gitalk-container"></div>
+            <script>
+                var gitalk = new Gitalk({
+                    clientID: '0be504f6ada9cd00b6f8',
+                    clientSecret: '4dc3501940136fbf0065e8f18e5f5a72c8f60475',
+                    repo: 'mqcreaple.github.io',
+                    owner: 'MqCreaple',
+                    admin: ['MqCreaple'],
+                    id: window.location.pathname,
+                });
+                gitalk.render('gitalk-container');
+            </script>
+        </div>
+        <div id='right'>
+            <div class="card" id="avatar">
+    <img src="/favicon.png" alt="avatar" id="image">
+    <a href="/blog/aboutme/" id="name">MqCreaple</a>
+    <div class="inline" id="accounts">
+        <a href="https://github.com/MqCreaple"><i class="fab fa-github"></i></a>
+        <a href="https://space.bilibili.com/507017613"><i class="fa fa-bold"></i></a>
+        <a href="https://www.zhihu.com/people/gmq12"><i class="fab fa-zhihu"></i></a>
+        <a href="mailto:gmq14159@gmail.com"><i class="fa fa-envelope"></i></a>
+    </div>
+</div>
+        </div>
+    </div>
+    <div id="footer">
+    <div style="margin: 2%">
+        <p>Copyright &copy; GMQ 2021, Blog of NYTxx (gmq12), version 2.2 </p>
+    </div>
+</div>
+</div>
+</body>
+</html>
