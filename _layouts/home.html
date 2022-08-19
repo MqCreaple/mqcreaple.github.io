@@ -19,19 +19,13 @@
             </div>
             {% endif %}
 
+            <div class="card blog" onclick="window.open('/blog/')">
+                <h2><i class="fa fa-box-archive"></i> More Blogs >>></h2>
+            </div>
             <div class="card">
                 <h1>我的博客 {{site.title}}</h1>
                 {{content}}
             </div>
-            {% for post in site.posts %}
-            <div class="card blog" onclick="window.open('./{{post.url}}')">
-                <h2>{{post.title}}</h2>
-                <div class="inline">
-                    <p><i class="fas fa-calendar-alt"></i>{{post.date | date_to_string: "ordinal"}}</p>
-                    <p><i class="fas fa-tag"></i>{{post.tags | join: ' '}}</p>
-                </div>
-            </div>
-            {% endfor %}
             <!-- Gitalk -->
             <div class="card" id="gitalk-container"></div>
             <script>

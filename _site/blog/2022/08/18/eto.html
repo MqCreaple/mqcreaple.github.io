@@ -29,9 +29,9 @@
 <div id="header">
     <div id="navbar" class="inline">
         <a href="/" class="strong">My Blog | MqCreaple</a>
-        <a href="/aboutme/"><i class="fa fa-user"></i>about me</a>
-        <a href="/"><i class="far fa-file-alt"></i>blog</a>
-        <a href="/app/"><i class="fa fa-th"></i>app</a>
+        <a href="/aboutme/"><i class="fa-solid fa-user"></i>about me</a>
+        <a href="/blog/"><i class="fa-regular fa-file-lines"></i>blog</a>
+        <a href="/app/"><i class="fa-solid fa-cubes-stacked"></i>app</a>
     </div>
 </div>
     <div id='main'>
@@ -65,7 +65,7 @@
         }
         ans[found++] = i;  // i为质数，添加至答案数组中
         for(int j = 2; i * j &lt; n; j++) {
-            p[i] = 1;      // 将所有i的倍数标记为“非质数”
+            p[i * j] = 1;      // 将所有i的倍数标记为“非质数”
         }
     }
     
@@ -204,7 +204,7 @@ c-\epsilon \lt \frac{\sum_{n=N}^\infty a_n}{\sum_{n=N}^\infty b_n} \lt c+\epsilo
 <p>经过此次化简，至少题目看起来像道代数题而不是数论题了，但无穷级数<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mi mathvariant="normal">∞</mi></msubsup><mfrac><mn>1</mn><mrow><mi>n</mi><mi>ln</mi><mo>⁡</mo><mi>n</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">\sum_{n=1}^\infty \frac 1{n\ln n}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.1901em;vertical-align:-0.345em;"></span><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8043em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.2029em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">∞</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2997em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8451em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mspace mtight" style="margin-right:0.1952em;"></span><span class="mop mtight"><span class="mtight">l</span><span class="mtight">n</span></span><span class="mspace mtight" style="margin-right:0.1952em;"></span><span class="mord mathnormal mtight">n</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span>仍然让人没有头绪。</p>
 
 <blockquote>
-  <p>引理2：对于一个单调函数<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">f(n)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></p>
+  <p>引理2：对于一个<strong>单调函数</strong><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">f(n)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></p>
 
   <div class="kdmath"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><munderover><mo>∑</mo><mrow><mi>n</mi><mo>=</mo><mn>1</mn></mrow><mi mathvariant="normal">∞</mi></munderover><mi>f</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>∼</mo><msubsup><mo>∫</mo><mn>1</mn><mi mathvariant="normal">∞</mi></msubsup><mi>f</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mi mathvariant="normal">d</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">
 \sum_{n=1}^\infty f(n) \sim \int_1^\infty f(n)\mathrm dn
@@ -271,17 +271,17 @@ N\cdot\sum_{p\text{ is a prime}}p \sim N\sum_{n=1}^\infty \frac 1{n\ln n} \sim N
     <img src="/favicon.png" alt="avatar" id="image">
     <a href="/blog/aboutme/" id="name">MqCreaple</a>
     <div class="inline" id="accounts">
-        <a href="https://github.com/MqCreaple"><i class="fab fa-github"></i></a>
-        <a href="https://space.bilibili.com/507017613"><i class="fa fa-bold"></i></a>
-        <a href="https://www.zhihu.com/people/gmq12"><i class="fab fa-zhihu"></i></a>
-        <a href="mailto:gmq14159@gmail.com"><i class="fa fa-envelope"></i></a>
+        <a href="https://github.com/MqCreaple"><i class="fa-brands fa-github"></i></a>
+        <a href="https://space.bilibili.com/507017613"><i class="fa-brands fa-bilibili"></i></a>
+        <a href="https://www.zhihu.com/people/gmq12"><i class="fa-brands fa-zhihu"></i></a>
+        <a href="mailto:gmq14159@gmail.com"><i class="fa-regular fa-envelope"></i></a>
     </div>
 </div>
         </div>
     </div>
     <div id="footer">
     <div style="margin: 2%">
-        <p>Copyright &copy; GMQ 2021, Blog of NYTxx (gmq12), version 2.2 </p>
+        <p>Copyright &copy; GMQ 2021 - 2022, Blog of MqCreaple (gmq12), version 2.2 </p>
     </div>
 </div>
 </div>

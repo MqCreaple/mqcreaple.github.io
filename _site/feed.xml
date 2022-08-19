@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="https://mqcreaple.github.io//feed.xml" rel="self" type="application/atom+xml" /><link href="https://mqcreaple.github.io//" rel="alternate" type="text/html" /><updated>2022-08-18T15:31:36-04:00</updated><id>https://mqcreaple.github.io//feed.xml</id><title type="html">My Blog | MqCreaple</title><subtitle>pay more attention to the beauty of formulas!</subtitle><author><name>MqCreaple</name></author><entry><title type="html">埃氏筛的复杂度计算</title><link href="https://mqcreaple.github.io//blog/2022/08/18/eto.html" rel="alternate" type="text/html" title="埃氏筛的复杂度计算" /><published>2022-08-18T00:00:00-04:00</published><updated>2022-08-18T00:00:00-04:00</updated><id>https://mqcreaple.github.io//blog/2022/08/18/eto</id><content type="html" xml:base="https://mqcreaple.github.io//blog/2022/08/18/eto.html"><![CDATA[<p><strong>埃拉托斯特尼筛法（Sieve of Erastosthenis）</strong>，简称<strong>埃氏筛</strong>，是一种可以在极少时间复杂度内算出$n$以内的所有质数的算法。</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="https://mqcreaple.github.io//feed.xml" rel="self" type="application/atom+xml" /><link href="https://mqcreaple.github.io//" rel="alternate" type="text/html" /><updated>2022-08-19T00:17:27-04:00</updated><id>https://mqcreaple.github.io//feed.xml</id><title type="html">My Blog | MqCreaple</title><subtitle>pay more attention to the beauty of formulas!</subtitle><author><name>MqCreaple</name></author><entry><title type="html">埃氏筛的复杂度计算</title><link href="https://mqcreaple.github.io//blog/2022/08/18/eto.html" rel="alternate" type="text/html" title="埃氏筛的复杂度计算" /><published>2022-08-18T00:00:00-04:00</published><updated>2022-08-18T00:00:00-04:00</updated><id>https://mqcreaple.github.io//blog/2022/08/18/eto</id><content type="html" xml:base="https://mqcreaple.github.io//blog/2022/08/18/eto.html"><![CDATA[<p><strong>埃拉托斯特尼筛法（Sieve of Erastosthenis）</strong>，简称<strong>埃氏筛</strong>，是一种可以在极少时间复杂度内算出$n$以内的所有质数的算法。</p>
 
 <h2 id="0-算法流程">#0 算法流程</h2>
 
@@ -24,7 +24,7 @@
         }
         ans[found++] = i;  // i为质数，添加至答案数组中
         for(int j = 2; i * j &lt; n; j++) {
-            p[i] = 1;      // 将所有i的倍数标记为“非质数”
+            p[i * j] = 1;      // 将所有i的倍数标记为“非质数”
         }
     }
     
@@ -163,7 +163,7 @@ $$</div>
 <p>经过此次化简，至少题目看起来像道代数题而不是数论题了，但无穷级数$\sum_{n=1}^\infty \frac 1{n\ln n}$仍然让人没有头绪。</p>
 
 <blockquote>
-  <p>引理2：对于一个单调函数$f(n)$</p>
+  <p>引理2：对于一个<strong>单调函数</strong>$f(n)$</p>
 
   <div class="kdmath">$$
 \sum_{n=1}^\infty f(n) \sim \int_1^\infty f(n)\mathrm dn
