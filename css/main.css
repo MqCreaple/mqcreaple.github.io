@@ -83,6 +83,8 @@ select {
     text-align: center;
 }
 
+/* table styles */
+
 table {
     text-align: center;
     border-collapse: collapse;
@@ -92,6 +94,18 @@ td, th {
     padding: 1%;
     border: 1px solid #000;
 }
+
+/* reactive list styles */
+
+ul.react {
+    list-style-type: none;
+}
+
+ul.react li:hover {
+    list-style-type: circle;
+}
+
+/* other */
 
 .floatleft {
     float: left;
@@ -162,6 +176,8 @@ td, th {
 .warn::before {
     content: "!: ";
 }
+
+/* element styles */
 
 #container {
     display: flex;

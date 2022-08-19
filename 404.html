@@ -1,12 +1,11 @@
 ---
 permalink: /404.html
 layout: default
+jquery: true
 ---
 
 <style type="text/css" media="screen">
   .container {
-    margin: 10px auto;
-    max-width: 600px;
     text-align: center;
   }
   h1 {
@@ -15,11 +14,55 @@ layout: default
     line-height: 1;
     letter-spacing: -1px;
   }
+  ul li {
+    padding-top: 0.4em;
+  }
+  #move {
+    position: relative;
+  }
 </style>
 
-<div class="container">
-  <h1>404</h1>
+<div class="card container">
+  <h1><i class="fa-solid fa-triangle-exclamation"></i>  Page not found!</h1>
 
-  <p><strong>Page not found :(</strong></p>
-  <p>The requested page could not be found.</p>
+  <p>The requested page could not be found. :(</p>
+  <p>If you get here by the hyperlink, please <a href="mailto:{{site.email}}">contact me</a> to report the problem.</p>
+  <div style="display: flex; flex-direction: row;">
+    <div style="width: 50%; max-width: 50%;">
+      <!-- left -->
+      <ul class="react">
+        <li><a href="/"><strong>BACK TO MAINPAGE</strong></a></li>
+        <li><a href="/blog/"><strong>VISIT MY BLOG</strong></a></li>
+      </ul>
+    </div>
+    <div style="width: 50%; max-width: 50%">
+      <!-- right -->
+      <h1 style="font-family: sans-serif; font-size: 5em;" id="text">
+        4
+        <span id="move">0</span>
+        4
+      </h1>
+    </div>
+  </div>
 </div>
+
+<script>
+  // linear interpolation
+  function lInterp(v1, v2, t) {
+    return v1 * (1 - t) + v2 * t;
+  }
+  $(document).ready(function() {
+    const offset = parseFloat($("#move").css("font-size")) / 2;
+    const color = [56, 200, 123]
+    $("body").on('mousemove', (e) => {
+      var bx = (e.clientX / window.outerWidth) * 2 - 1;
+      var by = (e.clientY / window.outerHeight) * 2 - 1;
+      var t = Math.hypot(bx, by) / 2;
+      $("#move").css({
+        "top": by * offset,
+        "left": bx * offset
+      });
+      $("#text").css("color", `rgb(${lInterp(color[0], 0, t)}, ${lInterp(color[1], 0, t)}, ${lInterp(color[2], 0, t)})`)
+    });
+  });
+</script>
