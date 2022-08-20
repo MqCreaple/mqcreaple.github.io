@@ -6,6 +6,13 @@
     <!-- Gitalk -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
     <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+    <!-- style for index.html -->
+    <style>
+        #avatar {
+            position: static;
+        }
+    </style>
 </head>
 <body>
 <div id='container'>
@@ -19,7 +26,7 @@
             </div>
             {% endif %}
 
-            <div class="card blog" onclick="window.open('/blog/')">
+            <div class="card blog" onclick="window.location.replace('/blog/')">
                 <h2><i class="fa fa-box-archive"></i> More Blogs >>></h2>
             </div>
             <div class="card">
@@ -42,6 +49,18 @@
         </div>
         <div id='right'>
             {% include avatar.html %}
+            {% if site.friends %}
+            <div class="card">
+                <h2>Links</h2>
+                <ul class="react">
+                    {% for friend in site.friends %}
+                    <li>
+                        <img class="inline-img" src="{{friend.image}}" /> <a href="{{friend.url}}" target="_blank">{{friend.name}}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
         </div>
     </div>
     {% include footer.html %}

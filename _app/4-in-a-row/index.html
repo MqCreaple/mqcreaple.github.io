@@ -1,0 +1,43 @@
+---
+title: Four in a row
+layout: empty
+introduction: a 3-Dimentional chess game
+jquery: true
+---
+
+{% capture head %}
+<script src="data.js"></script>
+<script src="4-in-a-row.js"></script>
+<link rel="stylesheet" href="4-in-a-row.css" />
+{% endcapture %}
+
+{% capture content_left %}
+<div class="card" id="article">
+    <div id="chessboard"></div>
+</div>
+<div class="card gamerule">
+    <h2>Game Rules</h2>
+    <p>The chess board is a 4×4×4 cube. One player is X and the other is O.</p>
+    <p>The first player who get four pieces in a row (row in 3D space of course) will win.</p>
+</div>
+{% endcapture %}
+
+{% capture content_right %}
+<div class="card control">
+    <div id="players">
+        <div class="player" id="player1">
+            <p>Player 1</p>
+            <p><i class="fas fa-times"></i></p>
+        </div>
+        <div class="player" id="player2">
+            <p>Player 2</p>
+            <p><i class="far fa-circle"></i></p>
+        </div>
+    </div>
+    <button class="control" onclick="withdraw()">
+        <i class="fa fa-arrow-left"></i> withdraw
+    </button>
+</div>
+{% endcapture %}
+
+{% include app-template.html %}

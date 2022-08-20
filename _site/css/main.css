@@ -71,6 +71,11 @@ img {
     margin: 1% auto 1% auto;
 }
 
+img.inline-img {
+    display: inline-block;
+    height: 1em;
+}
+
 input[type=text], select {
     background-color: rgba(0, 0, 0, 0);
     border: 1px solid #000000;

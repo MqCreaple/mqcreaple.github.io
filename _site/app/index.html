@@ -23,7 +23,10 @@
 <!-- mermaid -->
 <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
 <script>mermaid.initialize({startOnLoad:true});</script>
-    <title>About Me - My Blog | MqCreaple</title>
+    <title>home - My Blog | MqCreaple</title>
+    <!-- Gitalk -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
 </head>
 <body>
 <div id='container'>
@@ -39,37 +42,29 @@
 </div>
     <div id='main'>
         <div id='left'>
-            <div class='card article'>
-                
-                <h1>About Me</h1>
-                <ul>
-  <li>Minecraft三年玩家</li>
-  <li>物理狂热爱好者，物竞菜鸡</li>
-  <li>学了一些高等数学，不敢说精通</li>
-  <li>信竞AFO选手，正在考虑重新入坑</li>
-  <li>会C++和Java，但只会一点点。python和julia在学且在用</li>
-  <li><strong>想买Mathematica!!!!!!!</strong></li>
-</ul>
+            
 
-<p>课外我喜欢做：</p>
+<div class="card blog" onclick="window.open('/app/4-in-a-row/index.html')">
+    <h2>Four in a row</h2>
+    <p class="center"><i class="fa fa-file-text-o"></i> a 3-Dimentional chess game</p>
+    <p class="go">Run</p>
+</div>
 
-<ul>
-  <li>看书，想一些奇怪的问题</li>
-  <li>Minecraft</li>
-  <li>逛知乎和B站，膜各种大佬</li>
-  <li>骑车，滑雪</li>
-</ul>
 
-<p>你还能在哪看到我？</p>
 
-<ul>
-  <li>github: <a href="https://github.com/MqCreaple">MqCreaple</a></li>
-  <li>bilibili: <a href="https://space.bilibili.com/507017613">mqcreaple</a></li>
-  <li>当然还有我的邮箱：<a href="mailto:gmq14159@gmail.com">gmq14159@gmail.com</a></li>
-</ul>
 
-                
-            </div>
+
+<style>
+.go {
+    text-align:right;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+.go::after {
+    content: ">>>";
+    font-size: 1.6em;
+}
+</style>
         </div>
         <div id='right'>
             <div class="card" id="avatar">

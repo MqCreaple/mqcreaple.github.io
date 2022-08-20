@@ -27,6 +27,13 @@
     <!-- Gitalk -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
     <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+    <!-- style for index.html -->
+    <style>
+        #avatar {
+            position: static;
+        }
+    </style>
 </head>
 <body>
 <div id='container'>
@@ -37,6 +44,7 @@
         <a href="/aboutme/"><i class="fa-solid fa-user"></i>about me</a>
         <a href="/blog/"><i class="fa-regular fa-file-lines"></i>blog</a>
         <a href="/app/"><i class="fa-solid fa-cubes-stacked"></i>app</a>
+        <a href="/feed.xml"><i class="fa-solid fa-rss"></i>RSS</a>
     </div>
 </div>
     <div id='main'>
@@ -48,7 +56,7 @@
             </div>
             
 
-            <div class="card blog" onclick="window.open('/blog/')">
+            <div class="card blog" onclick="window.location.replace('/blog/')">
                 <h2><i class="fa fa-box-archive"></i> More Blogs >>></h2>
             </div>
             <div class="card">
@@ -133,6 +141,22 @@
         <a href="mailto:gmq14159@gmail.com"><i class="fa-regular fa-envelope"></i></a>
     </div>
 </div>
+            
+            <div class="card">
+                <h2>Links</h2>
+                <ul class="react">
+                    
+                    <li>
+                        <img class="inline-img" src="https://ttzytt.com/img/avatar.gif" /> <a href="https://ttzytt.com/" target="_blank">ttzytt</a>
+                    </li>
+                    
+                    <li>
+                        <img class="inline-img" src="https://zxp2019.github.io/favicon.jpg" /> <a href="https://zxp2019.github.io/" target="_blank">zxp2019</a>
+                    </li>
+                    
+                </ul>
+            </div>
+            
         </div>
     </div>
     <div id="footer">

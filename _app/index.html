@@ -1,0 +1,26 @@
+---
+title: app
+layout: default
+---
+
+{% for app in site.app %}
+{% if app.title != "app" %}
+<div class="card blog" onclick="window.open('{{app.url}}')">
+    <h2>{{app.title}}</h2>
+    <p class="center"><i class="fa fa-file-text-o"></i> {{app.introduction}}</p>
+    <p class="go">Run</p>
+</div>
+{% endif %}
+{% endfor %}
+
+<style>
+.go {
+    text-align:right;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+.go::after {
+    content: ">>>";
+    font-size: 1.6em;
+}
+</style>

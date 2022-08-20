@@ -26,6 +26,12 @@ kramdown:
   syntax_highlighter: nil
   math_engine: null
 
+# collections
+
+collections:
+  app:
+    output: true
+
 # custom
 
 version: "2.2"
@@ -33,3 +39,13 @@ icon: "/favicon.png"
 bilibili_username: mqcreaple
 bilibili_id: 507017613
 zhihu_username: gmq12
+
+# friends
+
+friends:
+  - name: ttzytt
+    url: https://ttzytt.com/
+    image: https://ttzytt.com/img/avatar.gif
+  - name: zxp2019
+    url: https://zxp2019.github.io/
+    image: https://zxp2019.github.io/favicon.jpg

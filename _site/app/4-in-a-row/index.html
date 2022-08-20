@@ -1,3 +1,9 @@
+
+
+
+
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,6 +13,9 @@
 <link rel="icon" href="/favicon.png">
 <link rel="stylesheet" href="/css/main.css">
 
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
 
 
 <!-- font awesome -->
@@ -23,7 +32,15 @@
 <!-- mermaid -->
 <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
 <script>mermaid.initialize({startOnLoad:true});</script>
-    <title>About Me - My Blog | MqCreaple</title>
+    <title>home - My Blog | MqCreaple</title>
+    <!-- Gitalk -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+    <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+    
+<script src="data.js"></script>
+<script src="4-in-a-row.js"></script>
+<link rel="stylesheet" href="4-in-a-row.css" />
+
 </head>
 <body>
 <div id='container'>
@@ -39,39 +56,35 @@
 </div>
     <div id='main'>
         <div id='left'>
-            <div class='card article'>
-                
-                <h1>About Me</h1>
-                <ul>
-  <li>Minecraft三年玩家</li>
-  <li>物理狂热爱好者，物竞菜鸡</li>
-  <li>学了一些高等数学，不敢说精通</li>
-  <li>信竞AFO选手，正在考虑重新入坑</li>
-  <li>会C++和Java，但只会一点点。python和julia在学且在用</li>
-  <li><strong>想买Mathematica!!!!!!!</strong></li>
-</ul>
+            
+<div class="card" id="article">
+    <div id="chessboard"></div>
+</div>
+<div class="card gamerule">
+    <h2>Game Rules</h2>
+    <p>The chess board is a 4×4×4 cube. One player is X and the other is O.</p>
+    <p>The first player who get four pieces in a row (row in 3D space of course) will win.</p>
+</div>
 
-<p>课外我喜欢做：</p>
-
-<ul>
-  <li>看书，想一些奇怪的问题</li>
-  <li>Minecraft</li>
-  <li>逛知乎和B站，膜各种大佬</li>
-  <li>骑车，滑雪</li>
-</ul>
-
-<p>你还能在哪看到我？</p>
-
-<ul>
-  <li>github: <a href="https://github.com/MqCreaple">MqCreaple</a></li>
-  <li>bilibili: <a href="https://space.bilibili.com/507017613">mqcreaple</a></li>
-  <li>当然还有我的邮箱：<a href="mailto:gmq14159@gmail.com">gmq14159@gmail.com</a></li>
-</ul>
-
-                
-            </div>
         </div>
         <div id='right'>
+            
+<div class="card control">
+    <div id="players">
+        <div class="player" id="player1">
+            <p>Player 1</p>
+            <p><i class="fas fa-times"></i></p>
+        </div>
+        <div class="player" id="player2">
+            <p>Player 2</p>
+            <p><i class="far fa-circle"></i></p>
+        </div>
+    </div>
+    <button class="control" onclick="withdraw()">
+        <i class="fa fa-arrow-left"></i> withdraw
+    </button>
+</div>
+
             <div class="card" id="avatar">
     <img src="/favicon.png" alt="avatar" id="image">
     <a href="/blog/aboutme/" id="name">MqCreaple</a>
