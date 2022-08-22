@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="mqcreaple.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="mqcreaple.github.io/" rel="alternate" type="text/html" /><updated>2022-08-20T05:29:26-04:00</updated><id>mqcreaple.github.io/feed.xml</id><title type="html">My Blog | MqCreaple</title><subtitle>pay more attention to the beauty of formulas!</subtitle><author><name>MqCreaple</name></author><entry><title type="html">埃氏筛的复杂度计算</title><link href="mqcreaple.github.io/blog/2022/08/18/eto.html" rel="alternate" type="text/html" title="埃氏筛的复杂度计算" /><published>2022-08-18T00:00:00-04:00</published><updated>2022-08-18T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2022/08/18/eto</id><content type="html" xml:base="mqcreaple.github.io/blog/2022/08/18/eto.html"><![CDATA[<p><strong>埃拉托斯特尼筛法（Sieve of Erastosthenis）</strong>，简称<strong>埃氏筛</strong>，是一种可以在极少时间复杂度内算出$n$以内的所有质数的算法。</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="mqcreaple.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="mqcreaple.github.io/" rel="alternate" type="text/html" /><updated>2022-08-22T03:05:09-04:00</updated><id>mqcreaple.github.io/feed.xml</id><title type="html">My Blog | MqCreaple</title><subtitle>pay more attention to the beauty of formulas!</subtitle><author><name>MqCreaple</name></author><entry><title type="html">埃氏筛的复杂度计算</title><link href="mqcreaple.github.io/blog/2022/08/18/eto.html" rel="alternate" type="text/html" title="埃氏筛的复杂度计算" /><published>2022-08-18T00:00:00-04:00</published><updated>2022-08-18T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2022/08/18/eto</id><content type="html" xml:base="mqcreaple.github.io/blog/2022/08/18/eto.html"><![CDATA[<p><strong>埃拉托斯特尼筛法（Sieve of Erastosthenis）</strong>，简称<strong>埃氏筛</strong>，是一种可以在极少时间复杂度内算出$n$以内的所有质数的算法。</p>
 
 <h2 id="0-算法流程">#0 算法流程</h2>
 
@@ -69,7 +69,7 @@ $$</div>
   <p>如果两个趋近无穷的数列$a_n$和$b_n$满足</p>
 
   <div class="kdmath">$$
-\lim_{n\rightarrow\infty}\frac{a_n}{b_n}=c
+\lim_{n\to\infty}\frac{a_n}{b_n}=c
 $$</div>
 
   <p>其中$c$为一个常数且不为$0$，那么这两个数列称为<strong>同阶无穷大</strong>，记作$a_n \sim b_n$。</p>
@@ -120,7 +120,7 @@ $$</div>
   <p>证明：根据同阶无穷小的定义，可得：</p>
 
   <div class="kdmath">$$
-\lim_{n\rightarrow\infty}\frac{a_n}{b_n}=c
+\lim_{n\to\infty}\frac{a_n}{b_n}=c
 $$</div>
 
   <p>根据极限的$\epsilon-N$定义，对于任给的$\epsilon\gt0$，总存在$N\gt0$，使得所有$n\gt N$都有：</p>
@@ -177,7 +177,7 @@ $$</div>
 \int_1^\infty f(n)\mathrm dn=\sum_{k=1}^\infty \int_k^{k+1}f(n)\mathrm dn
 $$</div>
 
-  <p>不妨假设函数$f(n)\gt0$，则$f(n)$单调减。又因为$\lim_{n\rightarrow\infty}f(n)=0$，因此：</p>
+  <p>不妨假设函数$f(n)\gt0$，则$f(n)$单调减。又因为$\lim_{n\to\infty}f(n)=0$，因此：</p>
 
   <div class="kdmath">$$
 \begin{align*}
@@ -1498,79 +1498,152 @@ end every 25
 
 <p>经过一次对硬件和软件的改造，人类完全可以做到超强的体力、耐力、计算能力、极长的寿命等，如果继续这样改进，不知道人会变成什么样子</p>
 
-<p>但是，也只有这样，才能让人类亲自走遍星辰大海，虽然此时的人类已经不是曾经的人类了</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="science-fiction" /><category term="AI" /><summary type="html"><![CDATA[生命：能够进行复制（繁殖）的物体]]></summary></entry><entry><title type="html">如何选择写作软件？</title><link href="mqcreaple.github.io/blog/2021/07/25/writing-software.html" rel="alternate" type="text/html" title="如何选择写作软件？" /><published>2021-07-25T00:00:00-04:00</published><updated>2021-07-25T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2021/07/25/writing-software</id><content type="html" xml:base="mqcreaple.github.io/blog/2021/07/25/writing-software.html"><![CDATA[<h2 id="为什么需要写作软件">为什么需要写作软件？</h2>
+<p>但是，也只有这样，才能让人类亲自走遍星辰大海，虽然此时的人类已经不是曾经的人类了</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="science-fiction" /><category term="AI" /><summary type="html"><![CDATA[生命：能够进行复制（繁殖）的物体]]></summary></entry><entry><title type="html">函数极值综述</title><link href="mqcreaple.github.io/blog/2021/08/04/extremum.html" rel="alternate" type="text/html" title="函数极值综述" /><published>2021-08-04T00:00:00-04:00</published><updated>2021-08-04T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2021/08/04/extremum</id><content type="html" xml:base="mqcreaple.github.io/blog/2021/08/04/extremum.html"><![CDATA[<h2 id="什么是极值">什么是极值？</h2>
 
-<p>不是只有作家才需要写作软件。无论是文章，还是你的学习笔记、实验记录、所思所想，写作软件都可以非常方便地管理它们。</p>
+<p>函数的极值，可以理解为函数在某一局部上的最值，即图像上“峰”和“谷”位置的点。例如下图：</p>
 
-<p>写作软件可以做到许多纸质笔记本难以做到的事情，比如你可以：</p>
+<p><img src="/img/MT0000.jpg" alt="MT0000" /></p>
+
+<p><img src="/img/MT0001.jpg" alt="MT0001" /></p>
+
+<p>找到极值点，对我们寻找函数的最值也很有帮助——<strong>最大值点一定是极大值点，最小值点一定是极小值点</strong>。 因此如果我们要寻找某一区间中的最值点，只需要先找到极值点和区间端点，接着找出这些点中最大的和最小的，即为最大值点和最小值点</p>
+
+<p>那么问题来了，极值点怎么找呢？</p>
+
+<h2 id="导数和梯度">导数和梯度</h2>
+
+<p>直观上想，函数在某一个局部的最大值或最小值，它的附近应该是平缓的，而非极值点的位置附近应该有一定的坡度：</p>
+
+<p><img src="/img/MT0002.jpg" alt="MT0002" /></p>
+
+<p>学过一点微积分的同学们应该知道，其实某一个点附近的坡度，就是该点的导数$\frac{\mathrm df}{\mathrm dx}$， 而极大、极小值点，就等价于该点附近导数为0，即</p>
+
+<div class="kdmath">$$
+\frac{\mathrm df}{\mathrm dx}=0
+$$</div>
+
+<p>当然，这个规律也可以推广到多维函数，只不过我们不再使用导数，而是<strong>偏导数</strong></p>
+
+<p><img src="/img/cmich.edu-pderv1.gif" alt="cmich.edu-pderv1" /></p>
+
+<p>对于某个多元函数，偏导数就是在某个特定方向上的导数。 例如$\frac{\partial f(x,y)}{\partial x}$就是函数某点在$x$轴截面上的导数， $\frac{\partial f(x,y)}{\partial y}$同理</p>
+
+<p>类比导数的定义: $\frac{\mathrm df(x)}{\mathrm dx}=\lim\limits_{\Delta x\to 0}\frac{f(x+\Delta x)-f(x)}{\Delta x}$, 我们可以给出偏导数的定义：</p>
+
+<div class="kdmath">$$
+\frac{\partial f(x,y)}{\partial x}=\lim\limits_{\Delta x\to 0}\frac{f(x+\Delta x, y)-f(x,y)}{\Delta x}
+$$</div>
+
+<div class="kdmath">$$
+\frac{\partial f(x,y)}{\partial y}=\lim\limits_{\Delta y\to 0}\frac{f(x, y+\Delta y)-f(x,y)}{\Delta y}
+$$</div>
+
+<p>每一个方向上的偏导数，都对应着一条曲线的切线。 而我们知道，经过两个点的直线可以唯一确定一个平面（即曲线的切平面），因此可以引入一个新的量来描述这个切平面：<strong>梯度 gradient</strong></p>
+
+<div class="kdmath">$$
+\nabla f=\left(\frac{\partial f}{\partial x},\frac{\partial f}{\partial y}\right)
+$$</div>
+
+<p>梯度永远指向函数增长最快的方向，并且增长越快，切平面越倾斜，梯度向量越大</p>
+
+<p>不难想到，对于多元函数的极值点（即“山峰”和“盆地”处），应当满足该位置的切平面与大地水平，换句话说就是：<strong>梯度为0</strong></p>
+
+<div class="kdmath">$$
+\nabla f(x,y)=\vec 0
+$$</div>
+
+<p><img src="/img/MT0003.jpg" alt="MT0003" /></p>
+
+<h2 id="be-careful">Be Careful!</h2>
+
+<p>然鹅，你仍然需要保持警惕：<strong>梯度为0的点，不一定是极值点，更不一定是最值点！</strong></p>
+
+<p>像这样的点，统称为<strong>鞍点</strong></p>
+
+<p>比如说下面这张图中的函数为$y=x^3$，它在$x=0$处的导数恰好为0，可是这个位置既不是极大值也不是极小值：</p>
+
+<p><img src="/img/MT0004.jpg" alt="MT0004" /></p>
+
+<p>多元函数中这样的例子则就更多了。比如，在两个山峰之间存在着一个“鞍点”，见下图：</p>
+
+<p><img src="/img/MT0005.jpg" alt="MT0005" /></p>
+
+<p>这个点从x方向上看是极小值点，而从y方向上看是极大值点，总不能说它既是极大值又是极小值吧！ 因此这个点虽然梯度为0，但并不是极值点</p>
+
+<p>它的梯度场形状如下：</p>
+
+<p><img src="/img/MT0006.jpg" alt="MT0006" /></p>
+
+<h2 id="总结一下">总结一下</h2>
+
+<p>寻找函数极值</p>
 
 <ul>
-  <li>更便捷地插入图像，视频，链接</li>
-  <li>将作品分享到互联网上</li>
-  <li>将作品同步至云，防止丢失</li>
-  <li>在多个平台（电脑，手机，iPad等）上进行编辑</li>
-  <li>使用搜索功能快速地检索文章</li>
-  <li>可以随时修改和撤回</li>
+  <li>极值点的导数/梯度一定为0</li>
+  <li>某些导数/梯度为0的点不是极值
+    <ul>
+      <li>一元函数：当函数左右两侧同时单调增或同时单调减时</li>
+      <li>多元函数：（鞍点）从一个角度看是极大值，另一个角度看是极小值时</li>
+    </ul>
+  </li>
+  <li>方法：首先计算函数的导数/梯度，令其为0，解方程得到所有的驻点，接着逐个筛选出其中的极值点</li>
 </ul>
 
-<p>当然，写作软件也有一定的缺点：</p>
+<p>寻找函数在某一区间上/某一范围内的最值，步骤：</p>
 
-<ul>
-  <li>没有电脑/没有网的时候，你会很崩溃</li>
-  <li>流程图、思维导图这些东西，电脑不方便编辑</li>
-  <li>给人的感觉方面，电脑上的文字不如纸上的文字更亲切</li>
-</ul>
+<ol>
+  <li>找到在该区间内的所有极值点</li>
+  <li>计算边界点上的函数值</li>
+  <li>比较所有区间内的极值点和边界点，最大的就是最大值，最小的就是最小值</li>
+</ol>
 
-<h2 id="我该选择怎样的写作软件">我该选择怎样的写作软件？</h2>
+<p>寻找整个函数的最值，步骤：</p>
 
-<p>对于如何筛选写作软件这个问题，我给出的核心要求是：<strong>你的大脑是用来想问题的，不是用来浪费在操作细节上的</strong></p>
+<ol>
+  <li>找到函数的所有极值点</li>
+  <li>计算$\lim\limits_{x\to +\infty}f(x),\lim\limits_{x\to -\infty}f(x)$
+    <ul>
+      <li>若其为$+\infty$，则函数没有最大值</li>
+      <li>若其为$-\infty$，则函数没有最小值</li>
+      <li>若一个是$+\infty$，另一个是$-\infty$，则函数没有最值</li>
+    </ul>
+  </li>
+  <li>比较所有极值点和函数的两个极限，最大的就是最大值，最小的就是最小值</li>
+</ol>
 
-<p>因此，我<strong>不推荐按钮操作的富文本编辑器</strong>，比如Word, OneNote等。因为在书写时你需要频繁地使用鼠标点击按钮进行编辑，这会大大降低你的写作速度和写作热情</p>
+<h2 id="练习题">练习题</h2>
 
-<p>强烈建议大家使用支持markdown的写作软件，markdown是我目前用过最顺手的文本编辑语言，没有之一</p>
+<h3 id="part-1-计算">part 1: 计算</h3>
 
-<p>推荐几个写作软件：</p>
+<ol>
+  <li>求$f(x)=\frac15x^3+x^2-4x+5$的极值</li>
+  <li>求$f(x,y)=-5x^2-8y^2-2xy+42x+102y$的极值</li>
+  <li>求$f(x,y)=x\ln x+y\ln y$的极值</li>
+  <li>求$f(x,y)=\ln(x^2+y^2+1)-\ln x$的极值</li>
+</ol>
 
-<h3 id="tiddlywiki"><a href="https://tiddlywiki.com/">TiddlyWiki</a></h3>
+<h3 id="part-2-应用">part 2: 应用</h3>
 
-<p><a href="https://tiddlywiki.com/">TiddlyWiki</a>适合用来管理以文字、代码、数学公式为主的文章，适合有一定编程基础的人使用</p>
+<p>（线性回归）统计学上为了衡量一系列数据的趋势，往往需要用一条直线来拟合这些数据</p>
 
-<p>没有专门的客户端，它的所有内容全都被加载到了一个大小不超过5M的html文件中，用浏览器就可以打开和编辑，这使得它很容易保存和分享</p>
+<p>现在有三个点：$A_1(1,5),A_2(2,13),A_3(3,19)$，你需要用直线$f(x)=ax+b$来拟合它们。我们使用</p>
 
-<p>有着非常强大的标签搜索整理功能，例如可以用一个<code>[tag[A]-[B]]</code>代码来快速过滤包含A但不包含B的条目。条目之间的链接也可以用<code>[[]]</code>方便地实现</p>
+<div class="kdmath">$$
+c=\sum\limits_{n=1}^3 (f(n)-y_n)^2
+$$</div>
 
-<p>内置一个很有意思的标记语言，其功能与html不相上下，但比html简洁得多</p>
+<p>来衡量函数的拟合程度，其中$f(n)$就是$x=n$时$f(x)$的取值，$y_n$是第$n$个点的纵坐标</p>
 
-<p>有许多插件。如果你足够强，还可以开发一个插件，虽然我太菜了(￣﹏￣；)</p>
+<p><img src="/img/MT0007.jpg" alt="MT0007" /></p>
 
-<h3 id="evernote-或-印象笔记"><a href="https://evernote.com/">EverNote</a> 或 <a href="https://www.yinxiang.com/">印象笔记</a></h3>
+<p>你的目标是让$c$函数尽量小，从而使直线尽量接近原有的数据。如何算出这条直线？最终算出来的$a,b$大约是多少？</p>
 
-<p>EverNote适合各种需求的写作，零基础即可使用</p>
+<p>你能把这个规律推广到任意多个数据点吗？</p>
 
-<p>支持一系列快捷键，操作也很直观便捷</p>
+<h3 id="part-3-思考">part 3: 思考</h3>
 
-<p>置入图片和网页非常方便，自带的截图工具也很给力</p>
+<p>有时候我们需要计算多元函数在某一封闭曲线$\phi(x,y)=0$内部的最大值和最小值</p>
 
-<p>使用笔记本来管理不同类别的笔记</p>
+<p>根据之前的知识，我们知道，不仅区间内的极值点需要考虑，边界上的所有点也有可能成为极值点</p>
 
-<p>电脑和手机都有相应客户端，可以多平台编辑</p>
-
-<p>我也没用过几次，就不过多评论了。。。</p>
-
-<p>注意：国际版的EverNote和中国版的印象笔记账号不通用</p>
-
-<h3 id="typora"><a href="https://www.typora.io/">Typora</a></h3>
-
-<p>Typora是一个功能完备且用户友好的Markdown编辑器</p>
-
-<p>不同于大部分Markdown编辑器的双窗口界面，Typora将“编辑”和“预览”两个功能合二为一，实时预览</p>
-
-<p>自带LaTeX支持，Mermaid流程图绘制等markdown插件</p>
-
-<p>有着完备的用户偏好设置，完全不用担心上手困难</p>
-
-<p>支持便捷的图片插入，包括Ctrl+V和直接拖动图片</p>
-
-<p>当然，它没有给你提供现成的云服务，你需要寻找其它云来存储文件</p>
-
-<p>2021-12-15补：Typora现在开始收费了</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="use-computer-well" /><category term="writing" /><category term="blog" /><summary type="html"><![CDATA[为什么需要写作软件？]]></summary></entry></feed>
+<p>那么，如何求解函数$f(x,y)$在某一边界条件$\phi(x,y)=0$的最值呢？</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="math" /><category term="calculus" /><summary type="html"><![CDATA[什么是极值？]]></summary></entry></feed>
