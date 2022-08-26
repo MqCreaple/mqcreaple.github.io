@@ -1,0 +1,55 @@
+---
+no_output: true
+---
+
+.lambda-panel {
+    font-family: "Open Sans", Helvetica, "Lucida Sans Unicode", "Lucida Grande", Arial, Verdana, sans-serif;
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: auto;
+    padding: 2px 5px;
+}
+
+.l {
+    margin: 2px 5px;
+    display: inline-block;
+    cursor: default;
+    border: 2px solid rgba(0, 0, 0, 0);
+}
+
+.l.l-lambda-expr {
+    background-color: #99beff;
+    &::before {
+        content: "(";
+    }
+    &::after {
+        content: ")";
+    }
+}
+
+.l.l-func-call {
+    background-color: #f0c99e;
+    &::before {
+        content: "(";
+    }
+    &::after {
+        content: ")";
+    }
+}
+
+.l.l-lambda {
+    &::before {
+        content: "λ";
+    }
+    &::after {
+        content: ".";
+    }
+}
+
+.l.l-replace:hover {
+    background-color: #c5e893;
+}
+
+.l.l-emph {
+    background-color: #c4ddff;
+}

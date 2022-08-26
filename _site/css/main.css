@@ -74,6 +74,7 @@ img {
 img.inline-img {
     display: inline-block;
     height: 1em;
+    vertical-align: baseline;
 }
 
 input[type=text], select {

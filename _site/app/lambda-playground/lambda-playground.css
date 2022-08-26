@@ -1,0 +1,24 @@
+@charset "UTF-8";
+.lambda-panel { font-family: "Open Sans", Helvetica, "Lucida Sans Unicode", "Lucida Grande", Arial, Verdana, sans-serif; vertical-align: middle; white-space: nowrap; overflow: auto; padding: 2px 5px; }
+
+.l { margin: 2px 5px; display: inline-block; cursor: default; border: 2px solid rgba(0, 0, 0, 0); }
+
+.l.l-lambda-expr { background-color: #99beff; }
+
+.l.l-lambda-expr::before { content: "("; }
+
+.l.l-lambda-expr::after { content: ")"; }
+
+.l.l-func-call { background-color: #f0c99e; }
+
+.l.l-func-call::before { content: "("; }
+
+.l.l-func-call::after { content: ")"; }
+
+.l.l-lambda::before { content: "λ"; }
+
+.l.l-lambda::after { content: "."; }
+
+.l.l-replace:hover { background-color: #c5e893; }
+
+.l.l-emph { background-color: #c4ddff; }
