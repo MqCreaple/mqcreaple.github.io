@@ -107,19 +107,16 @@ function nameExpr(dom, globalName, localName = "", refTable = {}) {
         }
     } else if(dom.classList.contains("l-lambda-expr")) {
         //* lambda expression *//
+        let newRefTable = {...refTable};
         for(let i = 0; i < dom.children.length - 1; i++) {
             let child = dom.children[i];
             child.id = globalName + localName + i;
             child.dataset.refs = "";
             // add variable name to refTable
-            refTable[child.innerHTML] = child;
+            newRefTable[child.innerHTML] = child;
         }
         // recursively name the body of lambda expression
-        nameExpr(dom.children[dom.children.length - 1], globalName, localName + "b", refTable);
-        // remove entries from refTable
-        for(let i = 0; i < dom.children.length - 1; i++) {
-            delete refTable[dom.children[i].innerHTML];
-        }
+        nameExpr(dom.children[dom.children.length - 1], globalName, localName + "b", newRefTable);
     } else if(dom.classList.contains("l-func-call")) {
         //* function call *//
         for(let i = 0; i < dom.children.length; i++) {
