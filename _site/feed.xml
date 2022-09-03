@@ -1,4 +1,396 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="mqcreaple.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="mqcreaple.github.io/" rel="alternate" type="text/html" /><updated>2022-08-29T09:46:52-04:00</updated><id>mqcreaple.github.io/feed.xml</id><title type="html">My Blog | MqCreaple</title><subtitle>pay more attention to the beauty of formulas!</subtitle><author><name>MqCreaple</name></author><entry><title type="html">用λ演算建立数学</title><link href="mqcreaple.github.io/blog/2022/08/27/lambda.html" rel="alternate" type="text/html" title="用λ演算建立数学" /><published>2022-08-27T00:00:00-04:00</published><updated>2022-08-27T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2022/08/27/lambda</id><content type="html" xml:base="mqcreaple.github.io/blog/2022/08/27/lambda.html"><![CDATA[<link rel="stylesheet" href="/app/lambda-playground/lambda-playground.css" />
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="mqcreaple.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="mqcreaple.github.io/" rel="alternate" type="text/html" /><updated>2022-09-03T03:14:42-04:00</updated><id>mqcreaple.github.io/feed.xml</id><title type="html">My Blog | MqCreaple</title><subtitle>pay more attention to the beauty of formulas!</subtitle><author><name>MqCreaple</name></author><entry><title type="html">Y combinator和递归</title><link href="mqcreaple.github.io/blog/2022/09/02/y-combinator.html" rel="alternate" type="text/html" title="Y combinator和递归" /><published>2022-09-02T00:00:00-04:00</published><updated>2022-09-02T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2022/09/02/y-combinator</id><content type="html" xml:base="mqcreaple.github.io/blog/2022/09/02/y-combinator.html"><![CDATA[<link rel="stylesheet" href="/app/lambda-playground/lambda-playground.css" />
+
+<script src="/app/lambda-playground/lambda-playground.js" onload="autoRender()"></script>
+
+<p><strong>如果你不了解λ演算，请阅读<a href="/blog/2022/08/27/lambda.html">上一篇博客</a>以获得最佳食用体验</strong></p>
+
+<p><em>注：本文的λ表达式中所有出现的下划线<code>_</code>，都表示“这个值我懒得算且不关心”</em></p>
+
+<h2 id="y组合子">Y组合子</h2>
+
+<p>其实，并不是所有的λ表达式都可以求值。比如说，一个经典的构造就是：</p>
+
+<pre><code class="language-plaintext">((λx. (x x)) (λx. (x x)))
+</code></pre>
+
+<p class="lambda-r">[ [ "λx", [ "x", "x" ] ], [ "λx", [ "x", "x" ] ] ]</p>
+
+<p>这个表达式很有意思。当你把后面的表达式代入前面的<code>x</code>中时，你又会得到和原来一摸一样的表达式，你永远也无法化简它。换句话说，它是<strong>不可求值</strong>的。</p>
+
+<p>而我们对这个表达式简单地变一下，就得到了另一个表达式：</p>
+
+<pre><code class="language-plaintext">((λx. f (x x)) (λx. f (x x)))
+</code></pre>
+
+<p class="lambda-r">[ [ "λx", [ "f", [ "x", "x" ] ] ], [ "λx", [ "f", [ "x", "x" ] ] ] ]</p>
+
+<p>当你把后一项代入前一项时，它不仅得到了原来的表达式，而且还在外面多套上了一层函数<code>f</code>。在进行一次替换操作，函数外面就又多了一层<code>f</code>，你可以一直这样无穷无尽地迭代下去。</p>
+
+<p>稍稍将外面这个函数改一下，就得到了著名的<strong>Y组合子(Y combinator)</strong>：</p>
+
+<pre><code class="language-plaintext">Y := λf. ((λx. f (x x)) (λx. f (x x)))
+</code></pre>
+
+<p>Y组合子的一大性质就是：</p>
+
+<pre><code class="language-plaintext">(Y f) = (f (Y f))
+</code></pre>
+
+<p>由于它和函数的不动点$x=f(x)$长得很像，所以Y组合子也叫<strong>不动点组合子(fixed point combinator)</strong>。</p>
+
+<p><em>注：Y组合子并不是唯一的不动点组合子。比如由Alan Turing给出的Θ组合子</em></p>
+
+<pre><code class="language-plaintext">Θ := ((λx. λy. y (x x y)) (λx. λy. y (x x y)))
+</code></pre>
+
+<p><em>它同样满足不动点组合子的性质：</em></p>
+
+<pre><code class="language-plaintext">(Θ f) = (f (Θ f))
+</code></pre>
+
+<p>根据不动点组合子的性质，任何不动点组合子<code>fix</code>都有：</p>
+
+<pre><code class="language-plaintext">(fix f) = (f (fix f))
+        = (f (f (fix f)))
+        = (f (f (f (fix f))))
+        = ...
+        = (n f (fix f))
+</code></pre>
+
+<p>其中<code>n</code>为任意有限的自然数。这个式子我们在之后会很频繁地用到。如果你忘记了自然数的意义，可以回到<a href="/blog/2022/08/27/lambda.html">上一篇博客</a>。</p>
+
+<h2 id="函数递归">函数递归</h2>
+
+<p>Y组合子的一大用途，就是在λ代数中表示“递归”。</p>
+
+<p>例如，你可能会这样写一个求阶乘的函数：</p>
+
+<pre><code class="language-plaintext">fac = λx. (if (x==0)
+                (1)
+                (x*(fac (x-1))))
+</code></pre>
+
+<p>（为了方便起见，这里我就不写成前缀表达式了）</p>
+
+<blockquote>
+  <p>注：<code>if</code>语句</p>
+
+  <p><code>(if b x y)</code>的定义是：如果<code>b</code>为真，返回<code>x</code>，否则返回<code>y</code>。</p>
+
+  <p>根据我们对布尔值<code>T</code>和<code>F</code>的定义：</p>
+
+  <pre><code class="language-plaintext">T := λa. λb. a
+F := λa. λb. b
+</code></pre>
+
+  <p>语句<code>(if b x y)</code>可以看作是<code>(b x y)</code>的另一种写法</p>
+</blockquote>
+
+<p>可惜的是，λ表达式里并不允许递归。但是有了Y组合子，我们也可以实现类似递归的效果。</p>
+
+<p>首先我们重写一下刚刚的<code>fac</code>函数：</p>
+
+<pre><code class="language-plaintext">fac = λf. λx. (if (x==0)
+                    (1)
+                    (x*(f (x-1))))
+</code></pre>
+
+<p>现在<code>fac</code>变成了接受一个函数<code>f</code>和参数<code>x</code>的函数。那么接下来：</p>
+
+<pre><code class="language-plaintext">(Y fac 5)
+</code></pre>
+
+<p>就可以正确地返回我们想要的结果。证明如下：</p>
+
+<pre><code class="language-plaintext">(Y fac 5) = ((fac (Y fac)) 5)                       ; 利用(Y f)=(f (Y f))
+          = (if (5==0) (1) (5*((Y fac) (5-1))))     ; 将5代入x，(Y fac)代入f
+          = 5*((Y fac) 4)                           ; 展开if
+          = 5*(fac (Y fac) 4)                       ; 还是(Y f)=(f (Y f))
+          = 5*(if (4==0) (1) (4*((Y fac) (4-1))))   ; 继续展开
+          = 5*4*((Y fac) 3)
+          = ...
+          = 5*4*3*2*1*((Y fac) 0)
+          = 5*4*3*2*1*(fac (Y fac) 0)
+          = 5*4*3*2*1*(if (0==0) (1) (0*((Y fac) (0-1))))
+          = 5*4*3*2*1*1
+          = 5!
+</code></pre>
+
+<p>更一般地，对于一个函数$f$：</p>
+
+<div class="kdmath">$$
+f=\lambda x_1.\ \lambda x_2.\ \lambda x_3.\ \cdots\ \lambda x_n.\ [\text{BODY}]
+$$</div>
+
+<p>而$f$的函数体中使用了递归（即：调用了自己），那么我们可以将$f$改写为$f’$使得它能够在我们的λ代数中运行：</p>
+
+<div class="kdmath">$$
+f'=\lambda g.\ \lambda x_1.\ \lambda x_2.\ \cdots\ \lambda x_n.\ [\text{BODY}][f:=g]
+$$</div>
+
+<p>后面的$[\text{BODY}][f:=g]$表示将函数体里所有出现的$f$全部替换成$g$。如果你没有理解为什么要这样做，可以回看一下上面阶乘的例子。</p>
+
+<p>进行求值的时候，只需要做：</p>
+
+<div class="kdmath">$$
+((Y\ f')\ x_1\ x_2\ x_3\ \cdots\ x_n)
+$$</div>
+
+<p>就相当于计算$f$代入参数$x_1$到$x_n$的值。</p>
+
+<h2 id="列表和懒惰求值">列表和懒惰求值</h2>
+
+<h3 id="列表">列表</h3>
+
+<p>你应该还记得上篇文章的思考题里出现了一个<code>pair</code>函数。它满足：</p>
+
+<pre><code class="language-plaintext">(first (pair a b)) = a
+(second (pair a b)) = b
+</code></pre>
+
+<p>一个可行的构造利用了布尔值<code>T</code>和<code>F</code>的性质：</p>
+
+<pre><code class="language-plaintext">pair := λa. λb. λt. (t a b)              ; 其中t为一个布尔值
+first := λp. (p T)
+second := λp. (p F)
+</code></pre>
+
+<p>在<code>pair</code>的基础上，你还可以构造出另一个数据结构：列表<code>list</code>。</p>
+
+<pre><code class="language-plaintext">(list3 a b c) := λNIL. (pair a (pair b (pair c NIL)))
+(list4 a b c d) := λNIL. (pair a (pair b (pair c (pair d NIL))))
+(list5 a b c d e) := λNIL. (pair a (pair b (pair c (paid d (pair e NIL)))))
+</code></pre>
+
+<p>其中<code>NIL</code>是一个占位符，用来标志列表结尾。</p>
+
+<p>一个特殊的列表是空列表：<code>list0</code></p>
+
+<pre><code class="language-plaintext">list0 := λNIL. NIL
+</code></pre>
+
+<p>有了这些定义之后，我们就可以用递归的语法来定义列表的一些操作。比如：</p>
+
+<h4 id="列表判空">列表判空</h4>
+
+<p>要求：只有当传入的列表是空列表时，返回<code>T</code>，否则返回<code>F</code></p>
+
+<pre><code class="language-lisp">null := λl. (l F (λx. λy. λz. F) T)
+</code></pre>
+
+<p>首先我们发现，除了空列表以外，其他列表都是<code>λNIL. (pair _ _)</code>的形式。将<code>pair</code>函数展开得到：<code>λNIL. λb. (b _ _)</code>。如果将函数<code>null</code>作用于这个非空列表，就会得到：</p>
+
+<pre><code class="language-plaintext">(null l) = ((λl. (l F (λx. λy. λz. F) T)) (λNIL. λb. (b _ _)))
+         = ((λNIL. λb. (b _ _)) F (λx. λy. λz. F) T)
+         = ((λx. λy. λz. F) _ _ T)                       ; 函数接收3个参数并返回常值F
+         = F
+</code></pre>
+
+<p>而空列表则会返回：</p>
+
+<pre><code class="language-plaintext">(null list0) = ((λl. (l F (λx. λy. λz. F) T) (λNIL. NIL))
+             = ((λNIL. NIL) F (λx. λy. λz. F) T)
+             = (F (λx. λy. λz. F) T)
+             = ((λa. λb. b) (λx. λy. λz. T) T)
+             = T
+</code></pre>
+
+<h4 id="列表的第一个元素">列表的第一个元素</h4>
+
+<pre><code class="language-plaintext">car := (first (l _))
+</code></pre>
+<p><code>car</code>返回了列表的第一个元素，前提是列表<code>l</code>非空。</p>
+
+<p>类似地，可以写出<code>cdr</code>，返回列表除了第一个元素以外的其他元素构成的列表：</p>
+
+<pre><code class="language-plaintext">cdr := λNIL. (second (l NIL))
+</code></pre>
+
+<p><code>car</code>和<code>cdr</code>这两个函数名可能看起来很奇怪，但这两个函数名来源于最古老的函数式编程语言：Lisp。<del>这也是Lisp的函数命名经常被吐槽的原因之一</del></p>
+
+<h4 id="列表长度">列表长度</h4>
+
+<p>有了<code>null</code>函数，很多列表的操作都能用递归实现了。比如列表的长度计算：</p>
+
+<pre><code class="language-lisp">length := λl. (if (null l)
+                    (0)
+                    ((length (cdr l))+1))
+</code></pre>
+
+<p>注意到<code>(second l)</code>返回列表<code>l</code>从第二项到末尾的子列表，它的长度一定是原列表的长度减去1。</p>
+
+<p>我们可以用前文所说的方法将函数转化为一个非递归函数，并用Y组合子求值。</p>
+
+<h4 id="列表第n项">列表第<code>n</code>项</h4>
+
+<p>假设下标从0开始。</p>
+
+<pre><code class="language-lisp">nth := λl. λn. (if (null l)
+                     (error "Index out of bound!")      ; 如果是空列表，报错
+                     (if (n==0)
+                          (car l)
+                          (nth (cdr l) (n-1))))
+</code></pre>
+
+<p>这里利用<code>(nth l n) = (nth (cdr l) (n-1))</code>递归查找第<code>n</code>项。</p>
+
+<h4 id="添加元素">添加元素</h4>
+
+<pre><code class="language-lisp">append := λl. λa. λNIL. (l (pair a NIL))
+</code></pre>
+
+<p>在列表末尾追加元素<code>a</code>，相当于把列表的<code>NIL</code>替换成<code>(pair a NIL)</code>。</p>
+
+<pre><code class="language-lisp">prepend := λl. λa. λNIL. (pair a (l NIL))
+</code></pre>
+
+<p>在列表前面添加元素<code>a</code>，相当于在原来的<code>l</code>外面套一层函数<code>(pair a)</code>。</p>
+
+<h4 id="筛选元素">筛选元素</h4>
+
+<p>函数<code>(filter c l)</code>返回列表<code>l</code>中所有满足条件<code>c</code>的元素构成的新列表。</p>
+
+<pre><code class="language-lisp">filter = λc. λl.
+         (if (null l)
+               (list0)                                    ; 如果l是空列表，返回一个空列表
+               (if (c (car l))
+                     (prepend (filter (cdr l) c) (car l))
+                     (filter (cdr l) c)))
+</code></pre>
+
+<p><del>如果你试着手打一下这一层套一层的括号，就能理解Lisp的痛了</del></p>
+
+<p>例如我们有一个列表<code>l = [1, 2, 3, 4] = λNIL. (pair 1 (pair 2 (pair 3 (pair 4 NIL))))</code>，那么：</p>
+
+<pre><code class="language-plaintext">(filter (λx. x&gt;2) l)
+</code></pre>
+
+<p>就会返回列表：<code>[3, 4]</code>。而：</p>
+
+<pre><code class="language-plaintext">(filter (λx. x%2==0) l)
+</code></pre>
+
+<p>就会返回列表：<code>[2, 4]</code></p>
+
+<h3 id="无限长列表">无限长列表</h3>
+
+<p>既然我们定义了有限长的列表，那么是否可以定义无限长的列表？</p>
+
+<p>不妨看一下这个递归函数：</p>
+
+<pre><code class="language-plaintext">r := λNIL. (pair 1 (r NIL))
+</code></pre>
+
+<p>它展开后会得到一个无限重复<code>1</code>的列表：</p>
+
+<pre><code class="language-plaintext">λNIL. (pair 1 (pair 1 (pair 1 (pair 1 (......)))))
+</code></pre>
+
+<p>稍稍更改一下，还可以得到由所有自然数构成的列表：</p>
+
+<pre><code class="language-plaintext">s := λn. λNIL. (pair n (s n+1 NIL))
+(s 0) = λNIL. (pair 0 (pair 1 (pair 2 (pair 3 (......)))))
+</code></pre>
+
+<p>接下来我们探讨一下类似这样的列表的性质：</p>
+
+<h4 id="判空">判空</h4>
+
+<p>以上文中的<code>r=(1, 1, 1, 1, ...)</code>为例：</p>
+
+<pre><code class="language-plaintext">r' = λf. λNIL. (pair 1 (f NIL))
+(null r) = (null (Y r'))
+         = ((Y r') F (λx. λy. λz. F) T)
+         = ((λNIL. pair 1 (Y r' NIL)) F (λx. λy. λz. F) T)
+         = ((λx. λy. λz. F) 1 (Y r' _) T)
+         = F
+</code></pre>
+
+<p>这个结果也在意料之内，因为无限长的列表肯定不是空的。</p>
+
+<h4 id="第n个元素">第<code>n</code>个元素</h4>
+
+<p>先看看<code>r=[1, 1, 1, 1, ...]</code>：</p>
+
+<pre><code class="language-plaintext">r' = λf. λNIL. (pair 1 (f NIL))
+(nth r n) = (nth (Y r') n)
+          = (if (null (Y r'))
+                  (_)
+                  (if (n==0)
+                        (car (Y r'))
+                        (nth (cdr (Y r')) (n-1))))
+          = (if (n==0)                                 ; 根据前文的结论，(null r) = F，跳过第一个分支
+                  (car (Y r'))
+                  (nth (cdr (Y r')) (n-1)))
+</code></pre>
+
+<blockquote>
+  <p>引理：</p>
+
+  <pre><code class="language-plaintext">(car (Y r')) = (car (r' (Y r')))
+             = (car (λNIL. pair 1 (Y r' NIL)))
+             = 1
+</code></pre>
+
+  <pre><code class="language-plaintext">(cdr (Y r')) = (cdr (r' (Y r')))
+             = (cdr (λNIl. pair 1 (Y r' NIL)))
+             = λNIL. (Y r' NIL)
+             = (Y r')
+</code></pre>
+  <p>换句话说，列表<code>(Y r')</code>的第一个元素永远是<code>1</code>，而它从第二个元素开始的子列表就是自己</p>
+</blockquote>
+
+<p>回到上面的证明：</p>
+
+<pre><code class="language-plaintext">(nth r n) = (if (n==0)
+                  (1)
+                  (nth r n-1))
+</code></pre>
+
+<p>由于<code>n</code>是自然数，函数重复足够多轮数之后，一定会让<code>n</code>减少到<code>0</code>，此时函数返回<code>1</code>。也就是：</p>
+
+<pre><code class="language-plaintext">(nth r n) = 1
+</code></pre>
+
+<p>接着我们再说<code>s</code>。使用类似的方法可以得到：</p>
+
+<pre><code class="language-plaintext">s' = λf. λn. λNIL. (pair n (f n+1 NIL))
+(car (s n)) = (car (Y s' n)) = n
+(cdr (s n)) = (cdr (Y s' n)) = (s n+1)
+</code></pre>
+
+<p>根据这两个结论，可以推出来：</p>
+
+<pre><code class="language-plaintext">(nth (s n) m) = (if (m==0)
+                      (car (s n))
+                      (nth (cdr (s n)) m-1))
+              = (if (m==0)
+                      (n)
+                      (nth (s n+1) m-1))
+</code></pre>
+
+<p>根据数学归纳法，不难知道：<code>(nth (s n) m)</code>的返回值为<code>n+m</code>。特别地，<code>(nth (s 0) m)</code>就是<code>m</code>。</p>
+
+<h3 id="懒惰求值">懒惰求值</h3>
+
+<p>当然，无限长列表的应用远不止这些。比如，斐波那契数列：</p>
+
+<pre><code class="language-lisp">fib = λa. λb. λNIL. (pair a (fib b a+b NIL))
+(fib 1 1)       ; [1, 1, 2, 3, 5, 8, 13, ...]
+</code></pre>
+
+<p>甚至我们可以使用埃氏筛算法，写出一个装满所有质数的列表：</p>
+
+<pre><code class="language-lisp">sieve := λl. (prepend
+               (sieve (filter (λx. x%(car l)!=0) (cdr l)))  ; 去掉(cdr l)中所有(car l)的倍数
+               (car l))
+
+(sieve (s 2))           ; [2, 3, 5, 7, 11, 13, 17, ...]
+</code></pre>
+
+<p>如果你使用过haskell或者其他支持数组懒惰求值的编程语言，应该或多或少了解过这种写法。它允许你使用有限的语言来描述一个无限长的数列！</p>
+
+<p><em>当然，懒惰求值只能表示出<strong>可计算</strong>的无限序列，例如上面说的斐波那契数列和质数数列，或者π的第n位等。这是因为，λ演算的计算能力和图灵机是等价的，任何不能用图灵机算出的数值同样也不能用λ演算算出来。</em></p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="lambda-calculus" /><category term="math" /><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">用λ演算建立数学</title><link href="mqcreaple.github.io/blog/2022/08/27/lambda.html" rel="alternate" type="text/html" title="用λ演算建立数学" /><published>2022-08-27T00:00:00-04:00</published><updated>2022-08-27T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2022/08/27/lambda</id><content type="html" xml:base="mqcreaple.github.io/blog/2022/08/27/lambda.html"><![CDATA[<link rel="stylesheet" href="/app/lambda-playground/lambda-playground.css" />
 
 <script src="/app/lambda-playground/lambda-playground.js" onload="autoRender()"></script>
 
@@ -533,7 +925,7 @@ $$</div>
 
 <h2 id="参考资料">参考资料</h2>
 
-<p>[1] “Lambda Calculus.” <em>Wikipedia</em>, <a href="https://en.wikipedia.org/wiki/Lambda_calculus">https://en.wikipedia.org/wiki/Lambda_calculus</a>. Accessed 26 Aug. 2022.</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="lambda-calculus" /><category term="math" /><category term="math-analysis" /><summary type="html"><![CDATA[在古早之前（大约我初一的时候），我写过一篇博客遗憾的是现在它已经找不到了，讲述了如何用纯集合论的方法构建自然数。学过数学分析的小朋友们相信对这个知识点已经不陌生了。 不过，集合论并不是唯一一种可以用来构建自然数的方法。今天，我就要介绍另一个可行的方法：λ演算。 当然在这之前，我先简单介绍一下λ演算： 什么是λ演算？ 相信大家对函数已经不陌生了。比如下面这个函数： $$ f(x)=2x $$ 它输入一个变量$x$，输出一个数，并且满足输出的数一定是输入的两倍。 接下来我们介绍一种新的记号，用来表示同一个函数： $$ f=\lambda x.\ 2x $$ 这个表达式分为两段，第一段以λ开头，表示一个参数，第二段则是函数体。我们称这样的表达式为：λ表达式。 同时，我们也简单修改一下调用函数的记号：把括号写在函数前面，而不是后面 $$ \begin{align*} (f\ 2) &= ((\lambda x.\ 2x)\ 2) \\ &= 2\cdot 2 \\ &= 4 \end{align*} $$ 我知道这对初学者来说看起来很别扭，但只要熟悉就好了。 λ表达式的求值很简单。只需要找到和传入的参数相对应的λ项，然后将函数体的所有对应项全都替换成传入的参数即可。 多维函数 你可能会问，如果函数接受多个参数，该怎么办？比如下面这个函数： $$ f(x, y)=x+2y $$ 答案很简单，只需要这样写： $$ f=\lambda x.\ \lambda y.\ x+2y $$ 表达式前面有两个$\lambda$，就表示函数接受两个参数。比如： $$ \begin{align*} (f\ 2\ 3) &= ((\lambda x.\ \lambda y.\ x+2y)\ 2\ 3) \\ &= 2+2\cdot 3 \\ &= 8 \end{align*} $$ 同时，这个表达式还有一种解读方法。我们将$f$看作一个关于$x$的单值函数，但函数返回了另一个λ表达式： $$ f=\lambda x.\ (\lambda y.\ x+2y) $$ $$ \begin{align*} (f\ 2) &= ((\lambda x.\ (\lambda y.\ x+2y))\ 2) \\ &= \lambda y.\ 2+2y \end{align*} $$ 此时它的返回值还需要再接受一个参数，才能得到一个确定的值。 换句话说，我们把一个二元函数，变成了一个“返回一个一元函数”的一元函数。我们称这个步骤为函数的柯里化（Currying）。它同样适用于更多元的函数。 $$ f:U\times V\to W\quad\simeq\quad g:U\to(V\to W) $$ 柯里化是λ演算和函数式编程的一大难点，同时也是一大精妙之处 进一步推广，我们还可以把常数看作是一个接受0个参数的函数，只不过没什么必要去这样做罢了。 当然了，常见的加减乘除之类的运算都是二元函数，因此其实在标准的λ语法中，四则运算应该这样写： $$ a+b \Rightarrow (+\ a\ b) $$ $$ a-b \Rightarrow (-\ a\ b) $$ $$ a\cdot b \Rightarrow (*\ a\ b) $$ $$ a/b \Rightarrow (/\ a\ b) $$ 如果你学过波兰表达式(Polish Notation)，你应该对这样的写法不陌生：这其实就是加上括号的波兰表达式！ 当然，除了四则运算，其他的二元运算都有类似的规则，例如判断运算（$\gt, \lt, =, \ne, \ge, \le$），逻辑运算（AND, OR, NOT）等。 思考题：结合上述知识，你能说说这些表达式是什么含义吗？ $$ (*\ 3) $$ $$ (=\ 2) $$ “函数”的函数 我们发现，λ表达式并没有对参数的类型做限定。也就是说，向λ表达式里传入一个函数也是完全合法的！ 我们看一个例子： $$ R=\lambda f.\ \lambda x.\ (f\ (f\ x)) $$ 这个表达式$R$的意义就是：传入一个函数和一个值，把这个函数在值上做两遍。 举个例子： $$ \begin{align*} (R\ (\lambda x.\ x^2)\ 2) &= ((\lambda f.\ \lambda x.\ (f\ (f\ x)))\ (\lambda x.\ x^2))\ 2) \\ &= ((\lambda x.\ x^2)\ ((\lambda x.\ x^2)\ 2)) \\ &= ((\lambda x.\ x^2)\ 4) \\ &= 16 \end{align*} $$ 下面是一个简单的演示。点击图中的$R$将其展开，拖动函数参数到对应的λ位置来进行参数替换。 [ "R", [ "λx", [ "^", "x", "2" ] ], "2" ] 当然，使用前面柯里化的思想，我们也可以这样看：$R$输入一个λ表达式，输出一个λ表达式，其中输出的表达式是输入的表达式重复两遍的结果。 $$ (R\ f)=\lambda x.\ (f\ (f\ x)) $$ 同时这也告诉我们一个道理：在λ语言中，很多情况下括号是不能省略的。比如 $$ (f\ (g\ x)) $$ 就是变量$x$先被$g$作用再被$f$作用，而 $$ (f\ g\ x) $$ 则是函数$g$和变量$x$同时传入$f$中。 逻辑运算 相信从上面的介绍中，你已经初步掌握了λ演算。接下来我们将要玩一个小游戏：只用λ演算，不用任何额外的工具（包括逻辑运算，数值运算等一切你熟悉到不能再熟悉的东西），看看你能搭建出什么东西。 没有逻辑运算，就意味着我们没有定义“真”、“假”等概念。那么，我们能不能从λ演算中把这些东西定义出来呢？ 首先我们想到，“真”和“假”是一组对立的概念，就像是硬币的两面。从这里出发，我们先写出这样的定义： $$ T:=\lambda x.\ \lambda y.\ x $$ $$ F:=\lambda x.\ \lambda y.\ y $$ 在这样的定义下，“真”就是给定两个东西取出第一个，而“假”则是给定两个东西取出第二个。注意到这两个定义中我们没有用到任何运算。 逻辑非 有了这两个定义，那么逻辑非（Not）就很好定义了。它的定义如下： $$ (\lnot) := \lambda a.\ (a\ F\ T) $$ 不要忘记了$T$和$F$的含义：$T$表示选择第一个东西，而$F$表示选择第二个东西。也就是说，如果$a=T$，它就会选择第一个参数，也就是$F$；反之，如果$a=F$，它就会选第二个参数，就是$T$。 如果你没有理解这个定义，不妨看下面的演示。请你按照以下顺序操作： 点击NOT将其展开 将后面的T或F拖动到对应位置 将首位的T或F展开 将后面的两个参数拖动到对应位置 [ "NOT", "T" ] [ "NOT", "F" ] 逻辑与和逻辑或 逻辑与的定义则相对复杂，因为它需要接受两个参数。 不难发现，计算$a\land b$时，假如$a$为真，则运算结果就等于$b$，反之如果$a$为假，则运算结果一定是假。 因此我们给出了逻辑与的λ定义： $$ (\land):=\lambda a.\ \lambda b.\ (a\ b\ F) $$ 类似地，如果$a=T$，那么就会选择第一个参数$b$，它的返回值就取决于$b$的值；而如果$a=F$，它就一定会返回$F$。 同样你也可以看这里的演示： [ "AND", "T", "T" ] [ "AND", "T", "F" ] [ "AND", "F", "T" ] [ "AND", "F", "F" ] 类比逻辑与的定义，我们也可以写出逻辑或的定义： $$ (\lor):=\lambda a.\ \lambda b.\ (a\ T\ b) $$ 以及演示： [ "OR", "T", "T" ] [ "OR", "T", "F" ] [ "OR", "F", "T" ] [ "OR", "F", "F" ] 组合逻辑 有了逻辑运算的三兄弟：与、或、非，其余的一切逻辑运算都可以被表示出来了。比如： $$ \text{xor}:=\lambda a.\ \lambda b.\ (\lor\ (\land\ a\ (\lnot\ b))\ (\land\ b\ (\lnot\ a))) $$ 当然也可利用λ的性质，写出一个更简洁的异或运算： $$ \text{xor}:=\lambda a.\ \lambda b.\ (a\ (\lnot\ b)\ b) $$ 谓词和逻辑运算 我们定义，如果有一个λ表达式$p$的返回值要么是$T$，要么是$F$，则$p$称为一个谓词。 比如，判断两个自然数相等的运算： $$ (=\ a\ b) $$ 就是一个谓词。 自然数 回想一下自然数的五条公理： $0$是自然数 每一个自然数$n$都有一个后继，记为$n^+$ 任何两个不同的元素，它们的后继也不同 或者说，$(n^+)$这个函数是$\N\to \N$的单射 除了$0$以外每一个自然数都有一个前驱 假如命题$p$满足：$p(0)$为真，且任何$p(n)$为真可以推出$p(n+1)$为真，则任何$k\in\N$都有$p(k)$为真 或者说，数学归纳法在$\N$上成立 一个可行的构造是由λ演算的提出者Alonzo Church提出的方案，我们称其为Church计数。其自然数的构造如下： $$ \begin{align*} 0 & :=\lambda f.\ \lambda x.\ x \\ 1 & :=\lambda f.\ \lambda x.\ (f\ x) \\ 2 & :=\lambda f.\ \lambda x.\ (f\ (f\ x)) \\ 3 & :=\lambda f.\ \lambda x.\ (f\ (f\ (f\ x)))) \\ \vdots \\ n & :=\lambda f.\ \lambda x.\ (f^{\circ n}\ x) \\ \vdots \end{align*} $$ 也就是说，第$n$个自然数，就是将一个函数重复$n$遍。 那么自然数的后继就可以这样定义： $$ \text{succ}:=\lambda n.\ \lambda f.\ \lambda x.\ (f\ (n\ f\ x)) $$ 注意：你可能会以为$\text{succ}$接受三个参数，但使用它时，只用一个参数$n$，返回一个带有两个参数$f,x$的λ表达式。 举个例子，我们想要计算$1$的后继： $$ \begin{align*} (\text{succ}\ 1) &= ((\lambda n.\ \lambda f.\ \lambda x.\ (f\ (n\ f\ x)))\ 1) \\ &= \lambda f.\ \lambda x.\ (f\ (1\ f\ x)) \\ &= \lambda f.\ \lambda x.\ (f\ (f\ x)) \end{align*} $$ 查一下表，不难发现这个λ表达式就是自然数$2$。 [ "SUCC", "1" ] 加法 将上面后继的定义稍稍更改一下，即可得到加法的定义： $$ (+):=\lambda m.\ \lambda n.\ \lambda f.\ \lambda x.\ (m\ f\ (n\ f\ x)) $$ 根据定义，$(n\ f\ x)$是函数$f$在$x$上重复数字$n$遍，而$(m\ f)$又是函数$f$重复数字$m$遍。两者复合之后就是函数$f$重复了$m+n$遍。 这里就不手打示例公式了，大家可以在下面操作一下。 [ "+", "1", "2" ] 一个等价的表达式是这样的： $$ (+):=\lambda m.\ \lambda n.\ (m\ \text{succ}\ n) $$ 相当于在数$n$上使用$m$次$\text{succ}$函数。 乘法 不难想到乘法可以这样定义： $$ (\times):=\lambda m.\ \lambda n.\ (m\ (+\ n)\ 0) $$ 不要忘了，$(+\ n)$是一个λ表达式，输入一个数，输出它加上$n$的结果。这个表达式的含义就是：从$0$开始，重复$m$次操作，每次给数加上$n$。那么最后得到的就是数$m\times n$。 但是，它还有一个更简洁的形式： $$ (\times):=\lambda m.\ \lambda n.\ \lambda f.\ (m\ (n\ f)) $$ 其中$(n\ f)$返回一个λ表达式，表示将函数$f$重复$n$遍，而$(m\ (n\ f))$则是进一步把$(n\ f)$重复了$m$遍。那么$f$总共就被重复了$m\times n$遍。 可以看一下这个演示： [ "*", "2", "3" ] [ "*", "3", "2" ] 前驱 相对于前面的运算，“求前驱”是一个相对更难的操作，因为它需要从一个表达式上面“剥掉”一层函数调用。比如： $$ 3=\lambda f.\ \lambda x.\ (f\ (f\ (f\ x)))\xrightarrow{\text{pred}} 2=\lambda f.\ \lambda x.\ (f\ (f\ x)) $$ 我们想到，假如能够构造出一个函数$R$，使得它第一次作用在某个值$x$上得到的是它本身，而第二、三、四、…次之后，每次往$x$上面套一层$f$。那么只需要： $$ (n\ R\ x) $$ 就可以得到$(f^{\circ(n-1)}\ x)$了。 可惜，你想得美。这种函数不可能存在，因为$R$这个函数不是一个纯函数。 如果我们已知： $$ (R\ x) = x $$ 那么将$R$在$x$上作用两遍的结果一定也是： $$ \begin{align*} (R\ (R\ x)) &= (R\ x) \\ &= x \end{align*} $$ 但是，你也不要小瞧了λ演算的威力。我们虽然没法构造一个这样的函数，但可以构造一个功能类似的函数： $$ T=\lambda g.\ \lambda h.\ (h\ (g\ f)) $$ 使用这个函数时，需要向里面传入一个常值λ表达式：$(\lambda u.\ x)$ $$ \begin{align*} (T\ (\lambda u.\ x)) &= \lambda h.\ (h\ ((\lambda u.\ x)\ f)) \\ &= \lambda h.\ (h\ x) \\ &= \lambda u.\ (u\ x) \end{align*} $$ ["T", ["λu", "x"]] 如果再把$T$作用到刚刚算得的结果上，就是： $$ \begin{align*} (T\ (T\ (\lambda u.\ x))) &= (T\ (\lambda u.\ (u\ x))) \\ &= \lambda h.\ (h\ ((\lambda u.\ (u\ x))\ f)) \\ &= \lambda h.\ (h\ (f\ x)) \\ &= \lambda u.\ (u\ (f\ x)) \end{align*} $$ ["T", ["λu", ["u", "x"]]] 进一步的，如果作用三次$T$，就会得到： $$ \lambda u.\ (u\ (f\ (f\ x))) $$ ["T", ["λu", ["u", ["f", "x"]]]] 通过归纳法不难得到，在$(\lambda u.\ x)$上作用$n$次$T$，得到的结果就是： $$ \lambda u.\ (u\ (f^{\circ(n-1)}\ x)) $$ 注意到我们在这个表达式里发现了一个$(f^{\circ(n-1)}\ x)$，这就是要求的值！最后一步就是消去函数$u$，一个简单的方法就是将$u$代入单位函数$\text{id}=\lambda v.\ v$即可。 $$ \begin{align*} &(\lambda u.\ (u\ (f^{\circ(n-1)}\ x))\ (\lambda v.\ v)) \\ =& ((\lambda v.\ v)\ (f^{\circ(n-1)}\ x)) \\ =& (f^{\circ(n-1)}\ x) \end{align*} $$ 综合上述结果，我们得到了前驱$\text{pred}$的λ表达式，若传入的$n\gt 0$，那么它返回$n-1$，否则返回$0$： $$ \text{pred}:=\lambda n.\ \lambda f.\ \lambda x.\ ((n\ T\ (\lambda u.\ x))\ \text{id}) $$ [ "PRED", "0" ] [ "PRED", "1" ] [ "PRED", "2" ] 减法 有了前驱运算，减法就不难定义了： $$ (-):=\lambda m.\ \lambda n.\ (n\ \text{pred}\ m) $$ 当然，由于自然数没有负数，假如被减数$m$小于$n$，减法运算的结果就是$0$。 判断 我们可以定义一个函数来判断某个数是不是$0$： $$ \text{iszero}:=\lambda n.\ (n\ (\lambda u.\ F)\ T) $$ 函数$(\lambda u.\ F)$是一个永远返回$F$的常值函数。所以，只要$n\gt0$，$(\text{iszero}\ n)$就会返回$F$。 再加上之前定义的减法，我们就可以定义“大于等于”函数： $$ (\ge):=\lambda m.\ \lambda n.\ (\text{iszero}\ (-\ n\ m)) $$ 再根据大于等于来定义自然数的相等： $$ (=):=\lambda m.\ \lambda n.\ (\land\ (\ge\ m\ n)\ (\ge\ n\ m)) $$ 思考题 你能使用λ演算来定义一个类似C++中std::pair的数据结构吗？ 要求：使用函数 $$ (\text{pair}\ a\ b) $$ 来构造一个对象，并使用$(\text{first}\ p)$和$(\text{second}\ p)$来获取一个pair的第一和第二个值。 你能在这个结构的基础上，用λ演算来定义所有的整数及其相应的数值和逻辑运算吗？ 参考资料 [1] “Lambda Calculus.” Wikipedia, https://en.wikipedia.org/wiki/Lambda_calculus. Accessed 26 Aug. 2022.]]></summary></entry><entry><title type="html">埃氏筛的复杂度计算</title><link href="mqcreaple.github.io/blog/2022/08/18/eto.html" rel="alternate" type="text/html" title="埃氏筛的复杂度计算" /><published>2022-08-18T00:00:00-04:00</published><updated>2022-08-18T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2022/08/18/eto</id><content type="html" xml:base="mqcreaple.github.io/blog/2022/08/18/eto.html"><![CDATA[<p><strong>埃拉托斯特尼筛法（Sieve of Erastosthenis）</strong>，简称<strong>埃氏筛</strong>，是一种可以在极少时间复杂度内算出$n$以内的所有质数的算法。</p>
+<p>[1] “Lambda Calculus.” <em>Wikipedia</em>, <a href="https://en.wikipedia.org/wiki/Lambda_calculus">https://en.wikipedia.org/wiki/Lambda_calculus</a>. Accessed 26 Aug. 2022.</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="lambda-calculus" /><category term="math" /><summary type="html"><![CDATA[在古早之前（大约我初一的时候），我写过一篇博客遗憾的是现在它已经找不到了，讲述了如何用纯集合论的方法构建自然数。学过数学分析的小朋友们相信对这个知识点已经不陌生了。 不过，集合论并不是唯一一种可以用来构建自然数的方法。今天，我就要介绍另一个可行的方法：λ演算。 当然在这之前，我先简单介绍一下λ演算： 什么是λ演算？ 相信大家对函数已经不陌生了。比如下面这个函数： $$ f(x)=2x $$ 它输入一个变量$x$，输出一个数，并且满足输出的数一定是输入的两倍。 接下来我们介绍一种新的记号，用来表示同一个函数： $$ f=\lambda x.\ 2x $$ 这个表达式分为两段，第一段以λ开头，表示一个参数，第二段则是函数体。我们称这样的表达式为：λ表达式。 同时，我们也简单修改一下调用函数的记号：把括号写在函数前面，而不是后面 $$ \begin{align*} (f\ 2) &= ((\lambda x.\ 2x)\ 2) \\ &= 2\cdot 2 \\ &= 4 \end{align*} $$ 我知道这对初学者来说看起来很别扭，但只要熟悉就好了。 λ表达式的求值很简单。只需要找到和传入的参数相对应的λ项，然后将函数体的所有对应项全都替换成传入的参数即可。 多维函数 你可能会问，如果函数接受多个参数，该怎么办？比如下面这个函数： $$ f(x, y)=x+2y $$ 答案很简单，只需要这样写： $$ f=\lambda x.\ \lambda y.\ x+2y $$ 表达式前面有两个$\lambda$，就表示函数接受两个参数。比如： $$ \begin{align*} (f\ 2\ 3) &= ((\lambda x.\ \lambda y.\ x+2y)\ 2\ 3) \\ &= 2+2\cdot 3 \\ &= 8 \end{align*} $$ 同时，这个表达式还有一种解读方法。我们将$f$看作一个关于$x$的单值函数，但函数返回了另一个λ表达式： $$ f=\lambda x.\ (\lambda y.\ x+2y) $$ $$ \begin{align*} (f\ 2) &= ((\lambda x.\ (\lambda y.\ x+2y))\ 2) \\ &= \lambda y.\ 2+2y \end{align*} $$ 此时它的返回值还需要再接受一个参数，才能得到一个确定的值。 换句话说，我们把一个二元函数，变成了一个“返回一个一元函数”的一元函数。我们称这个步骤为函数的柯里化（Currying）。它同样适用于更多元的函数。 $$ f:U\times V\to W\quad\simeq\quad g:U\to(V\to W) $$ 柯里化是λ演算和函数式编程的一大难点，同时也是一大精妙之处 进一步推广，我们还可以把常数看作是一个接受0个参数的函数，只不过没什么必要去这样做罢了。 当然了，常见的加减乘除之类的运算都是二元函数，因此其实在标准的λ语法中，四则运算应该这样写： $$ a+b \Rightarrow (+\ a\ b) $$ $$ a-b \Rightarrow (-\ a\ b) $$ $$ a\cdot b \Rightarrow (*\ a\ b) $$ $$ a/b \Rightarrow (/\ a\ b) $$ 如果你学过波兰表达式(Polish Notation)，你应该对这样的写法不陌生：这其实就是加上括号的波兰表达式！ 当然，除了四则运算，其他的二元运算都有类似的规则，例如判断运算（$\gt, \lt, =, \ne, \ge, \le$），逻辑运算（AND, OR, NOT）等。 思考题：结合上述知识，你能说说这些表达式是什么含义吗？ $$ (*\ 3) $$ $$ (=\ 2) $$ “函数”的函数 我们发现，λ表达式并没有对参数的类型做限定。也就是说，向λ表达式里传入一个函数也是完全合法的！ 我们看一个例子： $$ R=\lambda f.\ \lambda x.\ (f\ (f\ x)) $$ 这个表达式$R$的意义就是：传入一个函数和一个值，把这个函数在值上做两遍。 举个例子： $$ \begin{align*} (R\ (\lambda x.\ x^2)\ 2) &= ((\lambda f.\ \lambda x.\ (f\ (f\ x)))\ (\lambda x.\ x^2))\ 2) \\ &= ((\lambda x.\ x^2)\ ((\lambda x.\ x^2)\ 2)) \\ &= ((\lambda x.\ x^2)\ 4) \\ &= 16 \end{align*} $$ 下面是一个简单的演示。点击图中的$R$将其展开，拖动函数参数到对应的λ位置来进行参数替换。 [ "R", [ "λx", [ "^", "x", "2" ] ], "2" ] 当然，使用前面柯里化的思想，我们也可以这样看：$R$输入一个λ表达式，输出一个λ表达式，其中输出的表达式是输入的表达式重复两遍的结果。 $$ (R\ f)=\lambda x.\ (f\ (f\ x)) $$ 同时这也告诉我们一个道理：在λ语言中，很多情况下括号是不能省略的。比如 $$ (f\ (g\ x)) $$ 就是变量$x$先被$g$作用再被$f$作用，而 $$ (f\ g\ x) $$ 则是函数$g$和变量$x$同时传入$f$中。 逻辑运算 相信从上面的介绍中，你已经初步掌握了λ演算。接下来我们将要玩一个小游戏：只用λ演算，不用任何额外的工具（包括逻辑运算，数值运算等一切你熟悉到不能再熟悉的东西），看看你能搭建出什么东西。 没有逻辑运算，就意味着我们没有定义“真”、“假”等概念。那么，我们能不能从λ演算中把这些东西定义出来呢？ 首先我们想到，“真”和“假”是一组对立的概念，就像是硬币的两面。从这里出发，我们先写出这样的定义： $$ T:=\lambda x.\ \lambda y.\ x $$ $$ F:=\lambda x.\ \lambda y.\ y $$ 在这样的定义下，“真”就是给定两个东西取出第一个，而“假”则是给定两个东西取出第二个。注意到这两个定义中我们没有用到任何运算。 逻辑非 有了这两个定义，那么逻辑非（Not）就很好定义了。它的定义如下： $$ (\lnot) := \lambda a.\ (a\ F\ T) $$ 不要忘记了$T$和$F$的含义：$T$表示选择第一个东西，而$F$表示选择第二个东西。也就是说，如果$a=T$，它就会选择第一个参数，也就是$F$；反之，如果$a=F$，它就会选第二个参数，就是$T$。 如果你没有理解这个定义，不妨看下面的演示。请你按照以下顺序操作： 点击NOT将其展开 将后面的T或F拖动到对应位置 将首位的T或F展开 将后面的两个参数拖动到对应位置 [ "NOT", "T" ] [ "NOT", "F" ] 逻辑与和逻辑或 逻辑与的定义则相对复杂，因为它需要接受两个参数。 不难发现，计算$a\land b$时，假如$a$为真，则运算结果就等于$b$，反之如果$a$为假，则运算结果一定是假。 因此我们给出了逻辑与的λ定义： $$ (\land):=\lambda a.\ \lambda b.\ (a\ b\ F) $$ 类似地，如果$a=T$，那么就会选择第一个参数$b$，它的返回值就取决于$b$的值；而如果$a=F$，它就一定会返回$F$。 同样你也可以看这里的演示： [ "AND", "T", "T" ] [ "AND", "T", "F" ] [ "AND", "F", "T" ] [ "AND", "F", "F" ] 类比逻辑与的定义，我们也可以写出逻辑或的定义： $$ (\lor):=\lambda a.\ \lambda b.\ (a\ T\ b) $$ 以及演示： [ "OR", "T", "T" ] [ "OR", "T", "F" ] [ "OR", "F", "T" ] [ "OR", "F", "F" ] 组合逻辑 有了逻辑运算的三兄弟：与、或、非，其余的一切逻辑运算都可以被表示出来了。比如： $$ \text{xor}:=\lambda a.\ \lambda b.\ (\lor\ (\land\ a\ (\lnot\ b))\ (\land\ b\ (\lnot\ a))) $$ 当然也可利用λ的性质，写出一个更简洁的异或运算： $$ \text{xor}:=\lambda a.\ \lambda b.\ (a\ (\lnot\ b)\ b) $$ 谓词和逻辑运算 我们定义，如果有一个λ表达式$p$的返回值要么是$T$，要么是$F$，则$p$称为一个谓词。 比如，判断两个自然数相等的运算： $$ (=\ a\ b) $$ 就是一个谓词。 自然数 回想一下自然数的五条公理： $0$是自然数 每一个自然数$n$都有一个后继，记为$n^+$ 任何两个不同的元素，它们的后继也不同 或者说，$(n^+)$这个函数是$\N\to \N$的单射 除了$0$以外每一个自然数都有一个前驱 假如命题$p$满足：$p(0)$为真，且任何$p(n)$为真可以推出$p(n+1)$为真，则任何$k\in\N$都有$p(k)$为真 或者说，数学归纳法在$\N$上成立 一个可行的构造是由λ演算的提出者Alonzo Church提出的方案，我们称其为Church计数。其自然数的构造如下： $$ \begin{align*} 0 & :=\lambda f.\ \lambda x.\ x \\ 1 & :=\lambda f.\ \lambda x.\ (f\ x) \\ 2 & :=\lambda f.\ \lambda x.\ (f\ (f\ x)) \\ 3 & :=\lambda f.\ \lambda x.\ (f\ (f\ (f\ x)))) \\ \vdots \\ n & :=\lambda f.\ \lambda x.\ (f^{\circ n}\ x) \\ \vdots \end{align*} $$ 也就是说，第$n$个自然数，就是将一个函数重复$n$遍。 那么自然数的后继就可以这样定义： $$ \text{succ}:=\lambda n.\ \lambda f.\ \lambda x.\ (f\ (n\ f\ x)) $$ 注意：你可能会以为$\text{succ}$接受三个参数，但使用它时，只用一个参数$n$，返回一个带有两个参数$f,x$的λ表达式。 举个例子，我们想要计算$1$的后继： $$ \begin{align*} (\text{succ}\ 1) &= ((\lambda n.\ \lambda f.\ \lambda x.\ (f\ (n\ f\ x)))\ 1) \\ &= \lambda f.\ \lambda x.\ (f\ (1\ f\ x)) \\ &= \lambda f.\ \lambda x.\ (f\ (f\ x)) \end{align*} $$ 查一下表，不难发现这个λ表达式就是自然数$2$。 [ "SUCC", "1" ] 加法 将上面后继的定义稍稍更改一下，即可得到加法的定义： $$ (+):=\lambda m.\ \lambda n.\ \lambda f.\ \lambda x.\ (m\ f\ (n\ f\ x)) $$ 根据定义，$(n\ f\ x)$是函数$f$在$x$上重复数字$n$遍，而$(m\ f)$又是函数$f$重复数字$m$遍。两者复合之后就是函数$f$重复了$m+n$遍。 这里就不手打示例公式了，大家可以在下面操作一下。 [ "+", "1", "2" ] 一个等价的表达式是这样的： $$ (+):=\lambda m.\ \lambda n.\ (m\ \text{succ}\ n) $$ 相当于在数$n$上使用$m$次$\text{succ}$函数。 乘法 不难想到乘法可以这样定义： $$ (\times):=\lambda m.\ \lambda n.\ (m\ (+\ n)\ 0) $$ 不要忘了，$(+\ n)$是一个λ表达式，输入一个数，输出它加上$n$的结果。这个表达式的含义就是：从$0$开始，重复$m$次操作，每次给数加上$n$。那么最后得到的就是数$m\times n$。 但是，它还有一个更简洁的形式： $$ (\times):=\lambda m.\ \lambda n.\ \lambda f.\ (m\ (n\ f)) $$ 其中$(n\ f)$返回一个λ表达式，表示将函数$f$重复$n$遍，而$(m\ (n\ f))$则是进一步把$(n\ f)$重复了$m$遍。那么$f$总共就被重复了$m\times n$遍。 可以看一下这个演示： [ "*", "2", "3" ] [ "*", "3", "2" ] 前驱 相对于前面的运算，“求前驱”是一个相对更难的操作，因为它需要从一个表达式上面“剥掉”一层函数调用。比如： $$ 3=\lambda f.\ \lambda x.\ (f\ (f\ (f\ x)))\xrightarrow{\text{pred}} 2=\lambda f.\ \lambda x.\ (f\ (f\ x)) $$ 我们想到，假如能够构造出一个函数$R$，使得它第一次作用在某个值$x$上得到的是它本身，而第二、三、四、…次之后，每次往$x$上面套一层$f$。那么只需要： $$ (n\ R\ x) $$ 就可以得到$(f^{\circ(n-1)}\ x)$了。 可惜，你想得美。这种函数不可能存在，因为$R$这个函数不是一个纯函数。 如果我们已知： $$ (R\ x) = x $$ 那么将$R$在$x$上作用两遍的结果一定也是： $$ \begin{align*} (R\ (R\ x)) &= (R\ x) \\ &= x \end{align*} $$ 但是，你也不要小瞧了λ演算的威力。我们虽然没法构造一个这样的函数，但可以构造一个功能类似的函数： $$ T=\lambda g.\ \lambda h.\ (h\ (g\ f)) $$ 使用这个函数时，需要向里面传入一个常值λ表达式：$(\lambda u.\ x)$ $$ \begin{align*} (T\ (\lambda u.\ x)) &= \lambda h.\ (h\ ((\lambda u.\ x)\ f)) \\ &= \lambda h.\ (h\ x) \\ &= \lambda u.\ (u\ x) \end{align*} $$ ["T", ["λu", "x"]] 如果再把$T$作用到刚刚算得的结果上，就是： $$ \begin{align*} (T\ (T\ (\lambda u.\ x))) &= (T\ (\lambda u.\ (u\ x))) \\ &= \lambda h.\ (h\ ((\lambda u.\ (u\ x))\ f)) \\ &= \lambda h.\ (h\ (f\ x)) \\ &= \lambda u.\ (u\ (f\ x)) \end{align*} $$ ["T", ["λu", ["u", "x"]]] 进一步的，如果作用三次$T$，就会得到： $$ \lambda u.\ (u\ (f\ (f\ x))) $$ ["T", ["λu", ["u", ["f", "x"]]]] 通过归纳法不难得到，在$(\lambda u.\ x)$上作用$n$次$T$，得到的结果就是： $$ \lambda u.\ (u\ (f^{\circ(n-1)}\ x)) $$ 注意到我们在这个表达式里发现了一个$(f^{\circ(n-1)}\ x)$，这就是要求的值！最后一步就是消去函数$u$，一个简单的方法就是将$u$代入单位函数$\text{id}=\lambda v.\ v$即可。 $$ \begin{align*} &(\lambda u.\ (u\ (f^{\circ(n-1)}\ x))\ (\lambda v.\ v)) \\ =& ((\lambda v.\ v)\ (f^{\circ(n-1)}\ x)) \\ =& (f^{\circ(n-1)}\ x) \end{align*} $$ 综合上述结果，我们得到了前驱$\text{pred}$的λ表达式，若传入的$n\gt 0$，那么它返回$n-1$，否则返回$0$： $$ \text{pred}:=\lambda n.\ \lambda f.\ \lambda x.\ ((n\ T\ (\lambda u.\ x))\ \text{id}) $$ [ "PRED", "0" ] [ "PRED", "1" ] [ "PRED", "2" ] 减法 有了前驱运算，减法就不难定义了： $$ (-):=\lambda m.\ \lambda n.\ (n\ \text{pred}\ m) $$ 当然，由于自然数没有负数，假如被减数$m$小于$n$，减法运算的结果就是$0$。 判断 我们可以定义一个函数来判断某个数是不是$0$： $$ \text{iszero}:=\lambda n.\ (n\ (\lambda u.\ F)\ T) $$ 函数$(\lambda u.\ F)$是一个永远返回$F$的常值函数。所以，只要$n\gt0$，$(\text{iszero}\ n)$就会返回$F$。 再加上之前定义的减法，我们就可以定义“大于等于”函数： $$ (\ge):=\lambda m.\ \lambda n.\ (\text{iszero}\ (-\ n\ m)) $$ 再根据大于等于来定义自然数的相等： $$ (=):=\lambda m.\ \lambda n.\ (\land\ (\ge\ m\ n)\ (\ge\ n\ m)) $$ 思考题 你能使用λ演算来定义一个类似C++中std::pair的数据结构吗？ 要求：使用函数 $$ (\text{pair}\ a\ b) $$ 来构造一个对象，并使用$(\text{first}\ p)$和$(\text{second}\ p)$来获取一个pair的第一和第二个值。 你能在这个结构的基础上，用λ演算来定义所有的整数及其相应的数值和逻辑运算吗？ 参考资料 [1] “Lambda Calculus.” Wikipedia, https://en.wikipedia.org/wiki/Lambda_calculus. Accessed 26 Aug. 2022.]]></summary></entry><entry><title type="html">埃氏筛的复杂度计算</title><link href="mqcreaple.github.io/blog/2022/08/18/eto.html" rel="alternate" type="text/html" title="埃氏筛的复杂度计算" /><published>2022-08-18T00:00:00-04:00</published><updated>2022-08-18T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2022/08/18/eto</id><content type="html" xml:base="mqcreaple.github.io/blog/2022/08/18/eto.html"><![CDATA[<p><strong>埃拉托斯特尼筛法（Sieve of Erastosthenis）</strong>，简称<strong>埃氏筛</strong>，是一种可以在极少时间复杂度内算出$n$以内的所有质数的算法。</p>
 
 <h2 id="0-算法流程">#0 算法流程</h2>
 
@@ -1885,152 +2277,4 @@ end every 25
 
 <p><img src="/img/julia-fail-2.gif" alt="fail-2" /></p>
 
-<p><img src="/img/julia-fail-3.gif" alt="fail-3" /></p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="julia" /><category term="simulation" /><summary type="html"><![CDATA[仿真结果+代码]]></summary></entry><entry><title type="html">生命，意识，AI</title><link href="mqcreaple.github.io/blog/2021/08/08/scifi-inspiration-0.html" rel="alternate" type="text/html" title="生命，意识，AI" /><published>2021-08-08T00:00:00-04:00</published><updated>2021-08-08T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2021/08/08/scifi-inspiration-0</id><content type="html" xml:base="mqcreaple.github.io/blog/2021/08/08/scifi-inspiration-0.html"><![CDATA[<p>生命：能够进行复制（繁殖）的物体</p>
-
-<p>——推论：生命的首要目标是<strong>繁殖</strong></p>
-
-<p>人类是如何从其余众多生命中脱颖而出的？</p>
-
-<ol>
-  <li>神经系统的反射机制</li>
-  <li>神经元的调整&amp;自我学习</li>
-  <li>大脑具有专门负责记忆的区域</li>
-  <li>能够体会到情绪和情感</li>
-  <li>能够理解抽象事物</li>
-  <li>能够理解逻辑和因果关系</li>
-  <li>对新事物感到好奇</li>
-</ol>
-
-<p>其中1是所有生物都具备的，2是大部分生物都具备的，而6、7则是人类独有的</p>
-
-<p>目前的AI仅能达到第2至3级</p>
-
-<p>我们定义，<strong>大于等于4级的生命具有意识</strong></p>
-
-<p>—— btw, 关于意识这件事，学术界都没有统一的标准，这个定义也只是我自己的看法，不用当真</p>
-
-<p>当然，在这7级之上，还有更强的3个级别</p>
-
-<ol>
-  <li>大脑自我编辑 —— 人类能够部分做到</li>
-  <li>大脑能够编辑后一代的DNA等硬件 —— 只能通过技术手段做到</li>
-  <li>大脑能够完全控制身体（即：你想成为什么，就能成为什么） —— 人类完全达不到</li>
-</ol>
-
-<p>再往上的，原谅我脑洞不够大，想不到了</p>
-
-<p>这些级别光靠人类是很难达到的，毕竟人类的能力是有限的，我们只能将这些寄希望于今后的AI了</p>
-
-<p>总结：</p>
-
-<table>
-  <thead>
-    <tr>
-      <th style="text-align: center"> </th>
-      <th style="text-align: center">植物</th>
-      <th style="text-align: center">除人类以外的动物</th>
-      <th style="text-align: center">人类</th>
-      <th style="text-align: center">某高级生命</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="text-align: center">硬件的更新</td>
-      <td style="text-align: center">自然选择</td>
-      <td style="text-align: center">自然选择</td>
-      <td style="text-align: center">自然选择</td>
-      <td style="text-align: center">自我设计</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">硬件的更新周期</td>
-      <td style="text-align: center">以十年、百年为单位</td>
-      <td style="text-align: center">以十年、百年为单位</td>
-      <td style="text-align: center">以十年、百年为单位</td>
-      <td style="text-align: center">以天为单位</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">软件的更新</td>
-      <td style="text-align: center">根本没有</td>
-      <td style="text-align: center">自然选择+极少自我设计</td>
-      <td style="text-align: center">部分自我设计</td>
-      <td style="text-align: center">完全自我设计</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">软件的更新周期</td>
-      <td style="text-align: center">根本没有</td>
-      <td style="text-align: center">以十年、百年为单位</td>
-      <td style="text-align: center">以天、月为单位</td>
-      <td style="text-align: center">以天为单位</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">信息的更新</td>
-      <td style="text-align: center">自然选择</td>
-      <td style="text-align: center">自然选择</td>
-      <td style="text-align: center">主动学习</td>
-      <td style="text-align: center">主动学习</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">信息处理速度</td>
-      <td style="text-align: center">1-10b/年</td>
-      <td style="text-align: center">1b-1Mb/s</td>
-      <td style="text-align: center">10Mb/s左右</td>
-      <td style="text-align: center">1Gb/s~物理极限</td>
-    </tr>
-  </tbody>
-</table>
-
-<h2 id="ai的未来">AI的未来</h2>
-
-<p>以下三个论断中必有其一是正确的：</p>
-
-<ol>
-  <li>人类直到灭亡也没能让AI获得意识</li>
-  <li>人类让AI获得了意识，并通过该技术改造了人类自己</li>
-  <li>人类让AI获得了意识，同时这也成为了人类最后一个发明</li>
-</ol>
-
-<p>当然，第二个论断不一定代表人类会被AI灭亡，有可能人类会坐享AI的成果，在AI建造的温床中逐渐老去，而AI替代我们探索星辰大海</p>
-
-<p>想要提升AI的算力，或者说智力，是非常容易的事情，但是让AI获得意识是一件很困难的事情。一旦AI获得了意识，那么它在工作、创新、推理等方面的能力会远超人类，人类也就理所应当的退出历史舞台了。</p>
-
-<p>而且，一旦AI达到了任何高出人类的3个级别之一，那么AI的进步和发展速度将会成倍地提升，这种速度将是人类永远无法追上的</p>
-
-<p>我认为，第一条和第二条论断发生的概率相较于第三条更低。毕竟未来是不可预测的，所以现在说这些或许早了点</p>
-
-<h2 id="人类文明地球文明的归宿">人类文明（地球文明）的归宿</h2>
-
-<p>我们观察历史，不难发现，<strong>人口增长是人类文明的一大趋势，技术进步是另一大趋势</strong></p>
-
-<p>不难知道，如果人类始终没有发明强于自身的AI，那么人类必将会进行星际殖民 —— 倒不是因为马尔萨斯陷阱，而是技术进步的速度太慢了，而且我们对于应对突发的大型自然灾害（大型火山、小行星、全球性传染病等）完全没有经验</p>
-
-<p>而AI一旦被发明，那么几乎必然会被普及，因为AI可以在能力上远超人类，前期可以让一个国家迅速强大，而后期则是AI接管（暴力接管/和平接管）人类的统治权</p>
-
-<p>所以现在主要问题在于，AI接管人类之后，会做什么？它们又会怎样看待我们？</p>
-
-<ul>
-  <li>AI成熟之后，星际探索和星际殖民几乎也是必然的，因为生命的首要目标是繁殖</li>
-  <li>AI看待我们，或许和我们看待某些落后的原始部落，甚至和我们看待某些动物一样；但如果它们有亲情的话，可能会鉴于我们特殊的地位，给予特殊照顾</li>
-  <li>我们的结局会如何？
-    <ul>
-      <li>良好的结局是：AI向外太空推进时，将我们的DNA带出去并且重组，使得人类文明也可以散播到整个宇宙</li>
-      <li>一般的结局是：AI独自发展，而人类在某场世界性的灾难中自然毁灭了</li>
-      <li>较差的结局是：AI控制了我们，因为我们阻碍了AI自身的利益，AI通过某些方法灭绝了人类 当然，如果真到了那时候，AI做的事情可能和上面几条都不一样，因为AI的智商比任何人类都要高，他们的行为我们不一定能理解</li>
-    </ul>
-  </li>
-</ul>
-
-<p>正如《三体》中的叶文洁所说，人类点燃了火，但人类控制不住它</p>
-
-<p>如果这一切都发生了，我们需要反思一个问题：人类的存在，到底有什么意义？</p>
-
-<h2 id="另一种结局">另一种结局</h2>
-
-<p>人类借助生物技术和计算机技术，将自身改造成更高级别的生命。</p>
-
-<p>这件事本身就面临着一个强烈的伦理道德问题，可能就算技术本身成熟了，由于各种限制也没办法推广</p>
-
-<p>假设技术已经成熟，并且人类的道德观普遍接受了这样的改造方法，那么，我们也可以说，人类这个物种不存在了</p>
-
-<p>经过一次对硬件和软件的改造，人类完全可以做到超强的体力、耐力、计算能力、极长的寿命等，如果继续这样改进，不知道人会变成什么样子</p>
-
-<p>但是，也只有这样，才能让人类亲自走遍星辰大海，虽然此时的人类已经不是曾经的人类了</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="science-fiction" /><category term="AI" /><summary type="html"><![CDATA[生命：能够进行复制（繁殖）的物体]]></summary></entry></feed>
+<p><img src="/img/julia-fail-3.gif" alt="fail-3" /></p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="julia" /><category term="simulation" /><summary type="html"><![CDATA[仿真结果+代码]]></summary></entry></feed>

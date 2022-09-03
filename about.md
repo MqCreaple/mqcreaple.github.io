@@ -4,6 +4,8 @@ title: About Me
 permalink: /aboutme/
 ---
 
+高中生，在某不知名学校就读
+
 - Minecraft三年玩家
 - 物理狂热爱好者，物竞菜鸡
 - 学了一些高等数学，不敢说精通
