@@ -284,6 +284,7 @@ function renderExpr(dom, replTable = {}) {
             // loop through every function parameters and corresponding lambda nodes in the expression
             //* [   [ 'λx', 'λy', ... ],        a, b ]
             //*       lambda node         function parameter
+            var currentDraggingTarget = "";          // shared variable storing the ID of target lambda node of the parameter currently being dragged
             for(let i = 0; i < paramLen; i++) {
                 let parameter = dom.children[i + 1]; // the ith parameter
                 let lambda = lambdaExpr.children[i]; // the ith lambda node
@@ -297,18 +298,29 @@ function renderExpr(dom, replTable = {}) {
                     lambda.classList.remove("l-emph");
                 });
                 parameter.ondragstart = function(event) {
-                    // set the data transferred to be the lambda node's ID
-                    event.dataTransfer.setData("text", lambda.id);
+                    // set `currentDraggingTarget` to be the lambda node's ID
+                    currentDraggingTarget = lambda.id;
                 };
                 lambda.ondragover = function(event) {
                     event.preventDefault();
+                    // verify the id of target element
+                    if(event.target.id == currentDraggingTarget) {
+                        let refs = event.target.dataset.refs.split(' ');
+                        // add border to each reference node
+                        refs.forEach(refID => {
+                            let refNode = document.getElementById(refID);
+                            if(refNode) {
+                                refNode.style.borderColor = "rgba(0, 0, 0, 0.4)";
+                            }
+                        });
+                    }
                 };
                 lambda.ondrop = function(event) {
                     event.preventDefault();
-                    // verify the dropped element has the correct data transferred
-                    if(event.target.id == event.dataTransfer.getData("text")) {
+                    // verify the id of target element
+                    if(event.target.id == currentDraggingTarget) {
                         let parent = event.target.parentNode;
-                        let refs = event.target.dataset.refs.split(' ');
+                        let refs = event.target.dataset.refs.split(' ');    // list of IDs of references
                         let definedVars = Object.keys(unjoinObject(parent.children[parent.children.length - 1].dataset.refTable));
                         refs.forEach(refID => {
                             // loop through every node referenced by lambda node, replace them with the parameter
@@ -326,7 +338,7 @@ function renderExpr(dom, replTable = {}) {
                         parameter.remove();
                         // re-name and re-render the parent node
                         let nodeToRender = parent;
-                        if(parent.parentNode.classList.contains("l")) {
+                        if(parent.classList.contains("l-lambda-expr") && parent.parentNode.classList.contains("l")) {
                             nodeToRender = parent.parentNode;
                         }
                         renderExpr(nameExpr(nodeToRender, nodeToRender.id, "", unjoinObject(nodeToRender.dataset.refTable)), replTable);

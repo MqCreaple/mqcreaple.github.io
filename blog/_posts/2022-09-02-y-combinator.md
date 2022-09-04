@@ -13,7 +13,7 @@ tag: ["lambda-calculus", "math"]
 
 ## Y组合子
 
-其实，并不是所有的λ表达式都可以求值。比如说，一个经典的构造就是：
+其实，并不是所有的λ表达式都可以化简。比如说，一个经典的构造就是：
 
 ```plaintext
 ((λx. (x x)) (λx. (x x)))
@@ -21,7 +21,7 @@ tag: ["lambda-calculus", "math"]
 
 <p class="lambda-r">[ [ "λx", [ "x", "x" ] ], [ "λx", [ "x", "x" ] ] ]</p>
 
-这个表达式很有意思。当你把后面的表达式代入前面的`x`中时，你又会得到和原来一摸一样的表达式，你永远也无法化简它。换句话说，它是**不可求值**的。
+这个表达式很有意思。当你把后面的表达式代入前面的`x`中时，你又会得到和原来一摸一样的表达式，你永远也无法化简它。也就是，它是**不可求值**的。
 
 而我们对这个表达式简单地变一下，就得到了另一个表达式：
 
@@ -31,17 +31,17 @@ tag: ["lambda-calculus", "math"]
 
 <p class="lambda-r">[ [ "λx", [ "f", [ "x", "x" ] ] ], [ "λx", [ "f", [ "x", "x" ] ] ] ]</p>
 
-当你把后一项代入前一项时，它不仅得到了原来的表达式，而且还在外面多套上了一层函数`f`。在进行一次替换操作，函数外面就又多了一层`f`，你可以一直这样无穷无尽地迭代下去。
+当你把后一项代入前一项时，它不仅得到了原来的表达式，而且还在外面多套上了一层函数`f`。再进行一次替换操作，函数外面又多了一层`f`，你可以一直这样无穷无尽地迭代下去。
 
 稍稍将外面这个函数改一下，就得到了著名的**Y组合子(Y combinator)**：
 
-```plaintext
+```lisp
 Y := λf. ((λx. f (x x)) (λx. f (x x)))
 ```
 
 Y组合子的一大性质就是：
 
-```plaintext
+```lisp
 (Y f) = (f (Y f))
 ```
 
@@ -49,19 +49,19 @@ Y组合子的一大性质就是：
 
 *注：Y组合子并不是唯一的不动点组合子。比如由Alan Turing给出的Θ组合子*
 
-```plaintext
+```lisp
 Θ := ((λx. λy. y (x x y)) (λx. λy. y (x x y)))
 ```
 
 *它同样满足不动点组合子的性质：*
 
-```plaintext
+```lisp
 (Θ f) = (f (Θ f))
 ```
 
 根据不动点组合子的性质，任何不动点组合子`fix`都有：
 
-```plaintext
+```lisp
 (fix f) = (f (fix f))
         = (f (f (fix f)))
         = (f (f (f (fix f))))
@@ -69,7 +69,7 @@ Y组合子的一大性质就是：
         = (n f (fix f))
 ```
 
-其中`n`为任意有限的自然数。这个式子我们在之后会很频繁地用到。如果你忘记了自然数的意义，可以回到[上一篇博客]({% link blog/_posts/2022-08-27-lambda.md %})。
+其中`n`为任意有限的自然数。这个式子我们在之后还会用到。如果你忘记了自然数的Church计数法，可以回到[上一篇博客]({% link blog/_posts/2022-08-27-lambda.md %})。
 
 ## 函数递归
 
@@ -98,7 +98,7 @@ fac = λx. (if (x==0)
 >
 > 语句`(if b x y)`可以看作是`(b x y)`的另一种写法
 
-可惜的是，λ表达式里并不允许递归。但是有了Y组合子，我们也可以实现类似递归的效果。
+可惜的是，λ演算里并没有递归的语法。但是有了Y组合子，我们也可以实现类似递归的效果。
 
 首先我们重写一下刚刚的`fac`函数：
 
@@ -110,7 +110,7 @@ fac = λf. λx. (if (x==0)
 
 现在`fac`变成了接受一个函数`f`和参数`x`的函数。那么接下来：
 
-```plaintext
+```lisp
 (Y fac 5)
 ```
 
@@ -139,13 +139,13 @@ $$f=\lambda x_1.\ \lambda x_2.\ \lambda x_3.\ \cdots\ \lambda x_n.\ [\text{BODY}
 
 $$f'=\lambda g.\ \lambda x_1.\ \lambda x_2.\ \cdots\ \lambda x_n.\ [\text{BODY}][f:=g]$$
 
-后面的$[\text{BODY}][f:=g]$表示将函数体里所有出现的$f$全部替换成$g$。如果你没有理解为什么要这样做，可以回看一下上面阶乘的例子。
+后面的$[\text{BODY}][f:=g]$表示将函数体里所有出现的$f$全部替换成$g$。如果你没有理解为什么要这样做，可以仔细思考一下上面阶乘的例子。
 
-进行求值的时候，只需要做：
+进行求值的时候，只需要：
 
 $$((Y\ f')\ x_1\ x_2\ x_3\ \cdots\ x_n)$$
 
-就相当于计算$f$代入参数$x_1$到$x_n$的值。
+就相当于计算了递归函数$f$代入参数$x_1$到$x_n$的值。
 
 ## 列表和懒惰求值
 
@@ -153,14 +153,14 @@ $$((Y\ f')\ x_1\ x_2\ x_3\ \cdots\ x_n)$$
 
 你应该还记得上篇文章的思考题里出现了一个`pair`函数。它满足：
 
-```plaintext
+```lisp
 (first (pair a b)) = a
 (second (pair a b)) = b
 ```
 
 一个可行的构造利用了布尔值`T`和`F`的性质：
 
-```plaintext
+```lisp
 pair := λa. λb. λt. (t a b)              ; 其中t为一个布尔值
 first := λp. (p T)
 second := λp. (p F)
@@ -168,7 +168,7 @@ second := λp. (p F)
 
 在`pair`的基础上，你还可以构造出另一个数据结构：列表`list`。
 
-```plaintext
+```lisp
 (list3 a b c) := λNIL. (pair a (pair b (pair c NIL)))
 (list4 a b c d) := λNIL. (pair a (pair b (pair c (pair d NIL))))
 (list5 a b c d e) := λNIL. (pair a (pair b (pair c (paid d (pair e NIL)))))
@@ -178,7 +178,7 @@ second := λp. (p F)
 
 一个特殊的列表是空列表：`list0`
 
-```plaintext
+```lisp
 list0 := λNIL. NIL
 ```
 
@@ -194,7 +194,7 @@ null := λl. (l F (λx. λy. λz. F) T)
 
 首先我们发现，除了空列表以外，其他列表都是`λNIL. (pair _ _)`的形式。将`pair`函数展开得到：`λNIL. λb. (b _ _)`。如果将函数`null`作用于这个非空列表，就会得到：
 
-```plaintext
+```lisp
 (null l) = ((λl. (l F (λx. λy. λz. F) T)) (λNIL. λb. (b _ _)))
          = ((λNIL. λb. (b _ _)) F (λx. λy. λz. F) T)
          = ((λx. λy. λz. F) _ _ T)                       ; 函数接收3个参数并返回常值F
@@ -203,7 +203,7 @@ null := λl. (l F (λx. λy. λz. F) T)
 
 而空列表则会返回：
 
-```plaintext
+```lisp
 (null list0) = ((λl. (l F (λx. λy. λz. F) T) (λNIL. NIL))
              = ((λNIL. NIL) F (λx. λy. λz. F) T)
              = (F (λx. λy. λz. F) T)
@@ -213,14 +213,14 @@ null := λl. (l F (λx. λy. λz. F) T)
 
 #### 列表的第一个元素
 
-```plaintext
+```lisp
 car := (first (l _))
 ```
 `car`返回了列表的第一个元素，前提是列表`l`非空。
 
 类似地，可以写出`cdr`，返回列表除了第一个元素以外的其他元素构成的列表：
 
-```plaintext
+```lisp
 cdr := λNIL. (second (l NIL))
 ```
 
@@ -285,13 +285,13 @@ filter = λc. λl.
 
 例如我们有一个列表`l = [1, 2, 3, 4] = λNIL. (pair 1 (pair 2 (pair 3 (pair 4 NIL))))`，那么：
 
-```plaintext
+```lisp
 (filter (λx. x>2) l)
 ```
 
 就会返回列表：`[3, 4]`。而：
 
-```plaintext
+```lisp
 (filter (λx. x%2==0) l)
 ```
 
@@ -326,7 +326,7 @@ s := λn. λNIL. (pair n (s n+1 NIL))
 
 以上文中的`r=(1, 1, 1, 1, ...)`为例：
 
-```plaintext
+```lisp
 r' = λf. λNIL. (pair 1 (f NIL))
 (null r) = (null (Y r'))
          = ((Y r') F (λx. λy. λz. F) T)
@@ -341,7 +341,7 @@ r' = λf. λNIL. (pair 1 (f NIL))
 
 先看看`r=[1, 1, 1, 1, ...]`：
 
-```plaintext
+```lisp
 r' = λf. λNIL. (pair 1 (f NIL))
 (nth r n) = (nth (Y r') n)
           = (if (null (Y r'))
@@ -356,13 +356,13 @@ r' = λf. λNIL. (pair 1 (f NIL))
 
 > 引理：
 >
-> ```plaintext
+> ```lisp
 > (car (Y r')) = (car (r' (Y r')))
 >              = (car (λNIL. pair 1 (Y r' NIL)))
 >              = 1
 > ```
 >
-> ```plaintext
+> ```lisp
 > (cdr (Y r')) = (cdr (r' (Y r')))
 >              = (cdr (λNIl. pair 1 (Y r' NIL)))
 >              = λNIL. (Y r' NIL)
@@ -372,7 +372,7 @@ r' = λf. λNIL. (pair 1 (f NIL))
 
 回到上面的证明：
 
-```plaintext
+```lisp
 (nth r n) = (if (n==0)
                   (1)
                   (nth r n-1))
@@ -380,13 +380,13 @@ r' = λf. λNIL. (pair 1 (f NIL))
 
 由于`n`是自然数，函数重复足够多轮数之后，一定会让`n`减少到`0`，此时函数返回`1`。也就是：
 
-```plaintext
+```lisp
 (nth r n) = 1
 ```
 
 接着我们再说`s`。使用类似的方法可以得到：
 
-```plaintext
+```lisp
 s' = λf. λn. λNIL. (pair n (f n+1 NIL))
 (car (s n)) = (car (Y s' n)) = n
 (cdr (s n)) = (cdr (Y s' n)) = (s n+1)
@@ -394,7 +394,7 @@ s' = λf. λn. λNIL. (pair n (f n+1 NIL))
 
 根据这两个结论，可以推出来：
 
-```plaintext
+```lisp
 (nth (s n) m) = (if (m==0)
                       (car (s n))
                       (nth (cdr (s n)) m-1))

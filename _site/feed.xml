@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="mqcreaple.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="mqcreaple.github.io/" rel="alternate" type="text/html" /><updated>2022-09-03T03:14:42-04:00</updated><id>mqcreaple.github.io/feed.xml</id><title type="html">My Blog | MqCreaple</title><subtitle>pay more attention to the beauty of formulas!</subtitle><author><name>MqCreaple</name></author><entry><title type="html">Y combinator和递归</title><link href="mqcreaple.github.io/blog/2022/09/02/y-combinator.html" rel="alternate" type="text/html" title="Y combinator和递归" /><published>2022-09-02T00:00:00-04:00</published><updated>2022-09-02T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2022/09/02/y-combinator</id><content type="html" xml:base="mqcreaple.github.io/blog/2022/09/02/y-combinator.html"><![CDATA[<link rel="stylesheet" href="/app/lambda-playground/lambda-playground.css" />
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="mqcreaple.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="mqcreaple.github.io/" rel="alternate" type="text/html" /><updated>2022-09-04T00:40:54-04:00</updated><id>mqcreaple.github.io/feed.xml</id><title type="html">My Blog | MqCreaple</title><subtitle>pay more attention to the beauty of formulas!</subtitle><author><name>MqCreaple</name></author><entry><title type="html">Y combinator和递归</title><link href="mqcreaple.github.io/blog/2022/09/02/y-combinator.html" rel="alternate" type="text/html" title="Y combinator和递归" /><published>2022-09-02T00:00:00-04:00</published><updated>2022-09-02T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2022/09/02/y-combinator</id><content type="html" xml:base="mqcreaple.github.io/blog/2022/09/02/y-combinator.html"><![CDATA[<link rel="stylesheet" href="/app/lambda-playground/lambda-playground.css" />
 
 <script src="/app/lambda-playground/lambda-playground.js" onload="autoRender()"></script>
 
@@ -8,14 +8,14 @@
 
 <h2 id="y组合子">Y组合子</h2>
 
-<p>其实，并不是所有的λ表达式都可以求值。比如说，一个经典的构造就是：</p>
+<p>其实，并不是所有的λ表达式都可以化简。比如说，一个经典的构造就是：</p>
 
 <pre><code class="language-plaintext">((λx. (x x)) (λx. (x x)))
 </code></pre>
 
 <p class="lambda-r">[ [ "λx", [ "x", "x" ] ], [ "λx", [ "x", "x" ] ] ]</p>
 
-<p>这个表达式很有意思。当你把后面的表达式代入前面的<code>x</code>中时，你又会得到和原来一摸一样的表达式，你永远也无法化简它。换句话说，它是<strong>不可求值</strong>的。</p>
+<p>这个表达式很有意思。当你把后面的表达式代入前面的<code>x</code>中时，你又会得到和原来一摸一样的表达式，你永远也无法化简它。也就是，它是<strong>不可求值</strong>的。</p>
 
 <p>而我们对这个表达式简单地变一下，就得到了另一个表达式：</p>
 
@@ -24,40 +24,40 @@
 
 <p class="lambda-r">[ [ "λx", [ "f", [ "x", "x" ] ] ], [ "λx", [ "f", [ "x", "x" ] ] ] ]</p>
 
-<p>当你把后一项代入前一项时，它不仅得到了原来的表达式，而且还在外面多套上了一层函数<code>f</code>。在进行一次替换操作，函数外面就又多了一层<code>f</code>，你可以一直这样无穷无尽地迭代下去。</p>
+<p>当你把后一项代入前一项时，它不仅得到了原来的表达式，而且还在外面多套上了一层函数<code>f</code>。再进行一次替换操作，函数外面又多了一层<code>f</code>，你可以一直这样无穷无尽地迭代下去。</p>
 
 <p>稍稍将外面这个函数改一下，就得到了著名的<strong>Y组合子(Y combinator)</strong>：</p>
 
-<pre><code class="language-plaintext">Y := λf. ((λx. f (x x)) (λx. f (x x)))
+<pre><code class="language-lisp">Y := λf. ((λx. f (x x)) (λx. f (x x)))
 </code></pre>
 
 <p>Y组合子的一大性质就是：</p>
 
-<pre><code class="language-plaintext">(Y f) = (f (Y f))
+<pre><code class="language-lisp">(Y f) = (f (Y f))
 </code></pre>
 
 <p>由于它和函数的不动点$x=f(x)$长得很像，所以Y组合子也叫<strong>不动点组合子(fixed point combinator)</strong>。</p>
 
 <p><em>注：Y组合子并不是唯一的不动点组合子。比如由Alan Turing给出的Θ组合子</em></p>
 
-<pre><code class="language-plaintext">Θ := ((λx. λy. y (x x y)) (λx. λy. y (x x y)))
+<pre><code class="language-lisp">Θ := ((λx. λy. y (x x y)) (λx. λy. y (x x y)))
 </code></pre>
 
 <p><em>它同样满足不动点组合子的性质：</em></p>
 
-<pre><code class="language-plaintext">(Θ f) = (f (Θ f))
+<pre><code class="language-lisp">(Θ f) = (f (Θ f))
 </code></pre>
 
 <p>根据不动点组合子的性质，任何不动点组合子<code>fix</code>都有：</p>
 
-<pre><code class="language-plaintext">(fix f) = (f (fix f))
+<pre><code class="language-lisp">(fix f) = (f (fix f))
         = (f (f (fix f)))
         = (f (f (f (fix f))))
         = ...
         = (n f (fix f))
 </code></pre>
 
-<p>其中<code>n</code>为任意有限的自然数。这个式子我们在之后会很频繁地用到。如果你忘记了自然数的意义，可以回到<a href="/blog/2022/08/27/lambda.html">上一篇博客</a>。</p>
+<p>其中<code>n</code>为任意有限的自然数。这个式子我们在之后还会用到。如果你忘记了自然数的Church计数法，可以回到<a href="/blog/2022/08/27/lambda.html">上一篇博客</a>。</p>
 
 <h2 id="函数递归">函数递归</h2>
 
@@ -86,7 +86,7 @@ F := λa. λb. b
   <p>语句<code>(if b x y)</code>可以看作是<code>(b x y)</code>的另一种写法</p>
 </blockquote>
 
-<p>可惜的是，λ表达式里并不允许递归。但是有了Y组合子，我们也可以实现类似递归的效果。</p>
+<p>可惜的是，λ演算里并没有递归的语法。但是有了Y组合子，我们也可以实现类似递归的效果。</p>
 
 <p>首先我们重写一下刚刚的<code>fac</code>函数：</p>
 
@@ -97,7 +97,7 @@ F := λa. λb. b
 
 <p>现在<code>fac</code>变成了接受一个函数<code>f</code>和参数<code>x</code>的函数。那么接下来：</p>
 
-<pre><code class="language-plaintext">(Y fac 5)
+<pre><code class="language-lisp">(Y fac 5)
 </code></pre>
 
 <p>就可以正确地返回我们想要的结果。证明如下：</p>
@@ -128,15 +128,15 @@ $$</div>
 f'=\lambda g.\ \lambda x_1.\ \lambda x_2.\ \cdots\ \lambda x_n.\ [\text{BODY}][f:=g]
 $$</div>
 
-<p>后面的$[\text{BODY}][f:=g]$表示将函数体里所有出现的$f$全部替换成$g$。如果你没有理解为什么要这样做，可以回看一下上面阶乘的例子。</p>
+<p>后面的$[\text{BODY}][f:=g]$表示将函数体里所有出现的$f$全部替换成$g$。如果你没有理解为什么要这样做，可以仔细思考一下上面阶乘的例子。</p>
 
-<p>进行求值的时候，只需要做：</p>
+<p>进行求值的时候，只需要：</p>
 
 <div class="kdmath">$$
 ((Y\ f')\ x_1\ x_2\ x_3\ \cdots\ x_n)
 $$</div>
 
-<p>就相当于计算$f$代入参数$x_1$到$x_n$的值。</p>
+<p>就相当于计算了递归函数$f$代入参数$x_1$到$x_n$的值。</p>
 
 <h2 id="列表和懒惰求值">列表和懒惰求值</h2>
 
@@ -144,20 +144,20 @@ $$</div>
 
 <p>你应该还记得上篇文章的思考题里出现了一个<code>pair</code>函数。它满足：</p>
 
-<pre><code class="language-plaintext">(first (pair a b)) = a
+<pre><code class="language-lisp">(first (pair a b)) = a
 (second (pair a b)) = b
 </code></pre>
 
 <p>一个可行的构造利用了布尔值<code>T</code>和<code>F</code>的性质：</p>
 
-<pre><code class="language-plaintext">pair := λa. λb. λt. (t a b)              ; 其中t为一个布尔值
+<pre><code class="language-lisp">pair := λa. λb. λt. (t a b)              ; 其中t为一个布尔值
 first := λp. (p T)
 second := λp. (p F)
 </code></pre>
 
 <p>在<code>pair</code>的基础上，你还可以构造出另一个数据结构：列表<code>list</code>。</p>
 
-<pre><code class="language-plaintext">(list3 a b c) := λNIL. (pair a (pair b (pair c NIL)))
+<pre><code class="language-lisp">(list3 a b c) := λNIL. (pair a (pair b (pair c NIL)))
 (list4 a b c d) := λNIL. (pair a (pair b (pair c (pair d NIL))))
 (list5 a b c d e) := λNIL. (pair a (pair b (pair c (paid d (pair e NIL)))))
 </code></pre>
@@ -166,7 +166,7 @@ second := λp. (p F)
 
 <p>一个特殊的列表是空列表：<code>list0</code></p>
 
-<pre><code class="language-plaintext">list0 := λNIL. NIL
+<pre><code class="language-lisp">list0 := λNIL. NIL
 </code></pre>
 
 <p>有了这些定义之后，我们就可以用递归的语法来定义列表的一些操作。比如：</p>
@@ -180,7 +180,7 @@ second := λp. (p F)
 
 <p>首先我们发现，除了空列表以外，其他列表都是<code>λNIL. (pair _ _)</code>的形式。将<code>pair</code>函数展开得到：<code>λNIL. λb. (b _ _)</code>。如果将函数<code>null</code>作用于这个非空列表，就会得到：</p>
 
-<pre><code class="language-plaintext">(null l) = ((λl. (l F (λx. λy. λz. F) T)) (λNIL. λb. (b _ _)))
+<pre><code class="language-lisp">(null l) = ((λl. (l F (λx. λy. λz. F) T)) (λNIL. λb. (b _ _)))
          = ((λNIL. λb. (b _ _)) F (λx. λy. λz. F) T)
          = ((λx. λy. λz. F) _ _ T)                       ; 函数接收3个参数并返回常值F
          = F
@@ -188,7 +188,7 @@ second := λp. (p F)
 
 <p>而空列表则会返回：</p>
 
-<pre><code class="language-plaintext">(null list0) = ((λl. (l F (λx. λy. λz. F) T) (λNIL. NIL))
+<pre><code class="language-lisp">(null list0) = ((λl. (l F (λx. λy. λz. F) T) (λNIL. NIL))
              = ((λNIL. NIL) F (λx. λy. λz. F) T)
              = (F (λx. λy. λz. F) T)
              = ((λa. λb. b) (λx. λy. λz. T) T)
@@ -197,13 +197,13 @@ second := λp. (p F)
 
 <h4 id="列表的第一个元素">列表的第一个元素</h4>
 
-<pre><code class="language-plaintext">car := (first (l _))
+<pre><code class="language-lisp">car := (first (l _))
 </code></pre>
 <p><code>car</code>返回了列表的第一个元素，前提是列表<code>l</code>非空。</p>
 
 <p>类似地，可以写出<code>cdr</code>，返回列表除了第一个元素以外的其他元素构成的列表：</p>
 
-<pre><code class="language-plaintext">cdr := λNIL. (second (l NIL))
+<pre><code class="language-lisp">cdr := λNIL. (second (l NIL))
 </code></pre>
 
 <p><code>car</code>和<code>cdr</code>这两个函数名可能看起来很奇怪，但这两个函数名来源于最古老的函数式编程语言：Lisp。<del>这也是Lisp的函数命名经常被吐槽的原因之一</del></p>
@@ -262,12 +262,12 @@ second := λp. (p F)
 
 <p>例如我们有一个列表<code>l = [1, 2, 3, 4] = λNIL. (pair 1 (pair 2 (pair 3 (pair 4 NIL))))</code>，那么：</p>
 
-<pre><code class="language-plaintext">(filter (λx. x&gt;2) l)
+<pre><code class="language-lisp">(filter (λx. x&gt;2) l)
 </code></pre>
 
 <p>就会返回列表：<code>[3, 4]</code>。而：</p>
 
-<pre><code class="language-plaintext">(filter (λx. x%2==0) l)
+<pre><code class="language-lisp">(filter (λx. x%2==0) l)
 </code></pre>
 
 <p>就会返回列表：<code>[2, 4]</code></p>
@@ -298,7 +298,7 @@ second := λp. (p F)
 
 <p>以上文中的<code>r=(1, 1, 1, 1, ...)</code>为例：</p>
 
-<pre><code class="language-plaintext">r' = λf. λNIL. (pair 1 (f NIL))
+<pre><code class="language-lisp">r' = λf. λNIL. (pair 1 (f NIL))
 (null r) = (null (Y r'))
          = ((Y r') F (λx. λy. λz. F) T)
          = ((λNIL. pair 1 (Y r' NIL)) F (λx. λy. λz. F) T)
@@ -312,7 +312,7 @@ second := λp. (p F)
 
 <p>先看看<code>r=[1, 1, 1, 1, ...]</code>：</p>
 
-<pre><code class="language-plaintext">r' = λf. λNIL. (pair 1 (f NIL))
+<pre><code class="language-lisp">r' = λf. λNIL. (pair 1 (f NIL))
 (nth r n) = (nth (Y r') n)
           = (if (null (Y r'))
                   (_)
@@ -327,12 +327,12 @@ second := λp. (p F)
 <blockquote>
   <p>引理：</p>
 
-  <pre><code class="language-plaintext">(car (Y r')) = (car (r' (Y r')))
+  <pre><code class="language-lisp">(car (Y r')) = (car (r' (Y r')))
              = (car (λNIL. pair 1 (Y r' NIL)))
              = 1
 </code></pre>
 
-  <pre><code class="language-plaintext">(cdr (Y r')) = (cdr (r' (Y r')))
+  <pre><code class="language-lisp">(cdr (Y r')) = (cdr (r' (Y r')))
              = (cdr (λNIl. pair 1 (Y r' NIL)))
              = λNIL. (Y r' NIL)
              = (Y r')
@@ -342,26 +342,26 @@ second := λp. (p F)
 
 <p>回到上面的证明：</p>
 
-<pre><code class="language-plaintext">(nth r n) = (if (n==0)
+<pre><code class="language-lisp">(nth r n) = (if (n==0)
                   (1)
                   (nth r n-1))
 </code></pre>
 
 <p>由于<code>n</code>是自然数，函数重复足够多轮数之后，一定会让<code>n</code>减少到<code>0</code>，此时函数返回<code>1</code>。也就是：</p>
 
-<pre><code class="language-plaintext">(nth r n) = 1
+<pre><code class="language-lisp">(nth r n) = 1
 </code></pre>
 
 <p>接着我们再说<code>s</code>。使用类似的方法可以得到：</p>
 
-<pre><code class="language-plaintext">s' = λf. λn. λNIL. (pair n (f n+1 NIL))
+<pre><code class="language-lisp">s' = λf. λn. λNIL. (pair n (f n+1 NIL))
 (car (s n)) = (car (Y s' n)) = n
 (cdr (s n)) = (cdr (Y s' n)) = (s n+1)
 </code></pre>
 
 <p>根据这两个结论，可以推出来：</p>
 
-<pre><code class="language-plaintext">(nth (s n) m) = (if (m==0)
+<pre><code class="language-lisp">(nth (s n) m) = (if (m==0)
                       (car (s n))
                       (nth (cdr (s n)) m-1))
               = (if (m==0)
