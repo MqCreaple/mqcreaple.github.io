@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+<meta name="author" content="MqCreaple">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.png">
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<!-- font awesome -->
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+<!-- katex -->
+<link rel="stylesheet" href="/css/katex.min.css">
+
+<!-- highlightjs -->
+<script src="/js/highlight.min.js"></script>
+<link rel="stylesheet" href="/css/github-dark.min.css">
+<script>hljs.highlightAll();</script>
+
+<!-- mermaid -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true});</script>
+    <title>【整活】所有算法都是O(1)的 - My Blog | MqCreaple</title>
+</head>
+<body>
+<div id='container'>
+    
+<div id="header">
+    <div id="navbar" class="inline">
+        <a href="/" class="strong">My Blog | MqCreaple</a>
+        <a href="/aboutme/"><i class="fa-solid fa-user"></i>about me</a>
+        <a href="/blog/"><i class="fa-regular fa-file-lines"></i>blog</a>
+        <a href="/app/"><i class="fa-solid fa-cubes-stacked"></i>app</a>
+        <a href="/feed.xml"><i class="fa-solid fa-rss"></i>RSS</a>
+    </div>
+</div>
+    <div id='main'>
+        <div id='left'>
+            <div class='card article'>
+                
+                <h1>【整活】所有算法都是O(1)的</h1>
+                <p><em>注：本文全部内容为<strong>一本正经的胡说八道</strong>，请勿相信</em></p>
+
+<h2 id="示范快速排序算法">示范：快速排序算法</h2>
+
+<p><strong>第一步：复制粘贴一份代码</strong></p>
+
+<pre><code class="language-cpp">void qsort(int *a, int l,int r)
+{
+    int pivot = a[(l+r)/2];
+    int i = l, j = r;
+    do {
+        while(a[i] &lt; pivot) i++;
+        while(a[j] &gt; pivot) j--;
+        if(i&lt;=j) {
+            swap(a[i], a[j]);
+            i++;
+            j--;
+        }
+    } while(i &lt;= j);
+    if(l &lt; j) qsort(a, l, j);
+    if(i &lt; r) qsort(a, i, r);
+}
+int main() {
+    const int N = 100001;
+    int n;
+    int a[N];
+    cin &gt;&gt; n;
+    for(int i = 0; i &lt; n; i++) {
+        cin &gt;&gt; a[i];
+    }
+    sort(a, 0, n-1);            // sort the array
+    for(int i = 0; i &lt; n; i++) {
+        cout &lt;&lt; a[i] &lt;&lt; " ";
+    }
+}
+</code></pre>
+
+<p>然后我们很失望，因为这个算法是<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>N</mi><mi>log</mi><mo>⁡</mo><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(N\log N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mclose">)</span></span></span></span>的。</p>
+
+<p><strong>第二步：观察数据范围</strong></p>
+
+<p><img src="/img/time-compl-0.png" alt="time-compl-0" /></p>
+
+<p>我们发现，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi></mrow><annotation encoding="application/x-tex">N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span></span></span></span>不超过<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><msup><mn>0</mn><mn>5</mn></msup></mrow><annotation encoding="application/x-tex">10^5</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord">1</span><span class="mord"><span class="mord">0</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">5</span></span></span></span></span></span></span></span></span></span></span>，接下来就有办法了。</p>
+
+<p><strong>第三步：补齐数组</strong></p>
+
+<p>在我们的代码里面更改下面几处：</p>
+
+<pre><code class="language-diff">int main() {
+    const int N = 100001;
+    int n;
+    int a[N];
+    cin &gt;&gt; n;
+    for(int i = 0; i &lt; n; i++) {
+        cin &gt;&gt; a[i];
+    }
++   for(int i = n; i &lt; N; i++) {
++       a[i] = INT32_MAX;       // fill the rest of array with INT32_MAX
++   }
+-   sort(a, 0, n-1);            // sort the array
++   sort(a, 0, N-1);            // sort the whole array
+    for(int i = 0; i &lt; n; i++) {
+        cout &lt;&lt; a[i] &lt;&lt; " ";
+    }
+}
+</code></pre>
+
+<p>然后你就惊奇地发现，不管你输入的数组是多大，这个算法都会排序<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn></mrow><annotation encoding="application/x-tex">1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span>到<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi></mrow><annotation encoding="application/x-tex">N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span></span></span></span>之间的所有数，它所需要的执行时间都是一样的。换句话说：<strong>这个算法是<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span>的</strong>。</p>
+
+<p><strong>第四步：为自己献上热烈的掌声</strong></p>
+
+<p>至此，你成功地将一个<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>N</mi><mi>log</mi><mo>⁡</mo><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(N\log N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mclose">)</span></span></span></span>的算法变成了<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span>的算法。</p>
+
+<h2 id="练习">练习</h2>
+
+<ol>
+  <li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span>计算快速幂</li>
+  <li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span>解决图的最短路问题</li>
+  <li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span>解决A+B problem</li>
+</ol>
+
+                
+            </div>
+        </div>
+        <div id='right'>
+            <div class="card" id="avatar">
+    <img src="/favicon.png" alt="avatar" id="image">
+    <a href="/blog/aboutme/" id="name">MqCreaple</a>
+    <div class="inline" id="accounts">
+        <a href="https://github.com/MqCreaple"><i class="fa-brands fa-github"></i></a>
+        <a href="https://space.bilibili.com/507017613"><i class="fa-brands fa-bilibili"></i></a>
+        <a href="https://www.zhihu.com/people/gmq12"><i class="fa-brands fa-zhihu"></i></a>
+        <a href="mailto:gmq14159@gmail.com"><i class="fa-regular fa-envelope"></i></a>
+    </div>
+</div>
+        </div>
+    </div>
+    <div id="footer">
+    <div style="margin: 2%">
+        <p>Copyright &copy; GMQ 2021 - 2022, Blog of MqCreaple (gmq12), version 2.2 </p>
+        <p>Powered by <a href="jekyllrb.com">Jekyll</a> | <a href="mailto:gmq14159@gmail.com">Contact Me</a></p>
+    </div>
+</div>
+</div>
+</body>
+</html>

@@ -11,8 +11,6 @@ theme: minima
 plugins:
   - jekyll-feed
   - jekyll-katex
-exclude:
-  - README.md
 
 # katex configuration
 katex:

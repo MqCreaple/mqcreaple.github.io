@@ -340,7 +340,7 @@ second := λp. (p F)
 
 <h4 id="判空">判空</h4>
 
-<p>以上文中的<code>r=(1, 1, 1, 1, ...)</code>为例：</p>
+<p>以上文中的<code>r=(1, 1, 1, 1, ...)</code>为例。把递归转化成Y组合子的形式，就可以得到：</p>
 
 <pre><code class="language-lisp">r' = λf. λNIL. (pair 1 (f NIL))
 (null r) = (null (Y r'))
@@ -350,7 +350,7 @@ second := λp. (p F)
          = F
 </code></pre>
 
-<p>这个结果也在意料之内，因为无限长的列表肯定不是空的。</p>
+<p>这个结果也在意料之内，因为无限长的列表肯定不是空的。类似的，你也可以证明列表<code>s</code>非空。</p>
 
 <h4 id="第n个元素">第<code>n</code>个元素</h4>
 

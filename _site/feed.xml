@@ -1,4 +1,84 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="mqcreaple.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="mqcreaple.github.io/" rel="alternate" type="text/html" /><updated>2022-09-04T00:40:54-04:00</updated><id>mqcreaple.github.io/feed.xml</id><title type="html">My Blog | MqCreaple</title><subtitle>pay more attention to the beauty of formulas!</subtitle><author><name>MqCreaple</name></author><entry><title type="html">Y combinator和递归</title><link href="mqcreaple.github.io/blog/2022/09/02/y-combinator.html" rel="alternate" type="text/html" title="Y combinator和递归" /><published>2022-09-02T00:00:00-04:00</published><updated>2022-09-02T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2022/09/02/y-combinator</id><content type="html" xml:base="mqcreaple.github.io/blog/2022/09/02/y-combinator.html"><![CDATA[<link rel="stylesheet" href="/app/lambda-playground/lambda-playground.css" />
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="mqcreaple.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="mqcreaple.github.io/" rel="alternate" type="text/html" /><updated>2022-09-06T04:04:40-04:00</updated><id>mqcreaple.github.io/feed.xml</id><title type="html">My Blog | MqCreaple</title><subtitle>pay more attention to the beauty of formulas!</subtitle><author><name>MqCreaple</name></author><entry><title type="html">【整活】所有算法都是O(1)的</title><link href="mqcreaple.github.io/blog/2022/09/06/time-compl.html" rel="alternate" type="text/html" title="【整活】所有算法都是O(1)的" /><published>2022-09-06T00:00:00-04:00</published><updated>2022-09-06T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2022/09/06/time-compl</id><content type="html" xml:base="mqcreaple.github.io/blog/2022/09/06/time-compl.html"><![CDATA[<p><em>注：本文全部内容为<strong>一本正经的胡说八道</strong>，请勿相信</em></p>
+
+<h2 id="示范快速排序算法">示范：快速排序算法</h2>
+
+<p><strong>第一步：复制粘贴一份代码</strong></p>
+
+<pre><code class="language-cpp">void qsort(int *a, int l,int r)
+{
+    int pivot = a[(l+r)/2];
+    int i = l, j = r;
+    do {
+        while(a[i] &lt; pivot) i++;
+        while(a[j] &gt; pivot) j--;
+        if(i&lt;=j) {
+            swap(a[i], a[j]);
+            i++;
+            j--;
+        }
+    } while(i &lt;= j);
+    if(l &lt; j) qsort(a, l, j);
+    if(i &lt; r) qsort(a, i, r);
+}
+int main() {
+    const int N = 100001;
+    int n;
+    int a[N];
+    cin &gt;&gt; n;
+    for(int i = 0; i &lt; n; i++) {
+        cin &gt;&gt; a[i];
+    }
+    sort(a, 0, n-1);            // sort the array
+    for(int i = 0; i &lt; n; i++) {
+        cout &lt;&lt; a[i] &lt;&lt; " ";
+    }
+}
+</code></pre>
+
+<p>然后我们很失望，因为这个算法是$O(N\log N)$的。</p>
+
+<p><strong>第二步：观察数据范围</strong></p>
+
+<p><img src="/img/time-compl-0.png" alt="time-compl-0" /></p>
+
+<p>我们发现，$N$不超过$10^5$，接下来就有办法了。</p>
+
+<p><strong>第三步：补齐数组</strong></p>
+
+<p>在我们的代码里面更改下面几处：</p>
+
+<pre><code class="language-diff">int main() {
+    const int N = 100001;
+    int n;
+    int a[N];
+    cin &gt;&gt; n;
+    for(int i = 0; i &lt; n; i++) {
+        cin &gt;&gt; a[i];
+    }
++   for(int i = n; i &lt; N; i++) {
++       a[i] = INT32_MAX;       // fill the rest of array with INT32_MAX
++   }
+-   sort(a, 0, n-1);            // sort the array
++   sort(a, 0, N-1);            // sort the whole array
+    for(int i = 0; i &lt; n; i++) {
+        cout &lt;&lt; a[i] &lt;&lt; " ";
+    }
+}
+</code></pre>
+
+<p>然后你就惊奇地发现，不管你输入的数组是多大，这个算法都会排序$1$到$N$之间的所有数，它所需要的执行时间都是一样的。换句话说：<strong>这个算法是$O(1)$的</strong>。</p>
+
+<p><strong>第四步：为自己献上热烈的掌声</strong></p>
+
+<p>至此，你成功地将一个$O(N\log N)$的算法变成了$O(1)$的算法。</p>
+
+<h2 id="练习">练习</h2>
+
+<ol>
+  <li>$O(1)$计算快速幂</li>
+  <li>$O(1)$解决图的最短路问题</li>
+  <li>$O(1)$解决A+B problem</li>
+</ol>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="algorithm" /><category term="time-complexity" /><category term="jokes" /><summary type="html"><![CDATA[注：本文全部内容为一本正经的胡说八道，请勿相信]]></summary></entry><entry><title type="html">Y combinator和递归</title><link href="mqcreaple.github.io/blog/2022/09/02/y-combinator.html" rel="alternate" type="text/html" title="Y combinator和递归" /><published>2022-09-02T00:00:00-04:00</published><updated>2022-09-02T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2022/09/02/y-combinator</id><content type="html" xml:base="mqcreaple.github.io/blog/2022/09/02/y-combinator.html"><![CDATA[<link rel="stylesheet" href="/app/lambda-playground/lambda-playground.css" />
 
 <script src="/app/lambda-playground/lambda-playground.js" onload="autoRender()"></script>
 
@@ -296,7 +376,7 @@ second := λp. (p F)
 
 <h4 id="判空">判空</h4>
 
-<p>以上文中的<code>r=(1, 1, 1, 1, ...)</code>为例：</p>
+<p>以上文中的<code>r=(1, 1, 1, 1, ...)</code>为例。把递归转化成Y组合子的形式，就可以得到：</p>
 
 <pre><code class="language-lisp">r' = λf. λNIL. (pair 1 (f NIL))
 (null r) = (null (Y r'))
@@ -306,7 +386,7 @@ second := λp. (p F)
          = F
 </code></pre>
 
-<p>这个结果也在意料之内，因为无限长的列表肯定不是空的。</p>
+<p>这个结果也在意料之内，因为无限长的列表肯定不是空的。类似的，你也可以证明列表<code>s</code>非空。</p>
 
 <h4 id="第n个元素">第<code>n</code>个元素</h4>
 
@@ -2168,113 +2248,4 @@ D = A.transpose()
 B = [5 6 ; 7 8]
 C = A * B
 D = A'
-</code></pre>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="julia" /><category term="python" /><summary type="html"><![CDATA[Symbols]]></summary></entry><entry><title type="html">Julia对绳索振动的模拟</title><link href="mqcreaple.github.io/blog/2021/08/09/julia-rope-simulation.html" rel="alternate" type="text/html" title="Julia对绳索振动的模拟" /><published>2021-08-09T00:00:00-04:00</published><updated>2021-08-09T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2021/08/09/julia-rope-simulation</id><content type="html" xml:base="mqcreaple.github.io/blog/2021/08/09/julia-rope-simulation.html"><![CDATA[<h2 id="仿真结果代码">仿真结果+代码</h2>
-
-<p>且看老夫打一遍 松果——弹抖——闪电鞭！</p>
-
-<p>这是慢打：</p>
-
-<p><img src="/img/julia-1.gif" alt="julia-1" /></p>
-
-<p>这是快打：</p>
-
-<p><img src="/img/julia-2.gif" alt="julia-2" /></p>
-
-<p><img src="/img/mabaoguo.gif" alt="松果弹抖闪电鞭" /></p>
-
-<p>然后是代码：</p>
-
-<pre><code class="language-julia"># Vector2D.jl
-module Vector2D
-import Base:+,-,*,/
-import Base:length, LinRange
-export Vec2D, length, un, +, -, *, /, LinRange
-
-struct Vec2D
-    x::Float64
-    y::Float64
-end
-Vec2D() = Vec2D(0, 0)
-
-length(a::Vec2D)::Float64 = √(a.x^2 + a.y^2)
-un(a::Vec2D) = Vec2D(a.x / √(a.x^2+a.y^2), a.y / √(a.x^2+a.y^2))
-+(a::Vec2D, b::Vec2D) = Vec2D(a.x+b.x, a.y+b.y)
--(a::Vec2D, b::Vec2D) = Vec2D(a.x-b.x, a.y-b.y)
-*(a::Vec2D, b::Float64) = Vec2D(a.x*b, a.y*b)
-/(a::Vec2D, b::Float64) = Vec2D(a.x/b, a.y/b)
-LinRange(l::Vec2D, r::Vec2D, n::Integer) = Vec2D.(LinRange(l.x, r.x, n), LinRange(l.y, r.y, n))
-end
-</code></pre>
-
-<pre><code class="language-julia"># simu.jl
-push!(LOAD_PATH,".")
-using Plots
-using Printf
-using Vector2D
-
-left = Vec2D(-1, 0)   # left end
-right = Vec2D(1, 0)   # right end
-
-m = 0.05              # total mass
-k = 10.               # stiffness factor
-n = 90                # number of mass points on a string
-r = Vector(LinRange(left, right, n))   # position of each mass point
-v = repeat([Vec2D()], n)               # velocity of each mass point
-t  = 0.                # current time
-dt = 0.002             # time duration for every loop
-originLength = length(r[2]-r[1])
-
-@gif for rep ∈ 1:10000
-    global λ, k, n, r, v, originLength, t, dt
-    deltaR = [
-        r[i+1] - r[i]
-        for i in 1:length(r)-1
-    ]
-
-    ## calculate force on each point ##
-    F = repeat([Vec2D()], n)
-    for i ∈ 1:length(r)
-        if i == 1 || i == length(r)
-            continue
-        else
-            F[i] = un(deltaR[i]) * (length(deltaR[i])-originLength) * k -
-                    un(deltaR[i-1]) * (length(deltaR[i-1])-originLength) * k
-        end
-    end
-    if rep &lt;= 50
-        F[n÷2] = F[n÷2] + Vec2D(0, 0.02)
-    end
-
-    ## update time dt ##
-    v = v + (F./(m/n)).*dt
-    r = r + v.*dt
-    t = t + dt
-
-    ## plot ##
-    plot(
-        map((v) -&gt; v.x, r),
-        map((v) -&gt; v.y, r),
-        label="time=" * @sprintf("%.3f", t),
-        ylims=(-0.14, 0.14)
-    )
-end every 25
-</code></pre>
-
-<p>前排提醒：代码运行大约需要1分钟，请耐心等待。。。</p>
-
-<h2 id="方法">方法</h2>
-<ol>
-  <li>将绳索看作由弹簧依次连接的$n$个质点</li>
-  <li>使用数组<code>r[]</code>记录每个质点的位置，数组<code>v[]</code>记录每个质点的速度</li>
-  <li>定义变量<code>dt</code>，代表一个微小时间间隔</li>
-  <li>每一次循环，计算每个质点的受力<code>F[]</code>，其中端点增加一个特判</li>
-  <li>接着依次更新<code>v</code>和<code>r</code>，最后画出来即可</li>
-</ol>
-
-<h2 id="失败案例集锦">失败案例集锦</h2>
-
-<p><img src="/img/julia-fail-1.gif" alt="fail-1" /></p>
-
-<p><img src="/img/julia-fail-2.gif" alt="fail-2" /></p>
-
-<p><img src="/img/julia-fail-3.gif" alt="fail-3" /></p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="julia" /><category term="simulation" /><summary type="html"><![CDATA[仿真结果+代码]]></summary></entry></feed>
+</code></pre>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="julia" /><category term="python" /><summary type="html"><![CDATA[Symbols]]></summary></entry></feed>
