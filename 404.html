@@ -24,27 +24,17 @@ jquery: true
 </style>
 
 <div class="card container">
-  <h1><i class="fa-solid fa-triangle-exclamation"></i>  Page not found!</h1>
+  <h1 id="text"><i class="fa-solid fa-triangle-exclamation"></i>
+    4<span id="move">0</span>4 Page not found!</h1>
 
   <p>The requested page could not be found. :(</p>
   <p>If you get here by the hyperlink, please <a href="mailto:{{site.email}}">contact me</a> to report the problem.</p>
-  <div style="display: flex; flex-direction: row;">
-    <div style="width: 50%; max-width: 50%;">
-      <!-- left -->
-      <ul class="react">
-        <li><a href="/"><strong>BACK TO MAINPAGE</strong></a></li>
-        <li><a href="/blog/"><strong>VISIT MY BLOG</strong></a></li>
-      </ul>
-    </div>
-    <div style="width: 50%; max-width: 50%">
-      <!-- right -->
-      <h1 style="font-family: sans-serif; font-size: 5em;" id="text">
-        4
-        <span id="move">0</span>
-        4
-      </h1>
-    </div>
-  </div>
+  <ul class="react">
+    <li><a href="/"><strong><i class="fa-solid fa-house"></i> BACK TO MAINPAGE</strong></a></li>
+    <li><a href="/blog/"><strong><i class="fa-solid fa-newspaper"></i> VISIT MY BLOG</strong></a></li>
+    <li><a href="/app/"><strong><i class="fa-solid fa-cubes"></i> SOMETHING INTERESTING</strong></a></li>
+    <li><a href="/aboutme/"><strong><i class="fa-solid fa-user"></i> ABOUT ME</strong></a></li>
+  </ul>
 </div>
 
 <script>

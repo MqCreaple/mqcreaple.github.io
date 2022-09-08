@@ -11,7 +11,7 @@ tags: ["algorithm", "time-complexity", "jokes"]
 **第一步：复制粘贴一份代码**
 
 ```cpp
-void qsort(int *a, int l,int r)
+void qsort(int *a, int l, int r)
 {
     int pivot = a[(l+r)/2];
     int i = l, j = r;
@@ -35,7 +35,7 @@ int main() {
     for(int i = 0; i < n; i++) {
         cin >> a[i];
     }
-    sort(a, 0, n-1);            // sort the array
+    qsort(a, 0, n-1);            // sort the array
     for(int i = 0; i < n; i++) {
         cout << a[i] << " ";
     }

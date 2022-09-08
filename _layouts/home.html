@@ -12,6 +12,15 @@
         #avatar {
             position: static;
         }
+        .article div {
+            width: 60%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .article div img {
+            width: 100%;
+            max-width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -26,10 +35,10 @@
             </div>
             {% endif %}
 
-            <div class="card blog" onclick="window.location.replace('/blog/')">
+            <div class="card blog" onclick="window.open('/blog/', '_self')">
                 <h2><i class="fa fa-box-archive"></i> More Blogs >>></h2>
             </div>
-            <div class="card">
+            <div class="card article">
                 <h1>我的博客 {{site.title}}</h1>
                 {{content}}
             </div>
