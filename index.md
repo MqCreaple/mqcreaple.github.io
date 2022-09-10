@@ -58,8 +58,16 @@ notification: 由于操作失误，我删除了旧版博客的github仓库，并
 <img src="/img/meme-6.jpg" />
 </div>
 
+<div id="meme-7">
+<img src="/img/meme-7.jpg" />
+</div>
+
+<div id="meme-8">
+<img src="/img/meme-8.jpg" />
+</div>
+
 <script>
-const memeNumber = 7;
+const memeNumber = 9;
 var currentMeme = 0;
 function randomMeme() {
     document.getElementById(`meme-${currentMeme}`).style.display = "none";

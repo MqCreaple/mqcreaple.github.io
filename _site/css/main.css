@@ -18,6 +18,10 @@ a {
     transition: color .4s;
 }
 
+.article a {
+    color: #1b603b;
+}
+
 a:hover {
     color: #efefef;
     text-decoration: underline;
@@ -58,6 +62,13 @@ blockquote {
     border-left: 0.4em solid #959595;
     padding: 2px 15px;
     margin: 0;
+}
+
+textarea {
+    background-color: rgba(0, 0, 0, 0);
+    width: 100%;
+    max-width: 100%;
+    outline: none;
 }
 
 iframe {

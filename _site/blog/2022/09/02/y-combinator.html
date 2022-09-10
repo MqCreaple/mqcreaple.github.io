@@ -46,7 +46,7 @@
 
 <script src="/app/lambda-playground/lambda-playground.js" onload="autoRender()"></script>
 
-<p><strong>如果你不了解λ演算，请阅读<a href="/blog/2022/08/27/lambda.html">上一篇博客</a>以获得最佳食用体验</strong></p>
+<p><strong>温馨提示：如果你不了解λ演算，请阅读<a href="/blog/2022/08/27/lambda.html">上一篇博客</a>以获得最佳食用体验</strong></p>
 
 <p><em>注：本文的λ表达式中所有出现的下划线<code>_</code>，都表示“这个值我懒得算且不关心”</em></p>
 
@@ -54,7 +54,7 @@
 
 <p>其实，并不是所有的λ表达式都可以化简。比如说，一个经典的构造就是：</p>
 
-<pre><code class="language-plaintext">((λx. (x x)) (λx. (x x)))
+<pre><code class="language-plaintext">Ω := ((λx. (x x)) (λx. (x x)))
 </code></pre>
 
 <p class="lambda-r">[ [ "λx", [ "x", "x" ] ], [ "λx", [ "x", "x" ] ] ]</p>
@@ -454,7 +454,7 @@ second := λp. (p F)
     </div>
     <div id="footer">
     <div style="margin: 2%">
-        <p>Copyright &copy; GMQ 2021 - 2022, Blog of MqCreaple (gmq12), version 2.2 </p>
+        <p>Copyright &copy; GMQ 2021 - 2022, Blog of MqCreaple (gmq12), version 2.3 </p>
         <p>Powered by <a href="jekyllrb.com">Jekyll</a> | <a href="mailto:gmq14159@gmail.com">Contact Me</a></p>
     </div>
 </div>

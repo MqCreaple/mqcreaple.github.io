@@ -34,6 +34,22 @@
     
 <script src="lambda-playground.js" onload="autoRender()"></script>
 <link rel="stylesheet" href="lambda-playground.css" />
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var custom = document.getElementById("custom");
+        var target = document.getElementById("target");
+        custom.addEventListener("input", event => {
+            try {
+                target.style.color = "#000000";
+                let content = JSON.parse(custom.value);
+                lambdaExpr(content, "lcustom", document.getElementById("target"));
+            } catch(e) {
+                target.style.color = "red";
+                target.innerHTML = e.message;
+            }
+        });
+    });
+</script>
 
 </head>
 <body>
@@ -53,9 +69,13 @@
             
 <div class="card article">
     <h1>Lambda Calculus Playground</h1>
+    <h2>Demonstrations:</h2>
     <p class="lambda-r">[ [ "λx", "λy", [ "+", "x", "y" ] ], "2", "3" ]</p>
     <p class="lambda-r">[ "OR", [ "AND", "T", "F" ], ["T"] ]</p>
     <p class="lambda-r" data-repl-table='{"Id": [ "λx", "x" ]}'>[ "λf", "λx", [ "ID", [ "f", "x" ] ] ]</p>
+    <h2>Playground:</h2>
+    <textarea elastic id="custom" placeholder="type a JSON expression resembling lambda terms.">[ [ "λx", "λy", [ "+", "x", "y" ] ], "2", "3" ]</textarea>
+    <p id="target"></p>
 </div>
 
         </div>
@@ -75,7 +95,7 @@
     </div>
     <div id="footer">
     <div style="margin: 2%">
-        <p>Copyright &copy; GMQ 2021 - 2022, Blog of MqCreaple (gmq12), version 2.2 </p>
+        <p>Copyright &copy; GMQ 2021 - 2022, Blog of MqCreaple (gmq12), version 2.3 </p>
         <p>Powered by <a href="jekyllrb.com">Jekyll</a> | <a href="mailto:gmq14159@gmail.com">Contact Me</a></p>
     </div>
 </div>

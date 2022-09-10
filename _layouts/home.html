@@ -58,13 +58,17 @@
         </div>
         <div id='right'>
             {% include avatar.html %}
-            {% if site.friends %}
+            {% if site.data.friends %}
             <div class="card">
                 <h2>Links</h2>
                 <ul class="react">
-                    {% for friend in site.friends %}
+                    {% for friend in site.data.friends %}
                     <li>
-                        <img class="inline-img" src="{{friend.image}}" /> <a href="{{friend.url}}" target="_blank">{{friend.name}}</a>
+                        <img class="inline-img" src="{{friend.image}}" />
+                        <a href="{{friend.url}}" target="_blank">{{friend.name}}</a>
+                        {% if friend.github %}
+                        |&nbsp;<a href="https://github.com/{{friend.github}}"><i class="fa-brands fa-github"></i></a>
+                        {% endif %}
                     </li>
                     {% endfor %}
                 </ul>

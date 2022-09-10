@@ -1,13 +1,13 @@
 ---
 title: Y combinator和递归
 layout: blog
-tag: ["lambda-calculus", "math"]
+tag: ["lambda-calculus", "computation"]
 ---
 
 <link rel="stylesheet" href="/app/lambda-playground/lambda-playground.css" />
 <script src="/app/lambda-playground/lambda-playground.js" onload="autoRender()"></script>
 
-**如果你不了解λ演算，请阅读[上一篇博客]({% link blog/_posts/2022-08-27-lambda.md %})以获得最佳食用体验**
+**温馨提示：如果你不了解λ演算，请阅读[上一篇博客]({% link blog/_posts/2022-08-27-lambda.md %})以获得最佳食用体验**
 
 *注：本文的λ表达式中所有出现的下划线`_`，都表示“这个值我懒得算且不关心”*
 
@@ -16,7 +16,7 @@ tag: ["lambda-calculus", "math"]
 其实，并不是所有的λ表达式都可以化简。比如说，一个经典的构造就是：
 
 ```plaintext
-((λx. (x x)) (λx. (x x)))
+Ω := ((λx. (x x)) (λx. (x x)))
 ```
 
 <p class="lambda-r">[ [ "λx", [ "x", "x" ] ], [ "λx", [ "x", "x" ] ] ]</p>
