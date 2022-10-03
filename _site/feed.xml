@@ -1,4 +1,457 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="mqcreaple.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="mqcreaple.github.io/" rel="alternate" type="text/html" /><updated>2022-09-10T01:24:15-04:00</updated><id>mqcreaple.github.io/feed.xml</id><title type="html">My Blog | MqCreaple</title><subtitle>pay more attention to the beauty of formulas!</subtitle><author><name>MqCreaple</name></author><entry><title type="html">【整活】所有算法都是O(1)的</title><link href="mqcreaple.github.io/blog/2022/09/06/time-compl.html" rel="alternate" type="text/html" title="【整活】所有算法都是O(1)的" /><published>2022-09-06T00:00:00-04:00</published><updated>2022-09-06T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2022/09/06/time-compl</id><content type="html" xml:base="mqcreaple.github.io/blog/2022/09/06/time-compl.html"><![CDATA[<p><em>注：本文全部内容为<strong>一本正经的胡说八道</strong>，请勿相信</em></p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="mqcreaple.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="mqcreaple.github.io/" rel="alternate" type="text/html" /><updated>2022-10-02T23:13:24-04:00</updated><id>mqcreaple.github.io/feed.xml</id><title type="html">My Blog | MqCreaple</title><subtitle>pay more attention to the beauty of formulas!</subtitle><author><name>MqCreaple</name></author><entry><title type="html">封装一棵线段树</title><link href="mqcreaple.github.io/blog/2022/10/02/segment-tree-class.html" rel="alternate" type="text/html" title="封装一棵线段树" /><published>2022-10-02T00:00:00-04:00</published><updated>2022-10-02T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2022/10/02/segment-tree-class</id><content type="html" xml:base="mqcreaple.github.io/blog/2022/10/02/segment-tree-class.html"><![CDATA[<p>最近得了个“小感冒”，实在懒得去做题，然后就在其他人的博客里瞎逛。无意间发现了zxp大佬之前写过的<a href="https://zxp2019.github.io/blog/article/segment-tree-class/"><em>封装一棵线段树</em></a>，然后就想把这里的代码稍微改得更像C++标准库一点。</p>
+
+<h2 id="基本结构">基本结构</h2>
+
+<p>首先肯定是不能用数组来写线段树了，而应当用一个更高级的工具：<strong>指针</strong>。</p>
+
+<p>我们在线段树结点的struct里放这些东西：</p>
+
+<pre><code class="language-cpp">struct Node {
+    int leftBound;  // inclusive
+    int rightBound; // exclusive
+    Node *leftChild;
+    Node *rightChild;
+    T sum;
+    T lazy;
+    Node(int leftBound, int rightBound)
+        : leftBound(leftBound), rightBound(rightBound), leftChild(nullptr), rightChild(nullptr), sum(0), lazy(0) {}
+};
+</code></pre>
+
+<p><em>（为了对应大部分C++标准库的规则，这里的左边界是包含的，而右边界则不包含，相当于这个结点覆盖的是区间上<code>[left, right)</code>的部分）</em></p>
+
+<p>然后在每个线段树类里面记录一下线段树的根结点<code>root</code>即可：</p>
+
+<pre><code class="language-cpp">class QuickArray {
+public:
+private:
+    struct Node {
+        // Omitted
+    };
+    Node *root;
+};
+</code></pre>
+
+<p>然后就是其他操作了：</p>
+
+<h2 id="线段树的操作">线段树的操作</h2>
+
+<h3 id="创建线段树">创建线段树</h3>
+
+<p>这里我直接把它放在了线段树类<code>QuickArray</code>的构造函数里。代码是这样的：</p>
+
+<pre><code class="language-cpp">class QuickArray {
+public:
+    QuickArray(int left, int right): root(buildTree(left, right)) {}
+};
+</code></pre>
+
+<p>而这里的<code>buildTree</code>是一个私有的辅助函数，专门用来构造线段树：</p>
+
+<pre><code class="language-cpp">private:
+    static Node *buildTree(int left, int right) {
+        Node *cur = new Node(left, right);        // create a new node in memory
+        if(right - left &lt;= 1) {
+            return cur;                           // current node is leaf, directly return from function
+        }
+        int mid = (left + right) / 2;
+        cur-&gt;leftChild = buildTree(left, mid);    // build left tree
+        cur-&gt;rightChild = buildTree(mid, right);  // build right tree
+        return cur;
+    }
+</code></pre>
+
+<h3 id="更新区间">更新区间</h3>
+
+<p>更新区间的操作就是线段树板子了，直接贴上去就好：</p>
+
+<pre><code class="language-cpp">public:
+    void add(int left, int right, T value) {
+        if(left &lt; right) {
+            // to prevent illegal update
+            nodeAdd(root, left, right, value);
+        }
+    }
+private:
+    static void nodeAdd(Node *n, IndexT left, IndexT right, T value) {
+        pushDown(n);
+        if(n-&gt;leftBound &gt;= right || n-&gt;rightBound &lt;= left) {
+            return;
+        }
+        if(n-&gt;leftBound &gt;= left &amp;&amp; n-&gt;rightBound &lt;= right) {
+            n-&gt;lazy += value;
+            pushDown(n);
+            return;
+        }
+        nodeAdd(n-&gt;leftChild, left, right, value);
+        nodeAdd(n-&gt;rightChild, left, right, value);
+        n-&gt;sum = n-&gt;leftChild-&gt;sum + n-&gt;rightChild-&gt;sum;
+    }
+</code></pre>
+
+<h3 id="区间查询">区间查询</h3>
+
+<p>还是板子。先写一个<code>pushDown</code>：</p>
+
+<pre><code class="language-cpp">private:
+    static void pushDown(Node *n) {
+        if(n-&gt;leftChild != nullptr &amp;&amp; n-&gt;rightChild != nullptr) {
+            n-&gt;leftChild-&gt;lazy += n-&gt;lazy;
+            n-&gt;rightChild-&gt;lazy += n-&gt;lazy;
+            n-&gt;sum += n-&gt;lazy * (n-&gt;rightBound - n-&gt;leftBound);
+        } else {
+            n-&gt;sum += n-&gt;lazy;
+        }
+        n-&gt;lazy = 0;
+    }
+</code></pre>
+
+<p>然后就是区间查询的代码：</p>
+
+<pre><code class="language-cpp">public:
+    T sum(int left, int right) const {
+        if(left &lt; right) {
+            return nodeSum(root, left, right);
+        }
+        throw "Invalid query!";
+    }
+private:
+    static T nodeSum(Node *n, IndexT left, IndexT right) {
+        pushDown(n);
+        if(n-&gt;leftBound &gt;= right || n-&gt;rightBound &lt;= left) {
+            return T(0);
+        }
+        if(n-&gt;leftBound &gt;= left &amp;&amp; n-&gt;rightBound &lt;= right) {
+            return n-&gt;sum;
+        }
+        return nodeSum(n-&gt;leftChild, left, right) + nodeSum(n-&gt;rightChild, left, right);
+    }
+</code></pre>
+
+<h3 id="其他">其他</h3>
+
+<p>再加一些可能用得上的函数，比如查询区间的左端和右端：</p>
+
+<pre><code class="language-cpp">public:
+    int leftBound() const {
+        return root-&gt;leftBound;
+    }
+    int rightBound() const {
+        return root-&gt;rightBound;
+    }
+</code></pre>
+
+<p>完成！</p>
+
+<h2 id="第一版代码">第一版代码</h2>
+
+<pre><code class="language-cpp">#pragma once
+
+template&lt;typename T&gt;
+class QuickArray {
+public:
+    typedef int IndexT;
+    /**
+     * @brief Construct a QuickArray from left and right bound
+     * @param left left bound (inclusive)
+     * @param right right bound (exclusive)
+     */
+    QuickArray(IndexT left, IndexT right): root(buildTree(left, right)) {}
+
+    /**
+     * @brief Construct a new QuickArray from a given array
+     * @param array array with initial elements
+     * @param left left bound (inclusive)
+     * @param right right bound (exclusive)
+     */
+    QuickArray(T *array, IndexT left, IndexT right): root(buildTree(array, left, right)) {}
+
+    /**
+     * @brief Add a given number to every term in range [left, right)
+     * @param left left bound (inclusive)
+     * @param right right bound (exclusive)
+     * @param amount amount to add
+     */
+    void add(IndexT left, IndexT right, T value) {
+        if(left &lt; right) {
+            nodeAdd(root, left, right, value);
+        }
+    }
+
+    /**
+     * @brief Find the sum of all terms in range [left, right)
+     * @param left left bound (inclusive)
+     * @param right right bound (exclusive)
+     * @return T sum
+     */
+    T sum(IndexT left, IndexT right) const {
+        if(left &lt; right) {
+            return nodeSum(root, left, right);
+        }
+        throw "Invalid query!";
+    }
+
+    /**
+     * @brief Get the array's left bound
+     * @return IndexT left bound (inclusive)
+     */
+    IndexT leftBound() const {
+        return root-&gt;leftBound;
+    }
+
+    /**
+     * @brief Get the array's right bound
+     * @return IndexT right bound (exclusive)
+     */
+    IndexT rightBound() const {
+        return root-&gt;rightBound;
+    }
+
+    ~QuickArray() {
+        removeNodes(root);
+    }
+private:
+    struct Node {
+        IndexT leftBound;  // inclusive
+        IndexT rightBound; // exclusive
+        Node *leftChild;
+        Node *rightChild;
+        T sum;
+        T lazy;
+        Node(int leftBound, int rightBound)
+            : leftBound(leftBound), rightBound(rightBound), leftChild(nullptr), rightChild(nullptr), sum(0), lazy(0) {}
+    };
+    Node *root;
+
+    static Node *buildTree(IndexT left, IndexT right) {
+        Node *cur = new Node(left, right);        // create a new node in memory
+        if(right - left &lt;= 1) {
+            return cur;                           // current node is leaf, directly return from function
+        }
+        IndexT mid = (left + right) / 2;
+        cur-&gt;leftChild = buildTree(left, mid);    // build left tree
+        cur-&gt;rightChild = buildTree(mid, right);  // build right tree
+        return cur;
+    }
+
+    static Node *buildTree(T *array, IndexT left, IndexT right) {
+        Node *cur = new Node(left, right);
+        if(right - left &lt;= 1) {
+            cur-&gt;sum = array[left];
+            return cur;
+        }
+        IndexT mid = (left + right) / 2;
+        cur-&gt;leftChild = buildTree(array, left, mid);
+        cur-&gt;rightChild = buildTree(array, mid, right);
+        cur-&gt;sum = cur-&gt;leftChild-&gt;sum + cur-&gt;rightChild-&gt;sum;
+        return cur;
+    }
+
+    static void pushDown(Node *n) {
+        if(n-&gt;leftChild != nullptr &amp;&amp; n-&gt;rightChild != nullptr) {
+            n-&gt;leftChild-&gt;lazy += n-&gt;lazy;
+            n-&gt;rightChild-&gt;lazy += n-&gt;lazy;
+            n-&gt;sum += n-&gt;lazy * (n-&gt;rightBound - n-&gt;leftBound);
+        } else {
+            n-&gt;sum += n-&gt;lazy;
+        }
+        n-&gt;lazy = 0;
+    }
+
+    static void nodeAdd(Node *n, IndexT left, IndexT right, T value) {
+        pushDown(n);
+        if(n-&gt;leftBound &gt;= right || n-&gt;rightBound &lt;= left) {
+            return;
+        }
+        if(n-&gt;leftBound &gt;= left &amp;&amp; n-&gt;rightBound &lt;= right) {
+            n-&gt;lazy += value;
+            pushDown(n);
+            return;
+        }
+        nodeAdd(n-&gt;leftChild, left, right, value);
+        nodeAdd(n-&gt;rightChild, left, right, value);
+        n-&gt;sum = n-&gt;leftChild-&gt;sum + n-&gt;rightChild-&gt;sum;
+    }
+
+    static T nodeSum(Node *n, IndexT left, IndexT right) {
+        pushDown(n);
+        if(n-&gt;leftBound &gt;= right || n-&gt;rightBound &lt;= left) {
+            return T(0);
+        }
+        if(n-&gt;leftBound &gt;= left &amp;&amp; n-&gt;rightBound &lt;= right) {
+            return n-&gt;sum;
+        }
+        return nodeSum(n-&gt;leftChild, left, right) + nodeSum(n-&gt;rightChild, left, right);
+    }
+
+    static void removeNodes(Node *n) {
+        if(n == nullptr) {
+            return;
+        }
+        removeNodes(n-&gt;leftChild);
+        removeNodes(n-&gt;rightChild);
+        delete n;
+    }
+};
+</code></pre>
+
+<h2 id="改进">改进</h2>
+
+<p>我们用C++新特性：智能指针，来代替上文中的<code>Node*</code>。这增加了程序的安全性。</p>
+
+<p>由于我们不需要复制结点指针，所有指针一律改成<code>unique_ptr</code>即可：</p>
+
+<blockquote>
+  <p><code>unique_ptr</code>是一个类，用来模拟一个指针。</p>
+
+  <p>如果<code>unique_ptr</code>指向一个堆中的对象，那么当它的作用域结束之后，<code>unique_ptr</code>的析构函数会自动释放该对象的内存，不用手动<code>delete</code>。</p>
+
+  <p><code>unique_ptr</code>不允许复制，这样保证了不会有两个指针指向同一块内存而导致将该内存释放多次。</p>
+</blockquote>
+
+<p>以下为改成<code>unique_ptr</code>的代码：</p>
+
+<pre><code class="language-cpp">#pragma once
+
+#include &lt;memory&gt;
+using std::unique_ptr;
+
+template&lt;typename T&gt;
+class QuickArray {
+public:
+    typedef int IndexT;
+    /**
+     * @brief Construct a QuickArray from left and right bound
+     * @param left left bound (inclusive)
+     * @param right right bound (exclusive)
+     */
+    QuickArray(IndexT left, IndexT right) {
+        buildTree(root, left, right);
+    }
+
+    /**
+     * @brief Construct a new QuickArray from a given array
+     * @param array array with initial elements
+     * @param left left bound (inclusive)
+     * @param right right bound (exclusive)
+     */
+    QuickArray(T *array, IndexT left, IndexT right) {
+        buildTree(root, array, left, right);
+    }
+
+    /**
+     * @brief Add a given number to every term in range [left, right)
+     * @param left left bound (inclusive)
+     * @param right right bound (exclusive)
+     * @param amount amount to add
+     */
+    void add(IndexT left, IndexT right, T value) {
+        if(left &lt; right) {
+            nodeAdd(root, left, right, value);
+        }
+    }
+
+    /**
+     * @brief Find the sum of all terms in range [left, right)
+     * @param left left bound (inclusive)
+     * @param right right bound (exclusive)
+     * @return T sum
+     */
+    T sum(IndexT left, IndexT right) const {
+        if(left &lt; right) {
+            return nodeSum(root, left, right);
+        }
+        throw "Invalid query!";
+    }
+
+    /**
+     * @brief Get the array's left bound
+     * @return IndexT left bound (inclusive)
+     */
+    IndexT leftBound() const {
+        return root-&gt;leftBound;
+    }
+
+    /**
+     * @brief Get the array's right bound
+     * @return IndexT right bound (exclusive)
+     */
+    IndexT rightBound() const {
+        return root-&gt;rightBound;
+    }
+private:
+    struct Node {
+        IndexT leftBound;  // inclusive
+        IndexT rightBound; // exclusive
+        unique_ptr&lt;Node&gt; leftChild;
+        unique_ptr&lt;Node&gt; rightChild;
+        T sum;
+        T lazy;
+        Node(int leftBound, int rightBound)
+            : leftBound(leftBound), rightBound(rightBound), leftChild(), rightChild(), sum(0), lazy(0) {}
+    };
+    unique_ptr&lt;Node&gt; root;
+
+    static void buildTree(unique_ptr&lt;Node&gt; &amp;cur, IndexT left, IndexT right) {
+        cur = std::make_unique&lt;Node&gt;(left, right);  // equivalent to `cur = new Node(left, right)` in C pointer
+        if(right - left &lt;= 1) {
+            return;
+        }
+        IndexT mid = (left + right) / 2;
+        buildTree(cur-&gt;leftChild, left, mid);
+        buildTree(cur-&gt;rightChild, mid, right);
+    }
+
+    static void buildTree(unique_ptr&lt;Node&gt; &amp;cur, T *array, IndexT left, IndexT right) {
+        cur = std::make_unique&lt;Node&gt;(left, right);
+        if(right - left &lt;= 1) {
+            cur-&gt;sum = array[left];
+            return;
+        }
+        IndexT mid = (left + right) / 2;
+        buildTree(cur-&gt;leftChild, array, left, mid);
+        buildTree(cur-&gt;rightChild, array, mid, right);
+        cur-&gt;sum = cur-&gt;leftChild-&gt;sum + cur-&gt;rightChild-&gt;sum;
+    }
+
+    static void pushDown(const unique_ptr&lt;Node&gt; &amp;n) {
+        if(n-&gt;leftChild != nullptr &amp;&amp; n-&gt;rightChild != nullptr) {
+            n-&gt;leftChild-&gt;lazy += n-&gt;lazy;
+            n-&gt;rightChild-&gt;lazy += n-&gt;lazy;
+            n-&gt;sum += n-&gt;lazy * (n-&gt;rightBound - n-&gt;leftBound);
+        } else {
+            n-&gt;sum += n-&gt;lazy;
+        }
+        n-&gt;lazy = 0;
+    }
+
+    static void nodeAdd(const unique_ptr&lt;Node&gt; &amp;n, IndexT left, IndexT right, T value) {
+        pushDown(n);
+        if(n-&gt;leftBound &gt;= right || n-&gt;rightBound &lt;= left) {
+            return;
+        }
+        if(n-&gt;leftBound &gt;= left &amp;&amp; n-&gt;rightBound &lt;= right) {
+            n-&gt;lazy += value;
+            pushDown(n);
+            return;
+        }
+        nodeAdd(n-&gt;leftChild, left, right, value);
+        nodeAdd(n-&gt;rightChild, left, right, value);
+        n-&gt;sum = n-&gt;leftChild-&gt;sum + n-&gt;rightChild-&gt;sum;
+    }
+
+    static T nodeSum(const unique_ptr&lt;Node&gt; &amp;n, IndexT left, IndexT right) {
+        pushDown(n);
+        if(n-&gt;leftBound &gt;= right || n-&gt;rightBound &lt;= left) {
+            return T(0);
+        }
+        if(n-&gt;leftBound &gt;= left &amp;&amp; n-&gt;rightBound &lt;= right) {
+            return n-&gt;sum;
+        }
+        return nodeSum(n-&gt;leftChild, left, right) + nodeSum(n-&gt;rightChild, left, right);
+    }
+};
+</code></pre>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="algorithm" /><summary type="html"><![CDATA[最近得了个“小感冒”，实在懒得去做题，然后就在其他人的博客里瞎逛。无意间发现了zxp大佬之前写过的封装一棵线段树，然后就想把这里的代码稍微改得更像C++标准库一点。]]></summary></entry><entry><title type="html">【整活】所有算法都是O(1)的</title><link href="mqcreaple.github.io/blog/2022/09/06/time-compl.html" rel="alternate" type="text/html" title="【整活】所有算法都是O(1)的" /><published>2022-09-06T00:00:00-04:00</published><updated>2022-09-06T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2022/09/06/time-compl</id><content type="html" xml:base="mqcreaple.github.io/blog/2022/09/06/time-compl.html"><![CDATA[<p><em>注：本文全部内容为<strong>一本正经的胡说八道</strong>，请勿相信</em></p>
 
 <h2 id="示范快速排序算法">示范：快速排序算法</h2>
 
@@ -2140,112 +2593,4 @@ $$</div>
 
 <p>如果你用C语言或者C++进行测试的话，你会发现库函数<code>sqrt(x)</code>的速度要远远超过上面的算法</p>
 
-<p>但是，把这个算法当作一个精致的艺术品反复观赏，也是一件挺有意思的事情，你也可以从里面学到不少</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="C++" /><category term="algorithm" /><summary type="html"><![CDATA[快速平方根倒数算法，最早见于1999年的3D游戏Quake III Arena的源代码中。该算法一经公布，立刻因它的巧妙而被广为流传]]></summary></entry><entry><title type="html">盘点亿些Julia人性化的设计</title><link href="mqcreaple.github.io/blog/2021/08/11/julia-yyds.html" rel="alternate" type="text/html" title="盘点亿些Julia人性化的设计" /><published>2021-08-11T00:00:00-04:00</published><updated>2021-08-11T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2021/08/11/julia-yyds</id><content type="html" xml:base="mqcreaple.github.io/blog/2021/08/11/julia-yyds.html"><![CDATA[<h2 id="symbols">Symbols</h2>
-
-<h3 id="1-greek-letters">1. Greek Letters</h3>
-
-<p>Python:</p>
-
-<pre><code class="language-python">alpha = 1
-beta = 2
-gamma = 3
-</code></pre>
-
-<p>Julia:</p>
-
-<pre><code class="language-julia">α = 1      # type "\alpha" and press [tab]
-β = 2
-γ = 3
-</code></pre>
-
-<h3 id="2-constants">2. constants</h3>
-
-<p>Python:</p>
-
-<pre><code class="language-python">import math
-print(math.pi)
-print(math.e)
-</code></pre>
-
-<p>Julia:</p>
-
-<pre><code class="language-julia">println(π)     # "\pi"
-println(ℯ)     # "\euler"
-</code></pre>
-
-<h3 id="3-operators">3. Operators</h3>
-
-<p>Python:</p>
-
-<pre><code class="language-python">3*x**2+2*x+1
-sqrt(x)
-</code></pre>
-
-<p>Julia:</p>
-
-<pre><code class="language-julia">3x^2+2x+1
-√x  # same as sqrt(x)
-</code></pre>
-
-<h2 id="arrays--vectors">Arrays | Vectors</h2>
-
-<h3 id="1-loop">1. loop</h3>
-
-<p>Python:</p>
-
-<pre><code class="language-python">import numpy as np
-arr = np.array([1, 2, 3, 4, 5])
-for a in arr:
-    print(a)
-</code></pre>
-
-<p>Julia:</p>
-
-<pre><code class="language-julia">arr = [1, 2, 3, 4, 5]
-for a ∈ arr       # a "\in" arr
-    println(a)
-end
-</code></pre>
-
-<h3 id="2-vector-operation">2. vector operation</h3>
-
-<p>Python:</p>
-
-<pre><code class="language-python">import numpy as np
-np.add([1, 2, 3], 1)
-np.add([1, 2, 3], [4, 5, 6])
-np.multiply([1, 2, 3], 2)
-np.multiply([1, 2], [3, 4])
-def f(x):
-    return 2 * x + 1
-map(f, [1, 2, 3, 4])
-</code></pre>
-
-<p>Julia:</p>
-
-<pre><code class="language-julia">[1, 2, 3] .+ 1
-[1, 2, 3] + [4, 5, 6]
-[1, 2, 3] * 2
-[1, 2] .* [3, 4]
-f(x) = 2x + 1
-f.([1, 2, 3, 4])
-</code></pre>
-
-<h3 id="3-matrix">3. Matrix</h3>
-
-<p>Python:</p>
-
-<pre><code class="language-python">import numpy as np
-A = np.array([[1, 2], [3, 4]])
-B = np.array([[5, 6], [7, 8]])
-C = A.dot(B)
-D = A.transpose()
-</code></pre>
-
-<p>Julia:</p>
-
-<pre><code class="language-julia">A = [1 2 ; 3 4]
-B = [5 6 ; 7 8]
-C = A * B
-D = A'
-</code></pre>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="julia" /><category term="python" /><summary type="html"><![CDATA[Symbols]]></summary></entry></feed>
+<p>但是，把这个算法当作一个精致的艺术品反复观赏，也是一件挺有意思的事情，你也可以从里面学到不少</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="C++" /><category term="algorithm" /><summary type="html"><![CDATA[快速平方根倒数算法，最早见于1999年的3D游戏Quake III Arena的源代码中。该算法一经公布，立刻因它的巧妙而被广为流传]]></summary></entry></feed>

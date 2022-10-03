@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+<meta name="author" content="MqCreaple">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.png">
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<!-- font awesome -->
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+<!-- katex -->
+<link rel="stylesheet" href="/css/katex.min.css">
+
+<!-- highlightjs -->
+<script src="/js/highlight.min.js"></script>
+<link rel="stylesheet" href="/css/github-dark.min.css">
+<script>hljs.highlightAll();</script>
+
+<!-- mermaid -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true});</script>
+    <title>封装一棵线段树 - My Blog | MqCreaple</title>
+</head>
+<body>
+<div id='container'>
+    
+<div id="header">
+    <div id="navbar" class="inline">
+        <a href="/" class="strong">My Blog | MqCreaple</a>
+        <a href="/aboutme/"><i class="fa-solid fa-user"></i>about me</a>
+        <a href="/blog/"><i class="fa-regular fa-file-lines"></i>blog</a>
+        <a href="/app/"><i class="fa-solid fa-cubes-stacked"></i>app</a>
+        <a href="/feed.xml"><i class="fa-solid fa-rss"></i>RSS</a>
+    </div>
+</div>
+    <div id='main'>
+        <div id='left'>
+            <div class='card article'>
+                
+                <h1>封装一棵线段树</h1>
+                <p>最近得了个“小感冒”，实在懒得去做题，然后就在其他人的博客里瞎逛。无意间发现了zxp大佬之前写过的<a href="https://zxp2019.github.io/blog/article/segment-tree-class/"><em>封装一棵线段树</em></a>，然后就想把这里的代码稍微改得更像C++标准库一点。</p>
+
+<h2 id="基本结构">基本结构</h2>
+
+<p>首先肯定是不能用数组来写线段树了，而应当用一个更高级的工具：<strong>指针</strong>。</p>
+
+<p>我们在线段树结点的struct里放这些东西：</p>
+
+<pre><code class="language-cpp">struct Node {
+    int leftBound;  // inclusive
+    int rightBound; // exclusive
+    Node *leftChild;
+    Node *rightChild;
+    T sum;
+    T lazy;
+    Node(int leftBound, int rightBound)
+        : leftBound(leftBound), rightBound(rightBound), leftChild(nullptr), rightChild(nullptr), sum(0), lazy(0) {}
+};
+</code></pre>
+
+<p><em>（为了对应大部分C++标准库的规则，这里的左边界是包含的，而右边界则不包含，相当于这个结点覆盖的是区间上<code>[left, right)</code>的部分）</em></p>
+
+<p>然后在每个线段树类里面记录一下线段树的根结点<code>root</code>即可：</p>
+
+<pre><code class="language-cpp">class QuickArray {
+public:
+private:
+    struct Node {
+        // Omitted
+    };
+    Node *root;
+};
+</code></pre>
+
+<p>然后就是其他操作了：</p>
+
+<h2 id="线段树的操作">线段树的操作</h2>
+
+<h3 id="创建线段树">创建线段树</h3>
+
+<p>这里我直接把它放在了线段树类<code>QuickArray</code>的构造函数里。代码是这样的：</p>
+
+<pre><code class="language-cpp">class QuickArray {
+public:
+    QuickArray(int left, int right): root(buildTree(left, right)) {}
+};
+</code></pre>
+
+<p>而这里的<code>buildTree</code>是一个私有的辅助函数，专门用来构造线段树：</p>
+
+<pre><code class="language-cpp">private:
+    static Node *buildTree(int left, int right) {
+        Node *cur = new Node(left, right);        // create a new node in memory
+        if(right - left &lt;= 1) {
+            return cur;                           // current node is leaf, directly return from function
+        }
+        int mid = (left + right) / 2;
+        cur-&gt;leftChild = buildTree(left, mid);    // build left tree
+        cur-&gt;rightChild = buildTree(mid, right);  // build right tree
+        return cur;
+    }
+</code></pre>
+
+<h3 id="更新区间">更新区间</h3>
+
+<p>更新区间的操作就是线段树板子了，直接贴上去就好：</p>
+
+<pre><code class="language-cpp">public:
+    void add(int left, int right, T value) {
+        if(left &lt; right) {
+            // to prevent illegal update
+            nodeAdd(root, left, right, value);
+        }
+    }
+private:
+    static void nodeAdd(Node *n, IndexT left, IndexT right, T value) {
+        pushDown(n);
+        if(n-&gt;leftBound &gt;= right || n-&gt;rightBound &lt;= left) {
+            return;
+        }
+        if(n-&gt;leftBound &gt;= left &amp;&amp; n-&gt;rightBound &lt;= right) {
+            n-&gt;lazy += value;
+            pushDown(n);
+            return;
+        }
+        nodeAdd(n-&gt;leftChild, left, right, value);
+        nodeAdd(n-&gt;rightChild, left, right, value);
+        n-&gt;sum = n-&gt;leftChild-&gt;sum + n-&gt;rightChild-&gt;sum;
+    }
+</code></pre>
+
+<h3 id="区间查询">区间查询</h3>
+
+<p>还是板子。先写一个<code>pushDown</code>：</p>
+
+<pre><code class="language-cpp">private:
+    static void pushDown(Node *n) {
+        if(n-&gt;leftChild != nullptr &amp;&amp; n-&gt;rightChild != nullptr) {
+            n-&gt;leftChild-&gt;lazy += n-&gt;lazy;
+            n-&gt;rightChild-&gt;lazy += n-&gt;lazy;
+            n-&gt;sum += n-&gt;lazy * (n-&gt;rightBound - n-&gt;leftBound);
+        } else {
+            n-&gt;sum += n-&gt;lazy;
+        }
+        n-&gt;lazy = 0;
+    }
+</code></pre>
+
+<p>然后就是区间查询的代码：</p>
+
+<pre><code class="language-cpp">public:
+    T sum(int left, int right) const {
+        if(left &lt; right) {
+            return nodeSum(root, left, right);
+        }
+        throw "Invalid query!";
+    }
+private:
+    static T nodeSum(Node *n, IndexT left, IndexT right) {
+        pushDown(n);
+        if(n-&gt;leftBound &gt;= right || n-&gt;rightBound &lt;= left) {
+            return T(0);
+        }
+        if(n-&gt;leftBound &gt;= left &amp;&amp; n-&gt;rightBound &lt;= right) {
+            return n-&gt;sum;
+        }
+        return nodeSum(n-&gt;leftChild, left, right) + nodeSum(n-&gt;rightChild, left, right);
+    }
+</code></pre>
+
+<h3 id="其他">其他</h3>
+
+<p>再加一些可能用得上的函数，比如查询区间的左端和右端：</p>
+
+<pre><code class="language-cpp">public:
+    int leftBound() const {
+        return root-&gt;leftBound;
+    }
+    int rightBound() const {
+        return root-&gt;rightBound;
+    }
+</code></pre>
+
+<p>完成！</p>
+
+<h2 id="第一版代码">第一版代码</h2>
+
+<pre><code class="language-cpp">#pragma once
+
+template&lt;typename T&gt;
+class QuickArray {
+public:
+    typedef int IndexT;
+    /**
+     * @brief Construct a QuickArray from left and right bound
+     * @param left left bound (inclusive)
+     * @param right right bound (exclusive)
+     */
+    QuickArray(IndexT left, IndexT right): root(buildTree(left, right)) {}
+
+    /**
+     * @brief Construct a new QuickArray from a given array
+     * @param array array with initial elements
+     * @param left left bound (inclusive)
+     * @param right right bound (exclusive)
+     */
+    QuickArray(T *array, IndexT left, IndexT right): root(buildTree(array, left, right)) {}
+
+    /**
+     * @brief Add a given number to every term in range [left, right)
+     * @param left left bound (inclusive)
+     * @param right right bound (exclusive)
+     * @param amount amount to add
+     */
+    void add(IndexT left, IndexT right, T value) {
+        if(left &lt; right) {
+            nodeAdd(root, left, right, value);
+        }
+    }
+
+    /**
+     * @brief Find the sum of all terms in range [left, right)
+     * @param left left bound (inclusive)
+     * @param right right bound (exclusive)
+     * @return T sum
+     */
+    T sum(IndexT left, IndexT right) const {
+        if(left &lt; right) {
+            return nodeSum(root, left, right);
+        }
+        throw "Invalid query!";
+    }
+
+    /**
+     * @brief Get the array's left bound
+     * @return IndexT left bound (inclusive)
+     */
+    IndexT leftBound() const {
+        return root-&gt;leftBound;
+    }
+
+    /**
+     * @brief Get the array's right bound
+     * @return IndexT right bound (exclusive)
+     */
+    IndexT rightBound() const {
+        return root-&gt;rightBound;
+    }
+
+    ~QuickArray() {
+        removeNodes(root);
+    }
+private:
+    struct Node {
+        IndexT leftBound;  // inclusive
+        IndexT rightBound; // exclusive
+        Node *leftChild;
+        Node *rightChild;
+        T sum;
+        T lazy;
+        Node(int leftBound, int rightBound)
+            : leftBound(leftBound), rightBound(rightBound), leftChild(nullptr), rightChild(nullptr), sum(0), lazy(0) {}
+    };
+    Node *root;
+
+    static Node *buildTree(IndexT left, IndexT right) {
+        Node *cur = new Node(left, right);        // create a new node in memory
+        if(right - left &lt;= 1) {
+            return cur;                           // current node is leaf, directly return from function
+        }
+        IndexT mid = (left + right) / 2;
+        cur-&gt;leftChild = buildTree(left, mid);    // build left tree
+        cur-&gt;rightChild = buildTree(mid, right);  // build right tree
+        return cur;
+    }
+
+    static Node *buildTree(T *array, IndexT left, IndexT right) {
+        Node *cur = new Node(left, right);
+        if(right - left &lt;= 1) {
+            cur-&gt;sum = array[left];
+            return cur;
+        }
+        IndexT mid = (left + right) / 2;
+        cur-&gt;leftChild = buildTree(array, left, mid);
+        cur-&gt;rightChild = buildTree(array, mid, right);
+        cur-&gt;sum = cur-&gt;leftChild-&gt;sum + cur-&gt;rightChild-&gt;sum;
+        return cur;
+    }
+
+    static void pushDown(Node *n) {
+        if(n-&gt;leftChild != nullptr &amp;&amp; n-&gt;rightChild != nullptr) {
+            n-&gt;leftChild-&gt;lazy += n-&gt;lazy;
+            n-&gt;rightChild-&gt;lazy += n-&gt;lazy;
+            n-&gt;sum += n-&gt;lazy * (n-&gt;rightBound - n-&gt;leftBound);
+        } else {
+            n-&gt;sum += n-&gt;lazy;
+        }
+        n-&gt;lazy = 0;
+    }
+
+    static void nodeAdd(Node *n, IndexT left, IndexT right, T value) {
+        pushDown(n);
+        if(n-&gt;leftBound &gt;= right || n-&gt;rightBound &lt;= left) {
+            return;
+        }
+        if(n-&gt;leftBound &gt;= left &amp;&amp; n-&gt;rightBound &lt;= right) {
+            n-&gt;lazy += value;
+            pushDown(n);
+            return;
+        }
+        nodeAdd(n-&gt;leftChild, left, right, value);
+        nodeAdd(n-&gt;rightChild, left, right, value);
+        n-&gt;sum = n-&gt;leftChild-&gt;sum + n-&gt;rightChild-&gt;sum;
+    }
+
+    static T nodeSum(Node *n, IndexT left, IndexT right) {
+        pushDown(n);
+        if(n-&gt;leftBound &gt;= right || n-&gt;rightBound &lt;= left) {
+            return T(0);
+        }
+        if(n-&gt;leftBound &gt;= left &amp;&amp; n-&gt;rightBound &lt;= right) {
+            return n-&gt;sum;
+        }
+        return nodeSum(n-&gt;leftChild, left, right) + nodeSum(n-&gt;rightChild, left, right);
+    }
+
+    static void removeNodes(Node *n) {
+        if(n == nullptr) {
+            return;
+        }
+        removeNodes(n-&gt;leftChild);
+        removeNodes(n-&gt;rightChild);
+        delete n;
+    }
+};
+</code></pre>
+
+<h2 id="改进">改进</h2>
+
+<p>我们用C++新特性：智能指针，来代替上文中的<code>Node*</code>。这增加了程序的安全性。</p>
+
+<p>由于我们不需要复制结点指针，所有指针一律改成<code>unique_ptr</code>即可：</p>
+
+<blockquote>
+  <p><code>unique_ptr</code>是一个类，用来模拟一个指针。</p>
+
+  <p>如果<code>unique_ptr</code>指向一个堆中的对象，那么当它的作用域结束之后，<code>unique_ptr</code>的析构函数会自动释放该对象的内存，不用手动<code>delete</code>。</p>
+
+  <p><code>unique_ptr</code>不允许复制，这样保证了不会有两个指针指向同一块内存而导致将该内存释放多次。</p>
+</blockquote>
+
+<p>以下为改成<code>unique_ptr</code>的代码：</p>
+
+<pre><code class="language-cpp">#pragma once
+
+#include &lt;memory&gt;
+using std::unique_ptr;
+
+template&lt;typename T&gt;
+class QuickArray {
+public:
+    typedef int IndexT;
+    /**
+     * @brief Construct a QuickArray from left and right bound
+     * @param left left bound (inclusive)
+     * @param right right bound (exclusive)
+     */
+    QuickArray(IndexT left, IndexT right) {
+        buildTree(root, left, right);
+    }
+
+    /**
+     * @brief Construct a new QuickArray from a given array
+     * @param array array with initial elements
+     * @param left left bound (inclusive)
+     * @param right right bound (exclusive)
+     */
+    QuickArray(T *array, IndexT left, IndexT right) {
+        buildTree(root, array, left, right);
+    }
+
+    /**
+     * @brief Add a given number to every term in range [left, right)
+     * @param left left bound (inclusive)
+     * @param right right bound (exclusive)
+     * @param amount amount to add
+     */
+    void add(IndexT left, IndexT right, T value) {
+        if(left &lt; right) {
+            nodeAdd(root, left, right, value);
+        }
+    }
+
+    /**
+     * @brief Find the sum of all terms in range [left, right)
+     * @param left left bound (inclusive)
+     * @param right right bound (exclusive)
+     * @return T sum
+     */
+    T sum(IndexT left, IndexT right) const {
+        if(left &lt; right) {
+            return nodeSum(root, left, right);
+        }
+        throw "Invalid query!";
+    }
+
+    /**
+     * @brief Get the array's left bound
+     * @return IndexT left bound (inclusive)
+     */
+    IndexT leftBound() const {
+        return root-&gt;leftBound;
+    }
+
+    /**
+     * @brief Get the array's right bound
+     * @return IndexT right bound (exclusive)
+     */
+    IndexT rightBound() const {
+        return root-&gt;rightBound;
+    }
+private:
+    struct Node {
+        IndexT leftBound;  // inclusive
+        IndexT rightBound; // exclusive
+        unique_ptr&lt;Node&gt; leftChild;
+        unique_ptr&lt;Node&gt; rightChild;
+        T sum;
+        T lazy;
+        Node(int leftBound, int rightBound)
+            : leftBound(leftBound), rightBound(rightBound), leftChild(), rightChild(), sum(0), lazy(0) {}
+    };
+    unique_ptr&lt;Node&gt; root;
+
+    static void buildTree(unique_ptr&lt;Node&gt; &amp;cur, IndexT left, IndexT right) {
+        cur = std::make_unique&lt;Node&gt;(left, right);  // equivalent to `cur = new Node(left, right)` in C pointer
+        if(right - left &lt;= 1) {
+            return;
+        }
+        IndexT mid = (left + right) / 2;
+        buildTree(cur-&gt;leftChild, left, mid);
+        buildTree(cur-&gt;rightChild, mid, right);
+    }
+
+    static void buildTree(unique_ptr&lt;Node&gt; &amp;cur, T *array, IndexT left, IndexT right) {
+        cur = std::make_unique&lt;Node&gt;(left, right);
+        if(right - left &lt;= 1) {
+            cur-&gt;sum = array[left];
+            return;
+        }
+        IndexT mid = (left + right) / 2;
+        buildTree(cur-&gt;leftChild, array, left, mid);
+        buildTree(cur-&gt;rightChild, array, mid, right);
+        cur-&gt;sum = cur-&gt;leftChild-&gt;sum + cur-&gt;rightChild-&gt;sum;
+    }
+
+    static void pushDown(const unique_ptr&lt;Node&gt; &amp;n) {
+        if(n-&gt;leftChild != nullptr &amp;&amp; n-&gt;rightChild != nullptr) {
+            n-&gt;leftChild-&gt;lazy += n-&gt;lazy;
+            n-&gt;rightChild-&gt;lazy += n-&gt;lazy;
+            n-&gt;sum += n-&gt;lazy * (n-&gt;rightBound - n-&gt;leftBound);
+        } else {
+            n-&gt;sum += n-&gt;lazy;
+        }
+        n-&gt;lazy = 0;
+    }
+
+    static void nodeAdd(const unique_ptr&lt;Node&gt; &amp;n, IndexT left, IndexT right, T value) {
+        pushDown(n);
+        if(n-&gt;leftBound &gt;= right || n-&gt;rightBound &lt;= left) {
+            return;
+        }
+        if(n-&gt;leftBound &gt;= left &amp;&amp; n-&gt;rightBound &lt;= right) {
+            n-&gt;lazy += value;
+            pushDown(n);
+            return;
+        }
+        nodeAdd(n-&gt;leftChild, left, right, value);
+        nodeAdd(n-&gt;rightChild, left, right, value);
+        n-&gt;sum = n-&gt;leftChild-&gt;sum + n-&gt;rightChild-&gt;sum;
+    }
+
+    static T nodeSum(const unique_ptr&lt;Node&gt; &amp;n, IndexT left, IndexT right) {
+        pushDown(n);
+        if(n-&gt;leftBound &gt;= right || n-&gt;rightBound &lt;= left) {
+            return T(0);
+        }
+        if(n-&gt;leftBound &gt;= left &amp;&amp; n-&gt;rightBound &lt;= right) {
+            return n-&gt;sum;
+        }
+        return nodeSum(n-&gt;leftChild, left, right) + nodeSum(n-&gt;rightChild, left, right);
+    }
+};
+</code></pre>
+
+                
+            </div>
+        </div>
+        <div id='right'>
+            <div class="card" id="avatar">
+    <img src="/favicon.png" alt="avatar" id="image">
+    <a href="/blog/aboutme/" id="name">MqCreaple</a>
+    <div class="inline" id="accounts">
+        <a href="https://github.com/MqCreaple"><i class="fa-brands fa-github"></i></a>
+        <a href="https://space.bilibili.com/507017613"><i class="fa-brands fa-bilibili"></i></a>
+        <a href="https://www.zhihu.com/people/gmq12"><i class="fa-brands fa-zhihu"></i></a>
+        <a href="mailto:gmq14159@gmail.com"><i class="fa-regular fa-envelope"></i></a>
+    </div>
+</div>
+        </div>
+    </div>
+    <div id="footer">
+    <div style="margin: 2%">
+        <p>Copyright &copy; GMQ 2021 - 2022, Blog of MqCreaple (gmq12), version 2.3 </p>
+        <p>Powered by <a href="jekyllrb.com">Jekyll</a> | <a href="mailto:gmq14159@gmail.com">Contact Me</a></p>
+    </div>
+</div>
+</div>
+</body>
+</html>
