@@ -353,6 +353,8 @@ private:
   <p><code>unique_ptr</code>不允许复制，这样保证了不会有两个指针指向同一块内存而导致将该内存释放多次。</p>
 </blockquote>
 
+<p>（如果你学过Rust，可能会对<code>unique_ptr</code>感到很熟悉）</p>
+
 <p>以下为改成<code>unique_ptr</code>的代码：</p>
 
 <pre><code class="language-cpp">#pragma once
