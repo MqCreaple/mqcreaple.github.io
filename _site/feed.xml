@@ -1,4 +1,212 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="mqcreaple.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="mqcreaple.github.io/" rel="alternate" type="text/html" /><updated>2022-10-15T14:59:36-04:00</updated><id>mqcreaple.github.io/feed.xml</id><title type="html">My Blog | MqCreaple</title><subtitle>pay more attention to the beauty of formulas!</subtitle><author><name>MqCreaple</name></author><entry><title type="html">狭义相对论光线追踪 原理解析 1</title><link href="mqcreaple.github.io/blog/2022/10/14/relativistic-renderer-0.html" rel="alternate" type="text/html" title="狭义相对论光线追踪 原理解析 1" /><published>2022-10-14T00:00:00-04:00</published><updated>2022-10-14T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2022/10/14/relativistic-renderer-0</id><content type="html" xml:base="mqcreaple.github.io/blog/2022/10/14/relativistic-renderer-0.html"><![CDATA[<p>前置知识：狭义相对论。</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="mqcreaple.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="mqcreaple.github.io/" rel="alternate" type="text/html" /><updated>2022-10-17T22:50:17-04:00</updated><id>mqcreaple.github.io/feed.xml</id><title type="html">My Blog | MqCreaple</title><subtitle>pay more attention to the beauty of formulas!</subtitle><author><name>MqCreaple</name></author><entry><title type="html">狭义相对论光线追踪 原理解析 2</title><link href="mqcreaple.github.io/blog/2022/10/17/relativistic-renderer-1.html" rel="alternate" type="text/html" title="狭义相对论光线追踪 原理解析 2" /><published>2022-10-17T00:00:00-04:00</published><updated>2022-10-17T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2022/10/17/relativistic-renderer-1</id><content type="html" xml:base="mqcreaple.github.io/blog/2022/10/17/relativistic-renderer-1.html"><![CDATA[<p>约定：以下类已经实现</p>
+
+<ul>
+  <li><code>Vec3</code>：存储了一个三维向量。
+    <ul>
+      <li>重载运算符定义了<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>等运算</li>
+      <li><code>dot(u, v)</code>点乘</li>
+      <li><code>cross(u, v)</code>叉乘</li>
+    </ul>
+  </li>
+  <li><code>LVec4</code>：存储了一个闵氏时空的四维向量。
+    <ul>
+      <li>重载运算符定义了<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>等运算</li>
+      <li><code>dot(u, v)</code>点乘</li>
+      <li><code>v.getXYZ()</code>获取四维向量的三维空间分量</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="存储一个惯性系">存储一个惯性系</h2>
+
+<p>如何将一个惯性参考系的信息存储下来？</p>
+
+<p>首先，我们可以先选定一个参考系，称为<em>世界参考系</em>。这样其他一切惯性参考系都可以用它们和世界参考系之间的相对速度$\vec u$来表示了。</p>
+
+<p>但是注意，只记录一个速度向量$\vec u$是不够的，因为惯性系之间不只有相对速度，还有可能有平移、旋转之类的相对变换。</p>
+
+<p>这里我们只考虑相对速度$\vec u$和平移$\mathbf p$这两个因素，暂时不考虑旋转<del>，主要是因为我懒得推旋转参考系的公式</del>。也就是这样的一个类：</p>
+
+<pre><code class="language-cpp">class Transformation {
+public:
+    Transformation(const Vec3 &amp;velocity, const LVec4 origin);
+private:
+    Vec3 velocity;
+    LVec4 origin;
+    // Vec3为三维向量，LVec4为闵氏时空中的四维向量
+};
+</code></pre>
+
+<p>我们定义平移向量$\mathbf p$为<strong>当前参考系的原点（即$(0, 0, 0, 0)$点）点在世界参考系中的测量结果</strong>。注意：世界参考系的原点在当前参考系的测量结果不一定是$-\mathbf p$，可以想一下原因。</p>
+
+<p>显然，世界参考系就是平移$\mathbf p$和速度$\vec u$都为零向量的参考系。</p>
+
+<p>参考系类还需要实现这两个方法，用来做事件的参考系变换：</p>
+
+<pre><code class="language-cpp">class Transformation {
+public:
+    // ...
+    LVec4 toLocal(const LVec4 &amp;world) const;
+    LVec4 toWorld(const LVec4 &amp;local) const;
+private:
+    // ...
+};
+</code></pre>
+
+<p>具体的公式可以参考<a href="/blog/2022/10/14/relativistic-renderer-0.html">上一篇博客</a>。</p>
+
+<h2 id="存储一条光线">存储一条光线</h2>
+
+<p>“光线”是一种用来描述光传播的抽象模型，它在狭义相对论中同样适用。</p>
+
+<p>一束光在时空图中就是一条斜率为光速的射线：</p>
+
+<p><img src="/img/ray-spacetime-diagram-wikipedia.svg" alt="spacetime-diagram" /></p>
+
+<p><em>图源：<a href="https://en.wikipedia.org/wiki/Spacetime_diagram">Wikipedia</a></em></p>
+
+<p>为了唯一确定一条这样的射线，我们需要光的<strong>光源$\mathbf r$</strong>和光线<strong>方向$\vec d$</strong>。其中$\vec d$一定是一个单位向量。</p>
+
+<p>现在的<code>Ray</code>类是这样的：</p>
+
+<pre><code class="language-cpp">class Ray {
+public:
+    Ray(const LVec4 &amp;origin, const Vec3 &amp;direction);
+private:
+    LVec4 origin;
+    Vec3 direction;
+};
+</code></pre>
+
+<p>我们定义一个函数<code>atDistance</code>，表示在世界参考系看来，到光源的空间距离为$l$的事件。就是这样的：</p>
+
+<pre><code class="language-cpp">LVec4 atDistance(float dist) const {
+    return LVec4(origin.t + dist, origin.getXYZ() + dist * direction);
+}
+</code></pre>
+
+<p>在走了一段距离之后，世界参考系下坐标的时间和空间都会增加。</p>
+
+<p><img src="/img/ray-spacetime-diagram-0.png" alt="spacetime-diagram" /></p>
+
+<p><del>众所周知geogebra啥都能画</del></p>
+
+<p>接下来，<code>Transformation</code>类里还要加上这两个函数，用来对光线进行参考系变换：</p>
+
+<pre><code class="language-cpp">class Transformation {
+public:
+    // ...
+    Ray toLocal(const Ray &amp;ray) const;
+    Ray toWorld(const Ray &amp;ray) const;
+private:
+    // ...
+};
+</code></pre>
+
+<p>光线的参考系变换也很简单，只需要对光源$\mathbf r$做事件的参考系变换，方向$\vec d$做速度的参考系变换即可。</p>
+
+<h2 id="物体">物体</h2>
+
+<p>定义这样的一个抽象类，来表示所有的物体：</p>
+
+<pre><code class="language-cpp">class VisibleObject {
+public:
+    VisibleObject(const Transformation &amp;tr);
+
+    struct IntersectResult {
+        LVec4 intersection;
+        float distance;
+    };
+    virtual std::optional&lt;IntersectResult&gt; intersect(const Ray &amp;ray) const = 0;
+
+private:
+    Transformation transformation;
+};
+</code></pre>
+
+<p><code>VisibleObject</code>类中使用<code>transformation</code>记录了一个匀速运动的物体所在的参考系。</p>
+
+<p><code>intersect</code>函数是这个类的核心。它的任务是计算一条<strong>物体参考系里的光线</strong>和该物体的<strong>交点</strong>。返回值<code>std::optional&lt;IntersectResult&gt;</code>在有交点的时候返回该交点的信息（包括交点的时空坐标，以及交点到光源的空间距离）；如果没有交点，那么返回一个空引用。</p>
+
+<blockquote>
+  <p><code>std::optional</code>是C++17的新特性，可以用来表示一个“有值或者没有值”的对象。更多信息可以看<a href="https://en.cppreference.com/w/cpp/utility/optional">cppreference</a>。</p>
+</blockquote>
+
+<p>另一个值得注意的点是：由于光线追踪的过程是<strong>回溯</strong>光的路径，所以每次求出的交点应该在光路的<strong>反方向</strong>上，<code>distance</code>值应当为负数。</p>
+
+<p><img src="/img/forward-ray-tracing-0.jpg" alt="forward-tracing" /></p>
+
+<blockquote>
+  <p>实际上由于光路可逆原则，将光线的方向全部反向之后，每次求光路正方向上的交点，理论上也是可行的。</p>
+
+  <p><strong>但是</strong>，如果你真的打算这么写，那么就要尤其注意光线的参考系变换。因为这样的话，<code>Ray</code>类里记录的方向向量$\vec d$和光的速度向量<strong>是相反的</strong>，光线的<code>toLocal</code>和<code>toWorld</code>里对应项也需要变符号。</p>
+
+  <p><del>之前被这个bug困扰了一个晚上，在这里写下来以警示后人</del></p>
+</blockquote>
+
+<h3 id="球体">球体</h3>
+
+<p>为了展示<code>intersection</code>函数，这里举一个简单的例子：球体。不妨假设球体的球心在原点$(0, 0, 0)$</p>
+
+<p>假设有一个在<strong>物体参考系</strong>里的光线<code>ray</code>（不是世界参考系，所以不用考虑参考系变换）。光线从原点$\vec r$出发，向前走了距离$l$，走到的坐标是：</p>
+
+<div class="kdmath">$$
+\vec r_1=\vec r + l\vec d
+$$</div>
+
+<p>如果$\vec r_1$是光线和球的交点，那么$\vec r_1$到球心（即原点）的距离一定等于球的半径，即：</p>
+
+<div class="kdmath">$$
+||\vec r_1||=||\vec r + l\vec d||=R
+$$</div>
+
+<p><img src="/img/ray-sphere-intersection-0.png" alt="ray-sphere-intersection" /></p>
+
+<p>将向量模长写成向量点乘自己，也就是：</p>
+
+<div class="kdmath">$$
+(\vec r + l\vec d)\cdot(\vec r + l\vec d)=R^2
+$$</div>
+
+<p>展开这个式子：</p>
+
+<div class="kdmath">$$
+(\vec r + l\vec d)\cdot(\vec r+l\vec d) = \vec r\cdot\vec r + 2l\vec r\cdot\vec d + l^2\vec d\cdot\vec d = R^2
+$$</div>
+
+<div class="kdmath">$$
+\vec d^2l^2+2(\vec r\cdot\vec d)l+(\vec r^2-R^2)=0
+$$</div>
+
+<p>由于$\vec d$是单位向量，$\vec d^2=1$，代入原式得到：</p>
+
+<div class="kdmath">$$
+l^2+2(\vec r\cdot\vec d)l+(\vec r^2-R^2)=0
+$$</div>
+
+<p>我们得到了一个关于$l$的一元二次方程，它的每个根就代表了光线和球的一个交点到光源的距离（这个距离可能是负数，此时表示交点在光线的反方向，而这正是我们想要的）。只需要解出这个方程，然后再判断两个根$l_1, l_2$是否是负数，以及它们之间的大小关系，即可找到光线和球的最近交点。</p>
+
+<p>得到光源到交点的空间距离$l$之后，再做一次<code>ray.atDistance(l)</code>即可得到交点的具体坐标。</p>
+
+<p>代码：</p>
+
+<pre><code class="language-cpp">std::optional&lt;IntersectionResult&gt; SphereObject::intersect(const Ray &amp;ray) const {
+    Vec3 r0 = ray.getOrigin().getXYZ();  // 光源的空间坐标
+    float b = 2 * dot(r0, ray.getDirection());
+    float c = dot(r0, r0) - radius * radius;
+    float delta = b * b - 4 * c;         // 二次方程判别式
+    
+    float l = (-b + sqrt(delta)) / 2;    // 优先考虑较大的根
+    if(l &gt; 0) {
+        // 如果较大的根超出范围，那么考虑另一个根
+        l = (-b - sqrt(delta)) / 2;
+    }
+    if(l &gt; 0) {
+        return std::nullopt;             // 返回一个空引用
+    }
+    return IntersectionResult(ray.atDistance(l), l);  // 返回答案
+}
+</code></pre>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="physics" /><category term="special-relativity" /><category term="computer-graphics" /><summary type="html"><![CDATA[约定：以下类已经实现]]></summary></entry><entry><title type="html">狭义相对论光线追踪 原理解析 1</title><link href="mqcreaple.github.io/blog/2022/10/14/relativistic-renderer-0.html" rel="alternate" type="text/html" title="狭义相对论光线追踪 原理解析 1" /><published>2022-10-14T00:00:00-04:00</published><updated>2022-10-14T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2022/10/14/relativistic-renderer-0</id><content type="html" xml:base="mqcreaple.github.io/blog/2022/10/14/relativistic-renderer-0.html"><![CDATA[<p>前置知识：狭义相对论。</p>
 
 <p>先温习一遍课本里的洛伦兹变换(Lorentz transformation)：如果参考系$S’$相对于$S$的速度为$u$，沿着$x$轴正方向，那么事件$(t, x, y, z)$在$S’$参考系中测量的结果是：</p>
 
@@ -25,7 +233,7 @@ $$</div>
 s^2=-(c\Delta t)^2+\Delta x^2+\Delta y^2+\Delta z^2
 $$</div>
 
-<p>是永远不变的。它被称为<strong>闵可夫斯基度规(Minkowski metric)</strong>，或者<strong>闵氏度规</strong>。</p>
+<p>是永远不变的。$s$被称为<strong>闵可夫斯基度规(Minkowski metric)</strong>，或者<strong>闵氏度规</strong>。</p>
 
 <p>这启发了我们，可以定义一个四维矢量来表示事件。为了保证单位一致，第一维是光速乘上时间，后三维是空间。像这样：</p>
 
@@ -41,13 +249,13 @@ $$</div>
 ||\mathbf r||=\sqrt{-(ct)^2+x^2+y^2+z^2}
 $$</div>
 
-<p>这样的话，两个事件$\mathbf r_1$和$\mathbf r_2$之间的<strong>距离</strong>（或者说：闵氏度规）就是：</p>
+<p>把时间平方项的正号改成负号。这样的话，两个事件$\mathbf r_1$和$\mathbf r_2$之间的<strong>距离</strong>（或者说：闵氏度规）就是：</p>
 
 <div class="kdmath">$$
 s=||\mathbf r_2-\mathbf r_1||
 $$</div>
 
-<p>你可能会觉得为了凑出这个表达式而强行修改向量模长定义的行为很不好。但是，我们可以把它看作是一种和我们所处的空间（即：欧几里得空间/欧氏空间）完全不同的<strong>几何</strong>，也就是<strong>闵可夫斯基几何</strong>/<strong>闵氏几何</strong>。毕竟，没有规定说我们的宇宙一定遵守欧氏几何这种符合人类直觉的规律。</p>
+<p>你可能会觉得为了凑出$-t^2$而强行修改向量模长定义的行为很无耻。但是，它其实是是一种和我们熟悉的空间（即：欧几里得空间/欧氏空间）完全不同的<strong>几何</strong>规则，也就是<strong>闵可夫斯基几何</strong>/<strong>闵氏几何</strong>。毕竟，没有规定说我们的宇宙一定遵守欧氏几何这种符合人类直觉的规律。</p>
 
 <p>所有满足这个奇怪的模长公式的向量构成了一个向量空间，即<strong>闵可夫斯基空间</strong>，或者也可以叫<strong>闵可夫斯基时空</strong>。在闵氏空间里，向量的第一维和后三维的地位并不相同。</p>
 
@@ -68,7 +276,7 @@ $$</div>
 \end{bmatrix}
 $$</div>
 
-<p>将$S$系中的事件$\mathbf r$转到$S’$系，就相当于用矩阵$\Lambda$乘上$\mathbf r$：</p>
+<p>将事件在$S$系中的测量结果$\mathbf r$转到$S’$系测量，就相当于用矩阵$\Lambda$乘上$\mathbf r$：</p>
 
 <div class="kdmath">$$
 \mathbf r'=\Lambda\mathbf r
@@ -90,7 +298,7 @@ $$</div>
 
 <p>其中$\vec n=\frac{\vec u}{\mid\mid\vec u\mid\mid}$，是速度$\vec u$方向上的单位向量。</p>
 
-<p>经过变换之后，$\vec r_\perp$分量不变，而$\vec r_\parallel$会变成$\gamma(\vec r_\parallel-\vec ut)$。</p>
+<p>经过变换之后，垂直于速度的$\vec r_\perp$分量不变，而$\vec r_\parallel$会变成$\gamma(\vec r_\parallel-\vec ut)$。</p>
 
 <div class="kdmath">$$
 \begin{align*}
@@ -155,7 +363,7 @@ $$</div>
 \vec v'=\frac{\mathrm d\vec r'}{\mathrm dt'}
 $$</div>
 
-<p>为了用$\vec v$表示$\vec v’$，可以先用一个链式法则：</p>
+<p>我们的目的就是将$\vec v’$表示成$\vec v$，$\vec u$，以及其他$S$系中可测量的物理量。为了用$\vec v$表示$\vec v’$，可以先用一个链式法则：</p>
 
 <div class="kdmath">$$
 \begin{align*}
@@ -2162,367 +2370,4 @@ $$</div>
 
 <p>从这些模拟动画中可以看出在塑性碰撞之后，固体内部的分子自身产生了微小振动，将一部分物体的平动动能转化成了分子的振动动能（即内能）。这就是我们问题的答案：塑性碰撞将宏观物体的能量转化成了微观分子的能量，因此宏观上能量减少了。</p>
 
-<p>值得注意的是，分子的振动并不能带走宏观物体的动量，因为分子的振动是随机的，并且在各个方向上出现的概率相等，因此统计上分子的动量之和应当为0。这也是为什么不论在弹性还是在塑性碰撞中，物体的动量都是守恒的。</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="simulation" /><category term="julia" /><category term="physics" /><summary type="html"><![CDATA[1. 模拟]]></summary></entry><entry><title type="html">算法化求导</title><link href="mqcreaple.github.io/blog/2021/09/11/derivative-m.html" rel="alternate" type="text/html" title="算法化求导" /><published>2021-09-11T00:00:00-04:00</published><updated>2021-09-11T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2021/09/11/derivative-m</id><content type="html" xml:base="mqcreaple.github.io/blog/2021/09/11/derivative-m.html"><![CDATA[<p>求导是一种算符，输入一个表达式，输出另一个表达式</p>
-
-<p>我们学过求导的运算法则，例如$(u+v)’=u’+v’$等等，将这些法则运用于某个表达式，即可实现算法化求导</p>
-
-<p>首先，我们要从表达式树说起</p>
-
-<h2 id="表达式树">表达式树</h2>
-
-<p>任何一个表达式，都可以被拆解成一棵二叉树，其中叶结点为数字或字母，非叶结点则为运算符和函数</p>
-
-<p>例如如下的表达式：</p>
-
-<div class="kdmath">$$
-f(x)=3x^2+2\sin(x)
-$$</div>
-
-<p>可以被拆解成如下的表达式树：</p>
-
-<div class="mermaid">
-graph TD
-A((+)) --&gt; B((*))
-A --&gt; C((*))
-B --&gt; D[3]
-B --&gt; E((^))
-E --&gt; F[x]
-E --&gt; G[2]
-C --&gt; H[2]
-C --&gt; I((sin))
-I --&gt; J[x]
-</div>
-
-<p>计算$f(x)$的过程也很简单，只需要将所有未知数都替换成某个特定的值$x_0$，接着从下往上递归，将所有非叶结点替换为计算结果，最后根结点的数值就是答案了</p>
-
-<p>以上面的表达式树为例，如果我们想要计算$f\left(\dfrac{\pi}{2}\right)$的数值，首先把所有$x$结点换成$\frac\pi2$</p>
-
-<div class="mermaid">
-graph TD
-A((+)) --&gt; B((*))
-A --&gt; C((*))
-B --&gt; D[3]
-B --&gt; E((^))
-E --&gt; F[π/2]
-E --&gt; G[2]
-C --&gt; H[2]
-C --&gt; I((sin))
-I --&gt; J[π/2]
-</div>
-
-<p>接下来从下向上递归计算。先将$\left(\dfrac\pi2\right)^2$替换为$\dfrac{\pi^2}{4}$，将$\sin\left(\dfrac\pi2\right)$替换为$1$</p>
-
-<div class="mermaid">
-graph TD
-A((+)) --&gt; B((*))
-A --&gt; C((*))
-B --&gt; D[3]
-B --&gt; E[π^2/4]
-C --&gt; H[2]
-C --&gt; I[1]
-</div>
-
-<p>继续重复上述操作：</p>
-
-<div class="mermaid">
-graph TD
-A((+)) --&gt; B[3π^2/4]
-A --&gt; C[2]
-</div>
-
-<p>最终得到答案：$\dfrac{3\pi^2}{4}+2$</p>
-
-<h2 id="树上操作求导">树上操作&amp;求导</h2>
-
-<p>我们暂且使用：</p>
-
-<pre><code class="language-java">class Node {
-    private String operator;
-    private Node left;
-    private Node right;
-    Node(char operator, Node left, Node right) {
-        this.operator = operator;
-        this.left = left;
-        this.right = right;
-    }
-}
-</code></pre>
-
-<p>来表示一个表达式树的非叶结点</p>
-
-<h3 id="加减法">加减法</h3>
-
-<p>我们不妨从最简单的加法运算开始考虑</p>
-
-<p>当某个结点是<code>+</code>运算时，我们不妨设左右两端的表达式分别为$f(x)$和$g(x)$，那么这个结点就表示了函数$h(x)=f(x)+g(x)$。</p>
-
-<pre><code>    +
-   / \
-f(x) g(x)
-</code></pre>
-
-<p><em>（省流大师</em></p>
-
-<p>那么，根据导数的运算律，我们可以得到：</p>
-
-<div class="kdmath">$$
-h'(x)=(f+g)'(x)=f'(x)+g'(x)
-$$</div>
-
-<p>也就是说，先分别计算这棵表达式树的左右子树的导数，接着将它们套在一个<code>+</code>结点上，就是这个表达式树的导数</p>
-
-<pre><code>                 +               +
-derivative {    / \    } =     /   \
-             f(x) g(x)     f'(x)  g'(x)
-</code></pre>
-
-<p>写成代码的形式，就是：</p>
-
-<pre><code class="language-java">if(root.operator == "+") {
-    return new Node(
-        "+",
-        derivative(root.left),
-        derivative(root.right)
-    );
-}
-</code></pre>
-
-<p>对于减法，也是同理：</p>
-
-<pre><code>                 -               -
-derivative {    / \    } =     /   \
-             f(x) g(x)     f'(x)  g'(x)
-</code></pre>
-
-<pre><code class="language-java">if(root.operator == "-") {
-    return new Node(
-        "-",
-        derivative(root.left),
-        derivative(root.right)
-    );
-}
-</code></pre>
-
-<h3 id="乘法除法">乘法&amp;除法</h3>
-
-<p>乘法运算则略微复杂一些。如果$h(x)=f(x)g(x)$，根据导数运算律。有：</p>
-
-<div class="kdmath">$$
-h'(x)=f(x)g'(x)+g(x)f'(x)
-$$</div>
-
-<p>也就是：</p>
-
-<pre><code>                                   +
-                 *              /     \
-derivative {    / \    } =    *         *
-             f(x) g(x)      /   \     /   \
-                         f(x) g'(x) g(x) f'(x)
-</code></pre>
-
-<p>写成代码：</p>
-
-<pre><code class="language-java">if(root.operator == "*") {
-    return new Node(
-        "-",
-        new Node(
-            "*",
-            root.left,
-            derivative(root.right)
-        ),
-        new Node(
-            "*",
-            root.right,
-            derivative(root.left)
-        )
-    );
-}
-</code></pre>
-
-<p>除法则更复杂一些：</p>
-
-<div class="kdmath">$$
-\left(\dfrac{f(x)}{g(x)}\right)'=\dfrac{f'(x)g(x)-f(x)g'(x)}{g(x)^2}
-$$</div>
-
-<p><del>表达式树实在懒得画了</del></p>
-
-<p>也就是：</p>
-
-<pre><code class="language-java">if(root.operator == "/") {
-    return new Node(
-        "/",
-        new Node(
-            "-",
-            new Node(
-                "*"
-                root.right,
-                derivative(root.left)
-            ),
-            new Node(
-                "*",
-                root.left,
-                derivative(root.right)
-            )
-        ),
-        new Node(
-            "^",
-            root.right,
-            new NumberNode(2)
-        )
-    );
-}
-</code></pre>
-
-<h3 id="乘方">乘方</h3>
-<p>到了乘方这里，事情就有点难办了</p>
-
-<p>我们知道指数函数的导数公式$(a^x)’=a^x\ln a$，也知道幂函数的导数公式$(x^a)’=ax^{a-1}$，但是现在问题是：未知数可能同时出现在底数和指数上</p>
-
-<p>换句话说，我们想要求的是：</p>
-
-<div class="kdmath">$$
-\left(f(x)^{g(x)}\right)'
-$$</div>
-
-<pre><code>                 ^
-derivative {    / \    } = ?
-             f(x) g(x)
-</code></pre>
-
-<p>这里我们要用到一点小技巧</p>
-
-<p>首先令</p>
-
-<div class="kdmath">$$
-y=f(x)^{g(x)}
-$$</div>
-
-<p>接着，两边同时求对数：</p>
-
-<div class="kdmath">$$
-\ln y=\ln f(x)^{g(x)}=g(x)\ln f(x)
-$$</div>
-
-<p>接下来，两边对$x$求导，得到：</p>
-
-<div class="kdmath">$$
-\frac{\mathrm d\ln y}{\mathrm dx}=\frac{\mathrm d(g(x)\ln f(x))}{\mathrm dx}
-$$</div>
-
-<p>对等式左侧使用链式求导法则：</p>
-
-<div class="kdmath">$$
-\frac{\mathrm d\ln y}{\mathrm dx}=\frac{\mathrm d\ln y}{\mathrm dy}\cdot\frac{\mathrm dy}{\mathrm dx}=\frac 1y\cdot\frac{\mathrm dy}{\mathrm dx}
-$$</div>
-
-<p>同时对等式右侧使用导数的乘法法则：</p>
-
-<div class="kdmath">$$
-\begin{align*}
-\frac{\mathrm d(g(x)\ln f(x))}{\mathrm dx} &= g(x)\frac{\mathrm d\ln f(x)}{\mathrm df(x)}\frac{\mathrm df(x)}{\mathrm dx}+\ln f(x)\cdot\frac{\mathrm dg(x)}{\mathrm dx} \\
-& =\frac{g(x)}{f(x)}f'(x)+g'(x)\ln f(x)
-\end{align*}
-$$</div>
-
-<p>最终我们得到：</p>
-
-<div class="kdmath">$$
-\frac 1y\cdot y'=\frac{g(x)}{f(x)}f'(x)+g'(x)\ln f(x)
-$$</div>
-
-<p>$y’$即为所求，因此将等式左侧的$\frac1y$乘到右侧，并将$y$替换为$f(x)^{g(x)}$，我们得到：</p>
-
-<div class="kdmath">$$
-y'=\left(f(x)^{g(x)}\right)'=f(x)^{g(x)}\left(\frac{g(x)}{f(x)}f'(x)+g'(x)\ln f(x)\right)
-$$</div>
-
-<p>这就是两个表达式乘方的导数</p>
-
-<p>由于这玩意实在太长，它的代码形式和表达式树形式我就不列出来了。大家只需要知道这玩意能算出来就行了</p>
-
-<h3 id="叶结点的处理">叶结点的处理</h3>
-
-<p>当我们运算到叶结点（即常数和变量）时，就可以直接按照如下方法处理：</p>
-
-<p><span class="kdmath">$text{返回值}=\begin{cases}1, \text{结点值}=\text{求导变量}\\0, \text{结点值}\neq\text{求导变量}\end{cases}$</span></p>
-
-<p>对$x$求导时，只有$x’$会返回$1$。其余情况，包括常数的导数，和多元函数中其他变量（比如$y, z$）对$x$的导数，都会返回$0$</p>
-
-<h2 id="优化">优化</h2>
-<p>我们不妨随便找一个函数进行一下运算，比如：</p>
-
-<div class="kdmath">$$
-f(x)=x^2
-$$</div>
-
-<pre><code>  ^
- / \
-x   2
-</code></pre>
-
-<p>代入之前得到的指数求导表达式：</p>
-
-<div class="kdmath">$$
-(x^2)'=x^2(2'\cdot\ln x+\dfrac2x\cdot x')
-$$</div>
-
-<p>建立的表达式树如下：</p>
-
-<pre><code>        ×
-    /       \
-  ^           +
- / \       /     \
-x   2    ×         *
-       /   \      / \
-    (2)'   ln    ÷   x'
-           |    / \
-           x   2   x
-</code></pre>
-
-<p>接着根据叶结点的处理规则，将$2’$替换成$0$，将$x’$替换成$1$，得到了表达式树：</p>
-
-<pre><code>        ×
-    /       \
-  ^           +
- / \       /     \
-x   2    ×         *
-       /   \      / \
-      0    ln    ÷   1
-           |    / \
-           x   2   x
-</code></pre>
-
-<p>可以看到，表达式树中有许多诸如<code>×0</code>，<code>×1</code>，<code>÷1</code>之类的冗余表达。为了去除这些冗余，我们需要对表达式树进行优化</p>
-
-<h3 id="初级优化">初级优化</h3>
-<p>结点的所有子结点均为常数时，直接合并成单个常数结点，例如$2+3$直接合并为$5$</p>
-<ul>
-  <li>加法：$a+0=0+a=a$</li>
-  <li>减法：$a-0=a$, $0-a=-a$, $a-a=0$</li>
-  <li>乘法：$a\times0=0$, $a\times1=a$</li>
-  <li>除法：$a/0=\text{NaN}$, $a/1=a$, $0/a=0$, $a/a=1$</li>
-  <li>乘方：$a^0=1$, $a^1=a$, $0^a=0$, $1^a=1$</li>
-  <li>其它：$\ln1=0$, $\sin\pi=0$等</li>
-</ul>
-
-<h3 id="中级优化">中级优化</h3>
-
-<p>涉及到某个结点和它的一级子结点</p>
-
-<ul>
-  <li>加减法：$a+(-b)=a-b$</li>
-  <li>乘除法：$a\times(1/b)=a/b$</li>
-  <li>乘方：$(a^n)\cdot a=a^{n+1}$, $(a^n)/a=a^{n-1}$</li>
-  <li>对数：$a^{\log_ab}=b$…</li>
-</ul>
-
-<h3 id="高级优化">高级优化</h3>
-
-<p>这些优化本身不一定能够让式子变得更加简洁，它要求机器能够判断展开后表达式是否能够进一步化简</p>
-
-<ul>
-  <li>乘法分配律：$(a+b)c=ac+bc$</li>
-  <li>乘方运算律：$a^{b+c}=a^b\cdot a^c$</li>
-  <li>对数运算律：$\log(ab)=\log a+\log b$</li>
-</ul>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="math" /><category term="calculus" /><category term="algorithm" /><summary type="html"><![CDATA[求导是一种算符，输入一个表达式，输出另一个表达式]]></summary></entry></feed>
+<p>值得注意的是，分子的振动并不能带走宏观物体的动量，因为分子的振动是随机的，并且在各个方向上出现的概率相等，因此统计上分子的动量之和应当为0。这也是为什么不论在弹性还是在塑性碰撞中，物体的动量都是守恒的。</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="simulation" /><category term="julia" /><category term="physics" /><summary type="html"><![CDATA[1. 模拟]]></summary></entry></feed>
