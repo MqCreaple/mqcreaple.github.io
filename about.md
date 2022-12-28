@@ -16,7 +16,7 @@ permalink: /aboutme/
 
 - 看书，想一些奇怪的问题
 - Minecraft
-- 骑车，滑雪
+- 骑车，~~滑雪（已经没地方能去滑雪了）~~
 
 你还能在哪看到我？
 
@@ -37,7 +37,7 @@ What I do after school:
 
 - Read books and think about some strange questions.
 - Minecraft
-- Do cycling and skiing.
+- Cycling and skiing.
 
 You can also found me at:
 

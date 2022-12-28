@@ -1,4 +1,151 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="mqcreaple.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="mqcreaple.github.io/" rel="alternate" type="text/html" /><updated>2022-10-17T22:50:17-04:00</updated><id>mqcreaple.github.io/feed.xml</id><title type="html">My Blog | MqCreaple</title><subtitle>pay more attention to the beauty of formulas!</subtitle><author><name>MqCreaple</name></author><entry><title type="html">狭义相对论光线追踪 原理解析 2</title><link href="mqcreaple.github.io/blog/2022/10/17/relativistic-renderer-1.html" rel="alternate" type="text/html" title="狭义相对论光线追踪 原理解析 2" /><published>2022-10-17T00:00:00-04:00</published><updated>2022-10-17T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2022/10/17/relativistic-renderer-1</id><content type="html" xml:base="mqcreaple.github.io/blog/2022/10/17/relativistic-renderer-1.html"><![CDATA[<p>约定：以下类已经实现</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.1">Jekyll</generator><link href="mqcreaple.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="mqcreaple.github.io/" rel="alternate" type="text/html" /><updated>2022-12-28T13:38:23-05:00</updated><id>mqcreaple.github.io/feed.xml</id><title type="html">My Blog | MqCreaple</title><subtitle>pay more attention to the beauty of formulas!</subtitle><author><name>MqCreaple</name></author><entry><title type="html">浅谈并行计算</title><link href="mqcreaple.github.io/blog/2022/12/27/parallel-computation.html" rel="alternate" type="text/html" title="浅谈并行计算" /><published>2022-12-27T00:00:00-05:00</published><updated>2022-12-27T00:00:00-05:00</updated><id>mqcreaple.github.io/blog/2022/12/27/parallel-computation</id><content type="html" xml:base="mqcreaple.github.io/blog/2022/12/27/parallel-computation.html"><![CDATA[<p>前置知识：多线程</p>
+
+<h2 id="一个简单的例子">一个简单的例子</h2>
+
+<p>问题：给定两个大小均为$N$的整数数组<code>a</code>和<code>b</code>，将两个数组的元素逐个求和并将结果存到数组<code>c</code>中。即：<code>c[i] = a[i] + b[i]</code>。</p>
+
+<p>很容易想到可以使用一个循环来实现这个操作：</p>
+
+<pre><code class="language-cpp">// N: 数组长度
+void calcSum(int *a, int *b, int *c, int N) {
+    for(int i = 0; i &lt; N; i++) {
+        c[i] = a[i] + b[i];
+    }
+}
+</code></pre>
+
+<p>这段代码依次遍历了<code>0</code>到<code>len</code>之间的所有下标，对每个下标对应元素执行一次求和+赋值操作。也就是说，代码的运行时间等于执行$N$次<code>c[i] = a[i] + b[i]</code>所需的时间。</p>
+
+<p>细心的你可能会注意到，对于这个任务，每个下标<code>i</code>所对应的操作都是相互独立的，也就是说，我们其实可以让一堆<code>c[i] = a[i] + b[i]</code>一起运行而且它们之间不会相互干扰。比如这样：</p>
+
+<pre><code class="language-cpp">void calcSum2(int *a, int *b, int *c, int N) {
+    int N2 = N / 2;
+    std::thread t1(calcSum, a, b, c, N2);      // 创建一个新线程来处理区间[0, N2)
+    calcSum(a + N2, b + N2, c + N2, N - N2);   // 在原来的线程里面处理区间[N2, N)
+    t1.join();                                 // 同步两个线程，本代码中可以省略但不建议
+}
+</code></pre>
+
+<p>它将数组从中间分成了两段，然后创建了两个线程来分别计算前半段和后半段。如果你的CPU有至少两个核，那么<code>calcSum2</code>计算同样长的一段数组所需的时间将是<code>calcSum</code>的一半。</p>
+
+<p>当然，你也可以创建更多的线程来进一步加速这段代码，只要不超过硬件的物理限制即可。</p>
+
+<h2 id="并行计算的复杂度">并行计算的复杂度</h2>
+
+<p>如果你拥有一定的算法知识，那么应该对计算机如何执行一段程序不陌生了。而并行计算则相当于有<strong>不止一台计算机在同时计算一个任务</strong>。这几台计算机在执行各自的任务时不能产生冲突，比如同时访问同一块内存。也就是说，你需要<strong>合理地将任务分配</strong>给每一台计算机。</p>
+
+<h3 id="一个简陋的模型">一个简陋的模型</h3>
+
+<p>我们可以先引入一个<em>简化版模型</em>。每个任务的代码可以被看作是由两部分组成：<strong>串行部分</strong>和<strong>并行部分</strong>。任务的并行部分能够被分割成数个相互独立的子任务，而串行部分则必须在单一计算机上执行。</p>
+
+<p><img src="/img/parallel-0.png" alt="parallel" /></p>
+
+<p>假设代码中并行部分占比为$c$，串行部分占比为$(1-c)$，那么如果可以最多并行执行$k$个任务，所花费的时间相比于全部串行的时间就是：</p>
+
+<div class="kdmath">$$
+1-c+\frac{c}{k}=1-\frac{k-1}{k}c
+$$</div>
+
+<p>而在最理想的情况下，有多到近乎无穷的并行容量时，执行该算法所花费的时间就等于串行部分需要花费的时间，即$(1-c)$。</p>
+
+<p>并行计算不仅减少了计算时间，还有可能降低算法的时间复杂度。完全串行的情况下，时间复杂度等于<em>并行部分的时间复杂度</em>+<em>串行部分的时间复杂度</em>；而在理想并行的情况下，时间复杂度仅为<em>并行部分的时间复杂度</em>。如果随着数据规模$N$的提升，并行部分的时间复杂度提升的没有串行部分快，那么这样做就可以降低时间复杂度了。</p>
+
+<p>在上面<code>calcSum</code>的例子中，所有代码都是串行的，没有并行部分。因此，只要有足够多的线程，那么算法的时间复杂度就可以从之前的$O(N)$降低为$O(1)$常数级别。</p>
+
+<p>当然，这个模型实在是有些过于粗糙了，很多算法都不能被简单拆分成“并行”和“串行”两部分。但是相信你应该大致从中了解并行计算和以前熟知的计算方式的区别了。</p>
+
+<h3 id="分治树模型">分治树模型</h3>
+
+<p>我们考虑一个算法中十分常见的问题：<strong>分治</strong>。分治问题里可以使用一棵树来描述。</p>
+
+<p>举个典型的例子：<strong>归并排序</strong>。以下为归并排序的伪代码：</p>
+
+<pre><code class="language-cpp">void mergeSort(int *a, int left, int right) {
+    if(right - left == 1) {
+        return;
+    }
+    mergeSort(left half of array a);
+    mergeSort(right half of array a);
+    merge the sorted two halves of array a
+}
+</code></pre>
+
+<p>以下为<code>mergeSort</code>一个长度为7的数组是，函数调用的树形结构：</p>
+
+<div class="mermaid">
+graph TD
+A[1..7] --&gt; B[1..4]
+A --&gt; C[5..7]
+B --&gt; D[1..2]
+B --&gt; E[3..4]
+C --&gt; F[5..6]
+C --&gt; G[7..7]
+D --&gt; H[1..1]
+D --&gt; I[2..2]
+E --&gt; J[3..3]
+E --&gt; K[4..4]
+F --&gt; L[5..5]
+F --&gt; M[6..6]
+</div>
+
+<p>更一般地，区间分治问题的代码几乎都是下面这个形式的：</p>
+
+<pre><code class="language-cpp">void solve(..., int left, int right) {
+    if(right - left == 1) {
+        // do something here
+        return;
+    }
+    solve(..., left, mid);
+    solve(..., mid, right);
+    // main code
+}
+</code></pre>
+
+<p>根据分治的性质，函数调用树上面，如果两个结点不是祖先关系，那么它们之间一定是相互独立的，可以并行计算；而祖先关系的两个结点之间有数据依赖，必须先执行完子结点代表的函数之后才能执行父节点的函数。</p>
+
+<p>因此，我们获得了并行计算这个分治问题的解法：对这棵树按层从下向上遍历，每一次并行执行一层中的所有结点函数。也就是这样：</p>
+
+<p><img src="/img/parallel-1.png" alt="parallel" /></p>
+
+<p><del>如果您有强迫症，请务必原谅我糟糕的绘画水平</del></p>
+
+<p>按照图中数字标记的顺序，每次将当前层的所有函数并行执行即可。</p>
+
+<p>接下来做复杂度分析。已知合并两个区间的时间复杂度为$O(N)$，其中$N$为待处理区间的长度，那么<em>完全串行</em>时，时间复杂度$T(N)$满足：</p>
+
+<div class="kdmath">$$
+T(N)=T(\frac N2)+T(\frac N2)+O(N)
+$$</div>
+
+<div class="kdmath">$$
+T(1)=0
+$$</div>
+
+<p>解得：</p>
+
+<div class="kdmath">$$
+T(N)=O(N\log N)
+$$</div>
+
+<p>而在使用了上述的并行优化之后，由于左右两个区间的处理是并行的，在计算时间时只用加一遍，因此时间复杂度$T’(N)$满足：</p>
+
+<div class="kdmath">$$
+T'(N)=T'(\frac N2)+O(N)
+$$</div>
+
+<p>解得：</p>
+
+<div class="kdmath">$$
+T'(N)=O(N)
+$$</div>
+
+<p>可以看出使用并行计算之后，归并排序的时间复杂度减少了一个$\log N$。类似地，其他区间分治类问题都可以使用相同的方法来降低复杂度。</p>
+
+<p>未完待续<del>先挖上坑以后再填</del></p>
+
+<h2 id="参考资料">参考资料</h2>
+
+<p>Cormen, Thomas, et al. <em>Introduction to Algorithms</em>. MIT press, 2022.</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="computer" /><category term="algorithm" /><summary type="html"><![CDATA[前置知识：多线程]]></summary></entry><entry><title type="html">狭义相对论光线追踪 原理解析 2</title><link href="mqcreaple.github.io/blog/2022/10/17/relativistic-renderer-1.html" rel="alternate" type="text/html" title="狭义相对论光线追踪 原理解析 2" /><published>2022-10-17T00:00:00-04:00</published><updated>2022-10-17T00:00:00-04:00</updated><id>mqcreaple.github.io/blog/2022/10/17/relativistic-renderer-1</id><content type="html" xml:base="mqcreaple.github.io/blog/2022/10/17/relativistic-renderer-1.html"><![CDATA[<p>约定：以下类已经实现</p>
 
 <ul>
   <li><code>Vec3</code>：存储了一个三维向量。
@@ -2330,44 +2477,4 @@ category: blog
   </li>
 </ol>
 
-<p>关于Jekyll就先讲这么多，更多的信息也可以在网上找到。</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="bulletin" /><category term="jekyll" /><category term="writing" /><summary type="html"><![CDATA[公告]]></summary></entry><entry><title type="html">为何非弹性碰撞下动量守恒而能量不守恒？</title><link href="mqcreaple.github.io/blog/2021/12/19/simulation2.html" rel="alternate" type="text/html" title="为何非弹性碰撞下动量守恒而能量不守恒？" /><published>2021-12-19T00:00:00-05:00</published><updated>2021-12-19T00:00:00-05:00</updated><id>mqcreaple.github.io/blog/2021/12/19/simulation2</id><content type="html" xml:base="mqcreaple.github.io/blog/2021/12/19/simulation2.html"><![CDATA[<h2 id="1-模拟">1. 模拟</h2>
-
-<p>假设现在有两种不同的分子，同种分子之间有引力，异种分子之间有斥力。</p>
-
-<p>我们使用一个理想模型：同种分子之间的使用弹簧连接，弹簧会主动维护一个固定长度$l_0$；异种分子之间的斥力满足平方反比定律。具体公式如下：</p>
-
-<div class="kdmath">$$
-\bm F_1=k_1(\bm r_{12} - \bm l_0)
-$$</div>
-
-<div class="kdmath">$$
-\bm F_2=k_2\cdot\frac{\bm r_{12}}{r_{12}^2}
-$$</div>
-
-<p>其中$F_1$为同种分子之间的引力，$F_2$为异种分子之间的斥力。</p>
-
-<p>模拟结果如下：</p>
-
-<ol>
-  <li>$k_1:k_2=5:1$，近似为理想刚体的弹性碰撞</li>
-</ol>
-
-<p><img src="/img/sim_animation1.gif" alt="animation1" /></p>
-
-<ol>
-  <li>$k_1:k_2=1:1$</li>
-</ol>
-
-<p><img src="/img/sim_animation2.gif" alt="animation2" /></p>
-
-<ol>
-  <li>$k_1:k_2=0.75:1$，碰撞为塑性碰撞</li>
-</ol>
-
-<p><img src="/img/sim_animation3.gif" alt="animation3" /></p>
-
-<h2 id="分析">分析</h2>
-
-<p>从这些模拟动画中可以看出在塑性碰撞之后，固体内部的分子自身产生了微小振动，将一部分物体的平动动能转化成了分子的振动动能（即内能）。这就是我们问题的答案：塑性碰撞将宏观物体的能量转化成了微观分子的能量，因此宏观上能量减少了。</p>
-
-<p>值得注意的是，分子的振动并不能带走宏观物体的动量，因为分子的振动是随机的，并且在各个方向上出现的概率相等，因此统计上分子的动量之和应当为0。这也是为什么不论在弹性还是在塑性碰撞中，物体的动量都是守恒的。</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="simulation" /><category term="julia" /><category term="physics" /><summary type="html"><![CDATA[1. 模拟]]></summary></entry></feed>
+<p>关于Jekyll就先讲这么多，更多的信息也可以在网上找到。</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="bulletin" /><category term="jekyll" /><category term="writing" /><summary type="html"><![CDATA[公告]]></summary></entry></feed>
