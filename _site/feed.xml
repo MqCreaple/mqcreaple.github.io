@@ -1,4 +1,177 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.1">Jekyll</generator><link href="mqcreaple.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="mqcreaple.github.io/" rel="alternate" type="text/html" /><updated>2022-12-28T13:38:23-05:00</updated><id>mqcreaple.github.io/feed.xml</id><title type="html">My Blog | MqCreaple</title><subtitle>pay more attention to the beauty of formulas!</subtitle><author><name>MqCreaple</name></author><entry><title type="html">浅谈并行计算</title><link href="mqcreaple.github.io/blog/2022/12/27/parallel-computation.html" rel="alternate" type="text/html" title="浅谈并行计算" /><published>2022-12-27T00:00:00-05:00</published><updated>2022-12-27T00:00:00-05:00</updated><id>mqcreaple.github.io/blog/2022/12/27/parallel-computation</id><content type="html" xml:base="mqcreaple.github.io/blog/2022/12/27/parallel-computation.html"><![CDATA[<p>前置知识：多线程</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.1">Jekyll</generator><link href="mqcreaple.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="mqcreaple.github.io/" rel="alternate" type="text/html" /><updated>2023-01-24T11:50:14-05:00</updated><id>mqcreaple.github.io/feed.xml</id><title type="html">My Blog | MqCreaple</title><subtitle>pay more attention to the beauty of formulas!</subtitle><author><name>MqCreaple</name></author><entry><title type="html">battlecode开发日志</title><link href="mqcreaple.github.io/blog/2023/01/24/battlecode.html" rel="alternate" type="text/html" title="battlecode开发日志" /><published>2023-01-24T00:00:00-05:00</published><updated>2023-01-24T00:00:00-05:00</updated><id>mqcreaple.github.io/blog/2023/01/24/battlecode</id><content type="html" xml:base="mqcreaple.github.io/blog/2023/01/24/battlecode.html"><![CDATA[<p>最近几天由于打竞赛打到自闭了（我太菜了），想整点其他的事情做一做，在学校信息社的推荐下打算玩一下MIT办的<a href="https://battlecode.org/">battlecode</a>比赛。</p>
+
+<p>battlecode是一个竞技性比赛。在一张固定大小的地图上，两方各有很多不同功能机器人，而最终的目的是操作机器人占领尽可能多的天空岛（sky island）。只不过玩家不能直接操控，而是要为场上的机器人写代码，让程序自动运行。</p>
+
+<p>简要的说明一下规则：</p>
+<ul>
+  <li>机器人有如下几类
+    <ul>
+      <li>总部（headquarter）：不能移动，可以存储资源，也可以消耗矿物来搭建其它类型的机器人</li>
+      <li>运输器（carrier）：可以用来在指定矿点挖矿，也可以用来搬运锚点（anchor）</li>
+      <li>发射器（launcher）：可以用来打人</li>
+      <li>减速器（temporal destabilizer）：可以在一定范围内增加所有机器人的行动冷却时间</li>
+      <li>加速器（temporal booster）：可以在一定范围内减少盟友机器人的行动冷却时间</li>
+      <li>信号增幅器（amplifier）：用来传递信息，可以移动</li>
+    </ul>
+  </li>
+  <li>每个格子可能是如下几种之一：
+    <ul>
+      <li>默认：机器人可以通过，无任何特殊效果</li>
+      <li>天空岛（sky island）：机器人可以通过，可以在上方放置锚点将其标记为“占领”，也可以在被对方占领的岛上驻守更多机器人来将其取消标记</li>
+      <li>矿井（well）：机器人可以通过，内部包含无限的特定资源，运输器可以在该格及其周边8个格子挖矿</li>
+      <li>风（current）：吹向一个固定方向，每回合在风里的机器人会强制向该方向移动一格</li>
+      <li>云（cloud）：在云内的机器人不会被其他机器人检测到，但是仍然可以被攻击或者被施加加速/减速效果</li>
+      <li>障碍物：机器人不可通过</li>
+    </ul>
+  </li>
+  <li>机器人的可视范围非常有限，但是机器人可以知道自己的x、y坐标以及地图大小</li>
+  <li>机器人之间不会自动共享信息，但是可以通过写入/读取<em>共享内存</em>来传递信息
+    <ul>
+      <li>共享内存为64个16位整数，即一共有128byte</li>
+      <li>所有机器人都可以从共享内存中读取信息，但是只有在总部（headquarter）和信号增幅器（amplifier）附近可以写入内存</li>
+    </ul>
+  </li>
+  <li>机器人每回合内不能做过多计算。battlecode中直接使用java的bytecode数量来衡量计算量（可以理解为代码编译成的汇编代码的行数）。如果一个回合的计算超出限制，该机器人的进程会被强制结束，并在下回合内从断点处恢复。</li>
+</ul>
+
+<p>可能稍微说的有点多了。当然这还不是全部的规则，更详细的规则可以到<a href="https://releases.battlecode.org/specs/battlecode23/2.0.3/specs.md.html">官方文档</a>中查看。</p>
+
+<h2 id="基本战略">基本战略</h2>
+
+<p>我们最初的想法其实很简单：让每个机器人各司其职</p>
+
+<ol>
+  <li>运输器每次随机选取一个矿点，走到矿点附近挖矿，挖完后回到总部。如果看到总部制作了锚点，那么就带上锚点前往天空岛并放置。</li>
+  <li>发射器每次随机分配一个地点，在该地点附近移动，如果看到可以攻击的目标就攻击</li>
+  <li>信号增幅器在地图上随机移动</li>
+</ol>
+
+<p>这个代码看起来并不难实现，但还是有些技术细节需要确认：</p>
+
+<h2 id="共享内存的格式">共享内存的格式</h2>
+
+<p>由于地图的大小不会超过60x60，地图上一个点的坐标只用6位x坐标+6位y坐标=12位二进制即可表示。</p>
+
+<p>最初我们的规划是这样的：每一个16位数存储一个坐标，并且用2个二进制位来标识该坐标上方的特殊区域类型</p>
+
+<pre><code>TTXX XXXX XYYY YYYY
+</code></pre>
+
+<p>其中左边是高位，右边是低位。<code>T</code>表示具体信息，<code>X</code>表示x坐标，<code>Y</code>表示y坐标。</p>
+
+<p><code>T</code>的含义取决于该地的类型，比如矿井的<code>T</code>表示里面的矿的类型，天空岛的<code>T</code>表示该天空岛被哪方占领。</p>
+
+<p>后来被改成了这个样子：</p>
+
+<pre><code>CCTT XXXX XXYY YYYY
+</code></pre>
+
+<p>将x坐标和y坐标的存储从7二进制位缩减成了6二进制位。前面的<code>C</code>暂时没有分配用途。</p>
+
+<p>而共享内存里总共64个数被分割成了不同的区块</p>
+<ol>
+  <li>下标0到7：记录每个矿井的坐标</li>
+  <li>下标8到11：记录每个我方总部的坐标</li>
+  <li>下标12到47：记录每个天空岛的坐标。如果天空岛的大小不止一格，则记录任意一个点的坐标</li>
+  <li>下标48到51：记录每个敌方总部的坐标</li>
+  <li>下标52到57：记录战场位置（需要着重派兵的位置）</li>
+  <li>下标58到62：暂无用途</li>
+  <li>下标63：记录共享内存的状态（是否已经初始化等等）</li>
+</ol>
+
+<p>每个可移动的机器人不仅有各自的职业，还需要时刻探索地图并将有用的信息记录到共享内存里</p>
+
+<blockquote>
+  <p>问题：那如果机器人发现了一个之前没有探到的位置，但距离信号增幅器太远而无法写入共享内存，怎么办？</p>
+
+  <p>答：如果机器人无法写入内存村，那么它可以先将所有探到的位置记录在自己的内存中（每个机器人有不超过5M的本地内存），等走到增幅器附近再写入。</p>
+</blockquote>
+
+<blockquote>
+  <p>问题：如果关于某个位置的信息过时了怎么办？比如，如果某座岛在第500回合的时候被我方占领，而观察到这个信息的机器人再第700回合才到了增幅器附近，而此时这个岛已经不被我们占领了。</p>
+
+  <p>答：这确实是一个好问题，其实直到比赛最后我们队才意识到信息是有可能过时的。后来我们试图在16位数的<code>C</code>位置记录某个信息的时间戳，但由于<code>C</code>只有2位，只能记录一个非常模糊的时间，并且后来我们没有时间写完代码了，这个计划被迫放弃。</p>
+</blockquote>
+
+<h2 id="改进">改进</h2>
+
+<h3 id="战斗">战斗</h3>
+
+<p>最初我们的策略是，给每个发射器随机分配一个任务：</p>
+<ol>
+  <li>20%概率，在家附近防守</li>
+  <li>35%概率，在天空岛附近防守</li>
+  <li>35%概率，前往敌方基地，堵住敌方基地的大门</li>
+  <li>10%概率，随机移动并探索地图</li>
+</ol>
+
+<p>这个策略把我们拉到了排行榜1400分左右，但还是容易轻易地被对手干爆。一大原因是它过于依赖随机性。</p>
+
+<p>后来我们学习了那些和我们对局并在兵力上战胜我们的其他队伍的策略，发现他们的发射器大多都是有组织地行动，一次来很多，而不是一个一个地派过来。<a href="https://ttzytt.com/">TZ</a>受此启发，在发射器的代码中加入了自动检测战场的部分。</p>
+<ul>
+  <li>如果一个机器人发现周围的敌方机器人数量超过3，则会将它所在的地方标记为战场</li>
+  <li>发射器会优先前往战场，再执行自己被分配到的任务</li>
+  <li>当总战场的数量超过4，总部就会进入战备状态，将生成发射器的比例调高</li>
+</ul>
+
+<h3 id="寻路算法">寻路算法</h3>
+
+<p>在最开始我们用了一个非常朴素的算法：</p>
+<ol>
+  <li>尝试向目标方向走一格</li>
+  <li>如果不能走，则向左（或向右）旋转45°，尝试向该方向走一格。反复执行该操作直到可以走</li>
+  <li>如果行动力没有消耗完，则回到1，否则退出</li>
+</ol>
+
+<p>这个方法可以越过一段平直的墙，但是无法越过两面90度夹角的墙。</p>
+
+<p>后来我们组的<a href="https://ttzytt.com/">TZ</a>大佬试图使用A*算法来寻路，但是比较不幸地，写挂了。我们也想尝试用Cooperative A*算法，但是因为各个机器人之间共享信息非常不方便，我们组也没有想到比较好的解决方法，这个计划也被搁置了。</p>
+
+<h2 id="遇到的一系列问题">遇到的一系列问题</h2>
+
+<p><em>以下问题按照产生的时间从早到晚排序</em></p>
+
+<blockquote>
+  <p>存储矿点坐标的时候只有特定种类的矿会被存下来</p>
+</blockquote>
+
+<p>这个问题源于整数的类型转换。</p>
+
+<p>由于battlecode提供的内存相关的API都使用<code>int</code>，而我们的代码里记录内存使用的是<code>short</code>。当我把short的最高位设成1的时候，它就会成为一个负数，而转化成int之后仍然是个负数，它就会因为超出$0$到$2^16-1$的范围而无法被存入共享内存中。</p>
+
+<p>由于Adamantium矿的类型标记是<code>01</code>，而Mana矿的类型标记是<code>10</code>，Mana矿的最高二进制位是1，所以只有Adamantium的坐标被存入了共享内存，而Mana则没有。</p>
+
+<blockquote>
+  <p>每次随机出来的数都等于0</p>
+</blockquote>
+
+<p>这个代码的问题出在类似这样的一个位置。这行代码本来想生成从0到某个常数的随机数：</p>
+
+<pre><code class="language-java">return (int) rnd.nextFloat() * CONSTANT;
+</code></pre>
+
+<p>不知道你们有没有一眼看出问题呢？</p>
+
+<p>这里运算符的计算顺序是这样的：</p>
+
+<div class="mermaid">
+graph TD
+A([*]) --&gt; B([int])
+A --&gt; C[CONSTANT]
+B --&gt; D[rnd.nextFloat]
+</div>
+
+<p>也就是说，生成的浮点数会先被转化成整数，再进行乘法。而<code>rnd.nextFloat()</code>生成的浮点数永远在$[0, 1)$区间内，所以先转化成整数时就会永远变成0。</p>
+
+<p>修复这个bug可以这样写：</p>
+
+<pre><code class="language-java">return (int) (rnd.nextFloat() * CONSTANT);
+</code></pre>
+
+<p>或者因为它生成的随机数是整数，其实更好的方法是使用取模运算：</p>
+
+<pre><code class="language-java">return rnd.nextInt() % CONSTANT;
+</code></pre>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="computer" /><summary type="html"><![CDATA[最近几天由于打竞赛打到自闭了（我太菜了），想整点其他的事情做一做，在学校信息社的推荐下打算玩一下MIT办的battlecode比赛。]]></summary></entry><entry><title type="html">浅谈并行计算</title><link href="mqcreaple.github.io/blog/2022/12/27/parallel-computation.html" rel="alternate" type="text/html" title="浅谈并行计算" /><published>2022-12-27T00:00:00-05:00</published><updated>2022-12-27T00:00:00-05:00</updated><id>mqcreaple.github.io/blog/2022/12/27/parallel-computation</id><content type="html" xml:base="mqcreaple.github.io/blog/2022/12/27/parallel-computation.html"><![CDATA[<p>前置知识：多线程</p>
 
 <h2 id="一个简单的例子">一个简单的例子</h2>
 
@@ -2403,78 +2576,4 @@ G --&gt; H([test.cpp])
 
 <p>[1] Chacon, Scott and Straub, Ben. “Pro Git v2”. Git, <a href="https://git-scm.com/book/en/v2">https://git-scm.com/book/en/v2</a>.</p>
 
-<p>[2] Wiegley, John. “Git from the Bottom to Up”. GitHub, <a href="https://jwiegley.github.io/git-from-the-bottom-up/">https://jwiegley.github.io/git-from-the-bottom-up/</a>.</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="git" /><category term="github" /><summary type="html"><![CDATA[相信大家都对git耳熟能详了。Git是一个简单易用的版本管理工具，用户可以在git中修改文件、提交commit（更新到本地仓库）、同步远程仓库等。本篇文章将主要讨论git更新文件和提交commit背后的原理。]]></summary></entry><entry><title type="html">2.0公告 &amp;amp; jekyll介绍</title><link href="mqcreaple.github.io/blog/2022/03/01/jekyll.html" rel="alternate" type="text/html" title="2.0公告 &amp;amp; jekyll介绍" /><published>2022-03-01T00:00:00-05:00</published><updated>2022-03-01T00:00:00-05:00</updated><id>mqcreaple.github.io/blog/2022/03/01/jekyll</id><content type="html" xml:base="mqcreaple.github.io/blog/2022/03/01/jekyll.html"><![CDATA[<h2 id="公告">公告</h2>
-
-<p>大约有三四个月没有发新的博客了，不知道还有没有人看。。。</p>
-
-<p>自从这个版本之后，我将舍弃我自己做的那个博客文章发布系统，而采用一个现成的工具：jekyll。主要原因嘛，就是<del>懒得继续写代码</del>jekyll做的比我自己写的系统好用。毕竟造别人已经造过的轮子是无意义的（</p>
-
-<p>现在旧版博客文章还没有完全迁移过来，以后也会陆陆续续全部搞完。</p>
-
-<h2 id="jekyll介绍"><a href="https://jekyllrb.com/">Jekyll</a>介绍</h2>
-
-<p><a href="https://jekyllrb.com/">Jekyll的官方网站</a>上也有详细的文档，第一次使用的话完全可以照着文档操作。我在这里也简单地介绍一下：</p>
-
-<ol>
-  <li>Jekyll是用Ruby写成的，安装前请先确保电脑上有ruby环境和ruby的包管理工具rubygems。</li>
-  <li>使用如下指令安装Jekyll：
-    <pre><code class="language-shell">gem install bundler jekyll
-</code></pre>
-  </li>
-  <li>接下来使用如下指令创建新工程：
-    <pre><code class="language-shell">jekyll new 工程名称
-</code></pre>
-  </li>
-  <li>进入目录，你应该看到这样的目录结构
-    <pre><code class="language-plaintext">.
-├── 404.html
-├── Gemfile
-├── Gemfile.lock
-├── _config.yml
-├── about.markdown
-├── index.markdown
-└── _posts
- └── xxxx-xx-xx-welcome-to-jekyll.markdown
-</code></pre>
-    <p>简单解释一下：</p>
-    <ul>
-      <li><code>_config.yml</code>存放了这个工程的基本信息，比如博客标题、描述、作者的邮箱等，也可以在_config.yml上面继续添加新的信息。</li>
-      <li><code>Gemfile</code>和<code>Gemfile.lock</code>是一些关于Gem的信息，可以暂时不用管。</li>
-      <li><code>404.html</code>是404错误页面，如果用户试图访问一个你没有写过的页面，就会自动跳转到这个页面上。</li>
-      <li><code>index.markdown</code>(写成<code>index.md</code>也可以被系统识别)是博客的主页，即在浏览器输入博客地址后第一个看见的页面。</li>
-      <li><code>about.markdown</code>(同上，<code>about.md</code>也被允许)是个人介绍页面。</li>
-      <li><code>_posts</code>文件夹下放各个博客文章，每个文章都是一个Markdown文件。文章的文件名都应该是<code>YYYY-MM-dd-TITLE.md</code>格式，即4位年份、2为月份、2位日期，后面跟着文章标题，空格用<code>-</code>代替。</li>
-    </ul>
-  </li>
-  <li>Jekyll会将所有在根目录下和<code>_posts</code>目录下的Markdown文件全部编译成HTML，连同其他文件放在<code>_site</code>目录下。也就是说，进行编译后，<code>_site</code>文件夹下就是一个完整的网站，各个博客会被按照类别和日期整理起来。
-    <pre><code class="language-shell">bundle exec jekyll serve
-</code></pre>
-    <p>会进行编译并且将_site目录下的网站运行在http://localhost:4000/上。当服务程序跑起来时，_posts下的Markdown文件发生改动也会实时编译并更改对应的网页内容。</p>
-  </li>
-  <li>Jekyll的Markdown，准确来说是“加强版Markdown”。每个Markdown文件都有一个header，像这样：
-    <pre><code class="language-yaml">---
-layout: post
-title: XXX-XXX
-permalink: /aaa/bbb/
-category: blog
----
-</code></pre>
-    <p>其中</p>
-    <ul>
-      <li><code>title</code>后面的内容会被自动添加为文件的一级标题，因此并不需要在写Markdown时再写一遍标题。</li>
-      <li><code>category</code>是文件的类别，比如这里是<code>blog</code>的话就会在编译为HTML时将其放在<code>_site/blog/</code>文件夹下。</li>
-      <li><code>layout</code>是页面的布局方式，Jekyll有一些预定义的layout，比如<code>home</code>, <code>post</code>, <code>page</code>等，也可以自己定义布局方式，比如两列布局、三列布局，将写好的HTML文件放在<code>_layout/</code>文件夹下就可以。但这需要一定的HTML基础。</li>
-      <li>默认情况下，编译后的Markdown文件会被放在<code>年/月/日/标题.html</code>目录下。如果不想放在这里，可以更改<code>permalink</code>变量。上例中文件就会被放在<code>/aaa/bbb/index.html</code>。 还有一些其他可以定义的头部参数，详见官网。</li>
-    </ul>
-  </li>
-  <li>Markdown文件中还可以使用变量。形如<code>{{site._____}}</code>的字符串会在编译时被替换成<code>_config.yml</code>里对应的值，例如在我的定义下：
-    <pre><code class="language-markdown">My email is {{site.email}}
-</code></pre>
-    <p>就会变成：</p>
-    <pre><code class="language-plaintext">My email is gmq14159@gmail.com
-</code></pre>
-    <p>类似的，<code>{{page.____}}</code>可以返回Markdown Header里面的对应变量值。详细解释请看Jekyll官方文档。</p>
-  </li>
-</ol>
-
-<p>关于Jekyll就先讲这么多，更多的信息也可以在网上找到。</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="bulletin" /><category term="jekyll" /><category term="writing" /><summary type="html"><![CDATA[公告]]></summary></entry></feed>
+<p>[2] Wiegley, John. “Git from the Bottom to Up”. GitHub, <a href="https://jwiegley.github.io/git-from-the-bottom-up/">https://jwiegley.github.io/git-from-the-bottom-up/</a>.</p>]]></content><author><name>MqCreaple</name></author><category term="blog" /><category term="git" /><category term="github" /><summary type="html"><![CDATA[相信大家都对git耳熟能详了。Git是一个简单易用的版本管理工具，用户可以在git中修改文件、提交commit（更新到本地仓库）、同步远程仓库等。本篇文章将主要讨论git更新文件和提交commit背后的原理。]]></summary></entry></feed>
