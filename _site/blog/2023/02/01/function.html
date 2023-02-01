@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+<meta name="author" content="MqCreaple">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.png">
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<!-- font awesome -->
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+<!-- katex -->
+<link rel="stylesheet" href="/css/katex.min.css">
+
+<!-- highlightjs -->
+<script src="/js/highlight.min.js"></script>
+<link rel="stylesheet" href="/css/github-dark.min.css">
+<script>hljs.highlightAll();</script>
+
+<!-- mermaid -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true});</script>
+    <title>Functions should've been on the right | 函数应该被放在右边 - My Blog | MqCreaple</title>
+</head>
+<body>
+<div id='container'>
+    
+<div id="header">
+    <div id="navbar" class="inline">
+        <a href="/" class="strong">My Blog | MqCreaple</a>
+        <a href="/aboutme/"><i class="fa-solid fa-user"></i>about me</a>
+        <a href="/blog/"><i class="fa-regular fa-file-lines"></i>blog</a>
+        <a href="/app/"><i class="fa-solid fa-cubes-stacked"></i>app</a>
+        <a href="/feed.xml"><i class="fa-solid fa-rss"></i>RSS</a>
+    </div>
+</div>
+    <div id='main'>
+        <div id='left'>
+            <div class='card article'>
+                
+                <h1>Functions should've been on the right | 函数应该被放在右边</h1>
+                <p>Apparently, putting function on the left of variables, like this:</p>
+
+<div class="kdmath"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">
+f(x)
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span></span></span></span></span></div>
+
+<p>is a huge mistake made by previous mathematicians. the correct order should be:</p>
+
+<div class="kdmath"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mi>f</mi></mrow><annotation encoding="application/x-tex">
+(x)f
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span></span></span></span></div>
+
+<h2 id="1">1</h2>
+
+<p>Among all possible word orders (Subject-Verb-Object, etc.) in natural languages in the world, 45% of them are in <strong>Subject-Objec-Verb</strong> order, being the greatest proportion.</p>
+
+<p>If we consider subject and object as independent variables and the verb as the function (as in sentence <em>“1 plus 2”</em>), then for the majority of people in the world, function coming after the variables is easier to understand.</p>
+
+<h2 id="2">2</h2>
+
+<p>in most programming languages, function name comes before the variables. For example in C:</p>
+
+<pre><code class="language-c">int add(int a, int b) {
+    return a + b;
+}
+
+add(1, 2);
+</code></pre>
+
+<p>However, in some more recent programming languages such as julia and rust, <strong>pipeline operation</strong> becomes more and more popular. Pipeline operation puts function name after the variables.</p>
+
+<pre><code class="language-julia">julia&gt; [1, 4, 5, 6, 2, 7] |&gt; sort
+6-element Vector{Int64}:
+ 1
+ 2
+ 4
+ 5
+ 6
+ 7
+</code></pre>
+
+<h2 id="3">3</h2>
+
+<p>Even pure mathematically, the statement also makes sence.</p>
+
+<p>In most cases, operators goes from left to right if there is no parenthesis:</p>
+
+<div class="kdmath"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>X</mi><mo>∩</mo><mi>Y</mi><mo>∪</mo><mi>Z</mi><mo>=</mo><mo stretchy="false">(</mo><mi>X</mi><mo>∩</mo><mi>Y</mi><mo stretchy="false">)</mo><mo>∪</mo><mi>Z</mi></mrow><annotation encoding="application/x-tex">
+X\cap Y\cup Z = (X\cap Y)\cup Z
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∩</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.22222em;">Y</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∪</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">Z</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∩</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.22222em;">Y</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∪</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">Z</span></span></span></span></span></div>
+
+<p>However, for combination of functions, the operation goes from right to left:</p>
+
+<div class="kdmath"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mo stretchy="false">(</mo><mi>f</mi><mo>∘</mo><mi>g</mi><mo>∘</mo><mi>h</mi><mo stretchy="false">)</mo><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mi>f</mi><mo stretchy="false">(</mo><mi>g</mi><mo stretchy="false">(</mo><mi>h</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">
+(f\circ g\circ h)(x) = f(g(h(x)))
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∘</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6389em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∘</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">h</span><span class="mclose">)</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mopen">(</span><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)))</span></span></span></span></span></div>
+
+<p>Here the function <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi></mrow><annotation encoding="application/x-tex">h</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">h</span></span></span></span> is calculated first, then function <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi></mrow><annotation encoding="application/x-tex">g</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span></span></span></span>, then function <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi></mrow><annotation encoding="application/x-tex">f</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span></span></span>. If the functions are put on the right, the order of combination will be consistent with other operators.</p>
+
+<div class="kdmath"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo stretchy="false">(</mo><mi>h</mi><mo>∘</mo><mi>g</mi><mo>∘</mo><mi>f</mi><mo stretchy="false">)</mo><mo>=</mo><mo stretchy="false">(</mo><mo stretchy="false">(</mo><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mi>h</mi><mo stretchy="false">)</mo><mi>g</mi><mo stretchy="false">)</mo><mi>f</mi></mrow><annotation encoding="application/x-tex">
+(x)(h\circ g\circ f) = (((x)h)g)f
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mopen">(</span><span class="mord mathnormal">h</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∘</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6389em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∘</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(((</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mord mathnormal">h</span><span class="mclose">)</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mclose">)</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span></span></span></span></div>
+
+                
+            </div>
+        </div>
+        <div id='right'>
+            <div class="card" id="avatar">
+    <img src="/favicon.png" alt="avatar" id="image">
+    <a href="/blog/aboutme/" id="name">MqCreaple</a>
+    <div class="inline" id="accounts">
+        <a href="https://github.com/MqCreaple"><i class="fa-brands fa-github"></i></a>
+        <a href="https://space.bilibili.com/507017613"><i class="fa-brands fa-bilibili"></i></a>
+        <a href="https://www.zhihu.com/people/gmq12"><i class="fa-brands fa-zhihu"></i></a>
+        <a href="mailto:gmq14159@gmail.com"><i class="fa-regular fa-envelope"></i></a>
+    </div>
+</div>
+        </div>
+    </div>
+    <div id="footer">
+    <div style="margin: 2%">
+        <p>Copyright &copy; GMQ 2021 - 2022, Blog of MqCreaple (gmq12), version 2.3 </p>
+        <p>Powered by <a href="jekyllrb.com">Jekyll</a> | <a href="mailto:gmq14159@gmail.com">Contact Me</a></p>
+    </div>
+</div>
+</div>
+</body>
+</html>

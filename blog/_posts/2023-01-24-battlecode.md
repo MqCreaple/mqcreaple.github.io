@@ -4,6 +4,10 @@ layout: blog
 tags: ["computer"]
 ---
 
+*2023.1.27补：比赛结果*
+
+![battlecode-rank](/img/battlecode-rank.png)
+
 最近几天由于打竞赛打到自闭了（我太菜了），想整点其他的事情做一做，在学校信息社的推荐下打算玩一下MIT办的[battlecode](https://battlecode.org/)比赛。
 
 battlecode是一个竞技性比赛。在一张固定大小的地图上，两方各有很多不同功能机器人，而最终的目的是操作机器人占领尽可能多的天空岛（sky island）。只不过玩家不能直接操控，而是要为场上的机器人写代码，让程序自动运行。

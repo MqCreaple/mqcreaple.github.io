@@ -1,7 +1,7 @@
 ---
 title: 盘点亿些Julia人性化的设计
 layout: blog
-tags: ["julia", "python"]
+tags: ["programming-langauge", "julia", "python"]
 ---
 
 ## Symbols
