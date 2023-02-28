@@ -1,7 +1,9 @@
 ---
 layout: home
-notification: 由于操作失误，我删除了旧版博客的github仓库，并重新将内容上传至新的同名仓库
+# notification: 由于操作失误，我删除了旧版博客的github仓库，并重新将内容上传至新的同名仓库
 ---
+
+# 我的博客 {{site.title}}
 
 > 该在博客的首页写什么，这是一个世界级难题。
 >
