@@ -68,8 +68,16 @@ layout: home
 <img src="/img/meme-8.jpg" />
 </div>
 
+<div id="meme-9">
+<img src="/img/meme-9.jpg" />
+</div>
+
+<div id="meme-10">
+<img src="/img/meme-10.jpg" />
+</div>
+
 <script>
-const memeNumber = 9;
+const memeNumber = 11;
 var currentMeme = 0;
 function randomMeme() {
     document.getElementById(`meme-${currentMeme}`).style.display = "none";

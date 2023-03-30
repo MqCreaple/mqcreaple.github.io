@@ -166,13 +166,13 @@ ul.react li:hover {
     font-size: 1.4em;
 }
 
-.card.blog {
+.card.indexing {
     cursor: pointer;
     text-align: center;
     transition: background-color .4s;
 }
 
-.card.blog:hover {
+.card.indexing:hover {
     background-color: rgba(240, 240, 240, 0.9);
 }
 

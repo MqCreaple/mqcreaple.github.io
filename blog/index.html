@@ -8,7 +8,7 @@ layout: default
 </div>
 
 {% for post in site.posts %}
-<div class="card blog" onclick="window.open('{{post.url}}')">
+<div class="card indexing" onclick="window.open('{{post.url}}')">
     <h2>{{post.title}}</h2>
     <div class="inline">
         <p><i class="fa-solid fa-calendar-alt"></i>{{post.date | date_to_string: "ordinal"}}</p>

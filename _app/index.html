@@ -6,7 +6,7 @@ no_output: true
 
 {% for app in site.app %}
 {% unless app.no_output %}
-<div class="card blog" onclick="window.open('{{app.url}}')">
+<div class="card indexing" onclick="window.open('{{app.url}}')">
     <h2>{{app.title}}</h2>
     <p class="center"><i class="fa fa-file-text-o"></i> {{app.introduction}}</p>
     <p class="go">Run</p>
