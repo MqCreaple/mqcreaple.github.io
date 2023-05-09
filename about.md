@@ -15,6 +15,7 @@ permalink: /aboutme/
 课外我喜欢做：
 
 - 看书，想一些奇怪的问题
+- 写一点小程序和游戏
 - Minecraft
 - 骑车，~~滑雪（已经没地方能去滑雪了）~~
 
@@ -37,6 +38,7 @@ A high school student in an unknown school.
 What I do after school:
 
 - Read books and think about some strange questions.
+- Write some small programs and games.
 - Minecraft
 - Cycling and skiing.
 

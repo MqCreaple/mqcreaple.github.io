@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+<meta name="author" content="MqCreaple">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.png">
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<!-- font awesome -->
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+<!-- katex -->
+<link rel="stylesheet" href="/css/katex.min.css">
+
+<!-- highlightjs -->
+<script src="/js/highlight.min.js"></script>
+<link rel="stylesheet" href="/css/github-dark.min.css">
+<script>hljs.highlightAll();</script>
+
+<!-- mermaid -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true});</script>
+    <title>物理的思维和数学的思维 - My Blog | MqCreaple</title>
+</head>
+<body>
+<div id='container'>
+    
+<div id="header">
+    <div id="navbar" class="inline">
+        <a href="/" class="strong">My Blog | MqCreaple</a>
+        <a href="/aboutme/"><i class="fa-solid fa-user"></i>about me</a>
+        <a href="/blog/"><i class="fa-regular fa-file-lines"></i>blog</a>
+        <a href="/app/"><i class="fa-solid fa-cubes-stacked"></i>app</a>
+        <a href="/img_gallery/"><i class="fa-solid fa-image"></i>images</a>
+        <a href="/feed.xml"><i class="fa-solid fa-rss"></i>RSS</a>
+    </div>
+</div>
+    <div id='main'>
+        <div id='left'>
+            <div class='card article'>
+                
+                <h1>物理的思维和数学的思维</h1>
+                <p><del>几个月没写东西，现在感觉不会中文了</del></p>
+
+<blockquote>
+  <p>预告：这篇文章内容比较杂，并且逻辑可能比较混乱，请谨慎阅读</p>
+</blockquote>
+
+<p>事情大概是这样的，今天下午在同学们搞的AP物理复习讨论里面被整崩溃了。在讨论电磁学题目的时候，我发现了大部分同学其实并不理解他们用到的公式背后的原理。比如，有些人不清楚感应电动势的公式<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">E</mi><mo>=</mo><mfrac><mrow><mi mathvariant="normal">d</mi><msub><mi mathvariant="normal">Φ</mi><mi>B</mi></msub></mrow><mrow><mi mathvariant="normal">d</mi><mi>t</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">\mathcal E=\frac{\mathrm d\Phi_B}{\mathrm dt}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathcal" style="margin-right:0.08944em;">E</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.2414em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8964em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathrm mtight">d</span><span class="mord mathnormal mtight">t</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.4103em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathrm mtight">d</span><span class="mord mtight"><span class="mord mtight">Φ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3567em;margin-left:0em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05017em;">B</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1433em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span>其实包含动生电动势<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">E</mi><mo>=</mo><mi>B</mi><mfrac><mrow><mi mathvariant="normal">d</mi><mi>S</mi></mrow><mrow><mi mathvariant="normal">d</mi><mi>t</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">\mathcal E=B\frac{\mathrm dS}{\mathrm dt}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathcal" style="margin-right:0.08944em;">E</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.2251em;vertical-align:-0.345em;"></span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8801em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathrm mtight">d</span><span class="mord mathnormal mtight">t</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathrm mtight">d</span><span class="mord mathnormal mtight" style="margin-right:0.05764em;">S</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span>和感生电动势<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">E</mi><mo>=</mo><mi>S</mi><mfrac><mrow><mi mathvariant="normal">d</mi><mi>B</mi></mrow><mrow><mi mathvariant="normal">d</mi><mi>t</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">\mathcal E=S\frac{\mathrm dB}{\mathrm dt}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathcal" style="margin-right:0.08944em;">E</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.2251em;vertical-align:-0.345em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8801em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathrm mtight">d</span><span class="mord mathnormal mtight">t</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathrm mtight">d</span><span class="mord mathnormal mtight" style="margin-right:0.05017em;">B</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span>这两个背后原理完全不同的成分；有些人不清楚Biot-Savart定律和安培环路定律其实都在描述“电流产生磁场”这同一件事。其他的例子也不多举了，总之，大多数人能背下来电磁学公式表上的绝大部分公式，教科书上的模板题目也知道解法，但是公式背后的原理和理论却并不了解。</p>
+
+<p>之后，我开始思考如何向大家解释这些公式的含义，如何用更基本的定理（麦克斯韦方程）来串起来这一系列公式。与此同时，我也在思考，当时我是怎么学会电磁学的？我又是如何掌握这一系列知识的？</p>
+
+<p>大概在六年级还是初一的时候，我最早接触到了高中的电磁学知识。那是我的确也是先从库仑定律、安培定律、安培力、楞次定律等一堆散乱而看似毫无关联的定理开始学起的。而在初二开始学习物理竞赛的时候，我学会了矢量运算和微积分这两大工具，也接触到了更多、更杂乱的电磁学定律，像是高斯定理、安培环路定理、Biot-Savart定律等等，这些使用微积分描述电磁场的定律。当时我对电磁学的印象就是：<em>这东西太杂了、太难了</em>。</p>
+
+<p>而我甚至不记得我是什么时候学了散度、旋度等矢量场的运算，在之后又是什么时候学了麦克斯韦方程。但是在最开始接触麦克斯韦方程的时候，我只是将它当作“电磁学定律大家族”中的一个。后来，我做了更多的物理题并且思考了更多的物理问题之后，我才逐渐意识到，<em>麦克斯韦的四个方程再加上<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>F</mi><mo>⃗</mo></mover><mo>=</mo><mi>q</mi><mo stretchy="false">(</mo><mover accent="true"><mi>E</mi><mo>⃗</mo></mover><mo>+</mo><mover accent="true"><mi>v</mi><mo>⃗</mo></mover><mo>×</mo><mover accent="true"><mi>B</mi><mo>⃗</mo></mover><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\vec F=q(\vec E+\vec v\times\vec B)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9663em;"></span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9663em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">F</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1522em;"><span class="overlay" style="height:0.714em;width:0.471em;"><svg xmlns="http://www.w3.org/2000/svg" width='0.471em' height='0.714em' style='width:0.471em' viewBox='0 0 471 714' preserveAspectRatio='xMinYMin'><path d='M377 20c0-5.333 1.833-10 5.5-14S391 0 397 0c4.667 0 8.667 1.667 12 5
+3.333 2.667 6.667 9 10 19 6.667 24.667 20.333 43.667 41 57 7.333 4.667 11
+10.667 11 18 0 6-1 10-3 12s-6.667 5-14 9c-28.667 14.667-53.667 35.667-75 63
+-1.333 1.333-3.167 3.5-5.5 6.5s-4 4.833-5 5.5c-1 .667-2.5 1.333-4.5 2s-4.333 1
+-7 1c-4.667 0-9.167-1.833-13.5-5.5S337 184 337 178c0-12.667 15.667-32.333 47-59
+H213l-171-1c-8.667-6-13-12.333-13-19 0-4.667 4.333-11.333 13-20h359
+c-16-25.333-24-45-24-59z'/></svg></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.2163em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="mopen">(</span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9663em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">E</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1522em;"><span class="overlay" style="height:0.714em;width:0.471em;"><svg xmlns="http://www.w3.org/2000/svg" width='0.471em' height='0.714em' style='width:0.471em' viewBox='0 0 471 714' preserveAspectRatio='xMinYMin'><path d='M377 20c0-5.333 1.833-10 5.5-14S391 0 397 0c4.667 0 8.667 1.667 12 5
+3.333 2.667 6.667 9 10 19 6.667 24.667 20.333 43.667 41 57 7.333 4.667 11
+10.667 11 18 0 6-1 10-3 12s-6.667 5-14 9c-28.667 14.667-53.667 35.667-75 63
+-1.333 1.333-3.167 3.5-5.5 6.5s-4 4.833-5 5.5c-1 .667-2.5 1.333-4.5 2s-4.333 1
+-7 1c-4.667 0-9.167-1.833-13.5-5.5S337 184 337 178c0-12.667 15.667-32.333 47-59
+H213l-171-1c-8.667-6-13-12.333-13-19 0-4.667 4.333-11.333 13-20h359
+c-16-25.333-24-45-24-59z'/></svg></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7973em;vertical-align:-0.0833em;"></span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.714em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.2077em;"><span class="overlay" style="height:0.714em;width:0.471em;"><svg xmlns="http://www.w3.org/2000/svg" width='0.471em' height='0.714em' style='width:0.471em' viewBox='0 0 471 714' preserveAspectRatio='xMinYMin'><path d='M377 20c0-5.333 1.833-10 5.5-14S391 0 397 0c4.667 0 8.667 1.667 12 5
+3.333 2.667 6.667 9 10 19 6.667 24.667 20.333 43.667 41 57 7.333 4.667 11
+10.667 11 18 0 6-1 10-3 12s-6.667 5-14 9c-28.667 14.667-53.667 35.667-75 63
+-1.333 1.333-3.167 3.5-5.5 6.5s-4 4.833-5 5.5c-1 .667-2.5 1.333-4.5 2s-4.333 1
+-7 1c-4.667 0-9.167-1.833-13.5-5.5S337 184 337 178c0-12.667 15.667-32.333 47-59
+H213l-171-1c-8.667-6-13-12.333-13-19 0-4.667 4.333-11.333 13-20h359
+c-16-25.333-24-45-24-59z'/></svg></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.2163em;vertical-align:-0.25em;"></span><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9663em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.1522em;"><span class="overlay" style="height:0.714em;width:0.471em;"><svg xmlns="http://www.w3.org/2000/svg" width='0.471em' height='0.714em' style='width:0.471em' viewBox='0 0 471 714' preserveAspectRatio='xMinYMin'><path d='M377 20c0-5.333 1.833-10 5.5-14S391 0 397 0c4.667 0 8.667 1.667 12 5
+3.333 2.667 6.667 9 10 19 6.667 24.667 20.333 43.667 41 57 7.333 4.667 11
+10.667 11 18 0 6-1 10-3 12s-6.667 5-14 9c-28.667 14.667-53.667 35.667-75 63
+-1.333 1.333-3.167 3.5-5.5 6.5s-4 4.833-5 5.5c-1 .667-2.5 1.333-4.5 2s-4.333 1
+-7 1c-4.667 0-9.167-1.833-13.5-5.5S337 184 337 178c0-12.667 15.667-32.333 47-59
+H213l-171-1c-8.667-6-13-12.333-13-19 0-4.667 4.333-11.333 13-20h359
+c-16-25.333-24-45-24-59z'/></svg></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>，总共5个方程，就可以用来解释剩下所有的定律</em>。其他的定律要么和这五个方程中的某个等价，要么就是在描述麦克斯韦方程的某个特殊情况。在那时，我有一种“大彻大悟”的感觉，我觉得自己已经掌握了电磁学的本质。</p>
+
+<p>可能大概就是从那时开始，我就喜欢上了那种<em>掌握世界本质</em>的感觉，换句话说就是<em>从细化的规律中抽象出更本质的规律</em>（这可能也是大多数物理学生的想法吧）。这也进一步激励我继续学习物理和数学。在数学里，我也曾经有过类似的感觉，比如在最开始接触到群论、线性代数和一些简单的拓扑的时候。群、线性空间和拓扑空间等数学概念都是提取了以前很多具象的数学概念（例如实数、复数、向量）的某些抽象性质，并基于这些性质建立更多的理论。</p>
+
+<p>那么说了这么多，我们回归正题：通过今天的这次讨论，我到底收获了些什么？</p>
+
+<h2 id="物理的思维和数学的思维">物理的思维和数学的思维</h2>
+
+<p>我在今天意识到，其实其他同学并没有我之前想的那么傻，他们只是处在学习物理的一个必经的阶段而已，反而是我之前想当然地以为他们应当理解我已经理解了的许多物理概念了。</p>
+
+<p>物理，本质上是一个<strong>现象驱动理论</strong>的学科。物理发现永远是<strong>先观察到某些现象，再从这些现象中总结出一些初级的/特殊的规律，最后再从这些初级/特殊的规律中总结出更本质、更一般的结论</strong>。也就是说，在学习的初级阶段，学生们就理应感受到困惑，感受到杂乱无章，直到他们学到了更高深的数学工具和更一般的理论之后，这些杂乱无章的规律才会被串成一根线。</p>
+
+<p>所以在我看来，像费曼物理学讲义中的很多东西并不适合初学者，而更适合进阶学习，因为这些讲义一上来就急于求成，在没有介绍很多初级结论的时候就抛出一般性的结论，这其实是违反物理学的学习路线的。</p>
+
+<p>但另一方面，数学则是一个<strong>理论驱动结论</strong>的学科。数学总是<strong>先选择一些一般性的公理作为根基，再在这些理论上逐步向上搭建出更多、更特化的结论</strong>。所以，在学习一门全新的数学分支（比如线性代数/拓扑）的时候，最开始的入门应该是最令人感到震撼的，而之后的推导和论证则有可能变得更枯燥。当然这也只是个人感觉，可能也有部分人能够在不断的推理和证明中找到自己的乐趣，这里也不多评价。</p>
+
+<p>因此，如果一个学习物理的学生能记住很多细枝末节的结论而并不了解这些结论背后的、更加概括和总结性的原理，他/她大概还处在学习物理的必经之路上。但是如果一个学习数学的学生记住了很多特殊结论的应用但没有记住背后的原理，这是十分危险的，因为他/她在基础不牢的情况下没有办法使用这些细枝末节的定理去进一步搭建更多定理。</p>
+
+<h2 id="物理数学">物理？数学？</h2>
+
+<p>其实我刚刚的说法也不完全准确，因为在物理中也会用到所谓的“数学思维”，而在数学中也一定会用到所谓的“物理思维”。比如最早提出群论的数学家，一定也是从许多已有的知识里面总结规律和提取共同点，最终发明了“群”的概念；而现在大多数的物理学科研工作都是使用早已成熟的物理定律去应用在特殊的问题上。因此，我更倾向于将它们叫做“自上而下”和“自下而上”的思维方式。</p>
+
+<p>一个优秀的学者，不论从事什么学科，这两种思维方式都应当是必不可少的。既要能够从现象中总结规律、发现本质，也要能熟练使用已有的定律，用它们解决问题。</p>
+
+<h2 id="应用在学习中">应用在学习中</h2>
+
+<p>不同的学生可能对这两种思维方式有不同的偏好，有些可能更喜欢自上向下，而有些可能喜欢自下向上。不同的教师和教材也有这种思维方式上的不同，有些教材会先介绍许多特殊结论在介绍背后的原理，而有些教材会先讲原理再一步步推导出细化的结论。</p>
+
+<p>在大脑里建立一个知识体系的最好方法是找到适合自己的风格来做初步学习，但同时也要尽量使用多种风格的教材学习同一个知识。从不同角度看一样东西总能让它的印象更加深刻。</p>
+
+<p>同时也要谨记，在教别人的时候要找到对方最适合的学习方法，使用对应的方法能够让他们的学习事半功倍。</p>
+
+                
+            </div>
+        </div>
+        <div id='right'>
+            <div class="card" id="avatar">
+    <img src="/favicon.png" alt="avatar" id="image">
+    <a href="/aboutme/" id="name">MqCreaple</a>
+    <div class="inline" id="accounts">
+        <a href="https://github.com/MqCreaple"><i class="fa-brands fa-github"></i></a>
+        <a href="https://space.bilibili.com/507017613"><i class="fa-brands fa-bilibili"></i></a>
+        <a href="https://www.zhihu.com/people/gmq12"><i class="fa-brands fa-zhihu"></i></a>
+        <a href="mailto:gmq14159@gmail.com"><i class="fa-regular fa-envelope"></i></a>
+    </div>
+</div>
+        </div>
+    </div>
+    <div id="footer">
+    <div style="margin: 2%">
+        <p>Copyright &copy; GMQ 2021 - 2022, Blog of MqCreaple (gmq12), version 2.3 </p>
+        <p>Powered by <a href="jekyllrb.com">Jekyll</a> | <a href="mailto:gmq14159@gmail.com">Contact Me</a></p>
+    </div>
+</div>
+</div>
+</body>
+</html>

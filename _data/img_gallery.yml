@@ -26,3 +26,10 @@
         - url: /img/collections/bj03.jpg
           taken_by: phone
           location: 39.9695°N, 116.2876°E
+    - name: Tianjin
+      images:
+        - url: /img/collections/tj00.jpg
+          taken_by: phone
+          location: China, Tianjin, Heping, 北安桥
+        - url: /img/collections/tj01.jpg
+          taken_by: phone
