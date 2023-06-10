@@ -1,7 +1,7 @@
 ---
 title: 如何选择写作软件？
 layout: blog
-tags: ["use-computer-well", "writing", "blog"]
+tags: ["miscellaneous", "writing", "blog"]
 ---
 
 ## 为什么需要写作软件？
