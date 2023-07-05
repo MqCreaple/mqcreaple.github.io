@@ -12,6 +12,12 @@ plugins:
   - jekyll-feed
   - jekyll-katex
 
+# jekyll feed configuration
+feed:
+  disable_in_development: true
+author:
+  MqCreaple
+
 # katex configuration
 katex:
   js_path: "./js"  # Path used to search for katex.min.js

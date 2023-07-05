@@ -2,6 +2,8 @@
 
 
 
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -27,29 +29,16 @@
 <!-- mermaid -->
 <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
 <script>mermaid.initialize({startOnLoad:true});</script>
-    <title>Lambda Calculus Playground - My Blog | MqCreaple</title>
+    <title>Spring Mass System - My Blog | MqCreaple</title>
     <!-- Gitalk -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
     <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
     
-<script src="lambda-playground.js" onload="autoRender()"></script>
-<link rel="stylesheet" href="lambda-playground.css" />
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        var custom = document.getElementById("custom");
-        var target = document.getElementById("target");
-        custom.addEventListener("input", event => {
-            try {
-                target.style.color = "#000000";
-                let content = JSON.parse(custom.value);
-                lambdaExpr(content, "lcustom", document.getElementById("target"));
-            } catch(e) {
-                target.style.color = "red";
-                target.innerHTML = e.message;
-            }
-        });
-    });
-</script>
+<script src="../lib/vec.js"></script>
+<script src="spring-mass.js"></script>
+<script src="ui.js"></script>
+<script>document.addEventListener('DOMContentLoaded', main);</script>
+<link rel="stylesheet" href="spring-mass.css" />
 
 </head>
 <body>
@@ -68,20 +57,41 @@
     <div id='main'>
         <div id='left'>
             
-<div class="card article">
-    <h1>Lambda Calculus Playground</h1>
-    <h2>Demonstrations:</h2>
-    <p class="lambda-r">[ [ "λx", "λy", [ "+", "x", "y" ] ], "2", "3" ]</p>
-    <p class="lambda-r">[ "OR", [ "AND", "T", "F" ], ["T"] ]</p>
-    <p class="lambda-r" data-repl-table='{"Id": [ "λx", "x" ]}'>[ "λf", "λx", [ "ID", [ "f", "x" ] ] ]</p>
-    <h2>Playground:</h2>
-    <textarea elastic id="custom" placeholder="type a JSON expression resembling lambda terms.">[ [ "λx", "λy", [ "+", "x", "y" ] ], "2", "3" ]</textarea>
-    <p id="target"></p>
+<div class="card">
+    <h1>Spring Mass System</h1>
+    <div id="canvas-container">
+        <canvas id="canvas" width="1000" height="800">Your browser does not support canvas</canvas>
+    </div>
 </div>
 
         </div>
         <div id='right'>
             
+<div class="card">
+    <p>Click on the empty space to add a new point mass. When the point is near enough to other points, it will automatically connect to others with springs.</p>
+    <p>Hold <code>Shift</code> and click to add a fixed-in-frame point mass. This kind of point would not be affected by any force</p>
+</div>
+<div class="card">
+    <h2>graphics</h2>
+    <ul>
+        <li>
+            display masses: <input id="display-masses" type="checkbox" checked />
+            <ul>
+                <li>radius of mass: <input id="mass-radius" type="range" min="5" max="100" /></li>
+            </ul>
+        </li>
+        <li>display springs: <input id="display-springs" type="checkbox" checked /></li>
+    </ul>
+</div>
+<div class="card">
+    <h2>control</h2>
+    <ul>
+        <li>stiffness: <input id="stiffness" type="range" min="0" max="100" /></li>
+        <li>damping: <input id="damping" type="range" min="0" max="100" /></li>
+        <li>gravity: <input id="gravity" type="range" min="0" max="100" /></li>
+    </ul>
+</div>
+
             <div class="card" id="avatar">
     <img src="/favicon.png" alt="avatar" id="image">
     <a href="/aboutme/" id="name">MqCreaple</a>

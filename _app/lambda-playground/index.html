@@ -9,7 +9,7 @@ output: true
 <script src="lambda-playground.js" onload="autoRender()"></script>
 <link rel="stylesheet" href="lambda-playground.css" />
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", () => {
         var custom = document.getElementById("custom");
         var target = document.getElementById("target");
         custom.addEventListener("input", event => {
