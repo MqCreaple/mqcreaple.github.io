@@ -1,13 +1,14 @@
 ---
 title: Spring Mass System
 layout: empty
-introduction: Simulation of simple string-mass system
+introduction: Simulation of simple spring-mass system
 output: true
 ---
 
 {% capture head %}
 <script src="../lib/vec.js"></script>
 <script src="spring-mass.js"></script>
+<script src="presets.js"></script>
 <script src="ui.js"></script>
 <script>document.addEventListener('DOMContentLoaded', main);</script>
 <link rel="stylesheet" href="spring-mass.css" />
@@ -17,7 +18,7 @@ output: true
 <div class="card">
     <h1>Spring Mass System</h1>
     <div id="canvas-container">
-        <canvas id="canvas" width="1000" height="800">Your browser does not support canvas</canvas>
+        <canvas id="canvas" width="1000" height="1000">Your browser does not support canvas</canvas>
     </div>
 </div>
 {% endcapture %}
@@ -37,15 +38,55 @@ output: true
             </ul>
         </li>
         <li>display springs: <input id="display-springs" type="checkbox" checked /></li>
+        <li>
+            display force: <input id="display-force" type="checkbox" />
+            <ul>
+                <li>scale of force: <input id="force-scale" type="range" min="1" max="100" disabled /></li>
+            </ul>
+        </li>
     </ul>
 </div>
 <div class="card">
     <h2>control</h2>
     <ul>
-        <li>stiffness: <input id="stiffness" type="range" min="0" max="100" /></li>
+        <li>stiffness: <input id="stiffness" type="range" value="100" min="0" max="100" /></li>
         <li>damping: <input id="damping" type="range" min="0" max="100" /></li>
         <li>gravity: <input id="gravity" type="range" min="0" max="100" /></li>
+        <li>bounce on edge: <input id="bounce" type="range" value="0" min="0" max="100" /></li>
     </ul>
+</div>
+<div class="card">
+    <h2>computation</h2>
+    <fieldset>
+        <legend>time integration</legend>
+        <table>
+            <tr>
+                <td><input type="radio" name="integration-method" value="explicit" /></td>
+                <td><label>explicit Euler method</label></td>
+            </tr>
+            <tr>
+                <td><input type="radio" name="integration-method" value="semi-implicit" checked /></td>
+                <td><label>semi-implicit Euler method</label></td>
+            </tr>
+            <tr>
+                <td><input type="radio" name="integration-method" value="modified-explicit" /></td>
+                <td><label>modified explicit Euler method<br>(Runge-Kutta 2)</label></td>
+            </tr>
+        </table>
+    </fieldset>
+    <ul>
+        <li>steps per frame: <input id="steps-per-frame" type="number" min="1" max="100" value="10" /></li>
+    </ul>
+</div>
+<div class="card">
+    <h2>Presets</h2>
+    <select name="presets" id="presets">
+        <option value="none">none</option>
+        <option value="string">string</option>
+        <option value="cloth">cloth</option>
+        <option value="centrifuge">centrifuge</option>
+    </select>
+    <ul id="preset-sliders"></ul>
 </div>
 {% endcapture %}
 

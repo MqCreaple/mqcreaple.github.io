@@ -88,26 +88,39 @@ img.inline-img {
     vertical-align: baseline;
 }
 
-input[type=text], select {
+input[type=text], input[type=number], select {
     background-color: rgba(0, 0, 0, 0);
+    outline: none;
     border: 1px solid #000000;
-    padding: 1px;
+    padding: 1px 2px;
     max-width: 100%;
     font-size: 1.1em;
+}
+
+input[type=text]:focus, input[type=number]:focus, select:focus {
+    border: 1px solid #3a3a3a;
 }
 
 select {
     text-align: center;
 }
 
+fieldset {
+    border: 2px solid #444;
+}
+
+fieldset legend {
+    color: #444;
+    font-size: 0.8em;
+}
+
 /* table styles */
 
 table {
-    text-align: center;
     border-collapse: collapse;
 }
 
-td, th {
+table[border] tr td, table[border] tr th {
     padding: 1%;
     border: 1px solid #000;
 }

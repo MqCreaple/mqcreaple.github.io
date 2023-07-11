@@ -12,6 +12,13 @@ class Vec2 {
         this.y = y;
     }
     /**
+     * Get a copy of this vector
+     * @returns {Vec2} A copy of this vector
+     */
+    copy() {
+        return new Vec2(this.x, this.y);
+    }
+    /**
      * Compute the negation of this vector
      * @returns {Vec2} The negation of this vector
      */
@@ -125,9 +132,14 @@ class Vec2 {
      * Normalize this vector (divide this vector by its magnitude to make it a unit vector).
      * @returns {Vec2} The normalized vector of this vector
      */
-    normalize() {
+    normalized() {
         let mag = this.magnitude();
         return new Vec2(this.x / mag, this.y / mag);
+    }
+    normalize() {
+        let mag = this.magnitude();
+        this.x /= mag;
+        this.y /= mag;
     }
     dot(v) {
         return this.x * v.x + this.y * v.y;
