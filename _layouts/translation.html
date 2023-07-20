@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    {% include head.html %}
+    <title>{{page.title}} - {{site.title}}</title>
+</head>
+<body>
+<div id='container'>
+    {% include header.html %}
+    <div id='main'>
+        <div id='left'>
+            {% if page.previous or page.next %}
+            <div class="card">
+                {% if page.previous %}<div style="float: left"><a href="{{page.previous.url}}">&lt;previous</a></div>{% endif %}
+                {% if page.next %}<div style="float: right"><a href="{{page.next.url}}">next&gt;</a></div>{% endif %}
+            </div>
+            {% endif %}
+            <div class="card">
+                <p>This article is translated from <em><a href="{{page.from_url}}">{% if page.from_name %}"{{page.from_name}}"{% else %}{{page.from_url}}{% endif %}</a></em></p>
+                <p>本文翻译自<em><a href="{{page.from_url}}">{% if page.from_name %}“{{page.from_name}}”{% else %}{{page.from_url}}{% endif %}</a></em></p>
+            </div>
+            <div class='card article'>
+                {% katexmm %}
+                <h1>{{page.title}}{%if page.from_name%} | {{page.from_name}}{%endif%}</h1>
+                {{content}}
+                {% endkatexmm %}
+            </div>
+        </div>
+        <div id='right'>
+            {% if page.translation %}
+            {% assign t = site.translation[page.translation] %}
+            <div class="card" style="text-align: center;">
+                <img src="{{t.icon}}" alt="{{t.title}}" />
+                <p><a href="{{t.base_url}}">{{t.title}}</a></p>
+                <p>by: {{t.author}}</p>
+            </div>
+            {% endif %}
+            {% include avatar.html %}
+        </div>
+    </div>
+    {% include footer.html %}
+</div>
+</body>
+</html>

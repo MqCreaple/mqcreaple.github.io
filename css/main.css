@@ -61,7 +61,7 @@ blockquote {
     background-color: rgba(255, 253, 220, 0.6);
     border-left: 0.4em solid #959595;
     padding: 2px 15px;
-    margin: 0;
+    margin: 20px 0;
 }
 
 textarea {
@@ -154,7 +154,7 @@ ul.react li:hover {
 }
 
 .card {
-    background-color: rgba(240, 240, 240, 0.7);
+    background-color: rgba(240, 240, 240, 0.75);
     margin: 0.4em 0.3em 0.4em 0.3em;
     padding-top: 3%;
     padding-bottom: 2%;
@@ -168,7 +168,7 @@ ul.react li:hover {
 }
 
 .card.notification {
-    background-color: rgba(56, 200, 210, 0.7);
+    background-color: rgba(56, 200, 210, 0.75);
     color: #efefef;
     font-size: 1.2em;
     font-weight: bold;
@@ -205,6 +205,22 @@ ul.react li:hover {
 
 .warn::before {
     content: "!: ";
+}
+
+.boxed {
+    border: solid 2px #000000;
+    border-radius: 12px;
+    margin: 20px 0px;
+    padding: 15px;
+}
+
+.boxed.comment {
+    border: solid 2px #444;
+    color: #444;
+}
+
+.boxed.comment h5::before, .boxed.comment h6::before {
+    content: "// ";
 }
 
 /* element styles */
@@ -289,7 +305,7 @@ ul.react li:hover {
     width: 100%;
     margin: 0;
     padding: 0;
-    background-color: rgba(215, 215, 215, 0.8);
+    background-color: rgba(215, 215, 215, 0.75);
     font-size: 0.7em;
     text-align: center;
     color: #444;

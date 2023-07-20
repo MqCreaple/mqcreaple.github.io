@@ -35,6 +35,8 @@ kramdown:
 collections:
   app:
     output: true
+  translate:
+    output: true
 
 # custom
 
@@ -44,3 +46,10 @@ bilibili_username: mqcreaple
 bilibili_id: 507017613
 zhihu_username: gmq12
 discord_username: creaple#5811
+
+translation:
+  # - title: 
+  #   base_url: 
+  #   path: 
+  #   icon: 
+  #   author: 

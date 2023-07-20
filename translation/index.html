@@ -1,0 +1,17 @@
+---
+title: translation works
+layout: default
+---
+
+<div class="card" style="background-color: rgba(216, 237, 29, 0.7); color: #efefef;">
+    <h1>文章搬运/翻译</h1>
+    <p>以后如果搬运了部分外文材料，我会放在这个页面下。</p>
+</div>
+{% for t in site.translation %}
+<div class="card indexing" onclick="window.open('{{t.path}}')">
+    <h2>{{t.title}}</h2>
+    {% if t.icon %}
+    <img src="{{t.icon}}" alt="icon" />
+    {% endif %}
+</div>
+{% endfor %}

@@ -1,5 +1,5 @@
 ---
-title: 弹簧质点系统中的数值模拟理论
+title: 数值模拟之：弹簧质点系统
 layout: blog
 tag: ["physics", "computer-science"]
 ---
@@ -34,7 +34,7 @@ $$\vec f_1 = -\vec f_2 = k(\Vert \vec x_2 - \vec x_1\Vert - l)\frac{\vec x_2-\ve
 
 假设空间中有保守力场$\vec f_c(\vec x)$（例如重力就是$\vec f_c(\vec x)=-mg\hat j$）。每个质点除了受到外力$\vec f_c$以外，还受到它连接的弹簧给它的弹力，也就是说，质点$i$受到的合力$\vec f_i$是：
 
-$$\vec f_i=\vec f_c(\vec x_i) + \sum_{i\text{ and }j\text{ are connected}}\left( k(\Vert \vec r_{12}\Vert - l)\hat r_{12} - c\frac{\mathrm d\vec r_{12}}{\mathrm dt} \right)$$
+$$\vec f_i=\vec f_c(\vec x_i) + \sum_{\text{$i$ and $j$ are connected}}\left( k(\Vert \vec r_{12}\Vert - l)\hat r_{12} - c\frac{\mathrm d\vec r_{12}}{\mathrm dt} \right)$$
 
 用我们在初中就学过的牛顿第二定律，力$\vec f_i$是加速度$\vec a_i={\mathrm d^2\vec x_i}/{\mathrm dt^2}$乘上质点的质量$m$。写出微分方程就是：
 
@@ -62,7 +62,7 @@ $$\vec X_i=\vec x_{\lfloor i/3\rfloor, i\text{ mod }3}$$
 
 $$\frac{\mathrm d^2\vec X}{\mathrm dt^2}=\frac{\vec F(\vec X, \vec V)}{m}$$
 
-可惜的是$\vec F(\vec X, \vec V)$这个函数通常不是线性的，即不存在$6n\times 6n$的矩阵$F$使得$F\begin{bmatrix}\vec X\\\vec V\end{bmatrix}=\vec F$。
+可惜的是$\vec F(\vec X, \vec V)$这个函数通常不是线性的，即不存在$6n\times 6n$的矩阵$F$使得$F\begin{bmatrix}\vec X\\ \vec V\end{bmatrix}=\vec F$。
 
 > 思考题：证明对于弹簧质点系统，$\vec F(\vec X, \vec V)$函数不是线性的。
 
