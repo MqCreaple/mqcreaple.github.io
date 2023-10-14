@@ -1,6 +1,6 @@
 ---
 layout: home
-# notification: 由于操作失误，我删除了旧版博客的github仓库，并重新将内容上传至新的同名仓库
+notification: "/translation页面搭好了！"
 ---
 
 # 我的博客 {{site.title}}

@@ -154,7 +154,7 @@ ul.react li:hover {
 }
 
 .card {
-    background-color: rgba(240, 240, 240, 0.75);
+    background-color: rgba(240, 240, 240, 0.8);
     margin: 0.4em 0.3em 0.4em 0.3em;
     padding-top: 3%;
     padding-bottom: 2%;
@@ -168,7 +168,7 @@ ul.react li:hover {
 }
 
 .card.notification {
-    background-color: rgba(56, 200, 210, 0.75);
+    background-color: rgba(56, 200, 210, 0.8);
     color: #efefef;
     font-size: 1.2em;
     font-weight: bold;
@@ -305,7 +305,7 @@ ul.react li:hover {
     width: 100%;
     margin: 0;
     padding: 0;
-    background-color: rgba(215, 215, 215, 0.75);
+    background-color: rgba(215, 215, 215, 0.8);
     font-size: 0.7em;
     text-align: center;
     color: #444;

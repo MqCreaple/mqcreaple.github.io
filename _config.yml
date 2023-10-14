@@ -48,6 +48,11 @@ zhihu_username: gmq12
 discord_username: creaple#5811
 
 translation:
+  - title: "Notes on CFD: General Principles"
+    base_url: https://doc.cfd.direct/notes/cfd-general-principles/
+    path: notes-on-cfd
+    icon: /img/notes-on-cfd.png
+    author: "Christopher J. Greenshields and Henry G. Weller"
   # - title: 
   #   base_url: 
   #   path: 
