@@ -9,7 +9,7 @@ permalink: /:path/:basename/
 ## 一般记号
 
 |||
-|:-:|:-:|
+|:-:|:--|
 |$q, s$|标量|
 |$\mathbf a, \mathbf b, \mathbf c$|矢量|
 |$\mathbf S, \mathbf T, \mathbf Y$|张量|
@@ -20,7 +20,7 @@ permalink: /:path/:basename/
 ## 几何和网格
 
 |||
-|:-:|:-:|
+|:-:|:--|
 |$\mathbf C$|网格中心|
 |$\mathbf C_f$|平面中心|
 |$\mathbf n$|单位法向量（模长为1）|
@@ -31,7 +31,7 @@ permalink: /:path/:basename/
 ## 数值方法
 
 |||
-|:-:|:-:|
+|:-:|:--|
 |$[\mathbf A]$|矩阵方程 $[\mathbf A][\mathbf\Psi]=[\mathbf b]$ 中的矩阵|
 |$\mathbf A$|矩阵方程 $\mathbf A\cdot\mathbf\Psi=\mathbf b$ 中的矩阵|
 |$a_{i,j}$|矩阵在第 $i$ 行第 $j$ 列的系数|
@@ -48,7 +48,7 @@ TODO
 ### 上标
 
 |||
-|:-:|:-:|
+|:-:|:--|
 |$c$|当前存储的变量|
 |$n$|新变量|
 |$o$|旧变量|
@@ -61,10 +61,10 @@ TODO
 ## 物理量（包含SI量纲）
 
 |||
-|:-:|:-:|
+|:-:|:--|
 |$\mathbf b$|单位质量的体积力（$\text{N}\cdot\text{kg}^{-1}$）|
 |$c$|声速（$\text{m}\cdot\text{s}^{-1}$）|
-|$c_V$|固定提及下的比热容（$\text{J}\cdot\text{kg}^{-1}\cdot\text{K}^{-1}$）|
+|$c_V$|固定体积下的比热容（$\text{J}\cdot\text{kg}^{-1}\cdot\text{K}^{-1}$）|
 |$D$|扩散系数（$\text{m}^2\cdot\text{s}^{-1}$）|
 |$\mathbf D$|应变率张量（$\text{s}^{-1}$）|
 |$e$|比内能（$\text{J}\cdot\text{kg}^{-1}$）|

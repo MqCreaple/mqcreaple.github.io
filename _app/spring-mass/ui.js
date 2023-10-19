@@ -57,6 +57,11 @@ function drawArrow(ctx, fromX, fromY, toX, toY, arrowWidth, color){
     ctx.restore();
 }
 
+/**
+ * Paint the canvas with the current state (masses, springs, forces) of the simulation.
+ * @param {HTMLCanvasElement} canvas the canvas element
+ * @param {CanvasRenderingContext2D} ctx 2D context of the canvas
+ */
 function render(canvas, ctx) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if(drawMass) {

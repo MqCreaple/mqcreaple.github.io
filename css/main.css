@@ -120,8 +120,11 @@ table {
     border-collapse: collapse;
 }
 
+table tr td, table tr th {
+    padding: 12px;
+}
+
 table[border] tr td, table[border] tr th {
-    padding: 1%;
     border: 1px solid #000;
 }
 
