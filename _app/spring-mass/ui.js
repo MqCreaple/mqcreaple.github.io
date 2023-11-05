@@ -1,5 +1,6 @@
 const dtPerFrame = 0.1;
 var stepsPerFrame = 10;
+const FPS = 60;
 
 var massRadius = 10;
 const massColor = '#000000';
@@ -198,5 +199,5 @@ function main() {
             advanceTime(canvas, dtPerFrame / stepsPerFrame);
         }
         render(canvas, ctx);
-    }, 1000 / 60);
+    }, 1000 / FPS);
 }

@@ -122,7 +122,7 @@ const modifiedEuler = {
 const methods = {
     "explicit": explicitEuler,
     "semi-implicit": semiImplicitEuler,
-    "modified-explicit": modifiedEuler,
+    "RK-2": modifiedEuler,
 };
 
 /** @type {Method} */
