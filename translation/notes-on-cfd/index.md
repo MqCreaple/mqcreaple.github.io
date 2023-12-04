@@ -5,7 +5,7 @@ translation: 0                 # Notes on CFD: General Principle
 from_url: https://doc.cfd.direct/notes/cfd-general-principles/contents
 ---
 
-在学校里做关于流体力学课题的时候找到了*Notes on CFD: General Principles*这个资源（也就是通常所说的《笔记》），以后有时间的话可能会翻译一点。
+在学校里做流体力学课题的时候找到了*Notes on CFD: General Principles*这本书（也就是流体力学领域里经常说到的《笔记》），以后有时间的话可能会翻译一点。
 
 目录中的斜体部分为未翻译完的部分。
 

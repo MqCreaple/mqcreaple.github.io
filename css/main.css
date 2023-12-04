@@ -82,6 +82,17 @@ img {
     margin: 1% auto 1% auto;
 }
 
+.article img {
+    width: 75%;
+    margin: 1% auto;
+    display: block;
+}
+
+.article img + em {
+    display: block;
+    text-align: center;
+}
+
 img.inline-img {
     display: inline-block;
     height: 1em;
