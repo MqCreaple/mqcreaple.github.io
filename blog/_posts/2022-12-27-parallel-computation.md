@@ -1,7 +1,7 @@
 ---
 title: 浅谈并行计算
 layout: blog
-tags: ["algorithm"]
+tags: ["computer", "algorithm"]
 ---
 
 前置知识：多线程
