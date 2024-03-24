@@ -178,3 +178,29 @@ $$z_1z_2=r_1e^{i\theta_1}\cdot r_2e^{i\theta_2}=(r_1r_2)e^{i(\theta_1+\theta_2)}
 1. 指数形式：用来表示平面的旋转
 
 复数的计算规则简单，存储空间小，同时它可以做到许多向量和坐标系做不到的功能，因此在许多地方都有应用
+
+----
+
+> 2024.03.24 注：
+>
+> 在我写这篇文章的时候我还没有相应的数学知识，但如果你学过一点点抽象代数，这篇文章其实在说这样一件事：**复数域（$\mathbb C$）与所有形如$$\begin{bmatrix}a & -b \\ b & a\end{bmatrix}$$的矩阵构成的环*同构（isomorphic）***。
+>
+> 在数学中，一个 **环（Ring）** 的定义是一个集合$R$与两个定义在这个集合上的运算 $+:R\times R\to R$ 和 $\times: R\times R\to R$ 构成的组合 $(R, +, \times)$。其中
+>
+> 1. $(R, +)$是[交换群/阿贝尔群](https://zh.wikipedia.org/wiki/%E9%98%BF%E8%B4%9D%E5%B0%94%E7%BE%A4)。其中$0_R$是这个群的[单位元](https://zh.wikipedia.org/zh-cn/%E5%96%AE%E4%BD%8D%E5%85%83)。
+> 2. $(R-\{0_R\}, \times)$是交换群。其中$1_R$是这个群的单位元。
+> 3. $+$与$\times$满足我们常说的**分配律**，即$\forall a, b, c\in R$都有$a\times(b + c) = a\times b + a\times c$
+>
+> 比如所有复数与复数的加法和乘法运算就构成了一个域。域的同构则是这样定义的：*如果两个域$K, L$之间存在一个一一映射 $\phi: K\to L$，并且该映射具有如下两个性质：*
+>
+> 1. $$\forall a, b\in K, \phi(a\underset{K}{+}b)=\phi(a)\underset{L}{+}\phi(b)$$
+> 2. $$\forall a, b\in K, \phi(a\underset{K}{\times}b)=\phi(a)\underset{L}{\times}\phi(b)$$
+> 3. $$\phi(1_K)=1_L$$
+>
+> 这篇文章里，我们发现了一个从复数到上述形式的矩阵的一个映射$\phi$：
+>
+> $$\phi(a+bi) = \begin{bmatrix}a & -b \\ b & a\end{bmatrix}$$
+>
+> 这个映射满足全部性质，因此我们可以说复数集$\mathbb C$和矩阵集合$$\begin{bmatrix}a & -b \\ b & a\end{bmatrix}$$是同构（isomorphic）的。
+>
+> 当然，这两个集合的相似性甚至还不止“同构”这么简单，因为我们也看到了复共轭、复数模长等运算在这一个矩阵集合里面也有相对应的操作。具体这是为什么，这是否能推广到一个更一般的结论，我还需要进行更多学习。
