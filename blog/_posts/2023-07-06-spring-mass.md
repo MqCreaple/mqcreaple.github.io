@@ -255,13 +255,29 @@ $$\frac{\mathrm d^2x}{\mathrm dt^2}=-\frac{k}{m}(2x-l)$$
 
 $$\frac{\mathrm d^2a}{\mathrm dt^2}=-\frac{2k}{m}a$$
 
-根据一些简单的计算，两个质点会做简谐振动，振动角频率$\omega=\sqrt{\frac{2k}{m}}$，周期为$T=2\pi\sqrt{\frac{m}{2k}}$。考虑方程的相空间$\begin{bmatrix}a\\ \dot a\end{bmatrix}=\begin{bmatrix}a\\ \mathrm da/\mathrm dt\end{bmatrix}$，由于微分方程里面$\omega^2a^2+\left(\frac{\mathrm da}{\mathrm dt}\right)^2$是常数，所以精确解在相空间中的轨迹是一个椭圆。那么由欧拉法得到的近似解会是怎样的呢？
+根据一些简单的计算，两个质点会做简谐振动，振动角频率$\omega=\sqrt{\frac{2k}{m}}$，周期为$T=2\pi\sqrt{\frac{m}{2k}}$。考虑方程的相空间$\begin{bmatrix}a\\ \dot a\end{bmatrix}=\begin{bmatrix}a\\ \mathrm da/\mathrm dt\end{bmatrix}$，由于微分方程里面$\omega^2a^2+\left(\frac{\mathrm da}{\mathrm dt}\right)^2$是常数 (**\***)，所以精确解在相空间中的轨迹是一个椭圆。那么由欧拉法得到的近似解会是怎样的呢？
+
+> **\*** 2024.3.27注：原文没有给出这个结论的证明，这里补充一下
+>
+> 我们取这个量$C=\omega^2a^2+\left(\frac{\mathrm da}{\mathrm dt}\right)^2$对时间的导数：
+>
+> $$
+> \begin{align*}
+> \frac{\mathrm dC}{\mathrm dt} & = \frac{\mathrm d(\omega^2a^2)}{\mathrm dt} + \frac{\mathrm d(\mathrm da/\mathrm dt)^2}{\mathrm dt} \\
+> & = \omega^2\cdot 2a\cdot\frac{\mathrm da}{\mathrm dt} + 2\frac{\mathrm da}{\mathrm dt}\frac{\mathrm d^2a}{\mathrm dt^2} \\
+> & = 2\frac{\mathrm da}{\mathrm dt}\left(\omega^2a + \frac{\mathrm d^2a}{\mathrm dt^2}\right) \\
+> & = 2\frac{\mathrm da}{\mathrm dt}\cdot 0 \\
+> & = 0
+> \end{align*}
+> $$
+>
+> 也就是说，$C$不会随着时间变化，那么它一定是一个关于时间的常值函数。
 
 定义关于时间的函数$C_t$，表达式为：
 
 $$C_t=\omega^2a_t^2+\dot a_t^2$$
 
-使用欧拉法在$t$时刻算得的导数是：
+其中$a_t$和$\dot a_t$表示用欧拉法在$t$时刻算出来的$a$和$\frac{\mathrm da}{\mathrm dt}$。使用欧拉法在$t$时刻算得的$a$和$\dot a$关于时间的变化率就是：
 
 $$\frac{\mathrm d}{\mathrm dt}\begin{bmatrix}a\\\dot a\end{bmatrix}=\begin{bmatrix}\dot a\\-\omega^2 a\end{bmatrix}$$
 
