@@ -32,6 +32,9 @@ jquery: true
             {% if image.taken_by %}
             <p class="note">Taken by {{image.taken_by}}</p>
             {% endif %}
+            {% if image.description %}
+            <p class="note">{{image.description}}</p>
+            {% endif %}
         </div>
         {% endfor %}
     </div>

@@ -9,6 +9,17 @@
     {% include header.html %}
     <div id='main'>
         <div id='left'>
+            {% if page.languages %}
+            <div class='card' id='language-switch'>
+                Language:
+                {% for lang in site.language %}
+                {% if page.languages[lang.abbr] %}
+                <!-- {{page.languages[lang.abbr]}} -->
+                <a href='{% link {{page.languages[lang.abbr]}} %}'>[{{lang.name}}]</a>
+                {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
             <div class='card article'>
                 {% katexmm %}
                 <h1>{{page.title}}</h1>

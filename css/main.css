@@ -207,6 +207,10 @@ ul.react li:hover {
     font-style: italic;
 }
 
+.card.row {
+    flex-grow: 1;
+}
+
 .center {
     text-align: center;
 }

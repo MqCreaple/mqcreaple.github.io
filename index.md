@@ -1,6 +1,6 @@
 ---
 layout: home
-notification: "/translation页面搭好了！"
+notification: "博客现在有英文板块了"
 ---
 
 # 我的博客 {{site.title}}

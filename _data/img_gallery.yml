@@ -33,3 +33,13 @@
           location: China, Tianjin, Heping, 北安桥
         - url: /img/collections/tj01.jpg
           taken_by: phone
+
+- name: works of design
+  collections:
+    - name: logos
+      images:
+        - url: /favicon.png
+          description: My most used icon
+        - url: /img/student-gov-logo-2.svg
+          description: Logo of the Student Government of my high school
+          

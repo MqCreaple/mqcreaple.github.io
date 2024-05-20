@@ -47,6 +47,17 @@ bilibili_id: 507017613
 zhihu_username: gmq12
 discord_username: creaple#5811
 
+language:
+  - name: 中文
+    name_common: Chinese
+    abbr: zh
+  - name: English
+    name_common: English
+    abbr: en
+  - name: 日本語
+    name_common: Japanese
+    abbr: jp
+
 translation:
   - title: "Notes on CFD: General Principles"
     base_url: https://doc.cfd.direct/notes/cfd-general-principles/
