@@ -139,6 +139,11 @@ table[border] tr td, table[border] tr th {
     border: 1px solid #000;
 }
 
+datalist {
+    display: flex;
+    flex-direction: row;
+}
+
 /* reactive list styles */
 
 ul.react {

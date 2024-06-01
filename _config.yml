@@ -57,6 +57,12 @@ language:
   - name: 日本語
     name_common: Japanese
     abbr: jp
+  - name: 한국어
+    name_common: Korean
+    abbr: ko
+  - name: Русский
+    name_common: Russian
+    abbr: ru
 
 translation:
   - title: "Notes on CFD: General Principles"

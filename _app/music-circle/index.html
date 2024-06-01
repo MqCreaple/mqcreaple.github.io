@@ -1,0 +1,129 @@
+---
+title: Circle Music
+layout: empty
+introduction: Stack rotating circles together. Create music as it goes.
+output: true
+---
+
+{% capture head %}
+<link rel="stylesheet" href="style.css" />
+<script src="/js/soundfont-player.min.js"></script>
+<script src="../lib/dom.js"></script>
+<script src="scales.js"></script>
+<script src="music.js"></script>
+<script src="ui.js"></script>
+<script>
+    const FPS = 60.0;
+    const stepsPerFrame = 10;
+    document.addEventListener("DOMContentLoaded", () => {
+        const context = new AudioContext();
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        ctx.font = "30px Arial";
+        ctx.fillText('Click to start', canvas.width / 2 - 100, canvas.height / 2 - 15);
+        canvas.onclick = () => {
+            Soundfont.instrument(context, 'electric_grand_piano').then((piano) => {
+                setInterval(() => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    for (let i = 0; i < stepsPerFrame; i++) {
+                        advance(1.0 / FPS / stepsPerFrame, piano);
+                    }
+                    draw(canvas, ctx);
+                }, 1000.0 / FPS);
+            }).catch(error => {
+                console.error(error);
+            });
+        }
+        handleInputs();
+        initCircleList();
+    });
+</script>
+{% endcapture %}
+
+{% capture content_left %}
+<div class="card article">
+    <div id="canvas-container">
+        <canvas width="1000" height="1000" id="canvas">Your browser does not support canvas.</canvas>
+    </div>
+</div>
+<div class="card">
+    <h2>Circle Music</h2>
+    <p>Replica of <a href="https://www.youtube.com/@marcevanstein">Marc Evanstein</a>'s video: <a href="https://www.youtube.com/watch?v=wn3td88w19E"><i class="fa-brands fa-youtube"></i> The Unexpected Beauty of Circle Music</a>.</p>
+</div>
+<div class="card">
+    <h2>Music</h2>
+    <p class="doc">There are many cocentric circles, whose spacing represents a certain musical scale. Two pair of notes with the same distance on a keyboard would be represented by circles with the same spacing.</p>
+    <ul>
+        <li>
+            <label for="scale">Scale: </label>
+            <select id="scale">
+                <option value="major">Major</option>
+                <option value="minor">Minor</option>
+                <option value="chromatic">Chromatic</option>
+                <option value="pentatonic">Pentatonic</option>
+                <option value="blues">Blues</option>
+                <option value="whole-tone">Whole Tone</option>
+                <option value="japanese">Japanese</option>
+                <option value="bayati">Bayati (Middle Eastern)</option>
+                <option value="rast">Rast (Middle Eastern)</option>
+            </select>
+        </li>
+        <li>
+            <label for="base-note">Base Note</label>
+            <div style="display: block;">
+                <input type="range" min="30" max="70" value="50" id="base-note" list="base-note-data" style="display: block; width: 100%;" />
+                <datalist id="base-note-data" style="width: 100%; justify-content: space-between;">
+                    <option value="33">A0</option>
+                    <option value="45">A1</option>
+                    <option value="57">A2</option>
+                    <option value="69">A3</option>
+                </datalist>
+            </div>
+        </li>
+        <li>
+            <label for="avoid-repeat">Avoid Repeat Note: </label>
+            <input id="avoid-repeat" type="checkbox" checked />
+        </li>
+    </ul>
+</div>
+{% endcapture %}
+
+{% capture content_right %}
+<div class="card">
+    <h2>Mechanisms</h2>
+    <p class="doc">The tip of these rotating circles is triggered whenever it goes past a certain amount of distance.</p>
+    <p class="doc">Everytime the tip triggers, its distance to the center is calculated and rounded to the nearest note.</p>
+    <ul>
+        <li>
+            <label for="trigger-interval">Trigger Interval: </label>
+            <input id="trigger-interval" type="range" min="0.1" max="2.0" step="0.1" value="0.6" />
+        </li>
+        <li>
+            <label for="scale-step">Distance of a Half Step: </label>
+            <input id="scale-step" type="range" min="0.024" max="0.15" step="0.002" value="0.04" />
+        </li>
+    </ul>
+    <h3>Circles</h3>
+    <p>Remember to avoid integer multiple of frequencies to give the music more dynamics and less repitition.</p>
+    <ol id="circle-data"></ol>
+</div>
+<div class="card">
+    <h2>Display</h2>
+    <ul>
+        <li>
+            <label for="unit-pixel">Circle Unit: </label>
+            <input id="unit-pixel" type="range" min="50" max="300" value="220" />
+        </li>
+        <li>
+            <label for="trigger-history"># of Trigger History: </label>
+            <input id="trigger-history" type="range" min="0" max="15" value="0" />
+        </li>
+        <li>
+            <label for="display-scale-line">Display Scale Reference Lines: </label>
+            <input id="display-scale-line" type="checkbox" checked />
+        </li>
+    </ul>
+</div>
+{% endcapture %}
+
+{% include app-template.html %}

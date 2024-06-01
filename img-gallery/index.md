@@ -10,13 +10,13 @@ jquery: true
 
 {% for category in site.data.img_gallery %}
 
-<div class="card indexing" id="expand-{{category.name}}">
+<div class="card indexing" id="expand-{{category.name | replace: ' ', '-'}}">
     <h2>{{category.name}}</h2>
     <p>++ click to view ++</p>
 </div>
 
 {% for city in category.collections %}
-<div class="onexpand-{{category.name}} sub-container">
+<div class="onexpand-{{category.name | replace: ' ', '-'}} sub-container">
     <div class="sub-left">
         <div class="card">
             <h3>{{city.name}}</h3>
@@ -45,10 +45,10 @@ jquery: true
 
 <script>
 $(document).ready(function() {
-    {% for category in site.data.img_gallery  %}
-    $('.onexpand-{{category.name}}').hide();
-    $('#expand-{{category.name}}').click(function() {
-        $('.onexpand-{{category.name}}').slideToggle('slow');
+    {% for category in site.data.img_gallery %}
+    $(".onexpand-{{category.name | replace: ' ', '-'}}").hide();
+    $("#expand-{{category.name | replace: ' ', '-'}}").click(function() {
+        $(".onexpand-{{category.name | replace: ' ', '-'}}").slideToggle('slow');
     });
     {% endfor %}
 });

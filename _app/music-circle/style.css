@@ -1,0 +1,15 @@
+#circle-data input[type="range"] {
+    width: 100%;
+}
+
+#circle-data datalist {
+    display: none;
+}
+
+#circle-data a {
+    color: #555;
+}
+
+p.doc {
+    color: #555;
+}
