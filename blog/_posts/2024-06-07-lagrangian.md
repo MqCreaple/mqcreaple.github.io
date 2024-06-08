@@ -80,6 +80,7 @@ $$\Delta \phi(x)=\vec \nabla \phi(\vec x)\cdot \Delta\vec x$$
 由于在泛函里，*点积*$\vec v\cdot\vec w$就类比成函数积分$\int_{t_1}^{t_2}f(t)g(t)\mathrm dt$。所以我们可以说，作用量$S[q]$关于路径$q$的**泛函导数**是：
 
 <a id="equation-1"></a>
+
 $$
 \begin{equation}
 \frac{\partial S}{\partial q}=\left(\frac{\partial\mathcal L}{\partial q}-\frac{\partial}{\partial t}\frac{\partial\mathcal L}{\partial\dot q}\right)
@@ -96,7 +97,7 @@ $$
 
 $$q\left(t_1+\frac{k}{n}\Delta t+t_r\right)=\frac{t_r}{\Delta t}q_i+\left(1-\frac{t_r}{\Delta t}\right)q_{i+1}$$
 
-<!-- TODO: 插图 -->
+![函数采样](/img/signal-sampling.png)
 
 其中$n$为采样点的总数，$\Delta t=(t_2-t_1)/n$是两个采样点之间的距离，剩下的$t_r$就是不足一整个采样距离的部分。这样，我们就能用数值方法计算$q(t)$的一阶和二阶导了。
 
@@ -221,11 +222,11 @@ savefig("loss.png")
 
 ![单摆稳定解](/img/lagrange-pendulum.svg)
 
-也就是说，这个单摆先摆到接近最高点的位置，保持在该点几乎不动，然后再方向加速到另一边，到达另一边的最高点，最后再掉回到目标角度上。大概是这样的：
+也就是说，这个单摆先摆到接近最高点的位置，保持在该点几乎不动，然后再反方向加速到另一边，到达另一边的最高点，最后再掉回到目标角度上。大概是这样的：
 
 ![单摆动画](/img/lagrange-pendulum-anim.gif)
 
-而下面这张图展示了求解器寻找这个最优解的过程，可以看到随着时间的演进，求解器计算出的解越来越接近最优解。
+而下面这张图展示了求解器寻找这个最优解的过程，可以看到随着我们一步步做优化，求解器算出的解越来越接近最优解。
 
 ![单摆求解器](/img/lagrange-pendulum-solver.gif)*求解过程。该动图展示了$q(t)$从初始的随机值经过不断地梯度下降后逼近最优解的过程。*
 
@@ -269,7 +270,7 @@ $$
 
 ![三体系统-路径](/img/lagrange-3-body.gif)*三体系统的路径*
 
-![三体系统-求解](/img/lagrange-3-body-train.gif)*求解三体系统的过程*
+![三体系统-求解](/img/lagrange-3-body-solve.gif)*求解三体系统的过程*
 
 换一套起始和终止点，求解器仍然能计算出最优解。例如我们将终止点设置成：
 
@@ -284,6 +285,8 @@ $$
 得到的解是这样的：
 
 ![三体问题-求解2](/img/lagrange-3-body-solve-2.gif)
+
+![三体问题-作用量2](/img/lagrange-3-body-loss2.png)*求解过程中总作用量$S$随着迭代次数的变化*
 
 如果我们计算这个轨迹上三颗恒星的初始速度，并使用牛顿力学来计算行星接下来的位置和速度变化，我们可能得到的解不完全和目标解相同。如图所示。这可能是采样精度不够导致的计算误差，也有可能是三体系统本身的混沌导致的。
 
