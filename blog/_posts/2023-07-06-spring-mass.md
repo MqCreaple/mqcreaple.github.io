@@ -1,7 +1,7 @@
 ---
 title: 数值模拟之：弹簧质点系统
 layout: blog
-tag: ["physics", "computer-science"]
+tag: ["physics", "computer-science", "math-modeling"]
 ---
 
 最近对数值模拟这个领域比较感兴趣，学习了一些这方面的理论。对于一些难以在理论上解决的物理问题，**数值模拟**就是用计算机方法尽量精确并快速的模拟出这个物理系统。
