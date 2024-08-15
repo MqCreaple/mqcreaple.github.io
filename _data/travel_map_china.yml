@@ -1,0 +1,56 @@
+markers:
+  - name: 北京电报大楼
+    lat: 39.907806
+    lon: 116.380022
+    time: 2023/02/20
+    content: >
+      <p>华为Mate20拍摄</p>
+      <img src="/img/collections/2023/bj00.jpg" style="width: 400px" />
+  - name: 天津北安桥
+    lat: 39.133049
+    lon: 117.194073
+    time: 2023/03/29
+    content: >
+      <p>华为Mate20拍摄</p>
+      <img src="/img/collections/2023/tj00.jpg" style="width: 400px" />
+  - name: 天津海河附近
+    lat: 39.141119
+    lon: 117.19547
+    time: 2023/03/29
+    content: >
+      <p>华为Mate20拍摄</p>
+      <img src="/img/collections/2023/tj01.jpg" style="width: 400px" />
+  - name: 成都318川藏线出发点
+    lat: 30.610914
+    lon: 103.687257
+    time: 2024/06/24
+    content: >
+      <img src="/img/collections/2024/318-01.jpg" style="width: 400px" />
+  - name: 邛崃市
+    lat: 30.410275
+    lon: 103.462056
+    time: 2024/06/24
+    content: ""
+  - name: 邛崃市附近
+    lat: 30.307000
+    lon: 103.3849
+    time: 2024/06/24
+    content: >
+      <img src="/img/collections/2024/318-02.jpg" style="width: 400px" />
+  - name: 雨名快速路附近
+    lat: 30.047949
+    lon: 103.070169
+    time: 2024/06/24
+    content: >
+      <img src="/img/collections/2024/318-03.jpg" style="width: 400px" />
+  - name: 二郎山隧道附近
+    lat: 29.81507
+    lon: 102.245367
+    time: 2024/06/26
+    content: >
+      <img src="/img/collections/2024/318-04.png" style="width: 400px" />
+  - name: 泸桥隧道附近
+    lat: 29.932894
+    lon: 102.229704
+    time: 2024/06/27
+paths:

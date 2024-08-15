@@ -1,0 +1,9 @@
+div#map {
+    width: 100%;
+    height: 75%;
+    aspect-ratio: 4 / 3;
+}
+
+.article img {
+    width: auto;
+}

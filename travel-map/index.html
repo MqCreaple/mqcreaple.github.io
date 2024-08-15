@@ -1,0 +1,63 @@
+---
+title: Travel Map
+layout: empty
+---
+
+{% capture head %}
+<script src="https://webapi.amap.com/loader.js"></script>
+<link rel="stylesheet" href="./style.css" />
+{% endcapture %}
+
+{% capture content_left %}
+<div class="card article">
+    <h1>{{page.title}}</h1>
+    <div id="map"></div>
+</div>
+<script type="text/javascript">
+  window._AMapSecurityConfig = {
+    securityJsCode: "9ec71a5d3710c97d8a678f41e28e57a3", // TODO: security issue
+  };
+  AMapLoader.load({
+    key: "76d67fcbd3defcec90d776cedbc691cb", // 申请好的 Web 端开发 Key，首次调用 load 时必填
+    version: "2.0", // 指定要加载的 JS API 的版本，缺省时默认为 1.4.15
+    plugins: ["AMap.Scale"], // 需要使用的的插件列表，如比例尺'AMap.Scale'，支持添加多个如：['AMap.Scale','...','...']
+    AMapUI: {
+      // 是否加载 AMapUI，缺省不加载
+      version: "1.1", // AMapUI 版本
+      plugins: ["overlay/SimpleMarker"], // 需要加载的 AMapUI ui 插件
+    },
+    Loca: {
+      // 是否加载 Loca， 缺省不加载
+      version: "2.0", // Loca 版本
+    },
+  }).then((AMap) => {
+    var map = new AMap.Map("map", {
+        "viewMode": "3D",
+        zoom: 3.5,
+        center: [104, 39],
+    });    // 绑定到div上
+    map.addControl(new AMap.Scale()); // 添加比例尺组件到地图实例上
+  
+    // 添加所有标记点
+{% for marker in site.data.travel_map_china.markers %}
+    {
+      let m = new AMap.Marker({
+        position: [{{marker.lon}}, {{marker.lat}}],
+      });
+      let infoWindow = new AMap.InfoWindow({
+        content: '<div class="info-window"><h4>{{marker.name}}</h4>' + {{marker.content | jsonify}} + '</div>',
+      });
+      m.on("click", function (e) {
+        infoWindow.open(map, e.target.getPosition());
+      });
+      map.add(m);
+    }
+{% endfor %}
+
+  }).catch((e) => {
+    console.error(e); // 加载错误提示
+  });
+</script>
+{% endcapture %}
+
+{% include app-template.html %}

@@ -4,7 +4,7 @@ layout: blog
 tag: ["computer-science", "programming-language", "software-engineering"]
 ---
 
-（懒得起一个好点的标题了）
+（懒得起一个好点的标题了...）
 
 最近在写学校计算机社的坦克小游戏，然后被自己写的代码搞崩溃了。趁着现在实在懒得写代码的时候，我就顺便写点文章来总结一下这一年多里学到的和领悟到的有关编程语言和代码工程的知识。
 
