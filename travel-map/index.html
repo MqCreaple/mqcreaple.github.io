@@ -6,9 +6,18 @@ layout: empty
 {% capture head %}
 <script src="https://webapi.amap.com/loader.js"></script>
 <link rel="stylesheet" href="./style.css" />
+<script>
+  // Get the language from URL parameter
+  const urlParams = new URLSearchParams(window.location.search);
+  const lang = urlParams.get("lang") || "zh";
+</script>
 {% endcapture %}
 
 {% capture content_left %}
+<!-- TODO BUG: marker info panel not displaying in its place. -->
+<div class="card">
+  Language: <a href="?lang=zh">[中文]</a> <a href="?lang=en">[English]</a>
+</div>
 <div class="card article">
     <h1>{{page.title}}</h1>
     <div id="map"></div>
@@ -44,9 +53,16 @@ layout: empty
       let m = new AMap.Marker({
         position: [{{marker.lon}}, {{marker.lat}}],
       });
+      // TODO: use static conditioning (with liquid tags) to improve the performance
+      {% if marker.content["zh"] or marker.content["en"] %}
       let infoWindow = new AMap.InfoWindow({
-        content: '<div class="info-window"><h4>{{marker.name}}</h4>' + {{marker.content | jsonify}} + '</div>',
+        content: '<div class="info-window"><h4>{{marker.name}}</h4><div class="map-info-body"><p>' + {{ marker.time | jsonify }} + '</p>' + {{ marker.content | jsonify }}[lang] + '</div></div>',
       });
+      {% else %}
+      let infoWindow = new AMap.InfoWindow({
+        content: '<div class="info-window"><h4>{{marker.name}}</h4><div class="map-info-body"><p>' + {{ marker.time | jsonify }} + '</p>' + {{ marker.content | jsonify }} + '</div></div>',
+      });
+      {% endif %}
       m.on("click", function (e) {
         infoWindow.open(map, e.target.getPosition());
       });

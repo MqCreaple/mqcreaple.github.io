@@ -7,3 +7,9 @@ div#map {
 .article img {
     width: auto;
 }
+
+div.map-info-body {
+    width: 100%;
+    aspect-ratio: 1;
+    overflow-y: scroll;
+}

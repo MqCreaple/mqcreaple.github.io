@@ -1,6 +1,6 @@
 ---
 layout: home
-notification: "博客现在有英文板块了"
+notification: "旅行地图（/travel-map）上线"
 ---
 
 # 我的博客 {{site.title}}
