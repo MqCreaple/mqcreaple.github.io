@@ -38,11 +38,6 @@ markers:
     content: >
       <img src="/img/collections/2024/318-01.jpg" style="width: 400px" />
       <p>2024年6月24日，从成都出发，开始了为期7天的318国道骑行旅行。</p>
-  - name: 邛崃市
-    lat: 30.410275
-    lon: 103.462056
-    time: 2024/06/24
-    content: ""
   - name: 邛崃市附近
     lat: 30.307000
     lon: 103.3849
@@ -53,46 +48,102 @@ markers:
         <p>邛崃的附近有许多酒厂。在酒香中看着远处层叠的山峰，总觉得“天子呼来不上船，自称臣是酒中仙”大概就是这样的感觉吧。</p>
         <p>第一天的旅程还算顺利，路上遇到了两位大学生，一位学法律，一位学管理。</p>
         <p>一路走了挺久的，我也感叹过了这么久我的中文退步的十分明显。有时看着沿途优美的景色我也想不起来该用什么词形容了。</p>
-        <p>他们好奇我从哪来，我便说是北京的，却不敢说自己在留学。从我们之间的对话也能感到，“北京”对他们来说已经是遥不可及的梦想，更不要说一万公里外的另一个国家了。</p>
+        <p>他们好奇我从哪来，我便说是北京的，却不敢说自己在留学。从我们之间的对话也能感到，“在北京生活”对他们来说已经是遥不可及的梦想，更不要说一万公里外的另一个国家了。</p>
         <p>每个人都在自己的小世界里奋斗，有时命运会把我们拽到一起，而有时我们还来不及相互认识就又要分开。见识了世界的广大之后，才能珍惜路上陪伴我的每一位朋友。</p>
       en: >
         <img src="/img/collections/2024/318-02.jpg" style="width: 400px" />
-        <p>TODO</p>
+        <p>There are many wineries around Qionglai. Looking at the waves of mountains in the scent of wines, I can feel the emotion of Li Bai's poem</p>
+        <p>"Even when the emperor calls, I don't board his boat, For I declare myself the immortal of wine."</p>
+        <p>First day's trip goes pretty smooth. I met 2 college students on the way, one majoring in law and the other in management.</p>
+        <p>I'm surprised on how much my Chinese declined. Sometimes when seeing beautiful sceneries, I don't know what word to describe them.</p>
+        <p>They were curious about where I come from, and I told them I was from Beijing. I was afraid that telling them I'm studying abroad will hurt their feeing. I knew from them that "staying in Beijing" is an almost unreachable dream for them, let alone studying abroad.</p>
+        <p>Everyone is struggling in their small world. Sometimes fate might bring us together, but we are destined to separate not even knowing each other well. Only after seeing the bigger world can I cherish every friend accompanying me.</p>
   - name: 雨名快速路附近
     lat: 30.047949
     lon: 103.070169
     time: 2024/06/24
-    content: >
-      <img src="/img/collections/2024/318-03.jpg" style="width: 400px" />
-      <p>到了第一天路程的终点，雅安。</p>
-      <p>在走过雅安收费站的大牌时，我还是挺激动的，毕竟这是我第一次走这么远，第一次在一天里走超过100公里。</p>
-      <p>当然，较平常过度的运动量也让我腿部肌肉十分酸痛，甚至怀疑第二天还能不能走得动。</p>
-      <p>或许我也想不到接下来几天路和现在比起来会多难走。</p>
-      <p>沿途看到了很多小村子、小县城。这些村子和县城里大多是留下的中老年人和学龄前的小孩，已经几乎看不到年轻人的身影了。</p>
-      <p>看着村边逐渐荒废的庙宇，村内老旧的设施，也不禁让人惋惜。“村子里的机会太少了，”和我同行的人说，“所以现在所有人都挤破头地往大城市走。”</p>
-      <p>在这个信息传播比人移动的速度快上不止一个数量级的时代，每个人都做着最符合自己利益的选择，但最终却会让文化造成难以逆转的流失。</p>
+    content:
+      zh: >
+        <img src="/img/collections/2024/318-03.jpg" style="width: 400px" />
+        <p>到了第一天路程的终点，雅安。</p>
+        <p>在走过雅安收费站的大牌时，我还是挺激动的，毕竟这是我第一次走这么远，第一次在一天里走超过100公里。</p>
+        <p>当然，较平常过度的运动量也让我腿部肌肉十分酸痛，甚至怀疑第二天还能不能走得动。</p>
+        <p>或许我也想不到接下来几天路和现在比起来会多难走。</p>
+        <p>沿途看到了很多小村子、小县城。这些村子和县城里大多是留下的中老年人和学龄前的小孩，已经几乎看不到年轻人的身影了。</p>
+        <p>看着村边逐渐荒废的庙宇，村内老旧的设施，也不禁让人惋惜。“村子里的机会太少了，”和我同行的人说，“所以现在所有人都挤破头地往大城市走。”</p>
+        <p>在这个信息传播比人移动的速度快上不止一个数量级的时代，每个人都做着最符合自己利益的选择，但最终所有选择的总和却会让文化造成难以逆转的流失。</p>
+      en: >
+        <img src="/img/collections/2024/318-03.jpg" style="width: 400px" />
+        <p>Reached the destination of first day, Ya'an.</p>
+        <p>I was quite excited when passing the large sign at the Ya'an toll station. After all, this was my first time traveling so far and the first time I cycled more than 100 km in a day.</p>
+        <p>Of course, the excessive amount of exercise compared to usual made my leg muscle sore. I almost doubt if I can still walk tomorrow.</p>
+        <p>I guess at the time, I still didn't know how hard the following days become.</p>
+        <p>I saw a lot of small villages and towns along the way. Most of the people living there are the elderlies and pre-school kids. I rarely saw young people there.</p>
+        <p>Looking at the abandoned temples and old facilities in the villages makes me sad. "[There are] too few opportunities in villages," said my companion, "so everyone is trying to get to big cities nowadays."</p>
+        <p>In this era when the speed of information spreading is a magnitude faster than people moving, everyone is making the choice bringing them the most benefit. However, the combination of all these choices will bring irreversible lost to our culture.</p>
   - name: 天全县大井坪附近
     lat: 29.879409
     lon: 102.347418
     time: 2024/06/24
-    content: >
-      <img src="/img/collections/2024/318-06.png" style="width: 400px" />
-      <p>难得看到野生小猴，要是他们不抢吃的就更好了...</p>
-      <p>爬这种山路真的能体会到什么叫“蜀道之难，难于上青天。”</p>
+    content:
+      zh: >
+        <img src="/img/collections/2024/318-06.png" style="width: 400px" />
+        <p>难得看到野生小猴，要是他们不抢吃的就更好了...</p>
+        <p>爬这种山路真的能体会到什么叫“蜀道之难，难于上青天。”</p>
+      en: >
+        <img src="/img/collections/2024/318-06.png" style="width: 400px" />
+        <p>It was rare to see wild monkeys here. Better if they didn't take our food...</p>
+        <p>Climbing this road really made me understand Li Bai's poem "climbing the road of Sichuan is harder than climbing the heaven."</p>
   - name: 二郎山隧道附近
     lat: 29.81507
     lon: 102.245367
     time: 2024/06/26
-    content: >
-      <img src="/img/collections/2024/318-04.png" style="width: 400px" />
-      <p>经过了一上午的爬坡，在大概中午时分走过了海拔2200米的二郎山隧道</p>
-      <p>在这种荒无人烟的山上找不到地方吃午饭，就用带来的饼干和路边买的水果勉强吃饱了</p>
-      <p>自行车相比人力的优势在下坡的速度，但下坡之前总是要先上坡。我们花了一整个上午爬上高山，但同样的高度一个小时就能下来。下山路上风的呼啸带来的快乐总是短暂的。</p>
-      <p>上山路上遇到了三位朋友，一位比我只大一岁。几位都是有经验的骑手，一路上我跟着他们学了很多知识，像是多人骑行的队形、手势、协调方法等等。</p>
+    content:
+      zh: >
+        <img src="/img/collections/2024/318-04.png" style="width: 400px" />
+        <p>经过了一上午的爬坡，在大概中午时分走过了海拔2200米的二郎山隧道</p>
+        <p>在这种荒无人烟的山上找不到地方吃午饭，就用带来的饼干和路边买的水果勉强吃饱了</p>
+        <p>自行车相比人力的优势在下坡的速度，但下坡之前总是要先上坡。我们花了一整个上午爬上高山，但同样的高度一个小时就能下来。下山路上风的呼啸带来的快乐总是短暂的。</p>
+        <p>上山路上遇到了三位朋友，一位比我只大一岁。几位都是有经验的骑手，一路上我跟着他们学了很多知识，像是多人骑行的队形、手势、协调方法等等。</p>
+      en: >
+        <img src="/img/collections/2024/318-04.png" style="width: 400px" />
+        <p>After a moring of climbing, I went through the Erlangshan Tunnel at an altitude of 2200 meters around noon.</p>
+        <p>There were no restaurants to have lunch in this desolated mountain. I just ate some buscuits I brought and fruits bought on the way.</p>
+        <p>The advantage of bicycles over humans is its speed going downhill, but there's always an uphill before a downhill. We spent the whole morning climbing up the mountain, but we can get down the same height within an hour. The enjoyment of winds blowing on the way downhill is always so short.</p>
+        <p>On the way up the mountain, I met three friends, one of whom was only one year older than me.</p>
+        <p>They are all experienced cyclists. I learned a lot from them on the way, such as the formations, hand gestures, and methods of cooperations in a team.</p>
   - name: 泸桥隧道附近
     lat: 29.932894
     lon: 102.229704
     time: 2024/06/27
     content: >
       <img src="/img/collections/2024/318-05.png" style="width: 400px" />
+  - name: 折多山山顶附近
+    lat: 30.071999
+    lon: 101.807683
+    time: 2024/06/29
+    content:
+      zh: >
+        <img src="/img/collections/2024/318-07.jpg" style="width: 400px" />
+        <p>折多山，路上走过的第一座高于4000米的山，也是我第一次在路上直接体会到了生命的脆弱。</p>
+        <p>中午，我在海拔4000米处左右找到了一家路边的汉堡摊，20块钱一个，不算贵。老板自称是成都人，暑假在这里摆摊做生意。从另一方面看，318国道旅游在今年的火爆也可想而知了。</p>
+        <p>吃汉堡的时候来了一位右臂残疾的骑手，能明显看到断臂的痕迹。他对自己的残疾仿佛完全不在意，当我问起他这样怎么骑车时，他反问我：“你平常骑车累了的时候不会把手搭在车把上吗？我就是这样骑过来的。”令人心生敬意。</p>
+        <p>海拔4000米已经让人较为不适，两腿完全使不上力。我不得不下车推行，并时不时吸几口瓶子里的氧气。根据计算，在4000米海拔上的氧气含量大约是海平面上的56%。</p>
+        <p>听人说，体力越好的人在高海拔上越难受，因为体力越好耗氧量就越大，而高原上恰恰缺少氧气。在上山之前我还不以为意，但走到这里才切身体会到了这种严重缺氧的感觉。即使是世界上最快的赛车，用掺了一半水的汽油也跑不动。</p>
+        <p>在山顶，我和家长吵了一架，刚一生气就立刻觉得全身使不上力气，倒了下来。之后过了半个多小时才恢复如初。</p>
+      en: >
+        <img src="/img/collections/2024/318-07.jpg" style="width: 400px" />
+        <p>Mount Zheduo, the first mountain above 4000 meters on the way, where I felt the fragility of my life for the first time.</p>
+        <p>I found a burger stand around 4000 meters altitude at noon. 20 yuan (≈$2.80) for one burger, not expensive. The vendor said he came from Chengdu and only do business here during summer vacation. From another perspective, you can imagine the popularity of tourism along the G318 National Highway this year.</p>
+        <p>When I was eating the burger, a cyclist with missing right arm came to the stand. However, he seemed completely unconcerned about his disability. When I asked him how could he ride bike with an arm missing, he reacted calmly: "Don't you put your arm on the handbar when you are tired? I just rode here like that." He was truly a man worth respect.</p>
+        <p>I was already quite uncomfortable at altitude 4000. My two legs are completely powerless and I had to walk and push my bicycle along. Sometimes I had to breath some oxygen from the oxygen tank. According to calculation, the oxygen content here is only 56% of that of the sea level.</p>
+        <p>I heard from others that the better your fitness, the worse you will feel at high altitude, since better fitness increases your oxygen consumption. I didn't care much about the saying before climbing this mountain. Only when I reached this hight do I feel the lack of oxygen so strongly.</p>
+        <p>Even the world's best racecar cannot run with gasoline containing half of water.</p>
+        <p>On top of the moutain, I had an argument with my parents. When I got angered, I immediately lost all my strength and lied down. I spent half an hour to fully recover.</p>
+  - name: 新都桥附近
+    lat: 30.069742
+    lon: 101.477793
+    time: 2024/06/30
+    content: >
+      <img src="/img/collections/2024/318-08.png" style="width: 400px" />
 paths:

@@ -41,9 +41,10 @@ layout: empty
     },
   }).then((AMap) => {
     var map = new AMap.Map("map", {
-        "viewMode": "3D",
+        viewMode: "3D",
         zoom: 3.5,
         center: [104, 39],
+        language: ((lang === "zh") ? "zh_cn" : "zh_en"),
     });    // 绑定到div上
     map.addControl(new AMap.Scale()); // 添加比例尺组件到地图实例上
   
