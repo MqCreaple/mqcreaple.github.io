@@ -53,7 +53,7 @@ private:
 };
 ```
 
-具体的公式可以参考[上一篇博客]({% link blog/_posts/2022-10-14-relativistic-renderer-0.md %})。
+具体的公式可以参考[上一篇博客]({% link blog-zh/_posts/2022-10-14-relativistic-renderer-0.md %})。
 
 ## 存储一条光线
 

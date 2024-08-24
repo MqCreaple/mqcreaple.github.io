@@ -1,7 +1,11 @@
-title: My Blog | MqCreaple
+title:
+  zh: GMQ的技术避难所
+  en: GMQ's Tech Haven
 author: MqCreaple
 email: gmq14159@gmail.com
-description: pay more attention to the beauty of formulas!
+description:
+  zh: 用人文之光照亮科技前行
+  en: Guide the path of technology with the light of humanity
 baseurl: ""
 url: "mqcreaple.github.io"
 github_username:  MqCreaple

@@ -2,11 +2,11 @@
 <html lang="zh">
 <head>
     {% include head.html %}
-    <title>{{page.title}} - {{site.title}}</title>
+    <title>{{page.title}} - {{site.title.en}}</title>
 </head>
 <body>
 <div id='container'>
-    {% include header.html %}
+    {% include header-en.html %}
     <div id='main'>
         <div id='left'>
             {% if page.previous or page.next %}

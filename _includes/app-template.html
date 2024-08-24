@@ -2,7 +2,7 @@
 <html>
 <head>
     {% include head.html %}
-    <title>{{page.title}} - {{site.title}}</title>
+    <title>{{page.title}} - {{site.title.en}}</title>
     <!-- Gitalk -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
     <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
@@ -10,7 +10,7 @@
 </head>
 <body>
 <div id='container'>
-    {% include header.html %}
+    {% include header-en.html %}
     <div id='main'>
         <div id='left'>
             {{ content_left }}

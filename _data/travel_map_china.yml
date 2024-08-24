@@ -29,15 +29,21 @@ markers:
       <p>（网图，侵删）</p>
       <p>最早我关注到龙泉驿区的洛带镇是这里新开发的一个古镇旅游区，随着我深入调查，我了解到了这里是一个客家话方言岛，对这里的语言的兴趣也促使我在这里做了许多小调查。</p>
       <p>关于我关注到的洛带古镇里的语言、文化和社会细节，我写过两篇文章，附在这里：</p>
-      <p><a href="/blog/2024/01/09/dialect.html" target="_blank">普通话的时代，方言何去何从？</a></p>
-      <p><a href="/blog/2024/07/09/dialect.html" target="_blank">再回洛带：洛带古镇地区的方言态度调查</a></p>
-  - name: 成都318川藏线出发点
+      <p><a href="/blog-zh/2024/01/09/dialect.html" target="_blank">普通话的时代，方言何去何从？</a></p>
+      <p><a href="/blog-zh/2024/07/09/dialect.html" target="_blank">再回洛带：洛带古镇地区的方言态度调查</a></p>
+  - name:
+      zh: 成都318川藏线出发点
+      en: Starting Point of 318 National Highway, Chengdu
     lat: 30.610914
     lon: 103.687257
     time: 2024/06/24
-    content: >
-      <img src="/img/collections/2024/318-01.jpg" style="width: 400px" />
-      <p>2024年6月24日，从成都出发，开始了为期7天的318国道骑行旅行。</p>
+    content:
+      zh: >
+        <img src="/img/collections/2024/318-01.jpg" style="width: 400px" />
+        <p>2024年6月24日，从成都出发，开始了为期7天的318国道骑行旅行。</p>
+      en: >
+        <img src="/img/collections/2024/318-01.jpg" style="width: 400px" />
+        <p>On June 24th, 2024, I began a 7 day cycling journey on 318 National Highway starting from Chengdu.</p>
   - name: 邛崃市附近
     lat: 30.307000
     lon: 103.3849

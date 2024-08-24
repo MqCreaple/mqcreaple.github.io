@@ -2,6 +2,7 @@
 title: blog
 layout: default
 no_output: true
+lang: en
 ---
 
 <div class="card" style="background-color: rgba(216, 237, 29, 0.7); color: #efefef;">

@@ -2,7 +2,7 @@
 <html>
 <head>
     {% include head.html %}
-    <title>home - {{site.title}}</title>
+    <title>home - {{site.title.en}}</title>
     <!-- Gitalk -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
     <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
@@ -25,7 +25,7 @@
 </head>
 <body>
 <div id='container'>
-    {% include header.html %}
+    {% include header-en.html %}
     <div id='main'>
         <div id='left'>
             <!-- notification -->
@@ -36,7 +36,7 @@
             {% endif %}
             
             <div style="width: 100%; display: flex; flex-direction: row; justify-content: space-evenly;">
-                <div class="card indexing row" onclick="window.open('/blog/', '_self')">
+                <div class="card indexing row" onclick="window.open('/blog-zh/', '_self')">
                     <h2><i class="fa fa-box-archive"></i> 博客文章 >>></h2>
                 </div>
                 <div class="card indexing row" onclick="window.open('/blog-en/', '_self')">

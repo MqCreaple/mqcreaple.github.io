@@ -9,7 +9,7 @@ layout: empty
 <script>
   // Get the language from URL parameter
   const urlParams = new URLSearchParams(window.location.search);
-  const lang = urlParams.get("lang") || "zh";
+  const paramLang = urlParams.get("lang") || "zh";
 </script>
 {% endcapture %}
 
@@ -33,7 +33,7 @@ layout: empty
     AMapUI: {
       // 是否加载 AMapUI，缺省不加载
       version: "1.1", // AMapUI 版本
-      plugins: ["overlay/SimpleMarker"], // 需要加载的 AMapUI ui 插件
+      plugins: ["overlay/SimpleMarker", "overlay/SimpleInfoWindow"], // 需要加载的 AMapUI ui 插件
     },
     Loca: {
       // 是否加载 Loca， 缺省不加载
@@ -44,7 +44,7 @@ layout: empty
         viewMode: "3D",
         zoom: 3.5,
         center: [104, 39],
-        language: ((lang === "zh") ? "zh_cn" : "zh_en"),
+        lang: ((paramLang === "zh") ? "zh_cn" : "en"),
     });    // 绑定到div上
     map.addControl(new AMap.Scale()); // 添加比例尺组件到地图实例上
   
@@ -54,16 +54,24 @@ layout: empty
       let m = new AMap.Marker({
         position: [{{marker.lon}}, {{marker.lat}}],
       });
+    
+      {% if marker.name["zh"] or marker.name["en"] %}
+      let name = {{ marker.name | jsonify }}[paramLang];
+      {% else %}
+      let name = {{ marker.name | jsonify }};
+      {% endif %}
+
       // TODO: use static conditioning (with liquid tags) to improve the performance
       {% if marker.content["zh"] or marker.content["en"] %}
       let infoWindow = new AMap.InfoWindow({
-        content: '<div class="info-window"><h4>{{marker.name}}</h4><div class="map-info-body"><p>' + {{ marker.time | jsonify }} + '</p>' + {{ marker.content | jsonify }}[lang] + '</div></div>',
+        content: `<div class="info-window"><h4>${name}</h4><div class="map-info-body"><p>` + {{ marker.time | jsonify }} + '</p>' + {{ marker.content | jsonify }}[paramLang] + '</div></div>',
       });
       {% else %}
       let infoWindow = new AMap.InfoWindow({
-        content: '<div class="info-window"><h4>{{marker.name}}</h4><div class="map-info-body"><p>' + {{ marker.time | jsonify }} + '</p>' + {{ marker.content | jsonify }} + '</div></div>',
+        content: `<div class="info-window"><h4>${name}</h4><div class="map-info-body"><p>` + {{ marker.time | jsonify }} + '</p>' + {{ marker.content | jsonify }} + '</div></div>',
       });
       {% endif %}
+
       m.on("click", function (e) {
         infoWindow.open(map, e.target.getPosition());
       });

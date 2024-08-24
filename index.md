@@ -3,7 +3,9 @@ layout: home
 notification: "旅行地图（/travel-map）上线"
 ---
 
-# 我的博客 {{site.title}}
+# {{site.title.zh}} | {{site.title.en}}
+
+{{site.description.zh}}
 
 > 该在博客的首页写什么，这是一个世界级难题。
 >

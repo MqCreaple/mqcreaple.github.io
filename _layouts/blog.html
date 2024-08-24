@@ -2,11 +2,16 @@
 <html>
 <head>
     {% include head.html %}
-    <title>{{page.title}} - {{site.title}}</title>
+    <title>{{page.title}} - {{site.title.en}}</title>
 </head>
 <body>
 <div id='container'>
-    {% include header.html %}
+    <!-- include the header corresponding to the blog's language -->
+    {% if page.categories contains "blog-en" %}
+    {% include header-en.html %}
+    {% elsif page.categories contains "blog-zh" %}
+    {% include header-zh.html %}
+    {% endif %}
     <div id='main'>
         <div id='left'>
             {% if page.languages %}
