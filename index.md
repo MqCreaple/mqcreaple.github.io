@@ -5,7 +5,7 @@ notification: "旅行地图（/travel-map）上线"
 
 # {{site.title.zh}} | {{site.title.en}}
 
-{{site.description.zh}}
+<p style="text-align: center; color: #454545">{{site.description.zh}}</p>
 
 > 该在博客的首页写什么，这是一个世界级难题。
 >
