@@ -9,7 +9,7 @@
     <!-- include the header corresponding to the blog's language -->
     {% if page.categories contains "blog-en" %}
     {% include header-en.html %}
-    {% elsif page.categories contains "blog-zh" %}
+    {% else %}
     {% include header-zh.html %}
     {% endif %}
     <div id='main'>

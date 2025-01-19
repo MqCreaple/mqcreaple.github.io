@@ -1,6 +1,6 @@
 ---
 layout: home
-notification: "旅行地图（/travel-map）上线"
+notification:
 ---
 
 # {{site.title.zh}} | {{site.title.en}}

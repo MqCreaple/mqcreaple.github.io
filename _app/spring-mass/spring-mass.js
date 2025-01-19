@@ -100,7 +100,7 @@ const semiImplicitEuler = {
 }
 
 /** @type {Method} */
-const modifiedEuler = {
+const rk2Method = {
     calcForce: (dt) => {
         const fLeft = explicitEuler.calcForce(dt);
         const posBackup = masses.map(mass => mass.pos.copy());
@@ -118,11 +118,43 @@ const modifiedEuler = {
     update: explicitEuler.update,
 }
 
+/** @type {Method} */
+const rk4Method = {
+    calcForce: (dt) => {
+        const f1 = explicitEuler.calcForce(dt);
+        const posBackup = masses.map(mass => mass.pos.copy());
+        const vBackup = masses.map(mass => mass.v.copy());
+        explicitEuler.update(f1, dt);
+        const f2 = explicitEuler.calcForce(dt);
+        for(let i = 0; i < masses.length; i++) {
+            const mass = masses[i];
+            mass.pos = posBackup[i].add(mass.v.mul(0.5 * dt));
+            mass.v = vBackup[i].add(f2[i].mul(mass.mReciprocal).mul(0.5 * dt));
+        }
+        const f3 = explicitEuler.calcForce(dt);
+        for(let i = 0; i < masses.length; i++) {
+            const mass = masses[i];
+            mass.pos = posBackup[i].add(mass.v.mul(0.5 * dt));
+            mass.v = vBackup[i].add(f3[i].mul(mass.mReciprocal).mul(0.5 * dt));
+        }
+        const f4 = explicitEuler.calcForce(dt);
+        for(let i = 0; i < masses.length; i++) {
+            const mass = masses[i];
+            mass.pos = posBackup[i];
+            mass.v = vBackup[i];
+        }
+        const f = f1.map((f, i) => f.add(f2[i].mul(2)).add(f3[i].mul(2)).add(f4[i]).mul(1 / 6));
+        return f;
+    },
+    update: explicitEuler.update,
+}
+
 /** @type {{ [keys: string]: (mass: Mass, force: Vec2) => void }} */
 const methods = {
     "explicit": explicitEuler,
     "semi-implicit": semiImplicitEuler,
-    "RK-2": modifiedEuler,
+    "RK-2": rk2Method,
+    "RK-4": rk4Method,
 };
 
 /** @type {Method} */
