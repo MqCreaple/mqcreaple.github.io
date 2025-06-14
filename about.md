@@ -9,8 +9,8 @@ permalink: /aboutme/
 - Minecraft {{ "now" | date: "%Y" | minus: 2017 }}年玩家
 - 物理狂热爱好者，物竞菜鸡（美国绿卡政策太坑了！！）
 - 学了一些高等数学，不敢说精通
-- 信竞AFO选手，正在考虑重新入坑
-- 会C++和Java，但只会一点点。python，julia和rust在学且在用。
+- 信竞AFO选手，~~正在考虑重新入坑~~这辈子大概是不会再入坑了
+- C++，Java，Python，Rust，HTML/CSS/JS都会那么一点。
 
 课外我喜欢做：
 
@@ -33,12 +33,12 @@ A high school student in an unknown school.
 - Minecraft {{ "now" | date: "%Y" | minus: 2017 }}-year player.
 - Fan of physics. Noob in physics competitions.
 - Learned some college-level math.
-- Learned C++ and java. Learning python, julia, and rust.
+- Know a bit of C++, Java, Python, Rust, HTML/CSS/JS, ...
 
 What I do after school:
 
-- Read books and think about some strange questions.
-- Write some small programs and games.
+- Read books and think about strange questions.
+- Write small programs and games.
 - Minecraft
 - Cycling and skiing.
 
