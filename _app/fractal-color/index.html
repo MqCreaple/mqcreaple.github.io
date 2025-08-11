@@ -1,0 +1,85 @@
+---
+title: "Hilbert's Curve and Color Fractal"
+layout: empty
+introduction: An experiment with fractals.
+output: true
+---
+
+{% capture head %}
+<script src="webgl.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    drawOnCanvas(
+        document.getElementById("hilbert0"),
+        hilbert0FragmentShaderSrc,
+        document.getElementById("error0")
+    );
+    drawOnCanvas(
+        document.getElementById("hilbert1"),
+        hilbert1FragmentShaderSrc,
+        document.getElementById("error1")
+    );
+    drawOnCanvas(
+        document.getElementById("hilbert2"),
+        hilbert2FragmentShaderSrc,
+        document.getElementById("error2")
+    );
+    drawOnCanvas(
+        document.getElementById("moore"),
+        mooreFragmentShaderSrc,
+        document.getElementById("error3")
+    );
+    drawOnCanvas(
+        document.getElementById("peano"),
+        peanoFragmentShaderSrc,
+        document.getElementById("error4")
+    );
+});
+</script>
+<style>
+    canvas {
+        width: 100%;
+    }
+</style>
+{% endcapture %}
+
+{% capture content_left %}
+<div class="card article">
+    <h1>{{page.title}}</h1>
+    <p>Fractals can be a powerful tool in creating arts. With computer codes, you can generate fractals with infinitely complex details in a few lines of code. The following pictures explores the possibility of creating fractals in the color space.</p>
+    <p>As we all know, there are 3 fundamental colors from which every color can be created. This fact means that the color space is 3-dimensional. If we can embed fractal geometry in the 3D color space, we can visualize fractals in a new way.</p>
+    <p>The <a href="https://en.wikipedia.org/wiki/Hilbert_curve">Hilbert curve</a> is a type of space-filling fractal. Although it may look like a 1 dimensional line, as it iterates, the Hilbert curve can fill the entire unit square. Here is an illustration of Hilbert curve's space filling property by mapping each pixel on the screen to an intensity between 0 to 255 according to its position on the Hilbert curve.</p>
+    <div>
+        <p class="warn" id="error0"></p>
+        <canvas width="512" height="512" id="hilbert0">Your browser does not support canvas.</canvas>
+    </div>
+    <p>The previous image contains all shades of grays an 8-bit screen can display. How many levels of gray can you distinguish? Can you spot the Hilbert curve from this picture?</p>
+    <p>Of course. Hilbert curve can also be generalized to 3D or even higher dimensions. The following picture is created by filling the RGB color space with 3D Hilbert curve, and then stretch the curve into a straight line.</p>
+    <div>
+        <p class="warn" id="error1"></p>
+        <canvas width="16384" height="512" id="hilbert1">Your browser does not support canvas.</canvas>
+    </div>
+    <p>The strip is quite long, and it's hard to see the full picture at once. But you can zoom in to see that each 1/8th of the line has a similar pattern to the overall line (which is more obvious around the black and white regions).</p>
+    <p>If we combine the two, we can first map each color in space into an single integer representing its index on the 3D Hilbert curve, then we fold the line to a 2D square with the 2D Hilbert curve mapping. And we can get the following picture:</p>
+    <div>
+        <p class="warn" id="error2"></p>
+        <canvas width="4096" height="4096" id="hilbert2">Your browser does not support canvas.</canvas>
+    </div>
+    <p>This image contains all possible colors your computer monitor can display (given that your monitor is at least 4k and you're viewing this image in full-screen).</p>
+    <p>What if we use other types of space-filling curves?</p>
+    <p>For example, Moore curve, which is essentially stacking 4 (or 8 in 3D) Hilbert curve together to form a loop:</p>
+    <div>
+        <p class="warn" id="error3"></p>
+        <canvas width="4096" height="4096" id="moore">Your browser does not support canvas.</canvas>
+    </div>
+    <p>This is the color map constructed with the Peano curve. </p>
+    <div>
+        <p class="warn" id="error4"></p>
+        <canvas width="729" height="729" id="peano">Your browser does not support canvas.</canvas>
+    </div>
+    <p>Since Peano curve is constructed by dividing the space into 1/3 of its original length, the curve's size must be a power of 3. To be able to put everyting onto a square, it also requires the cube's side length to be a perfect square number. The largest number satisfying both requirements is 81. Thus, the color division shown in this image is not as finely comparing to the previous curves.</p>
+    <p>This technique of converting a cube into a square with space-filling curves has a great potential in creating artworks. I'll be glad if this inspires you in some way.</p>
+</div>
+{% endcapture %}
+
+{% include app-template.html %}
