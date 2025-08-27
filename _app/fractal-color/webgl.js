@@ -199,6 +199,7 @@ int getPeano2D(in ivec2 v) {
 
 const externVarSrc = `
 uniform vec3 iResolution;
+uniform float uTime;
 `;
 
 const vertexShaderSrc = `#version 300 es
@@ -281,6 +282,23 @@ void main(void) {
     color = vec4(vec3(col) / 81.0, 1.0);
 }
 `;
+const hilbertAnimateFragmentShaderSrc = `#version 300 es
+precision highp float;
+precision highp int;
+${externVarSrc}
+${hilbertShaderSrc}
+out vec4 color;
+void main(void) {
+    vec2 uv = gl_FragCoord.xy / iResolution.xy;
+    ivec2 coord = ivec2(uv * 4096.0);
+    int index = getHilbert2D(coord);
+    ivec3 col;
+    getHilbert3D(index, col);
+    color = vec4(vec3(col) / 256.0, 1.0);
+}
+`;
+
+// TODO: Write some animations
 
 function createShader(glCtx, type, source) {
     const shader = glCtx.createShader(type);
@@ -293,13 +311,14 @@ function createShader(glCtx, type, source) {
     }
     return shader;
 }
-function drawOnCanvas(canvas, fragmentShaderSrc, errorMsgNode) {
+function drawOnCanvas(canvas, fragmentShaderSrc, errorMsgNode, animate=false) {
     let glCtx = canvas.getContext('webgl2');
     if(!glCtx) {
         console.log("WebGL2 not supported. Falling back on experimental WebGL2...");
         glCtx = canvas.getContext("experimental-webgl2");
     }
     if(!glCtx) {
+        errorMsgNode.style.display = "block";
         errorMsgNode.innerHTML = "WebGL2 is not supported on your canvas!";
         return;
     }
@@ -308,6 +327,7 @@ function drawOnCanvas(canvas, fragmentShaderSrc, errorMsgNode) {
     const fragmentShader = createShader(glCtx, glCtx.FRAGMENT_SHADER, fragmentShaderSrc);
 
     if (!vertexShader || !fragmentShader) {
+        errorMsgNode.style.display = "block";
         errorMsgNode.innerHTML = "Shader compilation failed. Check the console for errors.";
         return;
     }
@@ -319,6 +339,7 @@ function drawOnCanvas(canvas, fragmentShaderSrc, errorMsgNode) {
     glCtx.linkProgram(program);
 
     if (!glCtx.getProgramParameter(program, glCtx.LINK_STATUS)) {
+        errorMsgNode.style.display = "block";
         errorMsgNode.innerHTML = "Unable to initialize the shader program: " + glCtx.getProgramInfoLog(program);
         return;
     }
@@ -346,6 +367,21 @@ function drawOnCanvas(canvas, fragmentShaderSrc, errorMsgNode) {
 
     // Draw
     glCtx.viewport(0, 0, canvas.width, canvas.height);
-    glCtx.clear(glCtx.COLOR_BUFFER_BIT);
-    glCtx.drawArrays(glCtx.TRIANGLE_STRIP, 0, 4);
+
+    const uTime = glCtx.getUniformLocation(program, "uTime");
+    if(animate) {
+        const renderFrame = (timeMs) => {
+            glCtx.clear(glCtx.COLOR_BUFFER_BIT);
+            glCtx.uniform1f(uTime, timeMs / 1000.0);
+            glCtx.drawArrays(glCtx.TRIANGLE_STRIP, 0, 4);
+            window.requestAnimationFrame(renderFrame);
+        };
+
+        // animate
+        window.requestAnimationFrame(renderFrame);
+    } else {
+        glCtx.uniform1f(uTime, 0.0);
+        glCtx.clear(glCtx.COLOR_BUFFER_BIT);
+        glCtx.drawArrays(glCtx.TRIANGLE_STRIP, 0, 4);
+    }
 }

@@ -4,11 +4,15 @@ layout: default
 no_output: true
 ---
 
-{% for app in site.app %}
+{% assign apps = site.app | sort: 'date' | reverse %}
+{% for app in apps %}
 {% unless app.no_output %}
 <div class="card indexing" onclick="window.open('{{app.url}}')">
     <h2>{{app.title}}</h2>
     <p class="center"><i class="fa fa-file-text-o"></i> {{app.introduction}}</p>
+    {% if app.date %}
+    <p class="center">{{app.date | date: "%b %d, %Y"}}</p>
+    {% endif %}
     <p class="go">Run</p>
 </div>
 {% endunless %}

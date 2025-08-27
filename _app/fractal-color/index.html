@@ -1,5 +1,6 @@
 ---
 title: "Hilbert's Curve and Color Fractal"
+date: 2025-08-11
 layout: empty
 introduction: An experiment with fractals.
 output: true
@@ -8,7 +9,10 @@ output: true
 {% capture head %}
 <script src="webgl.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("p.warn").forEach((element) => {
+        element.style.display = "none";
+    });
     drawOnCanvas(
         document.getElementById("hilbert0"),
         hilbert0FragmentShaderSrc,
@@ -33,6 +37,12 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById("peano"),
         peanoFragmentShaderSrc,
         document.getElementById("error4")
+    );
+    drawOnCanvas(
+        document.getElementById("hilbert-animate"),
+        hilbertAnimateFragmentShaderSrc,
+        document.getElementById("error5"),
+        true
     );
 });
 </script>
@@ -78,6 +88,11 @@ document.addEventListener('DOMContentLoaded', () => {
         <canvas width="729" height="729" id="peano">Your browser does not support canvas.</canvas>
     </div>
     <p>Since Peano curve is constructed by dividing the space into 1/3 of its original length, the curve's size must be a power of 3. To be able to put everyting onto a square, it also requires the cube's side length to be a perfect square number. The largest number satisfying both requirements is 81. Thus, the color division shown in this image is not as finely comparing to the previous curves.</p>
+    <p>We can also give the graph some animation:</p>
+    <div>
+        <p class="warn" id="error5"></p>
+        <canvas width="4096" height="4096" id="hilbert-animate">Your browser does not support canvas.</canvas>
+    </div>
     <p>This technique of converting a cube into a square with space-filling curves has a great potential in creating artworks. I'll be glad if this inspires you in some way.</p>
 </div>
 {% endcapture %}
