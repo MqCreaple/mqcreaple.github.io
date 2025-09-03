@@ -1,7 +1,7 @@
 ---
 title: 关于软件工程和未来学习路径的一些思考
 layout: blog
-tag: ["computer-science", "software-engineering"]
+tags: ["computer-science", "software-engineering"]
 ---
 
 前几天我正式高中毕业了。回顾这几年在计算机工程方向的探索，感觉还有许多值得记录和反思的内容。今年作为学校计算机社团的负责人，亲自组织了一些小型项目的开发，比如这个网站[Cow Says Moo](https://github.com/prisms-cs-club/cow-says-moo)。加上我前几年自己瞎搞的一些个人项目，现在我对软件开发的大致过程也逐渐熟悉。在此，我想总结一下这段时间我的所思所想。作为刚毕业的高中生，经验尚浅，但也希望这篇文章能帮到你。
