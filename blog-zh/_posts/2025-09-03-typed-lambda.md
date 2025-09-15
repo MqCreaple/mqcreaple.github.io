@@ -26,7 +26,7 @@ f := λa. λb. a
 f := λa:Int. λb:Int. a
 ```
 
-那么这样的λ表达式就只能接受两个类型为`Bool`的参数，也就是说，下面三个函数调用中，1是合法的，而2和3是非法的：
+那么这样的λ表达式就只能接受两个类型为`Int`的参数，也就是说，下面三个函数调用中，1是合法的，而2和3是非法的：
 
 1. (✓) `(f 1 2)`
 2. (✕) `(f true false)`
@@ -56,6 +56,8 @@ NOT = λb:Bool. (b F T)
 f: U→V, x:U
  ==> (f x):V
 ```
+
+这个类型推导表达式在数学中有另一种写法，详见[补充2](#补充2语境-context)。
 
 ### 多元函数
 
@@ -234,9 +236,12 @@ data List u = Nil | Con u List
 data BinaryTree u = Leaf u | NonLeaf BinaryTree BinaryTree
 
 -- 练习1
-data Word = Noun | Verb | Adjective
-data NounPhrase = Noun | Noun NounPhrase | Adjective NounPhrase
-data Sentence = NounPhrase Verb | NounPhrase Verb NounPhrase
+data Noun = I | You | They | Apple | Tree
+data Verb = See | Watch | Grow
+data Adjective = Big | Small | Delicious | Old
+data Word = N Noun | V Verb | A Adjective
+data NounPhrase = NP1 Noun | NP2 Noun NounPhrase | NP3 Adjective NounPhrase
+data Sentence = S1 NounPhrase Verb | S2 NounPhrase Verb NounPhrase
 
 -- 练习2
 length :: [u] => (List u) -> Int
