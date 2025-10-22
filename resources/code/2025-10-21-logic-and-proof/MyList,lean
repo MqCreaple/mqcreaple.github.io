@@ -1,0 +1,57 @@
+inductive MyList (α : Type) : Type where
+  | nil  : MyList α
+  | cons : α -> MyList α -> MyList α
+
+def MyList.length {α : Type} (l : MyList α) : Nat := match l with
+  | MyList.nil => 0
+  | MyList.cons (_ : α) (ll : MyList α) => (MyList.length ll) + 1
+
+def MyList.concat {α : Type} (l m : MyList α) : MyList α :=
+  match l with
+    | MyList.nil => m
+    | MyList.cons (a : α) (ll : MyList α) => MyList.cons a (MyList.concat ll m)
+
+theorem concat_list_len_equals_sum_of_len {α : Type} (l m : MyList α) : (l.concat m).length = l.length + m.length :=
+  match l with
+    | MyList.nil => by
+      rw [MyList.concat, MyList.length, Nat.zero_add]
+    | MyList.cons (a : α) (ll : MyList α) => by
+      rw [MyList.concat, MyList.length, MyList.length, concat_list_len_equals_sum_of_len]
+      simp [Nat.add_comm, Nat.add_assoc]
+
+def MyList.is_empty {α : Type} (l : MyList α) : Prop := (l = MyList.nil)
+
+def MyList.at {α : Type} (l : MyList α) (n : Nat) : Option α :=
+  match l with
+    | MyList.nil => none
+    | MyList.cons (a : α) (ll : MyList α) => if n = 0 then a else (ll.at (n-1))
+
+theorem index_less_than_length_has_value {α : Type} (l : MyList α) (n : Nat)
+  : (n < l.length) → (l.at n).isSome = true
+  := match l with
+    | MyList.nil => by
+      rw [MyList.length, MyList.at]
+      simp
+    | MyList.cons (a : α) (ll : MyList α) => by
+      rw [MyList.length, MyList.at]
+      by_cases h : n = 0
+      · simp [h]
+      · have h' : (n > 0) := Nat.pos_iff_ne_zero.mpr h
+        simp [h]
+        let m := n - 1
+        have hs : (m + 1 = n) := by
+          have hnm : (n - 1 = m) := rfl
+          rw [← hnm]
+          exact Nat.succ_pred_eq_of_pos h'
+        rw [← hs]
+        simp
+        apply index_less_than_length_has_value
+
+def MyList.argmax? {α : Type} [Std.LinearOrderPackage α] (l : MyList α) : Option (Nat × α) :=
+  match l with
+    | MyList.nil => none
+    | MyList.cons (a : α) (ll : MyList α) =>
+      let ll_max := (MyList.argmax? ll);
+      match ll_max with
+        | none => some (0, a)
+        | some (i, b) => if a ≥ b then some (0, a) else some ((i + 1), b)
