@@ -210,7 +210,7 @@ $$(p\to q)\to((q\to\bot)\to(p\to\bot))$$
 
 $$(p\to q)\to(\lnot q\to\lnot p)$$
 
-也就是说，在直觉主义逻辑中，逆否命题仍然等价于原命题。但是直觉主义逻辑对逆否命题的解释和经典逻辑不一样。在直觉主义中，$p\to q$的逆否命题（即$\lnot q\to\lnot p=(q\to\bot)\to(p\to\bot)$）的含义是：“可以构造一种方法使得若从$q$能推出荒谬，则也能从$p$也能推出荒谬”。
+也就是说，在直觉主义逻辑中，逆否命题仍然等价于原命题。但是直觉主义逻辑对逆否命题的解释和经典逻辑不一样。在直觉主义中，$p\to q$的逆否命题（即$\lnot q\to\lnot p=(q\to\bot)\to(p\to\bot)$）的含义是：“可以构造一种方法使得若从$q$能推出矛盾，则也能从$p$也能推出矛盾”。
 
 除了复合符号$\lnot$，还有一个常用的复合符号：$\leftrightarrow$。其定义与经典逻辑一致：
 
@@ -333,9 +333,59 @@ $$p: \N\to *$$
 
 $$p(x):(x+1=5),\ x:\N$$
 
-某些编程语言中会有依赖类型，比如使用类型$\text{Vec}(n)$表示大小为$n$的数组。这里的$\text{Vec}$就是一个依赖类型，因为每给它一个不同的自然数$n$，它就会产生一个新的类型。
+> 补充：依赖类型
+>
+> 如果这个例子你没看明白的话，可以类比到通用型编程语言里。依赖类型的概念就好比，某个函数在输入1的时候会返回一个整数类型，而输入2的时候会返回一个字符串类型，而编译器能够在编译时就根据输入的数字来判断输出的类型会是什么。这就是依赖类型。
+>
+> ```typescript
+> // 一段“伪typescript”用来展示依赖类型
+> //
+> // 注意：本代码仅用于展示依赖类型的概念，并非可执行的javascript代码。直接运行该代码会在编译器中报错。
+> 
+> // `dependentType`函数返回了一个类型，而该类型会取决于输入的数
+> function dependentType(a: number): Type {
+>   if(a == 1) {
+>     return number;
+>   } else {
+>     return string;
+>   }
+> }
+> 
+> // `example`函数的返回类型是`dependentType`函数在a上的取值，而这个类型又可以有取值
+> function dependentFunc(a: number): dependentType(a) {
+>   if(a == 1) {
+>     return 123;
+>   } else {
+>     return "hello, world";
+>   }
+> }
+>
+> let a = dependentFunc(1);   // 编译器能检查出此时a的类型是number
+> let b = dependentFunc(2);   // 编译器能检查出此时b的类型是string
+> ```
+>
+> 而同样的代码则能在Lean中写出表达式：
+>
+> ```plaintext
+> def dependentType (a : Nat) : Type :=
+>   if  a = 1 then
+>     Nat
+>   else
+>     String
+> 
+> def dependentFunc (a : Nat) : dependentType a
+>   :=
+>     if h : a = 1 then
+>       cast (by rw [h]; dsimp [dependentType]) 1
+>     else
+>       cast (by dsimp [dependentType]; rw [if_neg h]) "Hello"
+> ```
+>
+> （由于编译器无法直接判断`dependentType 1 = Nat`，我们需要在每个分支中使用`cast`函数做类型转换，并提供`dependentType x`在`x = 1`和`x ≠ 1`时的证明）
+>
+> 某些编程语言中会有依赖类型，比如使用类型$\text{Vec}(n)$表示大小为$n$的数组。这里的$\text{Vec}$就是一个依赖类型，因为每给它一个不同的自然数$n$，它就会产生一个新的类型。
 
-那么整个命题“$\exist x:N.\ x+1=5$”对应着什么类型呢？首先它应该是一个像$p\land q$那样的交叉类型，第一部分放构造出的自然数$x$，而第二部分放$p(x):=(x+1=5)$的证明。也就是说，它的类型是：
+说回这里的命题类型。那么整个命题“$\exist x:N.\ x+1=5$”对应着什么类型呢？首先它应该是一个像$p\land q$那样的交叉类型，第一部分放构造出的自然数$x$，而第二部分放$p(x):=(x+1=5)$的证明。也就是说，它的类型是：
 
 $$\N\times(x+1=5)$$
 
@@ -405,7 +455,7 @@ theorem example3(p q r : Prop) : (p → q → r) → (p ∧ q → r) :=
   fun f : (p → q → r) => fun a : (p ∧ q) => (f a.left a.right)
 ```
 
-其中`Or`就是我们之前说的联合类型，有`Or.inl`和`Or.inr`两种情况。`And`则是交叉类型，其内部包含两个元素，第一个用`.left`访问，第二个用`.right`访问，也可以用`And.intro a b`直接创建一个`And`对象。
+其中`Or`就是我们之前说的联合类型，有`Or.inl`和`Or.inr`两种情况。`And`则是交叉类型，其内部包含两个元素，第一个用`.left`访问，第二个用`.right`访问，也可以用`And.intro a b`或者元组`⟨a, b⟩`创建一个`And`对象。
 
 而Lean不仅可以检验命题逻辑，还可以做谓词逻辑。比如之前例子中的这个命题：
 
