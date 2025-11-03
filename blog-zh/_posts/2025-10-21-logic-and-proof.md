@@ -6,7 +6,7 @@ tags: ["lambda-calculus", "computation", "mathematics"]
 
 本期我想继续上次关于[有类型λ演算]({% link blog-zh/_posts/2025-09-03-typed-lambda.md %})的讨论，详细说一说直觉主义逻辑以及它在自动化数学定理证明方面的应用。在开始这个问题之前，我们先来谈谈，直觉主义是什么？
 
-## 逻辑：古典主义和直觉主义
+## 逻辑：经典主义和直觉主义
 
 大家在高中数学课上可能学过一些基础的逻辑学了。**逻辑学**研究的是命题和命题间的关系，而一个逻辑系统定义了什么样的推理方式是合理的。比如大家都熟悉的亚里士多德三段论：
 
@@ -61,6 +61,21 @@ tags: ["lambda-calculus", "computation", "mathematics"]
 |---|---|---|
 |**0**|1|1|
 |**1**|0|1|
+
+举个例子，如果你想用经典逻辑学证明这个命题：
+
+$$A\land (A\to B)\to B$$
+
+你可以直接枚举$A$和$B$两个命题的真值，列出真值表：
+
+|$A$|$B$|$A\to B$|$A\land (A\to B)$|$A\land (A\to B)\to B$|
+|:-:|:-:|:------:|:---------------:|:--------------------:|
+| 0 | 0 |   1    |       0         |           1          |
+| 0 | 1 |   1    |       0         |           1          |
+| 1 | 0 |   0    |       0         |           1          |
+| 1 | 1 |   1    |       1         |           1          |
+
+真值表最后一列的所有项都是1，意味着$A\land (A\to B)\to B$是一个恒真命题。证毕。
 
 而在直觉主义逻辑中，“逻辑真”和“逻辑假”的定义与经典逻辑中的定义略有不同：某个命题“逻辑真”被定义为“该命题可以构造出证明”，而“逻辑假”则被定义为“该命题可以构造出证伪”。**构造性证明（Constructive Proof）**是直觉主义的一个核心概念。
 
@@ -366,7 +381,7 @@ $$p(x):(x+1=5),\ x:\N$$
 >
 > 而同样的代码则能在Lean中写出表达式：
 >
-> ```plaintext
+> ```lean
 > def dependentType (a : Nat) : Type :=
 >   if  a = 1 then
 >     Nat
@@ -441,7 +456,7 @@ $$\prod_{x:\Z}(x^2\ge 0)$$
 
 Lean是一个函数式编程语言，因此如果你熟悉了刚刚我们用Haskell做的推导的话，只需要稍加学习Lean的基本语法便可以使用Lean来重写上面的几个证明：
 
-```plaintext
+```lean
 theorem example1(p q : Prop) : p → q → p :=
   fun a : p => fun _ : q => a
 
@@ -463,7 +478,7 @@ $$\forall x:\Z.\ x^2+1\ge 0$$
 
 用Lean来写就是这样的：
 
-```plaintext
+```lean
 theorem example4 : (∀ x : Int, x^2 >= 0) :=
   sorry
 ```
@@ -472,21 +487,21 @@ theorem example4 : (∀ x : Int, x^2 >= 0) :=
 
 既然全称量词对应着Π类型，而Π类型又是一种函数，我们便可以先把函数定义写出来：
 
-```plaintext
+```lean
 theorem example4 : (∀ x : Int, x^2 >= 0) :=
   fun x : Int => sorry
 ```
 
 如果你使用VSCode的Lean插件，你可以将鼠标放在这个`sorry`前面，就可以看到此处的已知变量和待证明的目标：
 
-```plaintext
+```lean
 x : Int
 ⊢ x ^ 2 ≥ 0
 ```
 
-也就是说，我们需要在这个`sorry`里放上`x ^ 2 ≥ 0 `的证明即可。一个完整的证明如下所示：
+也就是说，我们需要在这个`sorry`里放上`x ^ 2 ≥ 0`的证明即可。一个完整的证明如下所示：
 
-```plaintext
+```lean
 theorem int_square_equals_mul_itself (x : Int) : (x ^ 2 = x * x) := by
   rw [Int.pow_succ, Int.pow_succ, Int.pow_zero, Int.one_mul]
 
@@ -512,7 +527,7 @@ theorem example4 : (∀ x : Int, x ^ 2 >= 0) :=
 
 为了证明这个定理，我们引入了一个引理`int_square_equals_mul_itself`。这个引理的类型签名是这样的：
 
-```plaintext
+```lean
 theorem int_square_equals_mul_itself (x : Int) : (x ^ 2 = x * x)
 ```
 
@@ -522,7 +537,7 @@ $$\prod_{x:\Z}(x^2=x\times x)$$
 
 也就是说，上面这个`int_square_equals_mul_itself`的类型签名和下面这个是等价的：
 
-```plaintext
+```lean
 theorem int_square_equals_mul_itself : (∀ x : Int, x ^ 2 = x * x)
 ```
 
@@ -532,14 +547,14 @@ $$\exist x:\Z.\ x^2+2x-3 \lt 0$$
 
 写成Lean就是这样的：
 
-```plaintext
+```lean
 theorem example5 : (∃ x : Int, x ^ 2 + 2 * x - 3 < 0) :=
   sorry
 ```
 
 既然存在性命题对应Σ类型，而Σ类型就是一个元组，我们可以直接在证明里放上一个元组：
 
-```plaintext
+```lean
 theorem example5 : (∃ x : Int, x ^ 2 + 2 * x - 3 < 0) :=
   ⟨0, by simp⟩
 ```
@@ -548,14 +563,14 @@ theorem example5 : (∃ x : Int, x ^ 2 + 2 * x - 3 < 0) :=
 
 如果我们第一项放的不是0，而是2，那么在后一项化简的时候就会出错：
 
-```plaintext
+```lean
 theorem example5 : (∃ x : Int, x ^ 2 + 2 * x - 3 < 0) :=
   ⟨2, by simp⟩
 ```
 
 由于此时化简右侧会得到逻辑假，你会看到这样的错误信息：
 
-```plaintext
+```lean
 unsolved goals
 ⊢ False
 ```
@@ -566,7 +581,7 @@ unsolved goals
 
 Lean不仅可以用在纯数学上，也可以用来验证一个算法的正确性。比如，下面这段代码定义了一个简单的列表结构（如果你忘记了归纳类型也可以看[上期文章]({% link blog-zh/_posts/2025-09-03-typed-lambda.md %})回忆一下）：
 
-```plaintext
+```lean
 inductive MyList (α : Type) : Type where
   | nil  : MyList α
   | cons : α -> MyList α -> MyList α
@@ -583,7 +598,7 @@ def MyList.concat {α : Type} (l m : MyList α) : MyList α :=
 
 接下来我们就可以用Lean来证明，两个列表相连之后的长度等于其各自长度之和：
 
-```plaintext
+```lean
 theorem concat_list_len_equals_sum_of_len (l m : MyList α) : (MyList.length (MyList.concat l m)) = (MyList.length l) + (MyList.length m) :=
   match l with
     | MyList.nil => by
@@ -595,7 +610,7 @@ theorem concat_list_len_equals_sum_of_len (l m : MyList α) : (MyList.length (My
 
 也可以用来证明列表的第`i`个下标在`i`小于列表长度时一定非空：
 
-```plaintext
+```lean
 def MyList.is_empty {α : Type} (l : MyList α) : Prop := (l = MyList.nil)
 
 def MyList.at {α : Type} (l : MyList α) (n : Nat) : Option α :=

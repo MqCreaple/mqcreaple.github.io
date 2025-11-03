@@ -10,7 +10,7 @@ tags: ["lambda-calculus", "computation", "mathematics"]
 
 不妨看一下下面这个证明：
 
-```plaintext
+```lean
 theorem one_plus_one_is_two_2 : (∃ x : Nat, x + 1 = 2)
   := by exists 1
 ```
@@ -21,7 +21,7 @@ theorem one_plus_one_is_two_2 : (∃ x : Nat, x + 1 = 2)
 
 首先，我们在这段证明中省略了自然数的定义，以及自然数加法和自然数相等的定义。为了看清这段证明背后的细节，我们不妨自己实现一个自然数类型：
 
-```plaintext
+```lean
 inductive _Nat where
   | zero : _Nat
   | succ : _Nat → _Nat
@@ -42,7 +42,7 @@ $$\lang = \rang : \N\to\N\to\ast$$
 
 我们可以这样定义：
 
-```plaintext
+```lean
 inductive _NatEq : _Nat → _Nat → Prop where
   | rfl (x : _Nat) : (_NatEq x x)
 ```
@@ -51,7 +51,7 @@ inductive _NatEq : _Nat → _Nat → Prop where
 
 接下来我们还需要定义`∃`类型。[这篇文章]({% link blog-zh/_posts/2025-10-21-logic-and-proof.md %})里说过，存在谓词对应着类型理论中的Σ类型，因此我们可以这样定义：
 
-```plaintext
+```lean
 inductive _Exists (α : Sort u) (p : α → Prop) : Prop where
   | intro (x : α) (h : p x) : _Exists α p
 ```
@@ -62,7 +62,7 @@ $$\exist x:\N.\ x + 1 = 2$$
 
 用我们自己定义的`_Exists`来写的话就是：
 
-```plaintext
+```lean
 _Exists Nat (fun x : Nat => x + 1 = 2)
 ```
 
@@ -70,7 +70,7 @@ _Exists Nat (fun x : Nat => x + 1 = 2)
 
 之后我们就可以开始尝试证明`one_plus_one_is_two`了。完整证明如下：
 
-```plaintext
+```lean
 theorem one_plus_one_is_two
   : _Exists _Nat (fun x : _Nat => (_NatEq (_Nat.add x _one) _two))
   := _Exists.intro _one (_NatEq.rfl _two_)
@@ -84,7 +84,7 @@ theorem one_plus_one_is_two
 
 首先就是要重写`inductive`关键字定义的归纳类型。[这篇文章]({% link blog-zh/_posts/2025-09-03-typed-lambda.md %})里简要提到过怎么在λ演算中构建归纳类型~~然后我现在才知道我总结出来的这套东西有名字，叫[摩根森-斯科特编码](https://en.wikipedia.org/wiki/Mogensen%E2%80%93Scott_encoding)~~。比如，自然数类型
 
-```plaintext
+```lean
 inductive _Nat where
   | zero : _Nat
   | succ : _Nat → _Nat
@@ -118,7 +118,7 @@ _Nat.succ := λx:_Nat. λα:*. λzero:α. λsucc:(α→α). (succ (x α zero suc
 
 而`_Nat.add`的转译就简单多了。只需要原封不动地把表达式抄过来：
 
-```plaintext
+```lean
 def _Nat.add (a b : _Nat) : _Nat
   := match a with
     | _Nat.zero => b
@@ -139,7 +139,7 @@ _Nat.add := λa:_Nat. λb:_Nat.
 
 类似地，我们可以写出`_NatEq`的表达式。`_NatEq`类型都不像`_Nat`那样是个单纯的类型，而是依赖于某些变量的类型函数。但转写成λ演算的过程也大差不差。先把之前的Lean代码粘贴一下：
 
-```plaintext
+```lean
 inductive _NatEq : _Nat → _Nat → Prop where
   | rfl (x : _Nat) : (_NatEq x x)
 ```
@@ -257,7 +257,7 @@ one_plus_one_is_two :
 >
 > 在Lean中可以写下该定理的一个等价形式：
 >
-> ```plaintext
+> ```lean
 > def axiom_of_choice {α β : Sort u} (p : α → β → Prop) : (∀ x : α, ∃ y : β, p x y) → (∃ f : (α → β), ∀ x : α, p x (f x))
 > ```
 
@@ -272,7 +272,7 @@ Diaconescu's theorem](https://en.wikipedia.org/wiki/Diaconescu%27s_theorem)，�
 >
 > 用Lean来写：
 >
-> ```plaintext
+> ```lean
 > def choose (α : Sort u) (p : α → Prop) (h : ∃ (x : α), p x) : α
 > ```
 >
