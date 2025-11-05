@@ -11,7 +11,7 @@ div {
     display: block;
 }
 
-a {
+a, .article del a {
     color: #000000;
     text-decoration: none;
     cursor: pointer;
@@ -20,6 +20,10 @@ a {
 
 .article a {
     color: #1b603b;
+}
+
+.article del:hover a {
+    color: #2c9c60;
 }
 
 a:hover {

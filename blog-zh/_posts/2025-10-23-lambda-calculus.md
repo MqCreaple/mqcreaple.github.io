@@ -4,7 +4,7 @@ layout: blog
 tags: ["lambda-calculus", "computation", "mathematics"]
 ---
 
-之前写过许多篇关于λ演算和函数式编程的文章 [*]({% link blog-zh/_posts/2022-08-27-lambda.md %}) [*]({% link blog-zh/_posts/2022-09-02-y-combinator.md %}) [*]({% link blog-zh/_posts/2025-09-03-typed-lambda.md %}) [*]({% link blog-zh/_posts/2025-10-21-logic-and-proof.md %})。在这里，我想以Lean为例，展示一下一个简单的证明是如何一步步变成λ演算最底层的代码的。
+之前写过许多篇关于λ演算和函数式编程的文章 [[\*]]({% link blog-zh/_posts/2022-08-27-lambda.md %}) [[\*]]({% link blog-zh/_posts/2022-09-02-y-combinator.md %}) [[\*]]({% link blog-zh/_posts/2025-09-03-typed-lambda.md %}) [[\*]]({% link blog-zh/_posts/2025-10-21-logic-and-proof.md %})。在这里，我想以Lean为例，展示一下一个简单的证明是如何一步步变成λ演算最底层的代码的。
 
 ## 从1+1=2说起
 
