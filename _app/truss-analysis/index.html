@@ -24,7 +24,11 @@ output: true
 
         var renderSetting = new RenderSetting();
         let canvas = document.getElementById("canvas");
+        canvas.width = canvas.parentNode.clientWidth;
+        canvas.height = canvas.parentNode.clientWidth;
         let visualizationCanvas = document.getElementById("visualization-canvas");
+        visualizationCanvas.width = visualizationCanvas.parentNode.clientWidth;
+        visualizationCanvas.height = visualizationCanvas.parentNode.clientWidth;
         let handle = init_visualization_canvas(visualizationCanvas);
         let sim = new Simulation(canvas);
         let presets = [new PrattTrussPreset(), new WarrenTrussPreset(), new RectangularObjectPreset()];
@@ -85,17 +89,24 @@ output: true
             presetParams.innerHTML = "";
             let paramNames = preset.parameter_names();
             let paramDefaults = preset.parameter_defaults();
+            let table = document.createElement("table");
+            presetParams.appendChild(table);
             for(let i = 0; i < paramNames.length; i++) {
                 let input = document.createElement("input");
                 input.type = "number";
                 input.id = `preset-param-${i}`;
                 input.value = paramDefaults[i];
+                let td1 = document.createElement("td");
+                td1.appendChild(input);
                 let label = document.createElement("label");
                 label.for = `preset-param-${i}`;
                 label.innerHTML = paramNames[i];
-                presetParams.appendChild(input);
-                presetParams.appendChild(label);
-                presetParams.appendChild(document.createElement("br"));
+                let td2 = document.createElement("td");
+                td2.appendChild(label);
+                let tr = document.createElement("tr");
+                tr.appendChild(td1); tr.appendChild(td2);
+                tr.appendChild(document.createElement("td").appendChild(label));
+                table.appendChild(tr);
             }
         }
         presetsSelect.addEventListener("change", updatePresetParams);
@@ -113,6 +124,16 @@ output: true
     }
     run();
 </script>
+<style>
+    select, button {
+        width: 100%;
+        text-align: center;
+    }
+    div#preset-params {
+        overflow-x: scroll;
+        margin: 10px 0px;
+    }
+</style>
 {% endcapture %}
 
 {% capture content_left %}
@@ -130,46 +151,46 @@ output: true
     <p>Change the "Preset" selection and click "confirm" to load a preset truss.</p>
 </div>
 <div class="card">
-    <h3>Matrix Parameters</h3>
+    <h2>Matrix Parameters</h2>
     <canvas width="500" height="500" id="visualization-canvas">Your browser does not support canvas</canvas>
 </div>
 <div class="card">
+    <h2>Visualization</h2>
     <table>
         <tr>
-            <td>Show info: </td>
-            <td><input type="checkbox" id="show-info" /></td>
+            <td>Show info</td>
+            <td colspan="2"><input type="checkbox" id="show-info" /></td>
         </tr>
         <tr>
-            <td>Show Force: </td>
+            <td>Show Force</td>
             <td><input type="checkbox" id="show-forces-checkbox" /></td>
             <td><input type="number" id="show-forces-scale" /></td>
         </tr>
         <tr>
-            <td colspan="3">
+            <td>Truss Color Mode</td>
+            <td colspan="2">
                 <fieldset id="color-mode">
-                    <legend>Truss Color Mode</legend>
                     <input type="radio" id="color-mode-none" name="color-mode" value="None" />
                     <label for="color-mode-none">None</label>
+                    <br />
                     <input type="radio" id="color-mode-default" name="color-mode" value="Default" />
                     <label for="color-mode-default">Default</label>
+                    <br />
                     <input type="radio" id="color-mode-stress" name="color-mode" value="Stress" />
                     <label for="color-mode-stress">Stress</label>
+                    <br />
                     <input type="radio" id="color-mode-shear" name="color-mode" value="Shear" />
                     <label for="color-mode-shear">Shear</label>
                 </fieldset>
             </td>
         </tr>
-        <tr>
-            <td>Presets:</td>
-            <td>
-                <select id="preset-select"></select>
-                <div id="preset-params"></div>
-            </td>
-            <td>
-                <button id="preset-confirm">Confirm</button>
-            </td>
-        </tr>
     </table>
+</div>
+<div class="card">
+    <h2>Presets</h2>
+    <select id="preset-select"></select>
+    <div id="preset-params"></div>
+    <button id="preset-confirm">Confirm</button>
 </div>
 {% endcapture %}
 
