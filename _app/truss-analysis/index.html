@@ -1,0 +1,176 @@
+---
+title: Truss Analysis
+date: 2026-01-07
+layout: empty
+introduction: Compute the mechanical properties of truss structures.
+output: true
+---
+
+{% capture head %}
+<script type="module">
+    import init, {
+        Simulation,
+        RenderSetting,
+        ColorMode,
+        PrattTrussPreset,
+        WarrenTrussPreset,
+        RectangularObjectPreset,
+        init_visualization_canvas,
+        draw_visualization,
+    } from "./truss_analysis.js";
+
+    async function run() {
+        await init();
+
+        var renderSetting = new RenderSetting();
+        let canvas = document.getElementById("canvas");
+        let visualizationCanvas = document.getElementById("visualization-canvas");
+        let handle = init_visualization_canvas(visualizationCanvas);
+        let sim = new Simulation(canvas);
+        let presets = [new PrattTrussPreset(), new WarrenTrussPreset(), new RectangularObjectPreset()];
+
+        function renderLoop() {
+            sim.render(renderSetting, handle);
+            draw_visualization(visualizationCanvas);
+            requestAnimationFrame(renderLoop);
+        };
+        renderLoop();
+
+        let showInfo = document.getElementById("show-info");
+        showInfo.checked = renderSetting.show_info;
+        showInfo.addEventListener("change", e => {
+            renderSetting.show_info = showInfo.checked ? true : false;
+        });
+
+        let showForcesCheckbox = document.getElementById("show-forces-checkbox");
+        let showForcesScale = document.getElementById("show-forces-scale");
+        showForcesCheckbox.checked = (renderSetting.show_forces_scale !== undefined);
+        showForcesScale.disabled = (renderSetting.show_forces_scale === undefined);
+        showForcesScale.value = (renderSetting.show_forces_scale !== undefined) ? renderSetting.show_forces_scale : 0.0;
+        function showForcesEventHandler(e) {
+            let show = showForcesCheckbox.checked;
+            showForcesScale.disabled = !show;
+            if(show) {
+                renderSetting.show_forces_scale = parseFloat(showForcesScale.value);
+            } else {
+                renderSetting.show_forces_scale = undefined;
+            }
+        };
+        showForcesCheckbox.addEventListener("change", showForcesEventHandler);
+        showForcesScale.addEventListener("change", showForcesEventHandler);
+
+        let colorMode = document.getElementById("color-mode");
+        let colorModeNone = document.getElementById("color-mode-none");
+        let colorModeDefault = document.getElementById("color-mode-default");
+        let colorModeStress = document.getElementById("color-mode-stress");
+        let colorModeShear = document.getElementById("color-mode-shear");
+        let colorModeOptions = [colorModeNone, colorModeDefault, colorModeStress, colorModeShear];
+        colorModeOptions[renderSetting.color_mode].checked = true;
+        colorMode.addEventListener("change", e => {
+            renderSetting.color_mode = ColorMode[e.target.value];
+        });
+
+        let presetsSelect = document.getElementById("preset-select");
+        let presetParams = document.getElementById("preset-params");
+        let presetConfirm = document.getElementById("preset-confirm");
+        for(let i = 0; i < presets.length; i++) {
+            let preset = presets[i];
+            let option = document.createElement("option");
+            option.value = i;
+            option.innerHTML = preset.preset_name();
+            presetsSelect.appendChild(option);
+        };
+        function updatePresetParams() {
+            let preset = presets[parseInt(presetsSelect.value)];
+            presetParams.innerHTML = "";
+            let paramNames = preset.parameter_names();
+            let paramDefaults = preset.parameter_defaults();
+            for(let i = 0; i < paramNames.length; i++) {
+                let input = document.createElement("input");
+                input.type = "number";
+                input.id = `preset-param-${i}`;
+                input.value = paramDefaults[i];
+                let label = document.createElement("label");
+                label.for = `preset-param-${i}`;
+                label.innerHTML = paramNames[i];
+                presetParams.appendChild(input);
+                presetParams.appendChild(label);
+                presetParams.appendChild(document.createElement("br"));
+            }
+        }
+        presetsSelect.addEventListener("change", updatePresetParams);
+        updatePresetParams();
+        presetConfirm.addEventListener("click", () => {
+            let preset = presets[parseInt(presetsSelect.value)];
+            let paramDefaults = preset.parameter_defaults();
+            let params = new Float64Array(paramDefaults.length);
+            for(let i = 0; i < paramDefaults.length; i++) {
+                params[i] = parseFloat(document.getElementById(`preset-param-${i}`).value);
+            }
+            console.log(`Generating preset ${preset.preset_name()} with parameters ${params}.`);
+            preset.construct(params, sim);
+        });
+    }
+    run();
+</script>
+{% endcapture %}
+
+{% capture content_left %}
+<div class="card">
+    <h1>Truss Analysis</h1>
+    <div id="canvas-container">
+        <canvas id="canvas" width="1000" height="1000">Your browser does not support canvas</canvas>
+    </div>
+</div>
+{% endcapture %}
+
+{% capture content_right %}
+<div class="card">
+    <p>Click on the empty space to add a free node. Hold <code>Shift</code> and click to change the node type. Click on any two nodes to add a new member between them.</p>
+    <p>Change the "Preset" selection and click "confirm" to load a preset truss.</p>
+</div>
+<div class="card">
+    <h3>Matrix Parameters</h3>
+    <canvas width="500" height="500" id="visualization-canvas">Your browser does not support canvas</canvas>
+</div>
+<div class="card">
+    <table>
+        <tr>
+            <td>Show info: </td>
+            <td><input type="checkbox" id="show-info" /></td>
+        </tr>
+        <tr>
+            <td>Show Force: </td>
+            <td><input type="checkbox" id="show-forces-checkbox" /></td>
+            <td><input type="number" id="show-forces-scale" /></td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <fieldset id="color-mode">
+                    <legend>Truss Color Mode</legend>
+                    <input type="radio" id="color-mode-none" name="color-mode" value="None" />
+                    <label for="color-mode-none">None</label>
+                    <input type="radio" id="color-mode-default" name="color-mode" value="Default" />
+                    <label for="color-mode-default">Default</label>
+                    <input type="radio" id="color-mode-stress" name="color-mode" value="Stress" />
+                    <label for="color-mode-stress">Stress</label>
+                    <input type="radio" id="color-mode-shear" name="color-mode" value="Shear" />
+                    <label for="color-mode-shear">Shear</label>
+                </fieldset>
+            </td>
+        </tr>
+        <tr>
+            <td>Presets:</td>
+            <td>
+                <select id="preset-select"></select>
+                <div id="preset-params"></div>
+            </td>
+            <td>
+                <button id="preset-confirm">Confirm</button>
+            </td>
+        </tr>
+    </table>
+</div>
+{% endcapture %}
+
+{% include app-template.html %}
