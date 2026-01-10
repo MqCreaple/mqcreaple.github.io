@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="65.266792mm"
+   height="49.813332mm"
+   viewBox="0 0 65.266792 49.813332"
+   version="1.1"
+   id="svg1"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <g
+     id="layer1"
+     transform="translate(-11.34917,-5.9941085)">
+    <rect
+       style="fill:#959aa3;fill-opacity:1;stroke:#000000;stroke-width:0.5;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       id="rect1"
+       width="55"
+       height="2"
+       x="-16.419653"
+       y="57.141163"
+       ry="0.49999997"
+       transform="rotate(-40.214173)" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:#eb1313;stroke-width:0.499999;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="M 47.645645,35.821213 V 53.253071 Z"
+       id="path1" />
+    <path
+       style="fill:#eb1313;fill-opacity:1;stroke:#eb1313;stroke-width:0.499999;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="m 47.645643,53.253071 1.000001,-2 h -2 z"
+       id="path2" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:#eb1313;stroke-width:0.499999;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="M 26.000001,53.999998 11.599147,44.177315 Z"
+       id="path1-9" />
+    <path
+       style="fill:#eb1313;fill-opacity:1;stroke:#eb1313;stroke-width:0.499999;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="m 11.599148,44.177314 1.088755,1.953104 1.12698,-1.652246 z"
+       id="path2-0" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:#eb1313;stroke-width:0.499999;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="M 66.203118,20.406927 76.365972,6.2440868 Z"
+       id="path1-6" />
+    <path
+       style="fill:#eb1313;fill-opacity:1;stroke:#eb1313;stroke-width:0.499999;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="m 76.365973,6.2440876 -1.978478,1.0419328 1.624938,1.1660094 z"
+       id="path2-4" />
+    <text
+       xml:space="preserve"
+       style="font-size:5.29167px;line-height:0;font-family:STXingkai;-inkscape-font-specification:STXingkai;fill:#eb1313;fill-opacity:1;stroke:#eb1313;stroke-width:0.499999;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       x="50.739906"
+       y="50.157417"
+       id="text3"><tspan
+         id="tspan3"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.29167px;font-family:'Calisto MT';-inkscape-font-specification:'Calisto MT Italic';stroke-width:0.5"
+         x="50.739906"
+         y="50.157417">G</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:5.29164px;line-height:0;font-family:STXingkai;-inkscape-font-specification:STXingkai;fill:#eb1313;fill-opacity:1;stroke:#eb1313;stroke-width:0.5;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       x="18.799574"
+       y="43.970783"
+       id="text3-2"><tspan
+         id="tspan3-8"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.29164px;font-family:'Calisto MT';-inkscape-font-specification:'Calisto MT Italic';stroke-width:0.5"
+         x="18.799574"
+         y="43.970783">f<tspan
+   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:65%;font-family:'Calisto MT';-inkscape-font-specification:'Calisto MT Italic';baseline-shift:sub"
+   id="tspan4">s</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:5.29164px;line-height:0;font-family:STXingkai;-inkscape-font-specification:STXingkai;fill:#eb1313;fill-opacity:1;stroke:#eb1313;stroke-width:0.5;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       x="66.14917"
+       y="11.328077"
+       id="text3-2-4"><tspan
+         id="tspan3-8-6"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.29164px;font-family:'Calisto MT';-inkscape-font-specification:'Calisto MT Italic';stroke-width:0.5"
+         x="66.14917"
+         y="11.328077">f<tspan
+   style="font-size:65%;baseline-shift:sub"
+   id="tspan5">e</tspan></tspan></text>
+  </g>
+</svg>
