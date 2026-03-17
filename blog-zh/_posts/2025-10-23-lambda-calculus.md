@@ -1,5 +1,5 @@
 ---
-title: 从λ演算高级函数式语言
+title: 从λ演算到高级函数式语言
 layout: blog
 tags: ["lambda-calculus", "computation", "mathematics"]
 ---

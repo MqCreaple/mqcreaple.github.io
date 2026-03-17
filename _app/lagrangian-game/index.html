@@ -1,0 +1,84 @@
+---
+title: Lagrangian Game
+date: 2026-01-19
+layout: empty
+introduction: A game inspired by lagrangian mechanics
+output: true
+---
+
+{% capture head %}
+<script src="https://cdn.plot.ly/plotly-3.3.0.min.js" charset="utf-8"></script>
+<script src="../lib/webgl.js"></script>
+<script src="game.js"></script>
+<script src="render.js"></script>
+<script src="interaction.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        let canvasContainer = document.getElementById("lagrangian");
+        let canvasGL = document.getElementById("lagrangian-gl");
+        let gl = canvasGL.getContext("webgl");
+        let canvas2D = document.getElementById("lagrangian-2d");
+        let ctx = canvas2D.getContext("2d");
+        let parentWidth = canvasContainer.parentElement.clientWidth;
+        canvasContainer.style.width = parentWidth + "px";
+        canvasContainer.style.height = parentWidth + "px";
+        canvasGL.width = parentWidth;
+        canvasGL.height = parentWidth;
+        canvas2D.width = parentWidth;
+        canvas2D.height = parentWidth;
+
+        let levelNameSpan = document.getElementById("level-name");
+        let inputArea = document.getElementById("input-area");
+
+        let curLevel = LEVLES[3];
+        levelNameSpan.innerHTML = curLevel.name;
+        const glHandle = initGL(curLevel, canvasGL, gl);
+        var [timeArray, posArray] = initInput(curLevel, inputArea);
+        renderCanvas(curLevel, canvas2D, ctx, [-1.0, 1.0], [-1.0, 1.0], timeArray, posArray);
+
+        canvas2D.addEventListener("wheel", (e) => handleCanvasWheelEvent(e, curLevel, canvasGL, gl, glHandle, canvas2D, ctx, timeArray, posArray));
+        addInputMouseHandler(curLevel, inputArea, canvas2D, ctx, timeArray, posArray);
+    });
+</script>
+<style>
+    #canvas-container {
+        position: relative;
+    }
+
+    #canvas-container canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    #lagrangian-gl {
+        z-index: 0;
+    }
+
+    #lagrangian-2d {
+        z-index: 1;
+    }
+</style>
+{% endcapture %}
+
+{% capture content_left %}
+<div class="card">
+    <h1>Lagrangian Game</h1>
+    <p>Level: <span id="level-name"></span></p>
+    <div id="canvas-container">
+        <div id="lagrangian">
+            <canvas id="lagrangian-gl" width="1000" height="1000">Your browser does not support canvas</canvas>
+            <canvas id="lagrangian-2d" width="1000" height="1000">Your browser does not support canvas</canvas>
+        </div>
+    </div>
+</div>
+{% endcapture %}
+
+{% capture content_right %}
+<div class="card">
+    <p>Draw your input here:</p>
+    <div id="input-area"></div>
+</div>
+{% endcapture %}
+
+{% include app-template.html %}

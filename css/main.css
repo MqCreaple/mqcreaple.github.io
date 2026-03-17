@@ -311,6 +311,20 @@ ul.react li:hover {
     margin: 0;
 }
 
+@media (max-width: 768px) {
+    #main {
+        flex-direction: column;
+    }
+
+    #left {
+        width: 100%;
+    }
+
+    #right {
+        width: 100%;
+    }
+}
+
 #avatar {
     position: sticky;
     text-align: center;
