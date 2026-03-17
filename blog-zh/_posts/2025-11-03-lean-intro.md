@@ -1,7 +1,7 @@
 ---
 title: Lean简介：基础程序证明
 layout: blog
-tags: ["lean", "computation", "mathematics"]
+tags: ["lean", "programming-language", "computation", "mathematics"]
 ---
 
 本文主要面向没有接触过Lean的初学者，将Lean的各个功能以一种更容易理解的顺序呈现给读者。建议读者具有以下前置知识后再阅读：

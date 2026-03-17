@@ -1,7 +1,7 @@
 ---
 title: 物理的思维和数学的思维
 layout: blog
-tag: ["miscellaneous", "physics", "math"]
+tag: ["miscellaneous", "physics", "mathematics"]
 ---
 
 ~~几个月没写东西，现在感觉不会中文了~~

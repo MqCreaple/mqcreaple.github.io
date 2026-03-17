@@ -1,7 +1,7 @@
 ---
 title: 生命，意识，AI
 layout: blog
-tags: ["science-fiction", "AI"]
+tags: ["science-fiction"]
 ---
 
 生命：能够进行复制（繁殖）的物体

@@ -11,6 +11,11 @@ div {
     display: block;
 }
 
+div.sticky {
+    position: sticky;
+    top: 1%;
+}
+
 a, .article del a {
     color: #000000;
     text-decoration: none;
@@ -255,6 +260,11 @@ ul.react li:hover {
     content: "// ";
 }
 
+.article-tag {
+    margin: 0 6px;
+    white-space: nowrap;
+}
+
 /* element styles */
 
 #container {
@@ -326,10 +336,14 @@ ul.react li:hover {
 }
 
 #avatar {
-    position: sticky;
     text-align: center;
     display: block;
     top: 1%;
+}
+
+#article-tags {
+    text-align: center;
+    display: block;
 }
 
 #image {

@@ -1,7 +1,7 @@
 ---
 title: 浅谈AI对我写作的影响
 layout: blog
-tags: ["society", "miscellaneous"]
+tags: ["miscellaneous"]
 ---
 
 已经有许久没有更新文章了，不知道这个博客还有没有人在关注。最近这一段时间里生成式AI技术进步十分迅猛，而我个人也感觉它对我的写作热情影响很大。

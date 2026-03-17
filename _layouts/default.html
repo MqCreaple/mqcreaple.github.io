@@ -24,7 +24,10 @@
             {{content}}
         </div>
         <div id='right'>
-            {% include avatar.html %}
+            <div class="sticky">
+                {% include avatar.html %}
+                {% include tags.html %}
+            </div>
         </div>
     </div>
     {% include footer.html %}

@@ -1,7 +1,7 @@
 ---
 title: 算法化求导
 layout: blog
-tags: ["math", "calculus", "algorithm"]
+tags: ["mathematics", "calculus", "algorithm"]
 ---
 
 求导是一种算符，输入一个表达式，输出另一个表达式

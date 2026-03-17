@@ -1,0 +1,41 @@
+---
+layout: default
+title: Tags
+lang: en
+permalink: /tags/
+---
+
+<script>
+    // Use liquid to generate a list of all articles
+    const ARTICLES = {
+        {% for tag in site.tags %}
+        "{{tag[0]}}": [
+            {% for post in tag[1] %}
+            ["{{post.url}}", "{{post.title}}", "{{post.date | date_to_string: 'ordinal'}}", "{{post.tags | join: ' '}}"],
+            {% endfor %}
+        ],
+        {% endfor %}
+    };
+
+    let queryString = window.location.search;
+    let urlParams = new URLSearchParams(queryString);
+    let tag = urlParams.get("tag");
+    document.addEventListener("DOMContentLoaded", () => {
+        let title = document.getElementById("title");
+        title.innerHTML = "Tag: " + tag;
+        for(let item of ARTICLES[tag]) {
+            let content = `<div class="card indexing" onclick="window.open('${item[0]}')">
+    <h2>${item[1]}</h2>
+    <div class="inline">
+        <p style="margin: 0 5px;"><i class="fa-solid fa-calendar-alt"></i>${item[2]}</p>
+        <p style="margin: 0 5px;"><i class="fa-solid fa-tag"></i>${item[3]}</p>
+    </div>
+</div>`;
+            document.getElementById("left").innerHTML += content;
+        }
+    });
+</script>
+
+<div class="card" style="background-color: rgba(216, 237, 29, 0.7); color: #efefef;">
+    <h1 id="title">Tag: -</h1>
+</div>

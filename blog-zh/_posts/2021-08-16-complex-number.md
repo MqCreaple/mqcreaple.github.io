@@ -1,7 +1,7 @@
 ---
 title: 对于复数的另一种理解
 layout: blog
-tags: ["math"]
+tags: ["mathematics"]
 ---
 
 ## 应付考试
