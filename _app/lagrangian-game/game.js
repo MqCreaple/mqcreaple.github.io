@@ -8,8 +8,9 @@ class Level {
      * @param {number} startT The time to start at.
      * @param {number} endX The position to end at.
      * @param {number} endT The time to end at.
+     * @param {(t: number) => number | undefined} solution The solution to the lagrangian equation at given constraints.
      */
-    constructor(name, lagrangian, glslCode, latexCode, startX, startT, endX, endT) {
+    constructor(name, lagrangian, glslCode, latexCode, startX, startT, endX, endT, solution) {
         /** @type {string} */
         this.name = name;
         /** @type {(x: number, v: number) => number} */
@@ -26,6 +27,8 @@ class Level {
         this.endX = endX;
         /** @type {number} */
         this.endT = endT;
+        /** @type {(t: number) => number | undefined} */
+        this.solution = solution;
     }
 }
 
@@ -36,6 +39,7 @@ const LEVELS = [
         `return 0.5 * v * v;`,
         "\\mathcal{L} = \\frac{1}{2} \\dot{x}^2",
         -1, 0, 1, 1,
+        (t) => t * 2 - 1,
     ),
     new Level(
         "Simple Gravitation",
@@ -43,27 +47,36 @@ const LEVELS = [
         `return 0.5 * v * v - x;`,
         "\\mathcal{L} = \\frac{1}{2} \\dot{x}^2 - x",
         0.5, 0, 0, 1,
+        (t) => 0.5 - 0.5 * t * t,
     ),
     new Level(
         "Simple Harmonic Oscillation",
         (x, v) => { return 0.5 * v * v - 0.5 * x * x; },
         `return 0.5 * v * v - 0.5 * x * x;`,
         "\\mathcal{L} = \\frac{1}{2} \\dot{x}^2 - \\frac{1}{2} x^2",
-        -1, 0, 1, 2 * Math.PI,
+        -1, 0, 1, Math.PI,
+        (t) => -Math.cos(t),
     ),
     new Level(
         "Simple Pendulum",
         (x, v) => { return 0.5 * v * v - (1.0 - Math.cos(x)); },
         `return 0.5 * v * v - (1.0 - cos(x));`,
         "\\mathcal{L} = \\frac{1}{2} \\dot{x}^2 - (1 - \\cos(x))",
-        -1, 0, 1, 2 * Math.PI,
+        -1, 0, 1, Math.PI,
     ),
     new Level(
-        "Coulombic Potential in Special Relativity",
+        "Linear Potential in Special Relativity",
+        (x, v) => { return 1.0 - Math.sqrt(1.0 - v * v) - x; },
+        `if(abs(v) < 1.0) { return 1.0 - sqrt(1.0 - v * v) - x; } else { return 0.0; }`,
+        "\\mathcal{L} = 1 - \\sqrt{1 - \\dot{x}^2} - x",
+        0.5, 0, 0, 1,
+    ),
+    new Level(
+        "Quadratic Potential in Special Relativity",
         (x, v) => { return 1.0 - Math.sqrt(1.0 - v * v) - 0.5 * x * x; },
         `if(abs(v) < 1.0) { return 1.0 - sqrt(1.0 - v * v) - 0.5 * x * x; } else { return 0.0; }`,
         "\\mathcal{L} = 1 - \\sqrt{1 - \\dot{x}^2} - \\frac{1}{2} x^2",
-        -1, 0, 1, 2 * Math.PI,
+        -1, 0, 1, Math.PI,
     ),
 ];
 

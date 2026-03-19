@@ -48,7 +48,7 @@ del {
     transition: color .4s;
 }
 
-del:hover {
+del:hover, button:hover {
     color: #efefef;
 }
 

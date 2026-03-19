@@ -76,6 +76,19 @@ output: true
             Plotly.restyle(inputArea, { y: [posArray] }, [0]);
             renderCanvas(level, canvas2D, ctx, xRange, yRange, timeArray, posArray, actionElem);
         })
+
+        // check solution
+        const solutionButton = document.getElementById("solution");
+        solutionButton.addEventListener("click", () => {
+            if(level.solution === undefined) {
+                alert("No analytical solution exists for this Lagrangian!");
+            }
+            for(let i = 0; i < posArray.length; i++) {
+                posArray[i] = level.solution(timeArray[i]);
+            }
+            Plotly.restyle(inputArea, { y: [posArray] }, [0]);
+            renderCanvas(level, canvas2D, ctx, xRange, yRange, timeArray, posArray, actionElem);
+        });
     });
 </script>
 <style>
@@ -97,7 +110,7 @@ output: true
         z-index: 1;
     }
 
-    #level-select, #smooth {
+    #level-select, button {
         width: 100%;
         justify-content: center;
     }
@@ -122,6 +135,7 @@ output: true
 <div class="card">
     <h2>Level</h2>
     <select id="level-select"></select>
+    <p><button id="solution">Check Solution</button></p>
     <p><button id="smooth">Smooth the Input</button></p>
 </div>
 <div class="card">
