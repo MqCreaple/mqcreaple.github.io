@@ -1,5 +1,5 @@
-var xRange = [-1.0, 1.0];
-var yRange = [-1.0, 1.0];
+var xRange = [-1.2, 1.2];
+var yRange = [-1.2, 1.2];
 
 /**
  * @typedef {Object} GLHandle
@@ -62,8 +62,9 @@ function handleCanvasWheelEvent(event, level, canvasGL, gl, glHandle, canvas2D, 
  * @param {CanvasRenderingContext2D} ctx
  * @param {Float64Array} timeArray 
  * @param {Float64Array} posArray 
+ * @param {HTMLSpanElement | undefined} actionElement 
  */
-function addInputMouseHandler(level, inputArea, canvas2D, ctx, timeArray, posArray) {
+function addInputMouseHandler(level, inputArea, canvas2D, ctx, timeArray, posArray, actionElement) {
     const N = posArray.length;
     /** @type {[number, number] | undefined} */
     let lastDraggedPoint = undefined;    // the last dragged point (i, xval)
@@ -85,7 +86,7 @@ function addInputMouseHandler(level, inputArea, canvas2D, ctx, timeArray, posArr
             : inputArea._fullLayout.yaxis.p2l(py);
 
         updateFunction(tVal, xVal);
-        renderCanvas(level, canvas2D, ctx, xRange, yRange, timeArray, posArray);
+        renderCanvas(level, canvas2D, ctx, xRange, yRange, timeArray, posArray, actionElement);
     });
 
     function updateFunction(tVal, xVal) {

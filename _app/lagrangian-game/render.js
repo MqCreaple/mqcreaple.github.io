@@ -314,8 +314,9 @@ function renderGL(level, canvasGL, gl, glHandle, xRange, yRange) {
  * @param {[number, number]} vRange 
  * @param {Float64Array} timeArray The array of times. Needs to be sorted and evenly spaced.
  * @param {Float64Array} posArray The array of positions. Each index is corresponding to the time with the same index in tArray.
+ * @param {HTMLSpanElement | undefined} actionElement The element to display the action.
  */
-function renderCanvas(level, canvas2D, ctx, xRange, vRange, timeArray, posArray) {
+function renderCanvas(level, canvas2D, ctx, xRange, vRange, timeArray, posArray, actionElement) {
     // draw grid lines
     const [xMin, xMax] = xRange;
     const [vMin, vMax] = vRange;
@@ -437,20 +438,7 @@ function renderCanvas(level, canvas2D, ctx, xRange, vRange, timeArray, posArray)
     }
 
     // draw path
-    // Compute velocity array using numerical differentiation
-    const velocity = new Float64Array(posArray.length);
-    for (let i = 0; i < posArray.length; i++) {
-        if (i === 0) {
-            // Forward difference for first point
-            velocity[i] = (posArray[1] - posArray[0]) / (timeArray[1] - timeArray[0]);
-        } else if (i === posArray.length - 1) {
-            // Backward difference for last point
-            velocity[i] = (posArray[i] - posArray[i - 1]) / (timeArray[i] - timeArray[i - 1]);
-        } else {
-            // Central difference for interior points
-            velocity[i] = (posArray[i + 1] - posArray[i - 1]) / (timeArray[i + 1] - timeArray[i - 1]);
-        }
-    }
+    const velocity = computeVelocity(timeArray, posArray);
 
     // Draw the trajectory path
     ctx.strokeStyle = "#000000";
@@ -471,4 +459,9 @@ function renderCanvas(level, canvas2D, ctx, xRange, vRange, timeArray, posArray)
         ctx.arc(x, y, 3, 0, 2 * Math.PI);
     }
     ctx.fill();
+
+    // Write the action value to the action element
+    if(actionElement !== undefined) {
+        actionElement.innerHTML = computeAction(level, timeArray, posArray).toPrecision(4);
+    }
 }

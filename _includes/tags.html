@@ -2,7 +2,7 @@
     <h2>文章标签 | Tags</h2>
     <p>
         {% for tag in site.tags %}
-        <span class="article-tag" style="font-size: {{tag[1] | size | divided_by: 1.0 | round | plus: 10 | at_most: 30}}px"><a href="/tags/?tag={{tag[0]}}">{{tag[0]}}</a></span>
+        <span class="article-tag" style="font-size: {{tag[1] | size | divided_by: 1.0 | round | plus: 10 | at_most: 30}}px"><a href="/tags/?tag={{tag[0] | url_encode}}">{{tag[0]}}</a></span>
         {% endfor %}
     </p>
 </div>

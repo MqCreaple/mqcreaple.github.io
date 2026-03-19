@@ -12,6 +12,7 @@ output: true
 <script src="game.js"></script>
 <script src="render.js"></script>
 <script src="interaction.js"></script>
+<script src="/js/katex.min.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         let canvasContainer = document.getElementById("lagrangian");
@@ -27,17 +28,54 @@ output: true
         canvas2D.width = parentWidth;
         canvas2D.height = parentWidth;
 
-        let levelNameSpan = document.getElementById("level-name");
-        let inputArea = document.getElementById("input-area");
+        const levelNameSpan = document.getElementById("level-name");
+        const formula = document.getElementById("formula");
+        const inputArea = document.getElementById("input-area");
+        const actionElem = document.getElementById("action-value");
 
-        let curLevel = LEVLES[3];
-        levelNameSpan.innerHTML = curLevel.name;
-        const glHandle = initGL(curLevel, canvasGL, gl);
-        var [timeArray, posArray] = initInput(curLevel, inputArea);
-        renderCanvas(curLevel, canvas2D, ctx, [-1.0, 1.0], [-1.0, 1.0], timeArray, posArray);
+        var level = LEVELS[0];
+        var glHandle = initGL(level, canvasGL, gl);
+        var [timeArray, posArray] = initInput(level, inputArea);
+        canvas2D.addEventListener("wheel", (e) => handleCanvasWheelEvent(e, level, canvasGL, gl, glHandle, canvas2D, ctx, timeArray, posArray));
+        addInputMouseHandler(level, inputArea, canvas2D, ctx, timeArray, posArray, actionElem);
 
-        canvas2D.addEventListener("wheel", (e) => handleCanvasWheelEvent(e, curLevel, canvasGL, gl, glHandle, canvas2D, ctx, timeArray, posArray));
-        addInputMouseHandler(curLevel, inputArea, canvas2D, ctx, timeArray, posArray);
+        function updateLevel(level) {
+            levelNameSpan.innerHTML = level.name;
+            katex.render(level.latexCode, formula, { displayMode: true });
+            glHandle = initGL(level, canvasGL, gl);
+            [timeArray, posArray] = initInput(level, inputArea);
+            addInputMouseHandler(level, inputArea, canvas2D, ctx, timeArray, posArray, actionElem);
+            renderGL(level, canvasGL, gl, glHandle, xRange, yRange);
+            renderCanvas(level, canvas2D, ctx, xRange, yRange, timeArray, posArray, actionElem);
+        }
+        updateLevel(level);
+
+        // add all levels to level selector
+        const levelSelect = document.getElementById("level-select");
+        for(let i = 0; i < LEVELS.length; i++) {
+            const level = LEVELS[i];
+            const option = document.createElement("option");
+            option.value = i;
+            option.innerHTML = level.name;
+            levelSelect.appendChild(option);
+        }
+        levelSelect.addEventListener("change", (e) => {
+            const index = e.target.value;
+            level = LEVELS[index];
+            updateLevel(level);
+        });
+
+        // add button to smooth the drawn function
+        const smooth = document.getElementById("smooth");
+        smooth.addEventListener("click", () => {
+            let newPosArray = Float64Array.from(posArray);
+            for(let i = 1; i < posArray.length - 1; i++) {
+                newPosArray[i] = (posArray[i-1] + posArray[i] + posArray[i+1]) / 3;
+            }
+            posArray.set(newPosArray);
+            Plotly.restyle(inputArea, { y: [posArray] }, [0]);
+            renderCanvas(level, canvas2D, ctx, xRange, yRange, timeArray, posArray, actionElem);
+        })
     });
 </script>
 <style>
@@ -58,6 +96,11 @@ output: true
     #lagrangian-2d {
         z-index: 1;
     }
+
+    #level-select, #smooth {
+        width: 100%;
+        justify-content: center;
+    }
 </style>
 {% endcapture %}
 
@@ -65,10 +108,11 @@ output: true
 <div class="card">
     <h1>Lagrangian Game</h1>
     <p>Level: <span id="level-name"></span></p>
+    <p id="formula"></p>
     <div id="canvas-container">
         <div id="lagrangian">
-            <canvas id="lagrangian-gl" width="1000" height="1000">Your browser does not support canvas</canvas>
-            <canvas id="lagrangian-2d" width="1000" height="1000">Your browser does not support canvas</canvas>
+            <canvas id="lagrangian-gl" width="800" height="800">Your browser does not support canvas</canvas>
+            <canvas id="lagrangian-2d" width="800" height="800">Your browser does not support canvas</canvas>
         </div>
     </div>
 </div>
@@ -76,6 +120,12 @@ output: true
 
 {% capture content_right %}
 <div class="card">
+    <h2>Level</h2>
+    <select id="level-select"></select>
+    <p><button id="smooth">Smooth the Input</button></p>
+</div>
+<div class="card">
+    <p>Current action value: <span id="action-value"></span></p>
     <p>Draw your input here:</p>
     <div id="input-area"></div>
 </div>
