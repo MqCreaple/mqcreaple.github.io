@@ -56,7 +56,7 @@ tags: ["social-science", "mathematics"]
 
 那么在此基础上发明出来的“智商测试”，就必定是对一个复杂概念——智商——简化后的结果。比如我们常见的标准智商测试题通常都是这样的找规律题：
 
-![Raven Matrix](/img/Raven-Matrix-sample.svg)*莱文方阵（来源：wikipedia）*
+![Raven Matrix](/img/blog/2024-04-07/Raven-Matrix-sample.svg)*莱文方阵（来源：wikipedia）*
 
 如果一个人做这样的题比另一个人得分更高，你能说这个人就比另一个人聪明吗？取决于你怎么定义“智商”。“智商”这个概念其实是片面的，人的智力水平是不能简单归结于做智商测试题的能力。
 

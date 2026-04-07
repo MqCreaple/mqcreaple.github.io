@@ -61,7 +61,7 @@ private:
 
 一束光在时空图中就是一条斜率为光速的射线：
 
-![spacetime-diagram](/img/ray-spacetime-diagram-wikipedia.svg)
+![spacetime-diagram](/img/blog/2022-10-17/ray-spacetime-diagram-wikipedia.svg)
 
 *图源：[Wikipedia](https://en.wikipedia.org/wiki/Spacetime_diagram)*
 
@@ -89,7 +89,7 @@ LVec4 atDistance(float dist) const {
 
 在走了一段距离之后，世界参考系下坐标的时间和空间都会增加。
 
-![spacetime-diagram](/img/ray-spacetime-diagram-0.png)
+![spacetime-diagram](/img/blog/2022-10-17/ray-spacetime-diagram-0.png)
 
 ~~众所周知geogebra啥都能画~~
 
@@ -136,7 +136,7 @@ private:
 
 另一个值得注意的点是：由于光线追踪的过程是**回溯**光的路径，所以每次求出的交点应该在光路的**反方向**上，`distance`值应当为负数。
 
-![forward-tracing](/img/forward-ray-tracing-0.jpg)
+![forward-tracing](/img/blog/2022-10-17/forward-ray-tracing-0.jpg)
 
 > 实际上由于光路可逆原则，将光线的方向全部反向之后，每次求光路正方向上的交点，理论上也是可行的。
 >
@@ -156,7 +156,7 @@ $$\vec r_1=\vec r + l\vec d$$
 
 $$||\vec r_1||=||\vec r + l\vec d||=R$$
 
-![ray-sphere-intersection](/img/ray-sphere-intersection-0.png)
+![ray-sphere-intersection](/img/blog/2022-10-17/ray-sphere-intersection-0.png)
 
 将向量模长写成向量点乘自己，也就是：
 

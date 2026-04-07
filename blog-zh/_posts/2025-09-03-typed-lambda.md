@@ -175,7 +175,7 @@ repeat := ΛT. λf:(T→T). λx:T. (f (f x))
 |布尔类型|`∀T. T→T→T`|`true` = `ΛT. λa:T. λb:T. a`<br>`false` = `ΛT. λa:T. λb:T. b`|
 |自然数类型|`∀T. T→(T→T)→T`|`0` = `ΛT. λz:T. λf:(T→T). z`<br>`1` = `ΛT. λz:T. λf:(T→T). (f z)`<br>`2` = `ΛT. λz:T. λf:(T→T). (f (f z))`<br>...|
 |元素为`U`的列表类型|`∀T. T→(U→T)→T`|空列表=`ΛT. λnil:T. λcon:(Int→T). nil`<br>[1, 2, 3] = `ΛT. λnil:T. λcon:(Int→T). (con 1 (con 2 (con 3 nil)))`|
-|叶节点元素为`U`的二叉树类型|`∀T. (U→T)→(T→T→T)→T`|![](/img/binary-tree-example.png)<br>=`∀T. λl:(Int→T). λn:(T→T→T). (n (n (l 1) (l 2)) (l 3))`|
+|叶节点元素为`U`的二叉树类型|`∀T. (U→T)→(T→T→T)→T`|![](/img/blog/2025-09-03/binary-tree-example.png)<br>=`∀T. λl:(Int→T). λn:(T→T→T). (n (n (l 1) (l 2)) (l 3))`|
 
 讲了这么多关于Lambda表达式的内容，可能你还有点疑惑：Lambda表达式的这些数据类型都是怎么做出来的？数学家们都是怎么想到诸如`∀T. T→T→T`可以表示布尔类型，`∀T. T→(T→T)→T`可以表示自然数？
 

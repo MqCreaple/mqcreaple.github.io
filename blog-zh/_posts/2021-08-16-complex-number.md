@@ -36,7 +36,7 @@ $$\vec{v}+\vec{w}=(v_1\hat\imath+v_2\hat\jmath)+(w_1\hat\imath+w_2\hat\jmath)=(v
 
 通常我们将横轴作为实数轴，纵轴作为虚数轴，那么任何复数$a+bi$都可以对应到一个向量$\begin{bmatrix}a\\ b\end{bmatrix}$上
 
-![complex-0](/img/complex-0.jpg)
+![complex-0](/img/blog/2021-08-16/complex-0.jpg)
 
 现在我们把复数的加减法整明白了，可是，复数乘法呢？
 

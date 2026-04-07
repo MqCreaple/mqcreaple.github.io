@@ -46,7 +46,7 @@ int main() {
 
 **第二步：观察数据范围**
 
-![time-compl-0](/img/time-compl-0.png)
+![time-compl-0](/img/blog/2022-09-06/time-compl-0.png)
 
 我们发现，$N$不超过$10^5$，接下来就有办法了。
 

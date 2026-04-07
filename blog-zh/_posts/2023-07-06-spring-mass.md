@@ -16,7 +16,7 @@ tag: ["physics", "computer-science", "math-modeling"]
 
 $$C_{ij}=\begin{cases}1, \text{mass }i\text{ and }j\text{ are conneted}\\ 0, \text{otherwise}\end{cases}$$
 
-![spring-mass-0](/img/spring-mass-0.png)
+![spring-mass-0](/img/blog/2023-07-06/spring-mass-0.png)
 
 之后对每一个质点做受力分析。根据弹簧的胡克定律，对于一根连接质点$i$和$j$的弹簧，它作用在两个质点上的力分别是：
 
@@ -243,7 +243,7 @@ end
 
 使用欧拉法模拟弹簧质点系统的时候，如果步长设置的太大，一旦超过某个临界值，弹簧振动就不再稳定，而是会会变得越来越大，最后炸掉。如图所示：
 
-![spring-mass-1](/img/spring-mass-1.gif)
+![spring-mass-1](/img/blog/2023-07-06/spring-mass-1.gif)
 
 那么为什么会出现这种情况？步长需要取多小才不会爆炸呢？
 
@@ -304,7 +304,7 @@ $$
 
 可以看出，每迭代一次$C_{t+1}$就会比$C_t$增加一点，最终$C$的值就会指数增加，弹簧的振动幅度就会越来越大，然后爆炸掉。在相空间里，通过欧拉法得到的曲线不是一个椭圆，而是一个拉伸过的等角螺旋线。
 
-![spring-mass-2](/img/spring-mass-2.png)
+![spring-mass-2](/img/blog/2023-07-06/spring-mass-2.png)
 
 也就是说，**在无阻尼的情况下，不管步长多么小，欧拉法总是会爆炸**。
 

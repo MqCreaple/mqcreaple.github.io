@@ -11,13 +11,13 @@ tags: ["julia", "simulation"]
 
 这是慢打：
 
-![julia-1](/img/julia-1.gif)
+![julia-1](/img/blog/2021-08-09/julia-1.gif)
 
 这是快打：
 
-![julia-2](/img/julia-2.gif)
+![julia-2](/img/blog/2021-08-09/julia-2.gif)
 
-![松果弹抖闪电鞭](/img/mabaoguo.gif)
+![松果弹抖闪电鞭](/img/blog/2021-08-09/mabaoguo.gif)
 
 然后是代码：
 
@@ -110,8 +110,8 @@ end every 25
 
 ## 失败案例集锦
 
-![fail-1](/img/julia-fail-1.gif)
+![fail-1](/img/blog/2021-08-09/julia-fail-1.gif)
 
-![fail-2](/img/julia-fail-2.gif)
+![fail-2](/img/blog/2021-08-09/julia-fail-2.gif)
 
-![fail-3](/img/julia-fail-3.gif)
+![fail-3](/img/blog/2021-08-09/julia-fail-3.gif)

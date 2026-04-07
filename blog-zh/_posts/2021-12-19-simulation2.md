@@ -20,15 +20,15 @@ $$\bm F_2=k_2\cdot\frac{\bm r_{12}}{r_{12}^2}$$
 
 1. $k_1:k_2=5:1$，近似为理想刚体的弹性碰撞
 
-![animation1](/img/sim_animation1.gif)
+![animation1](/img/blog/2021-12-19/sim_animation1.gif)
 
 2. $k_1:k_2=1:1$
 
-![animation2](/img/sim_animation2.gif)
+![animation2](/img/blog/2021-12-19/sim_animation2.gif)
 
 3. $k_1:k_2=0.75:1$，碰撞为塑性碰撞
 
-![animation3](/img/sim_animation3.gif)
+![animation3](/img/blog/2021-12-19/sim_animation3.gif)
 
 ## 分析
 

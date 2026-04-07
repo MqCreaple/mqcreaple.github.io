@@ -23,7 +23,7 @@ $$S=\int_{t_1}^{t_2}\mathcal L(t, q, \dot q)\mathrm dt$$
 
 相信大家在高中光学中学过了[费马原理](https://en.wikipedia.org/wiki/Fermat's_principle)，即：光从A点到B点的路径是使得光线总用时最短的路径。拉格朗日力学的思想与其非常相似，只不过将*光的路径*换成了*系统广义路径*，*总用时*换成了*总拉格朗日量*。这个原理又叫做[**最小作用量原理**](https://en.wikipedia.org/wiki/Stationary-action_principle)。
 
-![费马原理](/img/Fermat_Snellius.svg)*费马原理。图源：[Wikipedia](https://en.wikipedia.org/wiki/Fermat's_principle)*
+![费马原理](/img/blog/2024-06-07/Fermat_Snellius.svg)*费马原理。图源：[Wikipedia](https://en.wikipedia.org/wiki/Fermat's_principle)*
 
 以上为拉格朗日力学的简要介绍。当然，此文的重点不是前面介绍的拉格朗日力学的数学理论。当物理系统的拉格朗日量比较简单的时候，可以用[**欧拉-拉格朗日方程**]()写出系统的偏微分方程。但若系统的拉格朗日量复杂到难以用偏微分方程求解析解，并且不得不用最小作用量方法求解的时候，我们就需要一个基于拉格朗日力学的求解器。接下来我将详细介绍近期做的一个小项目，即：*基于最小作用量原理的物理模拟*。
 
@@ -97,7 +97,7 @@ $$
 
 $$q\left(t_1+\frac{k}{n}\Delta t+t_r\right)=\frac{t_r}{\Delta t}q_i+\left(1-\frac{t_r}{\Delta t}\right)q_{i+1}$$
 
-![函数采样](/img/signal-sampling.png)
+![函数采样](/img/blog/2024-06-07/signal-sampling.png)
 
 其中$n$为采样点的总数，$\Delta t=(t_2-t_1)/n$是两个采样点之间的距离，剩下的$t_r$就是不足一整个采样距离的部分。这样，我们就能用数值方法计算$q(t)$的一阶和二阶导了。
 
@@ -220,21 +220,21 @@ savefig("loss.png")
 
 最终求得的解长这样：
 
-![单摆稳定解](/img/lagrange-pendulum.svg)
+![单摆稳定解](/img/blog/2024-06-07/lagrange-pendulum.svg)
 
 也就是说，这个单摆先摆到接近最高点的位置，保持在该点几乎不动，然后再反方向加速到另一边，到达另一边的最高点，最后再掉回到目标角度上。大概是这样的：
 
-![单摆动画](/img/lagrange-pendulum-anim.gif)
+![单摆动画](/img/blog/2024-06-07/lagrange-pendulum-anim.gif)
 
 而下面这张图展示了求解器寻找这个最优解的过程，可以看到随着我们一步步做优化，求解器算出的解越来越接近最优解。
 
-![单摆求解器](/img/lagrange-pendulum-solver.gif)*求解过程。该动图展示了$q(t)$从初始的随机值经过不断地梯度下降后逼近最优解的过程。*
+![单摆求解器](/img/blog/2024-06-07/lagrange-pendulum-solver.gif)*求解过程。该动图展示了$q(t)$从初始的随机值经过不断地梯度下降后逼近最优解的过程。*
 
 当然，由于这个系统的稳定解不止一个，你也有可能得到只摆动一次的解，类似这样：
 
-![单摆稳定解2](/img/lagrange-pendulum-2.svg)
+![单摆稳定解2](/img/blog/2024-06-07/lagrange-pendulum-2.svg)
 
-![单摆动画2](/img/lagrange-pendulum-anim-2.gif)
+![单摆动画2](/img/blog/2024-06-07/lagrange-pendulum-anim-2.gif)
 
 我本来预期这个求解器能够找到一个振动角度更小，在$t=0$到$t=10$之间振动更多次的解，但可能这样的解不太稳定，导致求解器每次都会收敛到只摆动1或2次的解上。
 
@@ -268,9 +268,9 @@ $$
 
 以下为求解器计算出的路径以及其计算过程：
 
-![三体系统-路径](/img/lagrange-3-body.gif)*三体系统的路径*
+![三体系统-路径](/img/blog/2024-06-07/lagrange-3-body.gif)*三体系统的路径*
 
-![三体系统-求解](/img/lagrange-3-body-solve.gif)*求解三体系统的过程*
+![三体系统-求解](/img/blog/2024-06-07/lagrange-3-body-solve.gif)*求解三体系统的过程*
 
 换一套起始和终止点，求解器仍然能计算出最优解。例如我们将终止点设置成：
 
@@ -284,13 +284,13 @@ $$
 
 得到的解是这样的：
 
-![三体问题-求解2](/img/lagrange-3-body-solve-2.gif)
+![三体问题-求解2](/img/blog/2024-06-07/lagrange-3-body-solve-2.gif)
 
-![三体问题-作用量2](/img/lagrange-3-body-loss2.png)*求解过程中总作用量$S$随着迭代次数的变化*
+![三体问题-作用量2](/img/blog/2024-06-07/lagrange-3-body-loss2.png)*求解过程中总作用量$S$随着迭代次数的变化*
 
 如果我们计算这个轨迹上三颗恒星的初始速度，并使用牛顿力学来计算行星接下来的位置和速度变化，我们可能得到的解不完全和目标解相同。如图所示。这可能是采样精度不够导致的计算误差，也有可能是三体系统本身的混沌导致的。
 
-![拉格朗日/牛顿对比](/img/lagrange-newton-solver-compare.gif)
+![拉格朗日/牛顿对比](/img/blog/2024-06-07/lagrange-newton-solver-compare.gif)
 
 ## 算法分析
 

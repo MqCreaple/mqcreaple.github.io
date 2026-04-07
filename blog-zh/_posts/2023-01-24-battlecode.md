@@ -6,7 +6,7 @@ tags: ["computer"]
 
 *2023.1.27补：比赛结果*
 
-![battlecode-rank](/img/battlecode-rank.png)
+![battlecode-rank](/img/blog/2023-01-24/battlecode-rank.png)
 
 最近几天由于打竞赛打到自闭了（我太菜了），想整点其他的事情做一做，在学校信息社的推荐下打算玩一下MIT办的[battlecode](https://battlecode.org/)比赛。
 
