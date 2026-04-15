@@ -1,0 +1,43 @@
+<!-- 最新内容显示组件 -->
+{%- assign all_items = "" | split: "" -%}
+
+{%- for post in site.categories.blog-zh -%}
+  {%- assign all_items = all_items | push: post -%}
+{%- endfor -%}
+
+{%- for post in site.categories.blog-en -%}
+  {%- assign all_items = all_items | push: post -%}
+{%- endfor -%}
+
+{%- for app in site.app -%}
+  {%- unless app.no_output -%}
+    {%- assign all_items = all_items | push: app -%}
+  {%- endunless -%}
+{%- endfor -%}
+
+{%- assign sorted_items = all_items | sort: "date" | reverse -%}
+
+{%- for item in sorted_items limit:5 -%}
+  {%- if item.url contains "/app/" or item.introduction -%}
+    <div class="card indexing" onclick="window.open('{{ item.url }}')">
+      <h2>{{ item.title }}</h2>
+      {%- if item.introduction -%}
+        <p class="center"><i class="fa fa-file-text-o"></i> {{ item.introduction }}</p>
+      {%- endif -%}
+      {%- if item.date -%}
+        <p class="center">{{ item.date | date: "%b %d, %Y" }}</p>
+      {%- endif -%}
+      <p class="go">Run</p>
+    </div>
+  {%- else -%}
+    <div class="card indexing" onclick="window.open('{{ item.url }}')">
+      <h2>{{ item.title }}</h2>
+      <div class="inline">
+        <p style="margin: 0 5px;"><i class="fa-solid fa-calendar-alt"></i>{{ item.date | date_to_string: "ordinal" }}</p>
+        {%- if item.tags -%}
+          <p style="margin: 0 5px;"><i class="fa-solid fa-tag"></i>{{ item.tags | join: " " }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+{%- endfor -%}

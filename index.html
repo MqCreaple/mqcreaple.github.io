@@ -1,0 +1,29 @@
+---
+layout: home
+notification:
+---
+
+<div class="card article">
+    <h1>{{site.title.zh}} | {{site.title.en}}</h1>
+    <p style="text-align: center; color: #454545">{{site.description.zh}}</p>
+    <blockquote>
+        <p>该在博客的首页写什么，这是一个世界级难题。</p>
+        <p style="text-align: right;">—— 我自己</p>
+    </blockquote>
+</div>
+
+<div class="card" style="background-color: rgba(216, 237, 29, 0.7); color: #efefef;"><h1>最新内容 | Latest Contents</h2></div>
+
+{% include recent-posts.html %}
+
+<style>
+.go {
+    text-align:right;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+.go::after {
+    content: ">>>";
+    font-size: 1.6em;
+}
+</style>
