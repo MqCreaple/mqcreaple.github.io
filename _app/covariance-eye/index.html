@@ -1,0 +1,177 @@
+---
+title: Covariance Eye
+date: 2026-04-15
+layout: empty
+introduction: Find the data with the strongest correlation!
+output: true
+---
+
+{% capture head %}
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.1.0/dist/lightweight-charts.standalone.production.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<script src="./game.js" defer></script>
+<style>
+    .chart-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+        gap: 20px;
+    }
+    @media (max-width: 1200px) {
+        .chart-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+    @media (max-width: 900px) {
+        .chart-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    @media (max-width: 600px) {
+        .chart-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    .chart-container {
+        background: transparent;
+        border-radius: 8px;
+        padding: 12px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: 1px solid #505050;
+    }
+    .chart-container:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+    .chart-container.selected {
+        background: rgba(59, 130, 246, 0.1);
+        border-color: #3b82f6;
+    }
+    .chart-title {
+        text-align: center;
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+        color: #333333;
+    }
+    .chart-plot {
+        width: 100%;
+        height: 300px;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    .range-value {
+        display: inline-block;
+        margin-left: 10px;
+    }
+    .stats {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #e0e0e0;
+        font-size: 0.9rem;
+    }
+    .stat {
+        text-align: center;
+    }
+    .stat-value {
+        font-size: 1.8rem;
+        font-weight: bold;
+    }
+    .hidden {
+        display: none;
+    }
+    button, select {
+        width: 100%;
+        margin: 10px 0;
+        padding: 5px;
+    }
+</style>
+{% endcapture %}
+
+
+
+{% capture content_left %}
+<div class="card">
+    <h1>Covariance Eye - Tech Demo</h1>
+    <p>Find the hidden correlated pairs among randomly generated time series. Click on charts to select them for comparison.</p>
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-value" id="total-charts-display">0</div>
+            <div class="stat-label">Total Charts</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="correlation-threshold">0</div>
+            <div class="stat-label">Correlation Threshold</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="pairs-found">0</div>
+            <div class="stat-label">Pairs Found</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="time-spent">0s</div>
+            <div class="stat-label">Time Spent</div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <h2>Time Series Charts</h2>
+    <div class="chart-grid" id="chart-grid">
+        <!-- Charts will be inserted here -->
+    </div>
+</div>
+{% endcapture %}
+
+
+{% capture content_right %}
+<div class="card">
+    <h2>Parameters</h2>
+    <div class="form-group">
+        <label for="total-charts">Total Charts</label>
+        <input type="range" id="total-charts" min="4" max="30" value="8" step="1">
+        <span class="range-value" id="total-charts-value">8</span>
+    </div>
+    <div class="form-group">
+        <label for="difficulty">Difficulty</label>
+        <select id="difficulty">
+            <option value="easy">Easy (Correlation > 0.85)</option>
+            <option value="medium" selected>Medium (Correlation > 0.75)</option>
+            <option value="hard">Hard (Correlation > 0.65)</option>
+            <option value="insane">Insane (Correlation > 0.55)</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="noise-level">Noise Level</label>
+        <input type="range" id="noise-level" min="0.0" max="2.0" value="1.0" step="0.1">
+        <span class="range-value" id="noise-level-value">1.0</span>
+    </div>
+    <div class="form-group">
+        <label for="num-pairs">Number of Hidden Pairs</label>
+        <input type="range" id="num-pairs" min="1" max="5" value="1" step="1">
+        <span class="range-value" id="num-pairs-value">1</span>
+    </div>
+    <button id="generate-btn">Generate New Charts</button>
+    <button id="check-btn">Check Selected Pair</button>
+    <button id="reveal-btn">Reveal All Pairs</button>
+</div>
+<div class="card">
+    <h2>Analysis</h2>
+    <div id="analysis-result">
+        <p>Select two charts to see their correlation.</p>
+    </div>
+</div>
+<div class="card">
+    <h2>How to Play</h2>
+    <ul style="padding-left: 20px; margin-bottom: 0;">
+        <li>Adjust parameters on the right.</li>
+        <li>Click "Generate New Charts" to create random time series.</li>
+        <li>Some charts are secretly correlated (hidden pairs).</li>
+        <li>Click on charts to select them (max 2).</li>
+        <li>Click "Check Selected Pair" to see if they are a hidden pair.</li>
+        <li>Find all hidden pairs to win!</li>
+    </ul>
+</div>
+{% endcapture %}
+
+{% include app-template.html %}
