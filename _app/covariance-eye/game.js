@@ -25,10 +25,10 @@ var timeSpentDisplay;
 
 // Correlation thresholds by difficulty
 const difficultyThresholds = {
-    easy: 0.85,
-    medium: 0.75,
-    hard: 0.65,
-    insane: 0.55
+    easy: 0.90,
+    medium: 0.85,
+    hard: 0.80,
+    insane: 0.70
 };
 
 // Non-diagonal element threshold (for background noise)
@@ -532,7 +532,7 @@ function checkSelectedPair() {
 
 // Reveal all hidden pairs
 function revealAllPairs() {
-    hiddenPairs.forEach(([id1, id2]) => {
+    hiddenPairs.forEach(([id1, id2], pairIdx) => {
         // Highlight the pair
         const plot1 = document.querySelector(`#plot-${id1}`).parentNode;
         const plot2 = document.querySelector(`#plot-${id2}`).parentNode;
@@ -544,8 +544,8 @@ function revealAllPairs() {
         const title1 = document.querySelector(`.chart-container[data-id="${id1}"] .chart-title`);
         const title2 = document.querySelector(`.chart-container[data-id="${id2}"] .chart-title`);
         
-        if (title1) title1.textContent = `Series #${id1 + 1} 🔍 (Pair)`;
-        if (title2) title2.textContent = `Series #${id2 + 1} 🔍 (Pair)`;
+        if (title1) title1.textContent = `Series #${id1 + 1} 🔍 (Pair ${pairIdx + 1})`;
+        if (title2) title2.textContent = `Series #${id2 + 1} 🔍 (Pair ${pairIdx + 1})`;
     });
     
     updateStats();
@@ -587,9 +587,16 @@ function init() {
     pairsFoundDisplay = document.getElementById('pairs-found');
     timeSpentDisplay = document.getElementById('time-spent');
     
+    function updateNumPairsRange() {
+        numPairsInput.max = Math.floor(parseInt(totalChartsInput.value) / 2);
+        numPairsInput.value = Math.min(parseInt(numPairsInput.value), parseInt(numPairsInput.max));
+        numPairsValue.textContent = numPairsInput.value;
+    }
+
     // Update range value displays
     totalChartsInput.addEventListener('input', () => {
         totalChartsValue.textContent = totalChartsInput.value;
+        updateNumPairsRange();
     });
     noiseLevelInput.addEventListener('input', () => {
         noiseLevelValue.textContent = parseFloat(noiseLevelInput.value).toFixed(1);
@@ -610,6 +617,9 @@ function init() {
     checkBtn.addEventListener('click', checkSelectedPair);
     revealBtn.addEventListener('click', revealAllPairs);
     
+    // Ensure the range is correct
+    updateNumPairsRange();
+
     // Auto-update time
     setInterval(updateStats, 1000);
     
