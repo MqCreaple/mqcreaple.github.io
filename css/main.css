@@ -73,6 +73,12 @@ blockquote {
     margin: 20px 0;
 }
 
+figure canvas {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+}
+
 textarea {
     background-color: rgba(0, 0, 0, 0);
     width: 100%;
@@ -97,7 +103,7 @@ img {
     display: block;
 }
 
-.article img + em {
+.article img + em, figcaption {
     display: block;
     text-align: center;
 }
@@ -235,8 +241,7 @@ ul.react li:hover {
 }
 
 .warn {
-    color: #bb312c;
-    font-size: 1.3em;
+    color: #d1ab00;
     font-weight: bold;
 }
 

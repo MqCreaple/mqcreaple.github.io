@@ -1,0 +1,96 @@
+
+/* Shadertoy 渲染样式 */
+.shadertoy-figure {
+    margin: 1.5em 0;
+    position: relative;
+}
+
+.shadertoy-canvas {
+    display: block;
+    margin: 0 auto;
+    cursor: crosshair;
+}
+
+.shadertoy-code-container {
+    margin-top: 1em;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.shadertoy-code-header {
+    background-color: #f5f5f5;
+    padding: 0.5em 1em;
+    cursor: pointer;
+    font-family: monospace;
+    font-size: 0.9em;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.shadertoy-code-header:hover {
+    background-color: #eaeaea;
+}
+
+.shadertoy-code-header .fa {
+    margin-right: 0.5em;
+}
+
+.shadertoy-code-content {
+    padding: 0;
+    background-color: #f8f8f8;
+}
+
+.shadertoy-code-content pre {
+    margin: 0;
+    padding: 1em;
+    overflow-x: auto;
+}
+
+.shadertoy-controls {
+    margin-top: 0.5em;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.5em;
+    background-color: rgba(245, 245, 245, 0.8);
+    border-radius: 4px;
+}
+
+.shadertoy-control-btn {
+    background-color: #4a4a4a;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 0.3em 0.6em;
+    cursor: pointer;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+}
+
+.shadertoy-control-btn:hover {
+    background-color: #333;
+}
+
+.shadertoy-status {
+    font-size: 0.9em;
+    color: #666;
+    margin-left: auto;
+}
+
+.shadertoy-error {
+    background-color: #ffe6e6;
+    border: 1px solid #ff9999;
+    border-radius: 4px;
+    padding: 1em;
+    text-align: center;
+    color: #cc0000;
+}
+
+.shadertoy-error .fa {
+    margin-right: 0.5em;
+}
