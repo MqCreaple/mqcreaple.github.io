@@ -15,8 +15,10 @@ camera.position.set(...INITIAL_VIEW);
 camera.lookAt(0, 0, 0);
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-renderer.setPixelRatio(window.devicePixelRatio);
+document.addEventListener("DOMContentLoaded", () => {
+    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+});
 
 // Controls
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -337,9 +339,10 @@ animate();
 // 11. Event listeners
 // -----------------------------------------------------------------
 window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.aspect = canvas.clientWidth / canvas.clientHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
 });
 
 document.getElementById('reset-view').addEventListener('click', () => {
