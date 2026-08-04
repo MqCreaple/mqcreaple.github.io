@@ -1,0 +1,8 @@
+node_modules/
+output/
+.astro/
+.tools/
+src/generated/
+*.log
+.DS_Store
+Thumbs.db

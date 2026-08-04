@@ -1,0 +1,22 @@
+---
+import Article from '../../../../../layouts/Article.astro';
+import posts from '../../../../../generated/index.json';
+
+export function getStaticPaths() {
+  return posts.map((post) => ({
+    params: { lang: post.lang, date: post.date, slug: post.name },
+    props: post,
+  }));
+}
+
+const post = Astro.props;
+---
+
+<Article
+  lang={post.lang}
+  title={post.title}
+  date={post.date}
+  id={post.id}
+  summary={post.summary}
+  pdf={post.pdf}
+/>

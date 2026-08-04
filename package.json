@@ -1,0 +1,27 @@
+{
+  "name": "mqc-blog",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "predev": "node scripts/build-articles.mjs",
+    "dev": "astro dev",
+    "prebuild": "node scripts/build-articles.mjs",
+    "build": "astro build && node scripts/finalize-output.mjs",
+    "preview": "astro preview",
+    "articles": "node scripts/build-articles.mjs",
+    "finalize": "node scripts/finalize-output.mjs"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.3.1",
+    "astro": "^7.1.6",
+    "lucide": "^1.28.0",
+    "mermaid": "^11.16.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.2"
+  }
+}

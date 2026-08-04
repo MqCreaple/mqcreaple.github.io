@@ -1,0 +1,22 @@
+---
+import translations from '../i18n/translations.json';
+
+const { lang = 'en' } = Astro.props;
+const t = translations[lang] ?? translations.en;
+const year = new Date().getFullYear();
+const email = 'gmq14159@gmail.com';
+const copyright = t.footer.copyright.replace('{year}', String(year));
+---
+
+<footer class="site-footer">
+  <p>{copyright}</p>
+  <p>
+    Powered by <a href="https://astro.build">Astro</a> + <a href="https://typst.app">Typst</a>
+    |
+    <a href={`mailto:${email}`}><i class="fa-solid fa-envelope"></i> {t.footer.contact}</a>
+  </p>
+  <p>
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC-BY-NC-SA 4.0</a>
+    {t.footer.license}
+  </p>
+</footer>

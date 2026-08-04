@@ -1,0 +1,74 @@
+---
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import '../styles/global.css';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import translations from '../i18n/translations.json';
+
+interface Props {
+  title?: string;
+  description?: string;
+  lang?: string;
+}
+
+const { title, description = '', lang = 'en' } = Astro.props;
+const t = translations[lang] ?? translations.en;
+const pageTitle = title ?? `${t.siteTitle}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+
+function languageLinks(pathname: string): Record<string, string> {
+  const match = pathname.match(/^\/(en|zh)\//);
+  if (match) {
+    const rest = pathname.slice(match[0].length);
+    return { en: `/en/${rest}`, zh: `/zh/${rest}` };
+  }
+  return { en: '/en/', zh: '/zh/' };
+}
+
+const langLinks = languageLinks(Astro.url.pathname);
+---
+
+<!doctype html>
+<html lang={lang} data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="canonical" href={canonical} />
+    <slot name="head" />
+    <script is:inline>
+      const stored = localStorage.getItem('theme');
+      const prefersDark = matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.dataset.theme = stored || (prefersDark ? 'dark' : 'light');
+    </script>
+  </head>
+  <body>
+    <SiteHeader lang={lang} links={langLinks} />
+    <main class="site-main">
+      <div
+        class:list={['layout-split', { 'layout-split--aside': Astro.slots.has('aside') }]}
+      >
+        <div class="layout-main">
+          <slot />
+        </div>
+        {
+          Astro.slots.has('aside') && (
+            <aside class="layout-aside">
+              <slot name="aside" />
+            </aside>
+          )
+        }
+      </div>
+    </main>
+    <SiteFooter lang={lang} />
+    <script>
+      import mermaid from 'mermaid';
+      mermaid.initialize({ startOnLoad: true });
+    </script>
+    <script>
+      import '../components/InteractiveFigure.ts';
+    </script>
+  </body>
+</html>

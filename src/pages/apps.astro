@@ -1,0 +1,42 @@
+---
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import path from 'node:path';
+import Base from '../layouts/Base.astro';
+import translations from '../i18n/translations.json';
+
+const appsDir = path.join(process.cwd(), 'app');
+const apps = existsSync(appsDir)
+  ? readdirSync(appsDir, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => {
+        const metaPath = path.join(appsDir, entry.name, 'metadata.json');
+        const meta = existsSync(metaPath)
+          ? JSON.parse(readFileSync(metaPath, 'utf-8'))
+          : { title: entry.name, introduction: '', date: '' };
+        return { name: entry.name, ...meta };
+      })
+      .sort((a, b) => (b.date ?? '').localeCompare(a.date ?? ''))
+  : [];
+const t = translations['en'] ?? {};
+---
+
+<Base title="Apps · mqc.blog">
+  <h1>Apps</h1>
+  {apps.length === 0 ? (
+    <p>No apps yet.</p>
+  ) : (
+    <ul class="app-list">
+      {
+        apps.map((app) => (
+          <li>
+            <a href={`/app/${app.name}/`}>
+              <span>{app.title}</span>
+              {app.date && <time datetime={app.date}>{app.date}</time>}
+            </a>
+            {app.introduction && <p>{app.introduction}</p>}
+          </li>
+        ))
+      }
+    </ul>
+  )}
+</Base>

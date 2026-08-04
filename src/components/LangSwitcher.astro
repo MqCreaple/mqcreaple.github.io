@@ -1,0 +1,20 @@
+---
+const { currentLang = 'en', links = {} } = Astro.props;
+const langs = [
+  { code: 'en', label: 'EN' },
+  { code: 'zh', label: '中文' },
+];
+---
+
+<nav class="lang-switcher" aria-label="Language">
+  {
+    langs.map((lang) => (
+      <a
+        href={links[lang.code] ?? `/${lang.code}/`}
+        class:list={[{ active: lang.code === currentLang }]}
+      >
+        {lang.label}
+      </a>
+    ))
+  }
+</nav>

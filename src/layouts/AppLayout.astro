@@ -1,0 +1,35 @@
+---
+import Avatar from '../components/Avatar.astro';
+import TagCloud from '../components/TagCloud.astro';
+import Base from './Base.astro';
+import translations from '../i18n/translations.json';
+
+interface Props {
+  title: string;
+  description?: string;
+  lang?: string;
+  headHtml?: string;
+  leftHtml?: string;
+  rightHtml?: string;
+}
+
+const {
+  title,
+  description = '',
+  lang = 'en',
+  headHtml = '',
+  leftHtml = '',
+  rightHtml = '',
+} = Astro.props;
+const t = translations[lang] ?? translations.en;
+---
+
+<Base title={`${title} · ${t.siteTitle}`} description={description} lang={lang}>
+  {headHtml && <Fragment slot="head" set:html={headHtml} />}
+  {leftHtml && <Fragment set:html={leftHtml} />}
+  <div slot="aside">
+    {rightHtml && <Fragment set:html={rightHtml} />}
+    <Avatar lang={lang} />
+    <TagCloud lang={lang} />
+  </div>
+</Base>

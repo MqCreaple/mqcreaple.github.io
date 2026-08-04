@@ -1,0 +1,26 @@
+---
+import translations from '../i18n/translations.json';
+
+const { lang = 'en' } = Astro.props;
+const t = translations[lang] ?? translations.en;
+const accounts = [
+  { href: 'https://github.com/MqCreaple', icon: 'fa-brands fa-github', label: 'GitHub' },
+  { href: 'https://space.bilibili.com/507017613', icon: 'fa-brands fa-bilibili', label: 'Bilibili' },
+  { href: 'https://www.zhihu.com/people/gmq12', icon: 'fa-brands fa-zhihu', label: 'Zhihu' },
+  { href: 'mailto:gmq14159@gmail.com', icon: 'fa-regular fa-envelope', label: 'Email' },
+];
+---
+
+<div class="avatar-tab">
+  <img src="/img/avatar.png" alt="avatar" class="avatar-image" />
+  <a href="/aboutme/" class="avatar-name">MqCreaple</a>
+  <div class="avatar-accounts">
+    {
+      accounts.map((account) => (
+        <a href={account.href} aria-label={account.label}>
+          <i class={account.icon}></i>
+        </a>
+      ))
+    }
+  </div>
+</div>

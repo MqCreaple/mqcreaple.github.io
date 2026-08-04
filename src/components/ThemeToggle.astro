@@ -1,0 +1,22 @@
+---
+---
+
+<button id="theme-toggle" class="icon-button" type="button" aria-label="Toggle color theme" title="Toggle color theme">
+  <i data-lucide="sun" class="theme-icon theme-icon--sun"></i>
+  <i data-lucide="moon" class="theme-icon theme-icon--moon"></i>
+</button>
+
+<script>
+  import { createIcons, Moon, Sun } from 'lucide';
+
+  createIcons({ icons: { Moon, Sun } });
+
+  const button = document.getElementById('theme-toggle');
+  const root = document.documentElement;
+
+  button?.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    localStorage.setItem('theme', next);
+  });
+</script>

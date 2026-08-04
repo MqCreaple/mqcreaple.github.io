@@ -1,0 +1,59 @@
+---
+import Avatar from '../../components/Avatar.astro';
+import Base from '../../layouts/Base.astro';
+import TagCloud from '../../components/TagCloud.astro';
+import translations from '../../i18n/translations.json';
+import posts from '../../generated/index.json';
+
+export function getStaticPaths() {
+  return ['en', 'zh'].map((lang) => ({ params: { lang } }));
+}
+
+const { lang = 'en' } = Astro.params;
+const list = posts
+  .filter((post) => post.lang === lang)
+  .sort((a, b) => b.date.localeCompare(a.date));
+const t = translations[lang] ?? translations.en;
+---
+
+<Base title={`${t.posts} · ${t.siteTitle}`} lang={lang}>
+  <section class="post-index">
+    <div class="quote-panel">
+      {
+        t.quotes.map((quote) => (
+          <p class="quote-line">
+            <span class="quote-native">{quote.text}</span>
+            <span class="quote-divider">/</span>
+            <span class="quote-translation">{quote.translation}</span>
+          </p>
+        ))
+      }
+    </div>
+    <nav class="category-links" aria-label="Categories">
+      {
+        Object.entries(t.categories).map(([key, label]) => (
+          <a href={`/${lang}/category/${key}/`}>
+            <i class={t.categoryIcons[key]}></i>
+            <span>{label}</span>
+          </a>
+        ))
+      }
+    </nav>
+    <h1>{t.posts}</h1>
+    <ol class="post-list">
+      {
+        list.map((post) => (
+          <li>
+            <a href={`/${lang}/posts/${post.date}/${post.name}/`}>
+              <span>{post.title}</span>
+              <time datetime={post.date}>{post.date}</time>
+            </a>
+            {post.summary && <p>{post.summary}</p>}
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+  <Avatar slot="aside" lang={lang} />
+  <TagCloud slot="aside" lang={lang} />
+</Base>

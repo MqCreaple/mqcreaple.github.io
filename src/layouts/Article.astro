@@ -1,0 +1,45 @@
+---
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import Avatar from '../components/Avatar.astro';
+import TagCloud from '../components/TagCloud.astro';
+import Base from './Base.astro';
+import translations from '../i18n/translations.json';
+
+interface Props {
+  lang: string;
+  title: string;
+  date: string;
+  id: string;
+  summary?: string;
+  pdf?: string;
+}
+
+const { lang, title, date, id, summary = '', pdf } = Astro.props;
+const fragmentPath = path.join(process.cwd(), 'src', 'generated', 'articles', `${id}.html`);
+const fragment = readFileSync(fragmentPath, 'utf-8');
+const t = translations[lang] ?? translations.en;
+const dateLabel = new Intl.DateTimeFormat(lang === 'zh' ? 'zh-CN' : 'en-US', {
+  dateStyle: 'long',
+}).format(new Date(date));
+---
+
+<Base title={`${title} · GMQ's Tech Haven`} description={summary} lang={lang}>
+  <article class="post">
+    <header class="post-header">
+      <h1>{title}</h1>
+      <p class="post-meta"><time datetime={date}>{dateLabel}</time></p>
+    </header>
+    <div class="typst-content" set:html={fragment} />
+    {pdf && (
+      <p class="post-pdf">
+        <a href={pdf}>
+          <i class="fa-solid fa-file-pdf"></i>
+          {t.downloadPdf}
+        </a>
+      </p>
+    )}
+  </article>
+  <Avatar slot="aside" lang={lang} />
+  <TagCloud slot="aside" lang={lang} />
+</Base>

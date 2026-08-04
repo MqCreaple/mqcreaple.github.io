@@ -1,0 +1,39 @@
+---
+import posts from '../generated/index.json';
+
+const { lang = 'en' } = Astro.props;
+const counts = new Map();
+
+for (const post of posts) {
+  if (post.lang !== lang) continue;
+  for (const tag of post.tags ?? []) {
+    counts.set(tag, (counts.get(tag) ?? 0) + 1);
+  }
+}
+
+const tags = [...counts.entries()].sort(
+  (a, b) => b[1] - a[1] || a[0].localeCompare(b[0]),
+);
+---
+
+{
+  tags.length > 0 && (
+    <section class="article-tags" aria-label="Tags">
+      <h2 class="tags-title">文章标签 | Tags</h2>
+      <p>
+        {
+          tags.map(([tag, count]) => (
+            <span
+              class="article-tag"
+              style={`font-size: ${Math.min(10 + count, 30)}px`}
+              title={`${count} articles`}
+            >
+              {tag}
+              <span class="tag-count">{count}</span>
+            </span>
+          ))
+        }
+      </p>
+    </section>
+  )
+}

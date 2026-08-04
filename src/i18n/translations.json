@@ -1,0 +1,78 @@
+{
+  "en": {
+    "siteTitle": "GMQ's Tech Haven",
+    "nav": {
+      "blog": "blog",
+      "aboutme": "about me",
+      "app": "app"
+    },
+    "posts": "Posts",
+    "quotes": [
+      {
+        "text": "愿对未知的渴望，指引我们抵达群星",
+        "translation": "May the yearning for the unknown guide us to reach the stars"
+      },
+      {
+        "text": "愿借人文的光辉，指引我们重塑大地",
+        "translation": "May the light of humanity guide us to reshape the earth"
+      }
+    ],
+    "categories": {
+      "tech": "Technology",
+      "humanity": "Humanities",
+      "casual": "Casual"
+    },
+    "downloadPdf": "Download PDF",
+    "categoryIcons": {
+      "tech": "fa-solid fa-microchip",
+      "humanity": "fa-solid fa-book-open",
+      "casual": "fa-solid fa-pen-nib"
+    },
+    "about": {
+      "title": "About Me"
+    },
+    "footer": {
+      "copyright": "Copyright © MqCreaple 2021 - {year}, Blog of MqCreaple",
+      "contact": "Contact Me",
+      "license": "This page is published with CC-BY-NC-SA 4.0 license."
+    }
+  },
+  "zh": {
+    "siteTitle": "GMQ的技术避难所",
+    "nav": {
+      "blog": "博客",
+      "aboutme": "我是谁？",
+      "app": "应用"
+    },
+    "posts": "文章",
+    "quotes": [
+      {
+        "text": "愿对未知的渴望，指引我们抵达群星",
+        "translation": "May the yearning for the unknown guide us to reach the stars"
+      },
+      {
+        "text": "愿借人文的光辉，指引我们重塑大地",
+        "translation": "May the light of humanity guide us to reshape the earth"
+      }
+    ],
+    "categories": {
+      "tech": "科技",
+      "humanity": "人文",
+      "casual": "随笔"
+    },
+    "downloadPdf": "下载 PDF",
+    "categoryIcons": {
+      "tech": "fa-solid fa-microchip",
+      "humanity": "fa-solid fa-book-open",
+      "casual": "fa-solid fa-pen-nib"
+    },
+    "about": {
+      "title": "关于我"
+    },
+    "footer": {
+      "copyright": "版权所有 © MqCreaple 2021 - {year}，MqCreaple 的博客",
+      "contact": "联系我",
+      "license": "本页面以 CC-BY-NC-SA 4.0 许可发布。"
+    }
+  }
+}
