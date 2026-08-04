@@ -1,0 +1,45 @@
+/* Typst content */
+
+.typst-content,
+.typst-content p,
+.typst-content li,
+.typst-content td {
+  color: var(--text) !important;
+}
+
+.typst-content h1,
+.typst-content h2,
+.typst-content h3,
+.typst-content h4 {
+  color: var(--heading) !important;
+}
+
+.typst-content a {
+  color: var(--accent-strong) !important;
+}
+
+.typst-content img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+.typst-content iframe {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border: 0;
+}
+
+section[role="doc-bibliography"] ul {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+section[role="doc-bibliography"] li::marker {
+  content: "";
+}
