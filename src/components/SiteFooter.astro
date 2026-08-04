@@ -1,11 +1,16 @@
 ---
 import translations from '../i18n/translations.json';
 
+interface Props {
+  lang?: string;
+}
+
 const { lang = 'en' } = Astro.props;
-const t = translations[lang] ?? translations.en;
+const t = translations[lang as keyof typeof translations] ?? translations.en;
 const year = new Date().getFullYear();
 const email = 'gmq14159@gmail.com';
 const copyright = t.footer.copyright.replace('{year}', String(year));
+const licenseParts = t.footer.license.split(/(CC-BY-NC-SA 4\.0)/gi);
 ---
 
 <footer class="site-footer">
@@ -16,7 +21,14 @@ const copyright = t.footer.copyright.replace('{year}', String(year));
     <a href={`mailto:${email}`}><i class="fa-solid fa-envelope"></i> {t.footer.contact}</a>
   </p>
   <p>
-    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC-BY-NC-SA 4.0</a>
-    {t.footer.license}
+    {
+      licenseParts.map((part: string, index: number) =>
+        part.toLowerCase() === 'cc-by-nc-sa 4.0' ? (
+          <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">{part}</a>
+        ) : (
+          part
+        ),
+      )
+    }
   </p>
 </footer>
