@@ -13,18 +13,38 @@ interface Props {
   id: string;
   summary?: string;
   pdf?: string;
+  htmlHeads?: string[];
 }
 
-const { lang, title, date, id, summary = '', pdf } = Astro.props;
+const { lang, title, date, id, summary = '', pdf, htmlHeads = [] } = Astro.props;
 const fragmentPath = path.join(process.cwd(), 'src', 'generated', 'articles', `${id}.html`);
 const fragment = readFileSync(fragmentPath, 'utf-8');
 const t = translations[lang] ?? translations.en;
 const dateLabel = new Intl.DateTimeFormat(lang === 'zh' ? 'zh-CN' : 'en-US', {
   dateStyle: 'long',
 }).format(new Date(date));
+
+function headAssets(heads: string[]): string {
+  return heads
+    .map((head) => {
+      const url = (head.startsWith('/') ? head : '/' + head).replaceAll('\\', '/');
+      if (url.endsWith('.css')) {
+        return `<link rel="stylesheet" href="${url}" />`;
+      }
+      if (url.endsWith('.js')) {
+        return `<script src="${url}"></script>`;
+      }
+      return '';
+    })
+    .filter(Boolean)
+    .join('\n');
+}
+
+const headHtml = headAssets(htmlHeads);
 ---
 
 <Base title={`${title} · GMQ's Tech Haven`} description={summary} lang={lang}>
+  {headHtml && <Fragment slot="head" set:html={headHtml} />}
   <article class="post">
     <header class="post-header">
       <h1>{title}</h1>

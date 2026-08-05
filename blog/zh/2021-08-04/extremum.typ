@@ -1,5 +1,5 @@
 // title: 函数极值综述
-// summary: 从一元函数到多元函数，综述极值、导数、梯度与最值问题。
+// summary: 综述一元和多元函数的极值、导数、梯度与最值问题。
 // tags: mathematics, calculus
 // category: tech
 

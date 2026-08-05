@@ -1,0 +1,14 @@
+{
+  "title": "Lambda Calculus Playground",
+  "date": "2022-08-26",
+  "introduction": "Write lambda expressions, perform lambda calculation.",
+  "scripts": [
+    "lambda-playground.js"
+  ],
+  "styles": [
+    "lambda-playground.css"
+  ],
+  "contentLeft": "left.html",
+  "contentRight": "right.html",
+  "init": "autoRender"
+}

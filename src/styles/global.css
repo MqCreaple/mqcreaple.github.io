@@ -207,7 +207,7 @@ pre,
 .layout-aside {
   align-self: start;
   position: sticky;
-  top: calc(var(--header-height) + 1rem);
+  top: var(--header-height);
   padding: 2rem 1rem;
   border-left: 1px solid var(--border);
 }
@@ -331,14 +331,31 @@ pre,
   color: var(--muted);
 }
 
+.post-summary {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .app-list li {
   padding: 0.85rem 0;
   border-bottom: 1px solid var(--border);
 }
 
 .app-list a {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
   color: var(--heading);
   font-weight: 600;
+}
+
+.app-list time {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 400;
 }
 
 .post-pdf {
@@ -407,6 +424,10 @@ pre,
   margin: 0.25rem 0.3rem;
   color: var(--muted);
   white-space: nowrap;
+}
+
+.article-tag:hover {
+  color: var(--accent-strong);
 }
 
 .tag-count {

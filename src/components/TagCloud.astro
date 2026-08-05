@@ -23,14 +23,15 @@ const tags = [...counts.entries()].sort(
       <p>
         {
           tags.map(([tag, count]) => (
-            <span
+            <a
+              href={`/${lang}/tag/${tag}/`}
               class="article-tag"
               style={`font-size: ${Math.min(10 + count, 30)}px`}
               title={`${count} articles`}
             >
               {tag}
               <span class="tag-count">{count}</span>
-            </span>
+            </a>
           ))
         }
       </p>

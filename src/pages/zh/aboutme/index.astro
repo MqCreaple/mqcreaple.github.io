@@ -1,0 +1,36 @@
+---
+import Avatar from '../../../components/Avatar.astro';
+import TagCloud from '../../../components/TagCloud.astro';
+import Base from '../../../layouts/Base.astro';
+import translations from '../../../i18n/translations.json';
+
+const lang = 'zh';
+const t = translations[lang] ?? translations.en;
+const minecraftYears = new Date().getFullYear() - 2017;
+---
+
+<Base title={`${t.about.title} · ${t.siteTitle}`} lang={lang}>
+  <section class="about-page">
+    <h1>{t.about.title}</h1>
+
+    <p>剑桥本科生，自然科学（物理）专业，2025届入学。</p>
+
+    <ul>
+      <li>兴趣方向主要包括计算物理、机械和电子工程、技术美术等。</li>
+      <li>熟练使用 Python、C++、Java、Rust；有一定 JavaScript/Web 经验。</li>
+      <li>Minecraft {minecraftYears}年玩家。</li>
+    </ul>
+
+    <p>你还能在哪看到我？</p>
+
+    <ul>
+      <li><i class="fa-brands fa-github"></i> GitHub：<a href="https://github.com/MqCreaple">MqCreaple</a></li>
+      <li><i class="fa-brands fa-bilibili"></i> 哔哩哔哩：<a href="https://space.bilibili.com/507017613">mqcreaple</a></li>
+      <li><i class="fa-brands fa-discord"></i> Discord：creaple#5811</li>
+      <li><i class="fa-solid fa-envelope"></i> 邮箱：<a href="mailto:gmq14159@gmail.com">gmq14159@gmail.com</a></li>
+    </ul>
+  </section>
+
+  <Avatar slot="aside" lang={lang} />
+  <TagCloud slot="aside" lang={lang} />
+</Base>

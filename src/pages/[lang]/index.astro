@@ -48,7 +48,7 @@ const t = translations[lang] ?? translations.en;
               <span>{post.title}</span>
               <time datetime={post.date}>{post.date}</time>
             </a>
-            {post.summary && <p>{post.summary}</p>}
+            {post.summary && <p class="post-summary">{post.summary}</p>}
           </li>
         ))
       }

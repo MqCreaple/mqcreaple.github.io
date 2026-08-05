@@ -1,0 +1,49 @@
+---
+import Avatar from '../../../../components/Avatar.astro';
+import Base from '../../../../layouts/Base.astro';
+import TagCloud from '../../../../components/TagCloud.astro';
+import translations from '../../../../i18n/translations.json';
+import posts from '../../../../generated/index.json';
+
+export function getStaticPaths() {
+  const paths = [];
+  for (const lang of ['en', 'zh']) {
+    const tags = new Set();
+    for (const post of posts) {
+      if (post.lang !== lang) continue;
+      for (const tag of post.tags ?? []) tags.add(tag);
+    }
+    for (const tag of tags) {
+      paths.push({ params: { lang, tag } });
+    }
+  }
+  return paths;
+}
+
+const { lang = 'en', tag = '' } = Astro.params;
+const t = translations[lang] ?? translations.en;
+const list = posts
+  .filter((post) => post.lang === lang && (post.tags ?? []).includes(tag))
+  .sort((a, b) => b.date.localeCompare(a.date));
+---
+
+<Base title={`${tag} · ${t.siteTitle}`} lang={lang}>
+  <section class="post-index">
+    <h1>{tag}</h1>
+    <ol class="post-list">
+      {
+        list.map((post) => (
+          <li>
+            <a href={`/${lang}/posts/${post.date}/${post.name}/`}>
+              <span>{post.title}</span>
+              <time datetime={post.date}>{post.date}</time>
+            </a>
+            {post.summary && <p>{post.summary}</p>}
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+  <Avatar slot="aside" lang={lang} />
+  <TagCloud slot="aside" lang={lang} />
+</Base>

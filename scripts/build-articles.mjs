@@ -1,4 +1,5 @@
-import { execFileSync } from 'node:child_process';
+import { execFile, execFileSync } from 'node:child_process';
+import { promisify } from 'node:util';
 import {
   existsSync,
   mkdirSync,
@@ -7,6 +8,7 @@ import {
   rmSync,
   writeFileSync,
 } from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 
 const root = process.cwd();
@@ -21,6 +23,7 @@ const localTypstCandidates = [
 ];
 const localTypst = localTypstCandidates.find(existsSync);
 const typstBin = localTypst || 'typst';
+const execFileAsync = promisify(execFile);
 
 function hasTypst() {
   try {
@@ -45,15 +48,17 @@ function findTypFiles(dir, out = []) {
 }
 
 function parseMetadata(source) {
-  const meta = { title: null, summary: '', tags: [], category: null };
+  const meta = { title: null, summary: '', tags: [], category: null, htmlHeads: [] };
   const lines = source.split(/\r?\n/).slice(0, 30);
   for (const line of lines) {
-    const match = line.match(/^\s*\/\/\s*(title|summary|tags|category)\s*:\s*(.+?)\s*$/i);
+    const match = line.match(/^\s*\/\/\s*(title|summary|tags|category|html-heads)\s*:\s*(.+?)\s*$/i);
     if (!match) continue;
     const key = match[1].toLowerCase();
     const value = match[2].trim();
     if (key === 'tags') {
       meta.tags = value.split(',').map((tag) => tag.trim()).filter(Boolean);
+    } else if (key === 'html-heads') {
+      meta.htmlHeads = value.split(',').map((head) => head.trim()).filter(Boolean);
     } else if (key === 'category') {
       meta.category = value;
     } else {
@@ -67,11 +72,37 @@ function extractFragment(html) {
   const styles = [...html.matchAll(/<style[\s\S]*?<\/style>/gi)].map((m) => m[0]).join('\n');
   const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
   const body = bodyMatch ? bodyMatch[1] : html;
-  const unwrapped = body.replace(
-    /<div class="mermaid">\s*<pre><code[^>]*>([\s\S]*?)<\/code><\/pre>\s*<\/div>/gi,
-    (_, code) => `<div class="mermaid">${code}</div>`,
-  );
-  return `${styles}\n${unwrapped}`;
+  return `${styles}\n${body}`;
+}
+
+async function compile(file, out, args) {
+  try {
+    const { stderr } = await execFileAsync(
+      typstBin,
+      ['compile', file, out, ...args, '--root', root],
+      { maxBuffer: 64 * 1024 * 1024 },
+    );
+    const text = (stderr ?? '').toString().trim();
+    if (text) console.error(text);
+  } catch (err) {
+    const text = (err.stderr ?? '').toString().trim();
+    console.error(`Typst failed for ${path.relative(root, file)}:`);
+    if (text) console.error(text);
+    throw err;
+  }
+}
+
+async function mapLimit(items, limit, fn) {
+  const results = new Array(items.length);
+  let next = 0;
+  async function worker() {
+    while (next < items.length) {
+      const i = next++;
+      results[i] = await fn(items[i], i);
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, () => worker()));
+  return results;
 }
 
 if (!hasTypst()) {
@@ -97,7 +128,7 @@ for (const file of readdirSync(pdfDir)) {
   if (file.endsWith('.pdf')) rmSync(path.join(pdfDir, file), { force: true });
 }
 
-const entries = [];
+const tasks = [];
 for (const file of files) {
   const rel = path.relative(blogDir, file);
   const parts = rel.split(path.sep);
@@ -108,46 +139,52 @@ for (const file of files) {
   const [lang, date, nameFile] = parts;
   const name = nameFile.replace(/\.typ$/i, '');
   const id = `${lang}-${date}-${name}`;
-  const source = readFileSync(file, 'utf-8');
-  const meta = parseMetadata(source);
-  const title = meta.title || name.replace(/-/g, ' ');
-  const htmlOut = path.join(tmpDir, `${id}.html`);
-  const pdfOut = path.join(pdfDir, `${id}.pdf`);
-
-  execFileSync(
-    typstBin,
-    [
-      'compile',
-      file,
-      htmlOut,
-      '--format',
-      'html',
-      '--features',
-      'html',
-      '--input',
-      'format=html',
-      '--root',
-      root,
-    ],
-    { stdio: 'inherit' },
-  );
-  execFileSync(typstBin, ['compile', file, pdfOut, '--format', 'pdf', '--root', root], {
-    stdio: 'inherit',
-  });
-
-  const fragment = extractFragment(readFileSync(htmlOut, 'utf-8'));
-  writeFileSync(path.join(articlesDir, `${id}.html`), fragment, 'utf-8');
-
-  entries.push({
+  tasks.push({
+    file,
     id,
     lang,
     date,
     name,
+    meta: parseMetadata(readFileSync(file, 'utf-8')),
+  });
+}
+
+const concurrency = Math.max(
+  1,
+  os.availableParallelism ? os.availableParallelism() : os.cpus().length,
+);
+
+const compiles = tasks.flatMap((task) => [
+  {
+    task,
+    out: path.join(tmpDir, `${task.id}.html`),
+    args: ['--format', 'html', '--features', 'html', '--input', 'format=html'],
+  },
+  {
+    task,
+    out: path.join(pdfDir, `${task.id}.pdf`),
+    args: ['--format', 'pdf'],
+  },
+]);
+
+await mapLimit(compiles, concurrency, ({ task, out, args }) => compile(task.file, out, args));
+
+const entries = [];
+for (const task of tasks) {
+  const title = task.meta.title || task.name.replace(/-/g, ' ');
+  const fragment = extractFragment(readFileSync(path.join(tmpDir, `${task.id}.html`), 'utf-8'));
+  writeFileSync(path.join(articlesDir, `${task.id}.html`), fragment, 'utf-8');
+  entries.push({
+    id: task.id,
+    lang: task.lang,
+    date: task.date,
+    name: task.name,
     title,
-    summary: meta.summary,
-    tags: meta.tags,
-    category: meta.category || 'tech',
-    pdf: `/pdf/${id}.pdf`,
+    summary: task.meta.summary,
+    tags: task.meta.tags,
+    category: task.meta.category || 'tech',
+    htmlHeads: task.meta.htmlHeads,
+    pdf: `/pdf/${task.id}.pdf`,
   });
 }
 

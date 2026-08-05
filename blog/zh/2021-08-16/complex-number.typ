@@ -1,5 +1,5 @@
 // title: 对于复数的另一种理解
-// summary: 从向量、矩阵到指数形式，重新理解复数。
+// summary: 用向量、矩阵和指数形式重新理解复数。
 // tags: mathematics, complex-numbers
 // category: tech
 

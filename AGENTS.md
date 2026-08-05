@@ -39,13 +39,56 @@ The build script passes `--input format=html` for HTML export and `--input forma
 
 Custom element definitions live in `src/components/` and are loaded by the site-wide layout, so the article can emit plain HTML tags that the shell enhances. Raw HTML blocks are ignored in PDF output, so add a static image or figure caption as a print fallback when needed.
 
+Mermaid diagrams render in the HTML branch via the site layout's mermaid script; give each one a PDF fallback drawn with the fletcher package in the `else` branch (pattern: `blog/zh/2021-09-11/derivative-m.typ`). Import `#import "@preview/fletcher:0.5.8": diagram, edge, node, shapes`.
+
+Pass the mermaid source as a `data-source` attribute (a raw string whose lines are joined with `\n`) instead of as element content. The site's mermaid script reads `data-source`, so Typst never parses mermaid syntax as Typst markup and no `<pre><code>` unwrapping is needed downstream.
+
+Plain `(x, y)` tuples are elastic row/column coordinates (the grid expands to fit node labels, so the default `3em` spacing plus label sizes drive the width); the y-axis grows downward. To control overall width, scale the coordinates and tune `diagram()`'s `spacing`. To keep a row of nodes equally spaced, use integer x positions (one node per column) and keep labels out of node columns: a label wider than the node widens that column and breaks the spacing, so place such labels at a half-column position (e.g. `4.5`) instead of on the node column.
+
+```typst
+#if sys.inputs.at("format", default: "pdf") == "html" [
+  #html.elem("div", attrs: (class: "mermaid", "data-source": "graph TD\nA --> B"))[]
+] else [
+  #diagram(
+    node-stroke: 0.6pt,
+    node((0, 0), [A]),
+    node((2, 0), [B]),
+    edge((0, 0), (2, 0), "->"),
+  )
+]
+```
+## Image captions
+
+In the old Markdown blog, an italic line right after an image is the image's caption. When migrating such a pair, wrap the image and the caption in a `#figure`:
+
+```typst
+#figure(
+  image("ray-spacetime-diagram-wikipedia.svg", width: 70%),
+  caption: [图源：#link("https://en.wikipedia.org/wiki/Spacetime_diagram")[Wikipedia]],
+)
+```
+
+## Math notation
+
+To draw an arrow with text on top (like LaTeX `\xrightarrow{pred}`), use Typst's built-in `stretch` - no external package needed:
+
+```typst
+$ a stretch(-->)^"pred" b $
+```
+
+`stretch(-->)^"label"` renders a stretched arrow with the label above it in both HTML and PDF exports. Avoid the `xarrow` package for this: it relies on `place()`, which Typst's HTML export ignores, so the arrow glyphs are dropped and only the label remains.
+
+- Vector notation: use the template helper `mathbf(x)` (bold upright) for bold vector variables, and `arrow(x)` for arrow-accented vectors. Note that `vec(x)` creates a column vector, not an arrow accent. E.g. 4-vectors use `mathbf(r)` and 3-vectors use `arrow(r)` in `2022-10-14-relativistic-renderer-0`.
+
 ## Text style and citation rules
 
 1. When writing Chinese, there shall be no space between characters and characters or characters and punctuations. Wrong: `重要信息在段落中需要 *加粗* 或者使用 _斜体_ 。` Correct: `重要信息在段落中需要*加粗*或者使用_斜体_。`
 2. There should be spaces between Chinese texts and English texts, but there should be no spaces between Chinese punctuations and English words. Wrong: `在段落中可以插入英文注释（ English annotations ）或者English words。` Correct: `在段落中可以插入英文注释（English annotations）或者 English words。`
+Note: For loanwords already common in Chinese, such as `up` (up主), no space is needed - write `B站up`.
 3. There should be no space between Chinese words and numbers. Wrong: `中文和数字 012 或者 Latex 数字 $012$ 之间不能有空格。` Correct: `中文和数字012或者 Latex 数字$012$之间不能有空格。`
-4. Always use the punctuations of the language you are writing in. For example, when writing blog in `blog/zh`, use full-width punctuations (`，`, `。`, `；`, `：`, etc.). When writing blogs in `blog/en`, use half-width punctuations (`,`, `.`, `;`, `:`, etc.).
-5. When citing from reference documents, use `@` symbol. For example, to cite an article labeled `article1` in `reference.bib`, write `@article1`. For both Chinese and English, there should be a space between citations and the text before or after it, but there should be no space between citations and punctuations.
+4. Chinese texts and math equations with multiple letters should have spaces between them, while Chinese texts and single-letter variables can either have a space or have no space. Wrong: `勾股定理$a^2 + b^2 = c^2$中的$c$是斜边边长。`; Correct: `勾股定理 $a^2 + b^2 = c^2$ 中的$c$是斜边边长。` or `勾股定理 $a^2 + b^2 = c^2$ 中的 $c$ 是斜边边长。`.
+5. Always use the punctuations of the language you are writing in. For example, when writing blog in `blog/zh`, use full-width punctuations (`，`, `。`, `；`, `：`, etc.). When writing blogs in `blog/en`, use half-width punctuations (`,`, `.`, `;`, `:`, etc.).
+6. When citing from reference documents, use `@` symbol. For example, to cite an article labeled `article1` in `reference.bib`, write `@article1`. For both Chinese and English, there should be a space between citations and the text before or after it, but there should be no space between citations and punctuations.
 
 ## Themes, templates, and languages
 

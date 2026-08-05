@@ -12,7 +12,7 @@ const { lang = 'en', links = {} } = Astro.props;
 const t = translations[lang as keyof typeof translations] ?? translations.en;
 const navLinks: { href: string; label: string; icon: string }[] = [
   { href: `/${lang}/`, label: t.nav.blog, icon: 'fa-regular fa-file-lines' },
-  { href: '/aboutme/', label: t.nav.aboutme, icon: 'fa-solid fa-user' },
+  { href: `/${lang}/aboutme/`, label: t.nav.aboutme, icon: 'fa-solid fa-user' },
   { href: '/apps/', label: t.nav.app, icon: 'fa-solid fa-cubes-stacked' },
 ];
 ---

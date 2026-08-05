@@ -76,7 +76,8 @@ const langLinks = languageLinks(Astro.url.pathname);
       const prepareMermaidNodes = () => {
         for (const node of mermaidNodes()) {
           if (!node.dataset.mermaidSource) {
-            node.dataset.mermaidSource = node.textContent?.trim() ?? '';
+            node.dataset.mermaidSource =
+              node.dataset.source?.trim() ?? node.textContent?.trim() ?? '';
           }
         }
       };

@@ -28,20 +28,7 @@ $ f(x) = 3 x^2 + 2 sin(x) $
 可以被拆解成如下的表达式树：
 
 #if sys.inputs.at("format", default: "pdf") == "html" [
-  #html.elem("div", attrs: (class: "mermaid"))[
-    ```text
-    graph TD
-    A((+)) --> B((*))
-    A --> C((*))
-    B --> D[3]
-    B --> E((^))
-    E --> F[x]
-    E --> G[2]
-    C --> H[2]
-    C --> I((sin))
-    I --> J[x]
-    ```
-  ]
+  #html.elem("div", attrs: (class: "mermaid", "data-source": "graph TD\nA((+)) --> B((*))\nA --> C((*))\nB --> D[3]\nB --> E((^))\nE --> F[x]\nE --> G[2]\nC --> H[2]\nC --> I((sin))\nI --> J[x]\n"))[]
 ] else [
   #diagram(
     node-stroke: 0.6pt,
@@ -72,20 +59,7 @@ $ f(x) = 3 x^2 + 2 sin(x) $
 以上面的表达式树为例，如果我们想要计算 $f((pi)/(2))$ 的数值，首先把所有 $x$ 结点换成 $(pi)/(2)$：
 
 #if sys.inputs.at("format", default: "pdf") == "html" [
-  #html.elem("div", attrs: (class: "mermaid"))[
-    ```text
-    graph TD
-    A((+)) --> B((*))
-    A --> C((*))
-    B --> D[3]
-    B --> E((^))
-    E --> F[π/2]
-    E --> G[2]
-    C --> H[2]
-    C --> I((sin))
-    I --> J[π/2]
-    ```
-  ]
+  #html.elem("div", attrs: (class: "mermaid", "data-source": "graph TD\nA((+)) --> B((*))\nA --> C((*))\nB --> D[3]\nB --> E((^))\nE --> F[π/2]\nE --> G[2]\nC --> H[2]\nC --> I((sin))\nI --> J[π/2]\n"))[]
 ] else [
   #diagram(
     node-stroke: 0.6pt,
@@ -111,20 +85,10 @@ $ f(x) = 3 x^2 + 2 sin(x) $
   )
 ]
 
-接下来从下向上递归计算。先将 $((pi)/(2))^2$ 替换为 $(pi^2)/(4)$，将 $sin((pi)/(2))$ 替换为 $1$：
+接下来从下向上递归计算。先将 $((pi)/(2))^2$ 替换为 $(pi^2)/(4)$，将 $sin((pi)/(2))$ 替换为$1$：
 
 #if sys.inputs.at("format", default: "pdf") == "html" [
-  #html.elem("div", attrs: (class: "mermaid"))[
-    ```text
-    graph TD
-    A((+)) --> B((*))
-    A --> C((*))
-    B --> D[3]
-    B --> E[π^2/4]
-    C --> H[2]
-    C --> I[1]
-    ```
-  ]
+  #html.elem("div", attrs: (class: "mermaid", "data-source": "graph TD\nA((+)) --> B((*))\nA --> C((*))\nB --> D[3]\nB --> E[π^2/4]\nC --> H[2]\nC --> I[1]\n"))[]
 ] else [
   #diagram(
     node-stroke: 0.6pt,
@@ -147,13 +111,7 @@ $ f(x) = 3 x^2 + 2 sin(x) $
 继续重复上述操作：
 
 #if sys.inputs.at("format", default: "pdf") == "html" [
-  #html.elem("div", attrs: (class: "mermaid"))[
-    ```text
-    graph TD
-    A((+)) --> B[3π^2/4]
-    A --> C[2]
-    ```
-  ]
+  #html.elem("div", attrs: (class: "mermaid", "data-source": "graph TD\nA((+)) --> B[3π^2/4]\nA --> C[2]\n"))[]
 ] else [
   #diagram(
     node-stroke: 0.6pt,
@@ -370,7 +328,7 @@ $ y' = (f(x)^(g(x)))' = f(x)^(g(x)) ((g(x))/(f(x)) f'(x) + g'(x) ln f(x)) $
 
 $ "返回值" = cases(1 & "结点值" = "求导变量", 0 & "结点值" != "求导变量") $
 
-对 $x$ 求导时，只有 $x'$ 会返回 $1$。其余情况，包括常数的导数，和多元函数中其他变量（比如 $y, z$）对 $x$ 的导数，都会返回 $0$。
+对 $x$ 求导时，只有$x'$会返回$1$。其余情况，包括常数的导数，和多元函数中其他变量（比如 $y, z$）对 $x$ 的导数，都会返回$0$。
 
 = 优化
 
@@ -402,7 +360,7 @@ x   2    ×         *
            x   2   x
 ```
 
-接着根据叶结点的处理规则，将 $2'$ 替换成 $0$，将 $x'$ 替换成 $1$，得到了表达式树：
+接着根据叶结点的处理规则，将$2'$替换成$0$，将$x'$替换成$1$，得到了表达式树：
 
 ```text
         ×
@@ -420,7 +378,7 @@ x   2    ×         *
 
 == 初级优化
 
-结点的所有子结点均为常数时，直接合并成单个常数结点，例如 $2 + 3$ 直接合并为 $5$。
+结点的所有子结点均为常数时，直接合并成单个常数结点，例如$2 + 3$直接合并为$5$。
 
 - 加法：$a + 0 = 0 + a = a$
 - 减法：$a - 0 = a$，$0 - a = -a$，$a - a = 0$

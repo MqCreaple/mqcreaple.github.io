@@ -1,7 +1,9 @@
-# mqc.blog
+# My Personal Blog
 
 A static blog built with **Typst** for article authoring and **Astro** for the
 site shell, theming, i18n, and static deployment.
+
+Old blog: [MqCreaple/mqcreaple.github.io-old](https://github.com/MqCreaple/mqcreaple.github.io-old).
 
 ## Requirements
 
