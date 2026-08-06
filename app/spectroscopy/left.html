@@ -1,0 +1,24 @@
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<div class="card">
+  <h1>Spectroscopy Game</h1>
+  <p>Match molecular structures to their NMR spectra using real data from the <a href="https://sdbs.db.aist.go.jp/" target="_blank">SDBS database</a>.</p>
+</div>
+
+<div id="main-container" class="card">
+  <p>Adjust the settings on the right and click <strong>New Game</strong> to start.</p>
+</div>
+
+<div id="pairing-area" class="card hidden">
+  <h2 id="pairing-title">Match structures to their spectra!</h2>
+  <div id="answer-reveal" class="answer-reveal hidden"></div>
+  <div class="game-area">
+    <div class="game-left">
+      <h3>Structures</h3>
+      <div class="spectroscopy-grid" id="structure-grid"></div>
+    </div>
+    <div class="game-right">
+      <h3>Spectra</h3>
+      <div class="spectroscopy-grid" id="spectrum-grid"></div>
+    </div>
+  </div>
+</div>

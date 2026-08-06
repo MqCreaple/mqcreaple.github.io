@@ -66,52 +66,5 @@ const langLinks = languageLinks(Astro.url.pathname);
       </div>
     </main>
     <SiteFooter lang={lang} />
-    <script>
-      import mermaid from 'mermaid';
-
-      const getMermaidTheme = () =>
-        document.documentElement.dataset.theme === 'dark' ? 'dark' : 'default';
-
-      const mermaidNodes = () =>
-        Array.from(document.querySelectorAll<HTMLElement>('.mermaid'));
-
-      const prepareMermaidNodes = () => {
-        for (const node of mermaidNodes()) {
-          if (!node.dataset.mermaidSource) {
-            node.dataset.mermaidSource =
-              node.dataset.source?.trim() ?? node.textContent?.trim() ?? '';
-          }
-        }
-      };
-
-      const renderMermaid = () => {
-        prepareMermaidNodes();
-        mermaid.initialize({
-          startOnLoad: false,
-          theme: getMermaidTheme(),
-        });
-
-        for (const node of mermaidNodes()) {
-          node.textContent = node.dataset.mermaidSource ?? '';
-          node.removeAttribute('data-processed');
-        }
-
-        mermaid.run({ nodes: mermaidNodes() });
-      };
-
-      renderMermaid();
-
-      const root = document.documentElement;
-      const observer = new MutationObserver((mutations) => {
-        if (mutations.some((mutation) => mutation.attributeName === 'data-theme')) {
-          renderMermaid();
-        }
-      });
-
-      observer.observe(root, {
-        attributes: true,
-        attributeFilter: ['data-theme'],
-      });
-    </script>
   </body>
 </html>

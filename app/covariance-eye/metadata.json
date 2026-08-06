@@ -1,0 +1,13 @@
+{
+  "title": "Covariance Eye",
+  "date": "2026-04-15",
+  "introduction": "Find the data with the strongest correlation!",
+  "scripts": [
+    "game.js"
+  ],
+  "styles": [
+    "covariance-eye.css"
+  ],
+  "contentLeft": "left.html",
+  "contentRight": "right.html"
+}

@@ -1,0 +1,36 @@
+<div class="card article">
+  <h1>Ideal Gas Model</h1>
+  <div id="canvas-container">
+    <p class="warn" id="warning-msg" style="display: none;"></p>
+    <p>Click to enter full screen.</p>
+    <canvas width="1200" height="1500" id="gas molecule visualizer">Your browser does not support canvas.</canvas>
+  </div>
+</div>
+<script type="module">
+  import wasm_bindgen_init from './thermal-model.js';
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    console.debug('Loading wasm...');
+    try {
+      await wasm_bindgen_init('./thermal-model_bg.wasm');
+      console.debug('Wasm loaded.');
+    } catch (err) {
+      console.error(err);
+      const warning = document.getElementById('warning-msg');
+      warning.innerText = 'Failed to load wasm module. Please refresh the page.';
+      warning.style.display = 'block';
+    }
+
+    const canvas = document.getElementById('gas molecule visualizer');
+    canvas.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        canvas.requestFullscreen().then(() => {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }).catch(() => {
+          console.error('Failed to enter fullscreen mode.');
+        });
+      }
+    });
+  });
+</script>

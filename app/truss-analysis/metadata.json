@@ -1,0 +1,10 @@
+{
+  "title": "Truss Analysis",
+  "date": "2026-01-07",
+  "introduction": "Compute the mechanical properties of truss structures.",
+  "styles": [
+    "truss-analysis.css"
+  ],
+  "contentLeft": "left.html",
+  "contentRight": "right.html"
+}

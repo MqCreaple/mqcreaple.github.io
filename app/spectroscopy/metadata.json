@@ -1,0 +1,16 @@
+{
+  "title": "Spectroscopy Game",
+  "date": "2026-06-12",
+  "introduction": "Match structures to NMR spectra.",
+  "scripts": [
+    "settings.js",
+    "spectrum.js",
+    "data-loader.js",
+    "game.js"
+  ],
+  "styles": [
+    "spectroscopy.css"
+  ],
+  "contentLeft": "left.html",
+  "contentRight": "right.html"
+}

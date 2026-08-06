@@ -187,7 +187,7 @@ $ mathbf(x) = (A^T A)^(-1) A^T mathbf(b) $
 
 = 程序部分：Rust 实现
 
-最终结果在#link("https://mqcreaple.github.io/app/truss-analysis/index.html")[这里]展示。欢迎测试。
+最终结果在#link("/app/truss-analysis/")[这里]展示。欢迎测试。
 
 == 计算
 

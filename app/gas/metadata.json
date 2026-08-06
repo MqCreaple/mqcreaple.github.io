@@ -1,0 +1,10 @@
+{
+  "title": "Ideal Gas Model",
+  "date": "2024-08-15",
+  "introduction": "A simple simulation of thermal behaviors of ideal gas molecules.",
+  "styles": [
+    "gas.css"
+  ],
+  "contentLeft": "left.html",
+  "contentRight": "right.html"
+}

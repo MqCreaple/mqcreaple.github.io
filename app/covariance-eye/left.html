@@ -1,0 +1,28 @@
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.1.0/dist/lightweight-charts.standalone.production.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<div class="card">
+  <h1>Covariance Eye - Tech Demo</h1>
+  <p>Find the hidden correlated pairs among randomly generated time series. Click on charts to select them for comparison.</p>
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-value" id="total-charts-display">0</div>
+      <div class="stat-label">Total Charts</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="correlation-threshold">0</div>
+      <div class="stat-label">Correlation Threshold</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="pairs-found">0</div>
+      <div class="stat-label">Pairs Found</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="time-spent">0s</div>
+      <div class="stat-label">Time Spent</div>
+    </div>
+  </div>
+</div>
+<div class="card">
+  <h2>Time Series Charts</h2>
+  <div class="chart-grid" id="chart-grid"></div>
+</div>

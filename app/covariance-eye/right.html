@@ -1,0 +1,47 @@
+<div class="card">
+  <h2>Parameters</h2>
+  <div class="form-group">
+    <label for="total-charts">Total Charts</label>
+    <input type="range" id="total-charts" min="4" max="30" value="8" step="1">
+    <span class="range-value" id="total-charts-value">8</span>
+  </div>
+  <div class="form-group">
+    <label for="difficulty">Difficulty</label>
+    <select id="difficulty">
+      <option value="easy">Easy (Correlation ≈ 0.90)</option>
+      <option value="medium" selected>Medium (Correlation ≈ 0.85)</option>
+      <option value="hard">Hard (Correlation ≈ 0.80)</option>
+      <option value="insane">Insane (Correlation ≈ 0.70)</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="noise-level">Noise Level</label>
+    <input type="range" id="noise-level" min="0.0" max="2.0" value="1.0" step="0.1">
+    <span class="range-value" id="noise-level-value">1.0</span>
+  </div>
+  <div class="form-group">
+    <label for="num-pairs">Number of Hidden Pairs</label>
+    <input type="range" id="num-pairs" min="1" max="4" value="4" step="1">
+    <span class="range-value" id="num-pairs-value">4</span>
+  </div>
+  <button id="generate-btn">Generate New Charts</button>
+  <button id="check-btn">Check Selected Pair</button>
+  <button id="reveal-btn">Reveal All Pairs</button>
+</div>
+<div class="card">
+  <h2>Analysis</h2>
+  <div id="analysis-result">
+    <p>Select two charts to see their correlation.</p>
+  </div>
+</div>
+<div class="card">
+  <h2>How to Play</h2>
+  <ul style="padding-left: 20px; margin-bottom: 0;">
+    <li>Adjust parameters on the right.</li>
+    <li>Click "Generate New Charts" to create random time series.</li>
+    <li>Some charts are secretly correlated (hidden pairs).</li>
+    <li>Click on charts to select them (max 2).</li>
+    <li>Click "Check Selected Pair" to see if they are a hidden pair.</li>
+    <li>Find all hidden pairs to win!</li>
+  </ul>
+</div>

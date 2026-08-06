@@ -1,0 +1,16 @@
+{
+  "title": "Spring Mass System",
+  "date": "2023-07-05",
+  "introduction": "Simulation of a simple spring-mass system.",
+  "scripts": [
+    "vec.js",
+    "spring-mass.js",
+    "presets.js",
+    "ui.js"
+  ],
+  "styles": [
+    "spring-mass.css"
+  ],
+  "contentLeft": "left.html",
+  "contentRight": "right.html"
+}
