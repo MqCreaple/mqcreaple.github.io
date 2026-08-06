@@ -30,19 +30,19 @@ We will introduce the following 3 assumptions in our model:
 #quote(block: true)[
 Assumption 1: Everyone has one and only one native language, and bilingual native speakers are not considered in this model.
 ]
-] <hypothesis-1>
+] <fig:hypothesis-1>
 
 #figure(supplement: [Hypothesis], caption: none)[
 #quote(block: true)[
 Assumption 2: The purpose of all people using language is to facilitate communication. Language researchers and enthusiasts are not considered in this model.
 ]
-] <hypothesis-2>
+] <fig:hypothesis-2>
 
 #figure(supplement: [Hypothesis], caption: none)[
 #quote(block: true)[
 Hypothesis 3: Learning a new language requires a lot of time and energy, so the decision to learn a new language must be based on the fact that the benefits it can bring us outweigh the investment.
 ]
-] <hypothesis-3>
+] <fig:hypothesis-3>
 
 We can calculate an "influence" for each language\/dialect. Whether you measure the influence of a language\/dialect by the number of native speakers, the number of speakers, frequency of use, or whichever metric you define, one thing is certain: the influence of different languages varies greatly. The influence of some languages can be so small that you can't understand others' language outside your own village; the influence of some languages can be so big that its usage can cover a country (like Mandarin), or it can become the common language of the whole world (like English).
 
@@ -53,7 +53,7 @@ In real life, the answers to this question varies from person to person since ma
 - The more similar a foreign language is to someone's native language, the less time and effort one can spend learning the language.
 - The greater the influence of a foreign language, the more people someone will be able to communicate with after learning the foreign language, which will bring greater benefit to themselves.
 
-If only these two factors are considered, and based on the @hypothesis-3 mentioned previously, a reasonable conjecture is: If a language A is not as good as another language B in terms of learning difficulty or influence power, then A is not worth learning as a foreign language.
+If only these two factors are considered, and based on the @fig:hypothesis-3 mentioned previously, a reasonable conjecture is: If a language A is not as good as another language B in terms of learning difficulty or influence power, then A is not worth learning as a foreign language.
 
 For example, suppose that you were born in a Min dialect island within Hangzhou. Your native tongue is Min dialect, but most people around you speak Hangzhou dialect or Mandarin, with few cases might use Min dialect, and even fewer cases might use Cantonese. Then if we plot the influence and similarity to Min dialect on a graph, we will get:
 
@@ -79,7 +79,7 @@ First we need to introduce another assumption:
 #quote(block: true)[
 Hypothesis 4: As time goes by and one's language ability declines, one might forget the learned languages to varying degrees. The languages one uses most often are usually the least likely to be forgotten.
 ]
-] <hypothesis-4>
+] <fig:hypothesis-4>
 
 #quote(block: true)[
 Specifically, forgetting may take the following different forms:
@@ -91,7 +91,7 @@ Specifically, forgetting may take the following different forms:
 
 If you have learned a second language for a long time, you probably have experienced one or more of these. For example, when I was exposed to English for a long time, I could not help but think of English words and the word structures in English when speaking Chinese (such as using "xxx化" more often, which corresponds to "xxx-ize" in English).
 
-According to @hypothesis-4, it seems that languages ​​with less influence will inevitably merge with languages ​​with greater influence. This seems pessimistic, but in reality, many languages ​​with less influence have _indeed_ been replaced or assimilated by languages ​​with greater influence. For example, under the influence of English, many Native American languages ​​have been endangered or disappeared in the last century even without any policy enforcing English as the single language. In large cities in China, many former dialects are gradually shifting closer to Mandarin in pronunciation, such as the comparison of the new and old pronunciations of Chengdu introduced by Bilibili uploader #link("https://space.bilibili.com/40734689")[小白的二次元].
+According to @fig:hypothesis-4, it seems that languages ​​with less influence will inevitably merge with languages ​​with greater influence. This seems pessimistic, but in reality, many languages ​​with less influence have _indeed_ been replaced or assimilated by languages ​​with greater influence. For example, under the influence of English, many Native American languages ​​have been endangered or disappeared in the last century even without any policy enforcing English as the single language. In large cities in China, many former dialects are gradually shifting closer to Mandarin in pronunciation, such as the comparison of the new and old pronunciations of Chengdu introduced by Bilibili uploader #link("https://space.bilibili.com/40734689")[小白的二次元].
 
 Of course, it should be noted that these assumptions are not completely consistent with reality. For example, we didn't consider the inter-generational transmission of language. When a child learns a language from the elders, the pronunciation, words, grammatical rules, etc. that he/she learns may be slightly different from the words and grammar that the elders uses. Such differences may not be obvious within one generation, but as time accumulates, even the same language will gradually evolve and differentiate. It's similar to how organisms reproduce, evolve, and differentiate. I also found some papers that use mathematical modeling methods to study language evolution, which can be seen here: @cite2.
 

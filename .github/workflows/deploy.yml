@@ -27,6 +27,10 @@ jobs:
         with:
           typst-version: latest
       - run: npm ci
+      - name: Install CJK fonts for Typst PDF export
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk
       - run: npm run build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

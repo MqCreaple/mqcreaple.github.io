@@ -65,7 +65,7 @@ f: U→V, x:U
  ==> (f x):V
 ```
 
-这个类型推导表达式在数学中有另一种写法，详见 @sec-context。
+这个类型推导表达式在数学中有另一种写法，详见 @sec:context。
 
 == 多元函数
 
@@ -271,7 +271,7 @@ leftmost (Leaf u) = u
 leftmost (NonLeaf a b) = (leftmost a)
 ```
 
-= 语境 Context <sec-context>
+= 语境 Context <sec:context>
 
 假设我们有这样一个没有写完的表达式：
 

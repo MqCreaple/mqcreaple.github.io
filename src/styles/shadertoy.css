@@ -1,0 +1,190 @@
+/* Shadertoy 渲染样式（跟随站点主题） */
+
+.shadertoy-figure {
+    margin: 1.5em 0;
+    position: relative;
+}
+
+.shadertoy-canvas {
+    display: block;
+    margin: 0 auto;
+    cursor: crosshair;
+}
+
+.shadertoy-code-container {
+    margin-top: 1em;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.shadertoy-code-header {
+    background-color: var(--surface);
+    color: var(--text);
+    padding: 0.5em 1em;
+    cursor: pointer;
+    font-family: monospace;
+    font-size: 0.9em;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.shadertoy-code-header:hover {
+    background-color: color-mix(in srgb, var(--surface), var(--text) 8%);
+}
+
+.shadertoy-code-header .fa {
+    margin-right: 0.5em;
+}
+
+.shadertoy-code-content {
+    padding: 0;
+    background-color: var(--code-bg);
+}
+
+.shadertoy-code-content pre {
+    margin: 0;
+    padding: 1em;
+    overflow-x: auto;
+}
+
+.shadertoy-controls {
+    margin-top: 0.5em;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.5em;
+    background-color: color-mix(in srgb, var(--surface) 80%, transparent);
+    border-radius: var(--radius);
+}
+
+/* 按钮 — 通用及向后兼容 */
+.shadertoy-controls button,
+.shadertoy-control-btn {
+    background-color: var(--accent-strong);
+    color: var(--bg);
+    border: none;
+    border-radius: 3px;
+    padding: 0.3em 0.6em;
+    cursor: pointer;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+}
+
+.shadertoy-controls button:hover,
+.shadertoy-control-btn:hover {
+    background-color: var(--accent);
+}
+
+/* 标签（在 input 左侧的文字） */
+.shadertoy-controls label {
+    font-size: 0.9em;
+    color: var(--text);
+    white-space: nowrap;
+    user-select: none;
+}
+
+/* checkbox / radio — 适配暗色主题 */
+.shadertoy-controls input[type="checkbox"],
+.shadertoy-controls input[type="radio"] {
+    accent-color: var(--accent-strong);
+    cursor: pointer;
+    width: 1em;
+    height: 1em;
+}
+
+/* number input — 紧凑 */
+.shadertoy-controls input[type="number"] {
+    background-color: var(--accent-strong);
+    color: var(--bg);
+    border: none;
+    border-radius: 3px;
+    padding: 0.2em 0.4em;
+    font-size: 0.9em;
+    width: 5em;
+    text-align: center;
+}
+
+.shadertoy-controls input[type="number"]:focus {
+    outline: 1px solid var(--accent);
+}
+
+/* range slider */
+.shadertoy-controls input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    background: transparent;
+    width: 8em;
+    height: 1em;
+}
+
+.shadertoy-controls input[type="range"]::-webkit-slider-runnable-track {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+}
+
+.shadertoy-controls input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+    background: var(--accent-strong);
+    margin-top: -5px;
+    cursor: pointer;
+}
+
+.shadertoy-controls input[type="range"]::-moz-range-track {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    border: none;
+}
+
+.shadertoy-controls input[type="range"]::-moz-range-thumb {
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+    background: var(--accent-strong);
+    border: none;
+    cursor: pointer;
+}
+
+/* 每个控件包装块 */
+.shadertoy-controls > div {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.shadertoy-status {
+    font-size: 0.9em;
+    color: var(--muted);
+    margin-left: auto;
+}
+
+.shadertoy-error {
+    background-color: #ffe6e6;
+    border: 1px solid #ff9999;
+    border-radius: 4px;
+    padding: 1em;
+    text-align: center;
+    color: #cc0000;
+}
+
+[data-theme="dark"] .shadertoy-error {
+    background-color: #3a1a1e;
+    border: 1px solid #8a3a42;
+    color: #ff9a9a;
+}
+
+.shadertoy-error .fa {
+    margin-right: 0.5em;
+}

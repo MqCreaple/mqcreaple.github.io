@@ -9,6 +9,7 @@
   --accent-strong: #0b5e57;
   --accent-soft: #d7eeea;
   --code-bg: #eaf0ef;
+  --quote-bg: #fffdcc99;
   --radius: 8px;
   --header-height: 3.5rem;
   color-scheme: light;
@@ -25,6 +26,7 @@
   --accent-strong: #5eead4;
   --accent-soft: #143d3a;
   --code-bg: #182022;
+  --quote-bg: #4a482699;
   color-scheme: dark;
 }
 
@@ -55,9 +57,8 @@ a:hover {
 }
 
 blockquote {
-  color: #3a3a3a;
-  background-color: rgba(255, 253, 220, 0.6);
-  border-left: 0.4em solid #959595;
+  background-color: var(--quote-bg);
+  border-left: 0.4em solid var(--border);
   padding: 2px 15px;
   margin: 20px 0;
 }

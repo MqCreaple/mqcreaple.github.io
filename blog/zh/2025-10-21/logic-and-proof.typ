@@ -244,7 +244,7 @@ $ (Gamma tack.r a : (p -> q) quad quad Gamma tack.r b : p) / (Gamma tack.r (a th
 ]
 
 #quote(block: true)[
-$ (Gamma, a : p tack.r b : q) / (Gamma tack.r (lambda a : p. thin b) : (p -> q)) $
+$ (Gamma, thin a : p tack.r b : q) / (Gamma tack.r (lambda a : p. thin b) : (p -> q)) $
 ]
 
 == 一个方便理解但不太准确的比喻
@@ -369,7 +369,7 @@ class T {}
        };
    ```
 
-== 总结 <sec-summary>
+== 总结 <sec:summary>
 
 以上为直觉主义逻辑中的三个基本操作（$and$、$or$、$->$）在类型推断中的对应关系。总结一下：
 
@@ -452,9 +452,9 @@ def dependentFunc (a : Nat) : dependentType a
       cast (by dsimp [dependentType]; rw [if_neg h]) "Hello"
 ```
 
-（由于编译器无法直接判断`dependentType 1 = Nat`，我们需要在每个分支中使用`cast`函数做类型转换，并提供`dependentType x`在`x = 1`和`x ≠ 1`时的证明）
+（由于编译器无法直接判断 `dependentType 1 = Nat`，我们需要在每个分支中使用 `cast` 函数做类型转换，并提供 `dependentType x` 在 `x = 1` 和 `x ≠ 1` 时的证明）
 
-某些编程语言中会有依赖类型，比如使用类型$"Vec"(n)$表示大小为$n$的数组。这里的$"Vec"$就是一个依赖类型，因为每给它一个不同的自然数$n$，它就会产生一个新的类型。
+某些编程语言中会有依赖类型，比如使用类型 $"Vec"(n)$ 表示大小为$n$的数组。这里的 $"Vec"$ 就是一个依赖类型，因为每给它一个不同的自然数$n$，它就会产生一个新的类型。
 ]
 
 说回这里的命题类型。那么整个命题“$exists x : NN. thin x + 1 = 5$”对应着什么类型呢？首先它应该是一个像 $p and q$ 那样的交叉类型，第一部分放构造出的自然数$x$，而第二部分放 $p(x) := (x + 1 = 5)$ 的证明。也就是说，它的类型是：
@@ -513,7 +513,7 @@ $ (Gamma, t : ast tack.r m : product_(a : t) p quad quad Gamma, t : ast tack.r n
   [说明], [当$q$不依赖$p$时： \ $p and q = sum_(a : p) q$], [当$q$不依赖$p$时： \ $p -> q = product_(a : p) q$],
 )
 
-这张表补全了上一章#link(<sec-summary>)[总结]中提到的柯里-霍华德同构。完整的柯里-霍华德同构定义了所有谓词命题和所有$lambda^C$系统（即：定义了依赖类型的λ演算系统）之间的对应关系 @hindleySeldin。
+这张表补全了 @sec:summary 中提到的柯里-霍华德同构。完整的柯里-霍华德同构定义了所有谓词命题和所有$lambda^C$系统（即：定义了依赖类型的λ演算系统）之间的对应关系 @hindleySeldin。
 
 == Lean和程序定理验证
 
@@ -548,7 +548,7 @@ theorem example4 : (∀ x : Int, x^2 >= 0) :=
   sorry
 ```
 
-在此我们使用Lean的`sorry`关键字把证明留空#strike[用sorry表示未完成部分真的很独特好吧]。
+在此我们使用 Lean 的 `sorry` 关键字把证明留空#strike[用sorry表示未完成部分真的很独特好吧]。
 
 既然全称量词对应着Π类型，而Π类型又是一种函数，我们便可以先把函数定义写出来：
 
@@ -557,14 +557,14 @@ theorem example4 : (∀ x : Int, x^2 >= 0) :=
   fun x : Int => sorry
 ```
 
-如果你使用VSCode的Lean插件，你可以将鼠标放在这个`sorry`前面，就可以看到此处的已知变量和待证明的目标：
+如果你使用VSCode的Lean插件，你可以将鼠标放在这个 `sorry` 前面，就可以看到此处的已知变量和待证明的目标：
 
 ```lean
 x : Int
 ⊢ x ^ 2 ≥ 0
 ```
 
-也就是说，我们需要在这个`sorry`里放上`x ^ 2 ≥ 0`的证明即可。一个完整的证明如下所示：
+也就是说，我们需要在这个 `sorry` 里放上 `x ^ 2 ≥ 0` 的证明即可。一个完整的证明如下所示：
 
 ```lean
 theorem int_square_equals_mul_itself (x : Int) : (x ^ 2 = x * x) := by
@@ -590,7 +590,7 @@ theorem example4 : (∀ x : Int, x ^ 2 >= 0) :=
 
 后面的这个`by`关键字是一个类似Haskell中的Monad的东西，可以在`by`后面用顺序的方式书写指令。目前暂时不用掌握`by`的用法。之后我可以单独写一篇文章介绍Lean的各种证明策略。#strike[不要继续挖坑了啊！]
 
-为了证明这个定理，我们引入了一个引理`int_square_equals_mul_itself`。这个引理的类型签名是这样的：
+为了证明这个定理，我们引入了一个引理 `int_square_equals_mul_itself`。这个引理的类型签名是这样的：
 
 ```lean
 theorem int_square_equals_mul_itself (x : Int) : (x ^ 2 = x * x)
@@ -600,13 +600,13 @@ theorem int_square_equals_mul_itself (x : Int) : (x ^ 2 = x * x)
 
 $ product_(x : ZZ) (x^2 = x times x) $
 
-也就是说，上面这个`int_square_equals_mul_itself`的类型签名和下面这个是等价的：
+也就是说，上面这个 `int_square_equals_mul_itself` 的类型签名和下面这个是等价的：
 
 ```lean
 theorem int_square_equals_mul_itself : (∀ x : Int, x ^ 2 = x * x)
 ```
 
-类似地，我们也可以用Lean验证存在性命题，比如：
+类似地，我们也可以用 Lean 验证存在性命题，比如：
 
 $ exists x : ZZ. thin x^2 + 2 x - 3 < 0 $
 
@@ -624,7 +624,7 @@ theorem example5 : (∃ x : Int, x ^ 2 + 2 * x - 3 < 0) :=
   ⟨0, by simp⟩
 ```
 
-这里的尖括号`⟨0, by simp⟩`就表示一个元组，第一项是我们构造出来的$x$，第二项就是 $x^2 + 2 x + 3 < 0$ 的证明。这里的证明很简单，不用做任何符号操作，直接使用`simp`策略做代数化简即可。
+这里的尖括号 `⟨0, by simp⟩` 就表示一个元组，第一项是我们构造出来的$x$，第二项就是 $x^2 + 2 x + 3 < 0$ 的证明。这里的证明很简单，不用做任何符号操作，直接使用 `simp` 策略做代数化简即可。
 
 如果我们第一项放的不是0，而是2，那么在后一项化简的时候就会出错：
 

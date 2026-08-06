@@ -2,11 +2,12 @@
   title: none,
   lang: "en",
   size: 12pt,
-  font: ("Verdana", "Microsoft YaHei"),
+  font: ("Verdana", "Microsoft YaHei", "Noto Sans CJK SC"),
   doc,
 ) = {
   set page(paper: "a4", margin: 2.5cm)
   set par(justify: true)
+  set heading(numbering: "1.")
   set text(size: size, font: font, lang: lang)
   show raw: set text(font: ("Consolas", "Courier New"))
   set document(title: title)
@@ -19,10 +20,18 @@
       v(0.5em)
     }
   }
+  outline()
   doc
 }
 
 #let mathbf(x) = math.bold(math.upright(x))
+#let shadertoy-figure(body, classes: ()) = {
+  if sys.inputs.at("format", default: "pdf") == "html" {
+    html.elem("div", attrs: (class: ("shadertoy-figure", ..classes).join(" ")))[#body]
+  } else {
+    body
+  }
+}
 #let hr() = {
   if sys.inputs.at("format", default: "pdf") == "html" {
     html.hr()

@@ -80,6 +80,14 @@ $ a stretch(-->)^"pred" b $
 
 - Vector notation: use the template helper `mathbf(x)` (bold upright) for bold vector variables, and `arrow(x)` for arrow-accented vectors. Note that `vec(x)` creates a column vector, not an arrow accent. E.g. 4-vectors use `mathbf(r)` and 3-vectors use `arrow(r)` in `2022-10-14-relativistic-renderer-0`.
 
+## Labels and references
+
+Labels should have appropriate prefixes: `fig:` for figures, `tab:` for tables, `eq:` for equations, `sec:` for sections, etc. Reference a label with `@label`, e.g. `@sec:context`.
+
+## Typst symbol reference
+
+The file `.agents/typst-char-map.json` in the repo maps Typst `sym.*` symbol names to their Unicode characters, extracted from <https://typst.app/docs/reference/symbols/sym/>. Load this map whenever you need to use a Typst symbol character (for `#sym.<name>` or math symbols) instead of guessing the Unicode codepoint. The companion file `.agents/typst-symbol-shorthand.json` maps ASCII shorthands to their Unicode characters for both markup and math modes, extracted from <https://typst.app/docs/reference/symbols/>; load it whenever you need a shorthand glyph.
+
 ## Text style and citation rules
 
 1. When writing Chinese, there shall be no space between characters and characters or characters and punctuations. Wrong: `重要信息在段落中需要 *加粗* 或者使用 _斜体_ 。` Correct: `重要信息在段落中需要*加粗*或者使用_斜体_。`
@@ -89,6 +97,7 @@ Note: For loanwords already common in Chinese, such as `up` (up主), no space is
 4. Chinese texts and math equations with multiple letters should have spaces between them, while Chinese texts and single-letter variables can either have a space or have no space. Wrong: `勾股定理$a^2 + b^2 = c^2$中的$c$是斜边边长。`; Correct: `勾股定理 $a^2 + b^2 = c^2$ 中的$c$是斜边边长。` or `勾股定理 $a^2 + b^2 = c^2$ 中的 $c$ 是斜边边长。`.
 5. Always use the punctuations of the language you are writing in. For example, when writing blog in `blog/zh`, use full-width punctuations (`，`, `。`, `；`, `：`, etc.). When writing blogs in `blog/en`, use half-width punctuations (`,`, `.`, `;`, `:`, etc.).
 6. When citing from reference documents, use `@` symbol. For example, to cite an article labeled `article1` in `reference.bib`, write `@article1`. For both Chinese and English, there should be a space between citations and the text before or after it, but there should be no space between citations and punctuations.
+7. Place bibliography entries in a separate `reference.bib` in the same folder as the Typst file, and load the references with the `#bibliography` function, e.g. `#bibliography("reference.bib", full: true)`.
 
 ## Themes, templates, and languages
 
