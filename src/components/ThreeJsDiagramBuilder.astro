@@ -1,0 +1,254 @@
+<script>
+  // Three.js core plus OrbitControls for interactive camera dragging.
+  import * as THREE from 'three';
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+  // Contract between the builder and the per-post scene construction scripts.
+  type InitialView = [number, number, number];
+
+  type ControlDef =
+    | { type: 'button'; label: string; action: () => void }
+    | { type: 'checkbox'; label: string; action: (checked: boolean) => void }
+    | {
+        type: 'number' | 'range';
+        label: string;
+        min?: number;
+        max?: number;
+        action: (value: number) => void;
+      };
+
+  interface DiagramHelpers {
+    THREE: typeof THREE;
+    makeTextSprite: (message: string, color: string) => THREE.Sprite;
+    resetView: () => void;
+    toggleLabels: (labelSprites: THREE.Sprite[]) => () => void;
+  }
+
+  type DiagramBuilder = (
+    scene: THREE.Scene,
+    camera: THREE.PerspectiveCamera,
+    controls: OrbitControls,
+    initialView: InitialView,
+    addControl: (def: ControlDef) => void,
+    helpers: DiagramHelpers,
+  ) => void;
+
+  // Parses the optional data-initial-view attribute into a camera position.
+  function parseInitialView(value: string | undefined): InitialView {
+    if (!value) return [3, 0, -3];
+    const parts = value.split(',').map((part) => Number(part.trim()));
+    if (parts.length === 3 && parts.every((part) => Number.isFinite(part))) {
+      return [parts[0], parts[1], parts[2]];
+    }
+    return [3, 0, -3];
+  }
+
+  // Renders a text label onto a canvas texture so it can live in the 3D scene.
+  function makeTextSprite(message: string, color: string): THREE.Sprite {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    if (!context) throw new Error('ThreeJsDiagramBuilder: 2D canvas context is unavailable.');
+    canvas.width = 256;
+    canvas.height = 128;
+    context.clearRect(0, 0, 256, 128);
+    context.font = 'bold 24px Arial';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillStyle = color;
+    context.fillText(message, 128, 64);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.minFilter = THREE.LinearFilter;
+    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture }));
+    sprite.scale.set(1.5, 0.75, 1);
+    return sprite;
+  }
+
+  // Points the camera back at the scene origin from the initial view.
+  function resetView(
+    camera: THREE.PerspectiveCamera,
+    controls: OrbitControls,
+    initialView: InitialView,
+  ): void {
+    controls.target.set(0, 0, 0);
+    camera.position.set(...initialView);
+    controls.update();
+  }
+
+  // Builds an action that toggles a set of label sprites on and off.
+  function toggleLabels(labelSprites: THREE.Sprite[]): () => void {
+    let visible = true;
+    return () => {
+      visible = !visible;
+      for (const sprite of labelSprites) sprite.visible = visible;
+    };
+  }
+
+  // Creates the DOM element for one scene control (button, checkbox, slider).
+  function createControlElement(figureId: string, def: ControlDef, index: number): HTMLDivElement {
+    const id = `${figureId}-control-${index}`;
+    const wrap = document.createElement('div');
+    wrap.style.display = 'flex';
+    wrap.style.alignItems = 'center';
+    wrap.style.gap = '4px';
+
+    switch (def.type) {
+      case 'button': {
+        const button = document.createElement('button');
+        button.id = id;
+        button.textContent = def.label;
+        button.addEventListener('click', def.action);
+        wrap.appendChild(button);
+        break;
+      }
+      case 'checkbox': {
+        const label = document.createElement('label');
+        label.textContent = def.label;
+        label.htmlFor = id;
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.id = id;
+        input.addEventListener('change', () => def.action(input.checked));
+        wrap.appendChild(label);
+        wrap.appendChild(input);
+        break;
+      }
+      case 'number':
+      case 'range': {
+        const label = document.createElement('label');
+        label.textContent = def.label;
+        label.htmlFor = id;
+        const input = document.createElement('input');
+        input.type = def.type;
+        input.id = id;
+        if (def.min !== undefined) input.min = String(def.min);
+        if (def.max !== undefined) input.max = String(def.max);
+        input.addEventListener('input', () => def.action(parseFloat(input.value)));
+        wrap.appendChild(label);
+        wrap.appendChild(input);
+        break;
+      }
+      default:
+        console.warn('ThreeJsDiagramBuilder: unknown control type');
+    }
+
+    return wrap;
+  }
+
+  // Shows a fallback message inside the figure when something goes wrong.
+  function showError(container: HTMLElement, message: string): void {
+    const error = document.createElement('div');
+    error.className = 'three-js-error';
+    error.textContent = message;
+    container.appendChild(error);
+  }
+
+  // Main entry point: sets up one Three.js scene inside a figure container.
+  async function buildDiagram(container: HTMLElement, figureId: string): Promise<void> {
+    const src = container.dataset.src;
+    if (!src) return;
+
+    const initialView = parseInitialView(container.dataset.initialView);
+    const canvas = document.createElement('canvas');
+    canvas.className = 'three-js-canvas';
+    container.appendChild(canvas);
+
+    // Base scene and perspective camera, initially looking at the origin.
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xf0f0f0);
+
+    const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 50);
+    camera.position.set(...initialView);
+    camera.lookAt(0, 0, 0);
+
+    // Renderer creation can throw when WebGL is unavailable.
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    } catch (error) {
+      console.error('ThreeJsDiagramBuilder: WebGL is not available', error);
+      showError(container, 'Three.js diagram requires WebGL support.');
+      return;
+    }
+
+    const getSize = (): [number, number] => [
+      canvas.clientWidth || container.clientWidth || window.innerWidth,
+      canvas.clientHeight || container.clientHeight || 400,
+    ];
+
+    const setSize = (): void => {
+      const [width, height] = getSize();
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(window.devicePixelRatio);
+    };
+    setSize();
+
+    // Damped OrbitControls give the figure an ergonomic, slightly heavier feel.
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.2;
+    controls.screenSpacePanning = false;
+    controls.minDistance = 2;
+    controls.maxDistance = 30;
+
+    // Simple ambient + directional lighting so materials are visible.
+    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(5, 10, 7);
+    scene.add(directionalLight);
+
+    const controlsContainer = document.createElement('div');
+    controlsContainer.className = 'three-js-controls';
+    container.appendChild(controlsContainer);
+
+    // Scene scripts append interactive controls through addControl.
+    const controlElements: HTMLDivElement[] = [];
+    const addControl = (def: ControlDef): void => {
+      const element = createControlElement(figureId, def, controlElements.length);
+      controlsContainer.appendChild(element);
+      controlElements.push(element);
+    };
+
+    // Render loop: apply orbit damping, then draw the scene each frame.
+    function animate(): void {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Keep the canvas and camera aspect ratio in sync with the container.
+    const resizeObserver = new ResizeObserver(setSize);
+    resizeObserver.observe(container);
+
+    // Utilities exposed to the loaded scene script.
+    const helpers: DiagramHelpers = {
+      THREE,
+      makeTextSprite,
+      resetView: () => resetView(camera, controls, initialView),
+      toggleLabels,
+    };
+
+    // Load the post's construction script and let it populate the scene.
+    try {
+      const module = (await import(/* @vite-ignore */ src)) as { default?: DiagramBuilder };
+      if (typeof module.default !== 'function') {
+        throw new Error(`Module ${src} does not export a default builder function`);
+      }
+      module.default(scene, camera, controls, initialView, addControl, helpers);
+    } catch (error) {
+      console.error(`ThreeJsDiagramBuilder: failed to build diagram from ${src}`, error);
+      showError(container, 'Failed to load the Three.js diagram script.');
+    }
+  }
+
+  // Enhance every three-js-figure container emitted by Typst.
+  const figures = document.querySelectorAll<HTMLElement>('.three-js-figure[data-src]');
+  figures.forEach((figure, index) => {
+    const figureId = figure.id || `three-js-figure-${index}`;
+    figure.id = figureId;
+    void buildDiagram(figure, figureId);
+  });
+</script>

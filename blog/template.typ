@@ -32,6 +32,13 @@
     body
   }
 }
+#let three-js-figure(src, body: none) = {
+  if sys.inputs.at("format", default: "pdf") == "html" {
+    html.elem("div", attrs: (class: "three-js-figure", "data-src": src))[]
+  } else if body != none {
+    body
+  }
+}
 #let hr() = {
   if sys.inputs.at("format", default: "pdf") == "html" {
     html.hr()

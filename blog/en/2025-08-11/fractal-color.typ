@@ -2,8 +2,6 @@
 // summary: Can a space-filling curve fill the color space?
 // tags: computer-graphics, shader
 // category: tech
-// html-heads: /js/jquery.min.js, /js/shadertoy-diagram.js
-
 #import "../../template.typ": article, shadertoy-figure
 
 #show: article.with(

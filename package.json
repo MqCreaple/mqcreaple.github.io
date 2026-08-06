@@ -20,9 +20,12 @@
     "astro": "^7.1.6",
     "jquery": "^4.0.0",
     "lucide": "^1.28.0",
-    "mermaid": "^11.16.1"
+    "mermaid": "^11.16.1",
+    "three": "^0.185.1"
   },
   "devDependencies": {
-    "@types/node": "^26.1.2"
+    "@types/jquery": "^4.0.1",
+    "@types/node": "^26.1.2",
+    "@types/three": "^0.185.4"
   }
 }

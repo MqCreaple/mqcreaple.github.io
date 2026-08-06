@@ -163,7 +163,7 @@ const compiles = tasks.flatMap((task) => [
   {
     task,
     out: path.join(pdfDir, `${task.id}.pdf`),
-    args: ['--format', 'pdf'],
+    args: ['--format', 'pdf', '--features', 'html'],
   },
 ]);
 

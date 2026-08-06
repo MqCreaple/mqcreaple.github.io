@@ -158,9 +158,7 @@ return (int) rnd.nextFloat() * CONSTANT;
 
 这里运算符的计算顺序是这样的：
 
-#if sys.inputs.at("format", default: "pdf") == "html" [
-  #html.elem("div", attrs: (class: "mermaid", "data-source": "graph TD\nA([*]) --> B([int])\nA --> C[CONSTANT]\nB --> D[rnd.nextFloat]\n"))[]
-] else [
+#html.frame[
   #diagram(
     node-stroke: 0.6pt,
     node((0, 0), [\*], shape: circle),

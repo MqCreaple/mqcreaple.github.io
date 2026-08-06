@@ -39,16 +39,12 @@ The build script passes `--input format=html` for HTML export and `--input forma
 
 Custom element definitions live in `src/components/` and are loaded by the site-wide layout, so the article can emit plain HTML tags that the shell enhances. Raw HTML blocks are ignored in PDF output, so add a static image or figure caption as a print fallback when needed.
 
-Mermaid diagrams render in the HTML branch via the site layout's mermaid script; give each one a PDF fallback drawn with the fletcher package in the `else` branch (pattern: `blog/zh/2021-09-11/derivative-m.typ`). Import `#import "@preview/fletcher:0.5.8": diagram, edge, node, shapes`.
-
-Pass the mermaid source as a `data-source` attribute (a raw string whose lines are joined with `\n`) instead of as element content. The site's mermaid script reads `data-source`, so Typst never parses mermaid syntax as Typst markup and no `<pre><code>` unwrapping is needed downstream.
+Draw diagrams with the fletcher package and wrap them in `#html.frame[ ... ]` (pattern: `blog/zh/2021-09-11/derivative-m.typ`). This embeds the diagram as inline SVG in HTML and renders the same content in PDF. Import `#import "@preview/fletcher:0.5.8": diagram, edge, node, shapes` and see <https://typst.app/docs/reference/html/frame/> for the `frame` function. The build script passes `--features html` to both HTML and PDF compiles, so `#html.frame` is available in both formats.
 
 Plain `(x, y)` tuples are elastic row/column coordinates (the grid expands to fit node labels, so the default `3em` spacing plus label sizes drive the width); the y-axis grows downward. To control overall width, scale the coordinates and tune `diagram()`'s `spacing`. To keep a row of nodes equally spaced, use integer x positions (one node per column) and keep labels out of node columns: a label wider than the node widens that column and breaks the spacing, so place such labels at a half-column position (e.g. `4.5`) instead of on the node column.
 
 ```typst
-#if sys.inputs.at("format", default: "pdf") == "html" [
-  #html.elem("div", attrs: (class: "mermaid", "data-source": "graph TD\nA --> B"))[]
-] else [
+#html.frame[
   #diagram(
     node-stroke: 0.6pt,
     node((0, 0), [A]),
@@ -59,34 +55,21 @@ Plain `(x, y)` tuples are elastic row/column coordinates (the grid expands to fi
 ```
 ## Image captions
 
-In the old Markdown blog, an italic line right after an image is the image's caption. When migrating such a pair, wrap the image and the caption in a `#figure`:
-
-```typst
-#figure(
-  image("ray-spacetime-diagram-wikipedia.svg", width: 70%),
-  caption: [图源：#link("https://en.wikipedia.org/wiki/Spacetime_diagram")[Wikipedia]],
-)
-```
+In the old Markdown blog, an italic line right after an image is the image's caption. When migrating such a pair, wrap the image and the caption in a `#figure`; see item 9 of `.agents/typst-syntax-quick-guide.md` for the syntax.
 
 ## Math notation
 
-To draw an arrow with text on top (like LaTeX `\xrightarrow{pred}`), use Typst's built-in `stretch` - no external package needed:
+For `stretch(...)` labels above or below symbols, see item 6.7 of `.agents/typst-syntax-quick-guide.md`. To draw an arrow with text on top (like LaTeX `\xrightarrow{pred}`), use `stretch(-->)^"label"`; it renders in both HTML and PDF exports. Avoid the `xarrow` package for this: it relies on `place()`, which Typst's HTML export ignores, so the arrow glyphs are dropped and only the label remains.
 
-```typst
-$ a stretch(-->)^"pred" b $
-```
-
-`stretch(-->)^"label"` renders a stretched arrow with the label above it in both HTML and PDF exports. Avoid the `xarrow` package for this: it relies on `place()`, which Typst's HTML export ignores, so the arrow glyphs are dropped and only the label remains.
-
-- Vector notation: use the template helper `mathbf(x)` (bold upright) for bold vector variables, and `arrow(x)` for arrow-accented vectors. Note that `vec(x)` creates a column vector, not an arrow accent. E.g. 4-vectors use `mathbf(r)` and 3-vectors use `arrow(r)` in `2022-10-14-relativistic-renderer-0`.
+- Vector notation: use the template helper `mathbf(x)` (bold upright) for bold vector variables, and `arrow(x)` for arrow-accented vectors. `vec(x)` creates a column vector (see item 6.6 of the quick guide), not an arrow accent. E.g. 4-vectors use `mathbf(r)` and 3-vectors use `arrow(r)` in `2022-10-14-relativistic-renderer-0`.
 
 ## Labels and references
 
-Labels should have appropriate prefixes: `fig:` for figures, `tab:` for tables, `eq:` for equations, `sec:` for sections, etc. Reference a label with `@label`, e.g. `@sec:context`.
+For defining labels with `<label>` and referencing them with `@label`, see item 5 of `.agents/typst-syntax-quick-guide.md`. Labels in this repo should have appropriate prefixes: `fig:` for figures, `tab:` for tables, `eq:` for equations, `sec:` for sections, etc. E.g. `@sec:context`.
 
 ## Typst symbol reference
 
-The file `.agents/typst-char-map.json` in the repo maps Typst `sym.*` symbol names to their Unicode characters, extracted from <https://typst.app/docs/reference/symbols/sym/>. Load this map whenever you need to use a Typst symbol character (for `#sym.<name>` or math symbols) instead of guessing the Unicode codepoint. The companion file `.agents/typst-symbol-shorthand.json` maps ASCII shorthands to their Unicode characters for both markup and math modes, extracted from <https://typst.app/docs/reference/symbols/>; load it whenever you need a shorthand glyph.
+For symbol lookup, see item 6.4 of `.agents/typst-syntax-quick-guide.md`. The maps it points to are `.agents/typst-char-map.json` (Typst `sym.*` names to Unicode, extracted from <https://typst.app/docs/reference/symbols/sym/>) and `.agents/typst-symbol-shorthand.json` (ASCII shorthands to Unicode for markup and math modes, extracted from <https://typst.app/docs/reference/symbols/>).
 
 ## Text style and citation rules
 

@@ -2,7 +2,9 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import Avatar from '../components/Avatar.astro';
+import ShadertoyFigureBuilder from '../components/ShadertoyFigureBuilder.astro';
 import TagCloud from '../components/TagCloud.astro';
+import ThreeJsDiagramBuilder from '../components/ThreeJsDiagramBuilder.astro';
 import Base from './Base.astro';
 import translations from '../i18n/translations.json';
 
@@ -19,6 +21,8 @@ interface Props {
 const { lang, title, date, id, summary = '', pdf, htmlHeads = [] } = Astro.props;
 const fragmentPath = path.join(process.cwd(), 'src', 'generated', 'articles', `${id}.html`);
 const fragment = readFileSync(fragmentPath, 'utf-8');
+const hasThreeJsFigure = fragment.includes('three-js-figure');
+const hasShadertoyFigure = fragment.includes('shadertoy-figure');
 const t = translations[lang] ?? translations.en;
 const dateLabel = new Intl.DateTimeFormat(lang === 'zh' ? 'zh-CN' : 'en-US', {
   dateStyle: 'long',
@@ -60,6 +64,8 @@ const headHtml = headAssets(htmlHeads);
       </p>
     )}
   </article>
+  {hasThreeJsFigure && <ThreeJsDiagramBuilder />}
+  {hasShadertoyFigure && <ShadertoyFigureBuilder />}
   <Avatar slot="aside" lang={lang} />
   <TagCloud slot="aside" lang={lang} />
 </Base>

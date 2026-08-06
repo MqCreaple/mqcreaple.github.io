@@ -31,9 +31,7 @@ function serveGeneratedFiles() {
           ? path.join('app', pathname.slice('/app/'.length))
           : pathname.startsWith('/pdf/')
             ? path.join('node_modules', '.cache', 'pdfs', pathname.slice('/pdf/'.length))
-            : pathname === '/js/jquery.min.js'
-              ? path.join('node_modules', 'jquery', 'dist', 'jquery.min.js')
-              : null;
+            : null;
         if (!relative) return next();
 
         const base = path.join(root, relative);

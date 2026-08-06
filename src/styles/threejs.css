@@ -1,0 +1,71 @@
+.three-js-figure {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.three-js-figure canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.three-js-controls {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.5em;
+  background-color: color-mix(in srgb, var(--surface) 80%, transparent);
+}
+
+.three-js-controls button {
+  background-color: var(--accent-strong);
+  color: var(--bg);
+  border: none;
+  border-radius: 3px;
+  padding: 0.3em 0.6em;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.three-js-controls button:hover {
+  background-color: var(--accent);
+}
+
+.three-js-controls label {
+  font-size: 0.9em;
+  color: var(--text);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.three-js-controls input[type="checkbox"] {
+  accent-color: var(--accent);
+}
+
+.three-js-error {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1em;
+  color: #b91c1c;
+  background: var(--bg);
+  text-align: center;
+}
+
+[data-theme="dark"] .three-js-error {
+  color: #fca5a5;
+}

@@ -86,9 +86,7 @@ void mergeSort(int *a, int left, int right) {
 
 以下为`mergeSort`一个长度为7的数组时，函数调用的树形结构：
 
-#if sys.inputs.at("format", default: "pdf") == "html" [
-  #html.elem("div", attrs: (class: "mermaid", "data-source": "graph TD\nA[1..7] --> B[1..4]\nA --> C[5..7]\nB --> D[1..2]\nB --> E[3..4]\nC --> F[5..6]\nC --> G[7..7]\nD --> H[1..1]\nD --> I[2..2]\nE --> J[3..3]\nE --> K[4..4]\nF --> L[5..5]\nF --> M[6..6]\n"))[]
-] else [
+#html.frame[
   #diagram(
     node-stroke: 0.6pt,
     spacing: (2.5em, 3em),

@@ -71,9 +71,7 @@ git hash-object 文件名
 
 当整个项目只有一个分支时，所有的 commit 形成一条链：
 
-#if sys.inputs.at("format", default: "pdf") == "html" [
-  #html.elem("div", attrs: (class: "mermaid", "data-source": "graph RL\nA[commit<br>a5e2] --> B[commit<br>3d97]\nB --> C[commit<br>9cd6]\nC --> D[commit<br>729f]\nD --> E[commit<br>4375]\nE --> F[......]\nsubgraph master: head\nA\nend\n"))[]
-] else [
+#html.frame[
   #diagram(
     node-stroke: 0.6pt,
     spacing: (1em, 3em),
@@ -94,9 +92,7 @@ git hash-object 文件名
 
 有多个分支时，则是这样的：
 
-#if sys.inputs.at("format", default: "pdf") == "html" [
-  #html.elem("div", attrs: (class: "mermaid", "data-source": "graph RL\nA[commit<br>a5e2] --> B[commit<br>3d97]\nB --> C[commit<br>9cd6]\nC --> D[commit<br>729f]\nD --> E[commit<br>4375]\nE --> F[......]\nsubgraph master: head\nA\nend\nG[commit<br>fc6a] --> E\nH[commit<br>7032] --> G\nsubgraph branch1: head\nH\nend\n"))[]
-] else [
+#html.frame[
   #diagram(
     node-stroke: 0.6pt,
     spacing: (1em, 3em),
@@ -124,9 +120,7 @@ git hash-object 文件名
 
 之前说过，blob 对象和 tree 对象都存在 `/.git/objects/` 目录下。Tree 对象存储了其他一系列文件的哈希值，可以理解成是一个多叉树的结点，而一般文件是叶节点。
 
-#if sys.inputs.at("format", default: "pdf") == "html" [
-  #html.elem("div", attrs: (class: "mermaid", "data-source": "graph TD\nA[[root]] --> B([readme.md])\nA --> C([.gitignore])\nA --> D[[src]]\nD --> E([main.cpp])\nD --> F([main.h])\nA --> G[[test]]\nG --> H([test.cpp])\n"))[]
-] else [
+#html.frame[
   #diagram(
     node-stroke: 0.6pt,
     spacing: (2.75em, 3em),

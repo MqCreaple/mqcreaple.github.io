@@ -27,9 +27,7 @@ $ f(x) = 3 x^2 + 2 sin(x) $
 
 可以被拆解成如下的表达式树：
 
-#if sys.inputs.at("format", default: "pdf") == "html" [
-  #html.elem("div", attrs: (class: "mermaid", "data-source": "graph TD\nA((+)) --> B((*))\nA --> C((*))\nB --> D[3]\nB --> E((^))\nE --> F[x]\nE --> G[2]\nC --> H[2]\nC --> I((sin))\nI --> J[x]\n"))[]
-] else [
+#html.frame[
   #diagram(
     node-stroke: 0.6pt,
     node((0, 0), [$+$], shape: circle),
@@ -58,9 +56,7 @@ $ f(x) = 3 x^2 + 2 sin(x) $
 
 以上面的表达式树为例，如果我们想要计算 $f((pi)/(2))$ 的数值，首先把所有 $x$ 结点换成 $(pi)/(2)$：
 
-#if sys.inputs.at("format", default: "pdf") == "html" [
-  #html.elem("div", attrs: (class: "mermaid", "data-source": "graph TD\nA((+)) --> B((*))\nA --> C((*))\nB --> D[3]\nB --> E((^))\nE --> F[π/2]\nE --> G[2]\nC --> H[2]\nC --> I((sin))\nI --> J[π/2]\n"))[]
-] else [
+#html.frame[
   #diagram(
     node-stroke: 0.6pt,
     node((0, 0), [$+$], shape: circle),
@@ -87,9 +83,7 @@ $ f(x) = 3 x^2 + 2 sin(x) $
 
 接下来从下向上递归计算。先将 $((pi)/(2))^2$ 替换为 $(pi^2)/(4)$，将 $sin((pi)/(2))$ 替换为$1$：
 
-#if sys.inputs.at("format", default: "pdf") == "html" [
-  #html.elem("div", attrs: (class: "mermaid", "data-source": "graph TD\nA((+)) --> B((*))\nA --> C((*))\nB --> D[3]\nB --> E[π^2/4]\nC --> H[2]\nC --> I[1]\n"))[]
-] else [
+#html.frame[
   #diagram(
     node-stroke: 0.6pt,
     node((0, 0), [$+$], shape: circle),
@@ -110,9 +104,7 @@ $ f(x) = 3 x^2 + 2 sin(x) $
 
 继续重复上述操作：
 
-#if sys.inputs.at("format", default: "pdf") == "html" [
-  #html.elem("div", attrs: (class: "mermaid", "data-source": "graph TD\nA((+)) --> B[3π^2/4]\nA --> C[2]\n"))[]
-] else [
+#html.frame[
   #diagram(
     node-stroke: 0.6pt,
     node((0, 0), [$+$], shape: circle),

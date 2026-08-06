@@ -21,9 +21,7 @@
 
 如果将古镇的三大群体——游客、商户、房东——做一个非常抽象的概括，大概是这样的：
 
-#if sys.inputs.at("format", default: "pdf") == "html" [
-  #html.elem("div", attrs: (class: "mermaid", "data-source": "graph LR\nA[游客] -->|钱| B[商户]\nB -->|零售、娱乐等| A\nB -->|房租| C[房东]\nC -->|场地| B\n"))[]
-] else [
+#html.frame[
   #diagram(
     node-stroke: 0.6pt,
     node((0, 0), [游客]),
