@@ -2,7 +2,7 @@
 // summary: AprilTag 正对相机时姿态估计的跳跃问题及其改进方法。
 // tags: computer-vision, robotics
 // category: tech
-#import "../../template.typ": article, mathbf, shadertoy-figure, three-js-figure
+#import "../../template.typ": article, mathbf, shadertoy-figure, three-js-figure, theorem, proof
 
 #show: article.with(
   title: "用AprilTag做姿态估计是一个糟糕的方案",
@@ -104,7 +104,7 @@ $ R &= I + sin(theta) [hat(mathbf(omega))]_times + (1 - cos(theta)) [hat(mathbf(
 回到最初的问题，AprilTag 在面对相机时不断跳动的现象其实已经被研究过了。根据 Collins & Bartoli 的研究 @collins2014ippe，IPPE 问题在特殊情况下有两个解，且这两个解沿着垂直于相机光学中心到 Tag 中心连线的平面镜面对称，如 @fig:duality 所示。
 
 #figure(
-  three-js-figure("/js/apriltag-duality.js", body: [_（交互式三维场景，仅在网页版显示。）_]),
+  three-js-figure("/blog/zh/2026-04-08/apriltag-duality.js", body: [_（交互式三维场景，仅在网页版显示。）_]),
   caption: [黄色和紫色的 AprilTag 沿青色面镜像对称。二者在相机平面（灰色平面）上的投影几乎重合。使用鼠标拖拽旋转视角，Shift+鼠标拖拽平移视角，鼠标滚轮放大/缩小。],
 ) <fig:duality>
 
@@ -122,18 +122,18 @@ $ "refl"_(hat(mathbf(n)))(R) = mat(delim: "[", |, |, |; "refl"_(hat(mathbf(n)))(
 
 当 Tag 的边长足够小、或者 Tag 距离相机足够远时，可以在 Tag 中心点附近对投影函数做线性展开，将投影变换当作一个仿射变换。此时，垂直于 $mathbf(t)$ 向量的两个 Tag 拥有相同的雅可比矩阵。因此，其四个角点在屏幕空间上会几乎重合，导致一图多解。
 
-#figure(supplement: [定理], caption: none)[
-#quote(block: true)[
-*定理1：*在相机参数 $C$ 为常数时，令矩阵 $J(R, mathbf(t))$ 为投影变换 $mat(delim: "[", u, v)^T = pi(H(R, mathbf(t)) mat(delim: "[", x, y, 1)^T)$ 在 $(x, y) = (0, 0)$ 附近的雅可比矩阵，即
+#theorem[
+在相机参数 $C$ 为常数时，令矩阵 $J(R, mathbf(t))$ 为投影变换 $mat(delim: "[", u, v)^T = pi(H(R, mathbf(t)) mat(delim: "[", x, y, 1)^T)$ 在 $(x, y) = (0, 0)$ 附近的雅可比矩阵，即
 
 $ mat(delim: "[", u; v) &= pi(H(R, mathbf(t)) mat(delim: "[", 0; 0; 1)) + J(R, mathbf(t)) mat(delim: "[", x; y) + O(x^2 + y^2) \
   &= pi(C mathbf(t)) + J(R, mathbf(t)) mat(delim: "[", x; y) + O(x^2 + y^2) $
 
 则有 $J(R, mathbf(t)) = J("refl"_(hat(mathbf(t)))(R), mathbf(t))$。
-
-*证明：*代入 @eq:homography、@eq:rodrigues 和 @eq:refl-matrix，使用符号微分即可证明。
-]
 ] <thm:jacobian>
+
+#proof[
+代入 @eq:homography、@eq:rodrigues 和 @eq:refl-matrix，使用符号微分即可证明。
+]
 
 @fig:error-volume 使用体积渲染展示了对于给定的相机参数 $C$ 和 AprilTag 位置 $mathbf(t)$ 时，重投影误差 $l_text("reproj")$ 和 AprilTag 旋转向量 $omega$ 之间的关系。可以看到，在特定角度下，$l_text("reproj")$ 除了在 AprilTag 本身的旋转向量处有一个极值点，在其对称位置也有一个略微高一些的局部极值点。这个现象在 AprilTag 正对相机时最明显。
 

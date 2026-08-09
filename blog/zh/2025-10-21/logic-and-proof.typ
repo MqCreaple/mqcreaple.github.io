@@ -3,7 +3,7 @@
 // tags: lambda-calculus, computation, mathematics
 // category: tech
 
-#import "../../template.typ": article
+#import "../../template.typ": article, theorem, proposition, proof
 
 #show: article.with(
   title: "直觉主义逻辑和程序定理验证",
@@ -109,23 +109,25 @@ $ A and (A -> B) -> B $
 
 可能你想问：构造性证明是什么？我们不妨来看看哪些证明不是构造性证明。比如下面这个就是一个非常典型的非构造性证明：
 
-#quote(block: true)[
-定理：存在无理数 $p, q$，使得$p^q$为有理数。
+#theorem[
+存在无理数 $p, q$，使得$p^q$为有理数。
+]
 
-证明：考虑$sqrt(2)^(sqrt(2))$。
+#proof[
+考虑$sqrt(2)^(sqrt(2))$。
 
 1. 若 $sqrt(2)^(sqrt(2)) in QQ$。又由于$sqrt(2)$为无理数，取$p=q=sqrt(2)$，原命题得证。
 2. 若 $sqrt(2)^(sqrt(2)) in.not QQ$，又有
 
 $ (sqrt(2)^(sqrt(2)))^(sqrt(2)) = sqrt(2)^(sqrt(2) times sqrt(2)) = sqrt(2)^2 = 2 in QQ $
 
-则取$p=sqrt(2)^(sqrt(2)), q=sqrt(2)$，原命题得证。
+则取$p=sqrt(2)^(sqrt(2)), q=sqrt(2)$，
 ]
 
 在这段证明中，我们并没有给出两个确切的数使得 $p^q in QQ$，而是说要么$sqrt(2)^(sqrt(2))$是有理数、要么$(sqrt(2)^(sqrt(2)))^(sqrt(2))$是有理数。而同一个命题的构造性证明是这样的：
 
-#quote(block: true)[
-证明：取 $p=sqrt(2), q=log_2(9)$。
+#proof[
+取 $p=sqrt(2), q=log_2(9)$。
 
 由于$sqrt(2)$为无理数，且$log_2(9)$也为无理数（否则存在整数$n, m$使得$2^m=9^n$），而
 
@@ -219,10 +221,12 @@ $ (Gamma tack.r b : q) / (Gamma tack.r b : (p or q)) $
 
 这个表述可能仍然比较抽象。不妨举一个具体的例子：令命题$p$为“正整数$a$和$b$互质”，命题$q$为“存在 $x, y in ZZ$ 使得 $a x + b y = 1$”，那么一个 $p -> q$ 的构造性证明可能是这样的：
 
-#quote(block: true)[
-命题：若 $a, b in NN - {0}$ 且互质，则存在 $x, y in ZZ$ 使得 $a x + b y = 1$。
+#proposition[
+若 $a, b in NN - {0}$ 且互质，则存在 $x, y in ZZ$ 使得 $a x + b y = 1$。
+]
 
-证明：定义函数 $op("extgcd") : NN times NN -> NN times NN$：
+#proof[
+定义函数 $op("extgcd") : NN times NN -> NN times NN$：
 
 1. 若 $op("extgcd")(a, b) = (x, y)$，则 $op("extgcd")(b, a) = (y, x)$
 2. $op("extgcd")(a, 0) = (1, 0)$

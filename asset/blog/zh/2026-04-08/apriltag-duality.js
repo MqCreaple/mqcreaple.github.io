@@ -1,5 +1,5 @@
 // AprilTag duality diagram — 具体三维对象定义
-export default function (scene, camera, controls, initialView, addControl, helpers) {
+export default function (scene, camera, cameraControls, initialView, addControlWidget, helpers) {
     const { THREE, makeTextSprite, toggleLabels } = helpers;
 
     // 将三维点投影到 z = -1 平面
@@ -8,7 +8,7 @@ export default function (scene, camera, controls, initialView, addControl, helpe
         return new THREE.Vector3(point.x * t, point.y * t, planeZ);
     }
 
-    addControl({
+    addControlWidget({
         type: 'button',
         label: 'Reset View',
         action: () => helpers.resetView(),
@@ -244,7 +244,7 @@ export default function (scene, camera, controls, initialView, addControl, helpe
     // -----------------------------------------------------------------
     // 10. Add toggle-labels button (needs label sprites, so after scene)
     // -----------------------------------------------------------------
-    addControl({
+    addControlWidget({
         type: 'button',
         label: 'Toggle Labels',
         action: toggleLabels([xLabel, yLabel, zLabel]),

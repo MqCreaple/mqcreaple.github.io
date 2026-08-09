@@ -3,7 +3,7 @@
 // tags: physics, PUPC
 // category: tech
 
-#import "../../template.typ": article, mathbf
+#import "../../template.typ": article, mathbf, definition
 
 #show: article.with(
   title: "PUPC2020第四题解析+关于坐标系的思考",
@@ -24,7 +24,7 @@
 
 从高中开始，“参考系”这个名字对于大家来说就肯定不陌生了。但是它究竟是什么？高中课内似乎没有给出一个严格的定义。当你初次接触狭义相对论的时候，原有的时空理论被打破，“时间”不再是一个绝对的量，而“参考系”是什么这个问题也成了许多人初学狭义相对论的一大困惑。这里我们给出一个简单的定义：
 
-#quote(block: true)[
+#definition[
 一个参考系$F$就是一个从时空中的事件到一个向量场 $RR^n$ 的映射。其中$n$为时空的维度。
 ]
 

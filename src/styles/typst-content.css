@@ -101,3 +101,13 @@ section[role="doc-bibliography"] li::marker {
   scrollbar-width: thin;
   scrollbar-color: var(--muted) transparent;
 }
+
+/* Figures */
+
+.typst-content figure {
+  margin-inline: 0;
+}
+
+.typst-content figcaption {
+  text-align: center;
+}

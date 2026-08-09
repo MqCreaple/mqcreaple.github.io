@@ -3,7 +3,7 @@
 // tags: algorithm, mathematics, time-complexity
 // category: tech
 
-#import "../../template.typ": article
+#import "../../template.typ": article, definition, lemma, proof
 
 #show: article.with(
   title: "埃氏筛的复杂度计算",
@@ -69,7 +69,7 @@ $ n dot sum_(p" is prime") 1 / p $
 
 那么如何定义“趋势”？我们不妨借鉴一下小学二年级的高数知识：
 
-#quote(block: true)[
+#definition[
 如果两个趋近无穷的数列 $a_n$ 和 $b_n$ 满足
 
 $ lim_(n -> infinity) a_n / b_n = c $
@@ -79,7 +79,7 @@ $ lim_(n -> infinity) a_n / b_n = c $
 
 根据同阶无穷大定义时间复杂度的大 $O$ 记号了：
 
-#quote(block: true)[
+#definition[
 对于某个算法，如果它只有一个输入$N$，那么将 $N$ 依次代入从$1$开始的所有自然数，记 $t_i$ 为输入数字 $i$ 时算法的运行时间（或者说“执行的操作数”），那么可以得到一个数列 $\{t_N\}$。
 
 假如存在一个*简单表达式* $q_N$，使得
@@ -105,12 +105,14 @@ $ p_n tilde n ln n $
 
 $ sum_(n=1)^infinity 1/p_n tilde sum_(n=1)^infinity 1/(n ln n) $
 
-#quote(block: true)[
-引理1：若 $a_n, b_n$ 均*非负*且为同阶无穷小，即 $a_n tilde b_n$，则
+#lemma[
+若 $a_n, b_n$ 均*非负*且为同阶无穷小，即 $a_n tilde b_n$，则
 
 $ sum_(n=1)^infinity a_n tilde sum_(n=1)^infinity b_n $
+]
 
-证明：根据同阶无穷小的定义，可得：
+#proof[
+根据同阶无穷小的定义，可得：
 
 $ lim_(n -> infinity) a_n / b_n = c $
 
@@ -138,18 +140,18 @@ $ (sum_(n=1)^(N-1) a_n)/(sum_(n=1)^(N-1) b_n) $
 
 $ (sum_(n=1)^(N-1) a_n + sum_(n=N)^infinity a_n)/(sum_(n=1)^(N-1) b_n + sum_(n=N)^infinity b_n) = (sum_(n=1)^infinity a_n)/(sum_(n=1)^infinity b_n) $
 
-一定也是有限且非$0$的。证毕。
+一定也是有限且非$0$的。
 ]
 
 经过此次化简，至少题目看起来像道代数题而不是数论题了，但无穷级数 $sum_(n=1)^infinity 1/(n ln n)$ 仍然让人没有头绪。
 
-#quote(block: true)[
-引理2：对于一个*单调函数* $f(n)$
+#lemma[
+对于一个*单调函数* $f(n)$
 
 $ sum_(n=1)^infinity f(n) tilde integral_1^infinity f(n) dif n $
+]
 
-证明：
-
+#proof[
 #image("eto-0.png", width: 70%)
 
 $ integral_1^infinity f(n) dif n = sum_(k=1)^infinity integral_k^(k+1) f(n) dif n $

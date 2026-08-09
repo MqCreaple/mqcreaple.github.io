@@ -174,7 +174,7 @@ repeat := ΛT. λf:(T→T). λx:T. (f (f x))
 
 这样`repeat`函数就可以用在任意类型的函数上了。
 
-#appendix(lang: "zh")[
+#appendix[
 
 = 归纳类型 Inductive Type
 

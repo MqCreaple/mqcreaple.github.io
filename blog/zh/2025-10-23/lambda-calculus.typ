@@ -3,7 +3,7 @@
 // tags: lambda-calculus, computation, mathematics
 // category: tech
 
-#import "../../template.typ": article
+#import "../../template.typ": article, theorem, proposition, axiom, proof
 
 #show: article.with(
   title: "从λ演算到高级函数式语言",
@@ -249,8 +249,8 @@ one_plus_one_is_two :
 
 上期说过，有些定理从理论上来说就是不可能用构造性方法证明的。举个例子：
 
-#quote(block: true)[
-命题：对于任意图灵机$M$，$M$要么在有限步内停机，要么不会在有限步内停机。
+#proposition[
+对于任意图灵机$M$，$M$要么在有限步内停机，要么不会在有限步内停机。
 ]
 
 这个命题在经典逻辑学中就是一句废话，因为经典逻辑学的排中律告诉我们“$M$在有限步内停机”和“$M$不在有限步内停机”这两个命题肯定有一个是真的。
@@ -259,28 +259,30 @@ one_plus_one_is_two :
 
 而有些定理则依赖于非构造性证明，无法在依赖类型系统里论证。比如著名的*选择公理*，其形式如下：
 
-#quote(block: true)[
-选择公理：对于任意非空集合的集合$X$，存在某个定义在$X$上的函数$f$将每个$X$中的集合映射到该集合中的某个元素。
+#axiom[
+对于任意非空集合的集合$X$，存在某个定义在$X$上的函数$f$将每个$X$中的集合映射到该集合中的某个元素。
 
 用集合论的语言来写：
 
 $ forall X. thin (forall alpha in X. thin alpha != emptyset) -> (exists f : X -> union.big_(alpha in X) alpha. thin forall alpha in X. thin f(alpha) in alpha) $
+]
 
 在 Lean 中可以写下该定理的一个等价形式：
 
 ```lean
 def axiom_of_choice {α β : Sort u} (p : α → β → Prop) : (∀ x : α, ∃ y : β, p x y) → (∃ f : (α → β), ∀ x : α, p x (f x))
 ```
-]
 
 根据#link("https://en.wikipedia.org/wiki/Diaconescu%27s_theorem")[Diaconescu's theorem]，选择公理能够推出排中律，因此在直觉主义逻辑的框架下一定不可能证明选择公理。
 
 类似地，选择公理的某些推论也不能在直觉主义逻辑下证明。比如下面这个简单的推论：
 
-#quote(block: true)[
-定理：对于任意集合$alpha$，若$alpha$非空，则能够找到某个$alpha$中的元素 $x in alpha$。
+#theorem[
+对于任意集合$alpha$，若$alpha$非空，则能够找到某个$alpha$中的元素 $x in alpha$。
+]
 
-证明：令 $X = brace.l alpha brace.r$。应用选择公理，则存在映射 $f : brace.l alpha brace.r -> alpha$。取 $x = f(alpha)$，则由$f$定义可得 $x in alpha$。原命题得证。
+#proof[
+令 $X = brace.l alpha brace.r$。应用选择公理，则存在映射 $f : brace.l alpha brace.r -> alpha$。取 $x = f(alpha)$，则由$f$定义可得 $x in alpha$。原命题得证。
 
 用 Lean 来写：
 

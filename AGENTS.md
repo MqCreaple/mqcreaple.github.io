@@ -53,6 +53,11 @@ Plain `(x, y)` tuples are elastic row/column coordinates (the grid expands to fi
   )
 ]
 ```
+
+## Verifying interactive figures
+
+Do not check the rendered figure yourself: the agent has no image recognition capability, and algorithmic pixel analysis of screenshots is not always reliable. Only verify the textual side - that the generated HTML fragment contains the expected `three-js-figure` (or `shadertoy-figure`) element with the correct `data-src`, that the caption is present, and that the build compiles. Leave visual verification of the rendered diagram to the user.
+
 ## Image captions
 
 In the old Markdown blog, an italic line right after an image is the image's caption. When migrating such a pair, wrap the image and the caption in a `#figure`; see item 9 of `.agents/typst-syntax-quick-guide.md` for the syntax.

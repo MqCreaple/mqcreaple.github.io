@@ -2,13 +2,15 @@
   // Three.js core plus OrbitControls for interactive camera dragging.
   import * as THREE from 'three';
   import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+  import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+  import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
 
   // Contract between the builder and the per-post scene construction scripts.
   type InitialView = [number, number, number];
 
   type ControlDef =
     | { type: 'button'; label: string; action: () => void }
-    | { type: 'checkbox'; label: string; action: (checked: boolean) => void }
+    | { type: 'checkbox'; label: string; checked?: boolean; action: (checked: boolean) => void }
     | {
         type: 'number' | 'range';
         label: string;
@@ -22,14 +24,17 @@
     makeTextSprite: (message: string, color: string) => THREE.Sprite;
     resetView: () => void;
     toggleLabels: (labelSprites: THREE.Sprite[]) => () => void;
+    OBJLoader: typeof OBJLoader;
+    mergeGeometries: typeof mergeGeometries;
+    mergeVertices: typeof mergeVertices;
   }
 
   type DiagramBuilder = (
     scene: THREE.Scene,
     camera: THREE.PerspectiveCamera,
-    controls: OrbitControls,
+    cameraControls: OrbitControls,
     initialView: InitialView,
-    addControl: (def: ControlDef) => void,
+    addControlWidget: (def: ControlDef) => void,
     helpers: DiagramHelpers,
   ) => void;
 
@@ -107,6 +112,7 @@
         label.htmlFor = id;
         const input = document.createElement('input');
         input.type = 'checkbox';
+        if (def.checked) input.checked = true;
         input.id = id;
         input.addEventListener('change', () => def.action(input.checked));
         wrap.appendChild(label);
@@ -186,12 +192,12 @@
     setSize();
 
     // Damped OrbitControls give the figure an ergonomic, slightly heavier feel.
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.2;
-    controls.screenSpacePanning = false;
-    controls.minDistance = 2;
-    controls.maxDistance = 30;
+    const cameraControls = new OrbitControls(camera, renderer.domElement);
+    cameraControls.enableDamping = true;
+    cameraControls.dampingFactor = 0.2;
+    cameraControls.screenSpacePanning = false;
+    cameraControls.minDistance = 2;
+    cameraControls.maxDistance = 30;
 
     // Simple ambient + directional lighting so materials are visible.
     scene.add(new THREE.AmbientLight(0xffffff, 0.6));
@@ -199,22 +205,22 @@
     directionalLight.position.set(5, 10, 7);
     scene.add(directionalLight);
 
-    const controlsContainer = document.createElement('div');
-    controlsContainer.className = 'three-js-controls';
-    container.appendChild(controlsContainer);
+    const controlWidgetContainer = document.createElement('div');
+    controlWidgetContainer.className = 'three-js-controls';
+    container.appendChild(controlWidgetContainer);
 
-    // Scene scripts append interactive controls through addControl.
+    // Scene scripts append interactive control widgets through addControl.
     const controlElements: HTMLDivElement[] = [];
-    const addControl = (def: ControlDef): void => {
+    const addControlWidget = (def: ControlDef): void => {
       const element = createControlElement(figureId, def, controlElements.length);
-      controlsContainer.appendChild(element);
+      controlWidgetContainer.appendChild(element);
       controlElements.push(element);
     };
 
     // Render loop: apply orbit damping, then draw the scene each frame.
     function animate(): void {
       requestAnimationFrame(animate);
-      controls.update();
+      cameraControls.update();
       renderer.render(scene, camera);
     }
     animate();
@@ -227,8 +233,11 @@
     const helpers: DiagramHelpers = {
       THREE,
       makeTextSprite,
-      resetView: () => resetView(camera, controls, initialView),
+      resetView: () => resetView(camera, cameraControls, initialView),
       toggleLabels,
+      OBJLoader,
+      mergeGeometries,
+      mergeVertices,
     };
 
     // Load the post's construction script and let it populate the scene.
@@ -237,7 +246,7 @@
       if (typeof module.default !== 'function') {
         throw new Error(`Module ${src} does not export a default builder function`);
       }
-      module.default(scene, camera, controls, initialView, addControl, helpers);
+      module.default(scene, camera, cameraControls, initialView, addControlWidget, helpers);
     } catch (error) {
       console.error(`ThreeJsDiagramBuilder: failed to build diagram from ${src}`, error);
       showError(container, 'Failed to load the Three.js diagram script.');

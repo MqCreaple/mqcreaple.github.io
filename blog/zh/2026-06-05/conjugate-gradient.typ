@@ -3,7 +3,7 @@
 // tags: computation, mathematics, simulation
 // category: tech
 
-#import "../../template.typ": article, mathbf
+#import "../../template.typ": article, mathbf, theorem, lemma, definition, proof
 
 #show: article.with(
   title: "数值模拟之：共轭梯度法",
@@ -50,11 +50,11 @@ $ mathbf(x)_k = sum_(i=0)^(k-1) alpha_i mathbf(p)_i = mathbf(x)_(k-1) + alpha_(k
 
 （以上记号全部与文章撰写日期#link("https://en.wikipedia.org/wiki/Conjugate_gradient_method")[维基百科词条]中的记号保持统一）
 
-#quote(block: true)[
-补充：对于向量空间 $RR^n$ 和 $n times n$ 的对称正定矩阵$A$，函数 $chevron.l mathbf(u), mathbf(v) chevron.r_A = mathbf(u)^T A mathbf(v)$ 是一个内积。
+#lemma[
+对于向量空间 $RR^n$ 和 $n times n$ 的对称正定矩阵$A$，函数 $chevron.l mathbf(u), mathbf(v) chevron.r_A = mathbf(u)^T A mathbf(v)$ 是一个内积。
+]
 
-证明：
-
+#proof[
 + 对称性
 
   $ chevron.l mathbf(u), mathbf(v) chevron.r_A = mathbf(u)^T A mathbf(v) = (mathbf(u)^T A mathbf(v))^T = mathbf(v)^T A^T mathbf(u) = mathbf(v)^T A mathbf(u) = chevron.l mathbf(v), mathbf(u) chevron.r_A $
@@ -68,8 +68,10 @@ $ mathbf(x)_k = sum_(i=0)^(k-1) alpha_i mathbf(p)_i = mathbf(x)_(k-1) + alpha_(k
   $ chevron.l mathbf(u), mathbf(u) chevron.r_A = mathbf(u)^T A mathbf(u) >= 0 $
 
   且该函数当且仅当 $mathbf(u) = mathbf(0)$ 时为$0$。
+]
 
-此外，我们定义：若向量$mathbf(u)$和 $mathbf(v)$ 满足 $mathbf(u)^T A mathbf(v) = 0$，则称两个向量关于矩阵$A$*共轭*\/*正交*。
+#definition[
+若向量$mathbf(u)$和 $mathbf(v)$ 满足 $mathbf(u)^T A mathbf(v) = 0$，则称两个向量关于矩阵$A$*共轭*\/*正交*。
 ]
 
 根据刚刚的分析，我们希望每次添加的向量 $mathbf(p)_k$ 朝向 $l(mathbf(x))$ 的梯度方向的反方向，又知 $l(mathbf(x))$ 梯度为：
@@ -134,11 +136,11 @@ $ alpha_k = (mathbf(p)_k^T mathbf(b))/(mathbf(p)_k^T A mathbf(p)_k) = (mathbf(p)
 
 接下来，注意到对于任意的 $i > j$，都有 $chevron.l mathbf(r)_i, mathbf(p)_j chevron.r = mathbf(r)_i^T mathbf(p)_j = 0$。证明如下：
 
-#quote(block: true)[
-定理1：$forall 0 <= j < i < n, thin chevron.l mathbf(r)_i, mathbf(p)_j chevron.r = mathbf(r)_i^T mathbf(p)_j = 0$
+#theorem[
+$forall 0 <= j < i < n, thin chevron.l mathbf(r)_i, mathbf(p)_j chevron.r = mathbf(r)_i^T mathbf(p)_j = 0$
+] <thm:1>
 
-证明：
-
+#proof[
 + 该定理对于 $k+1$ 和$k$成立
 
   $ mathbf(r)_(k+1)^T mathbf(p)_k &= (mathbf(r)_k - alpha_k A mathbf(p)_k)^T mathbf(p)_k \
@@ -154,27 +156,27 @@ $ alpha_k = (mathbf(p)_k^T mathbf(b))/(mathbf(p)_k^T A mathbf(p)_k) = (mathbf(p)
     &= 0 $
 
 由数学归纳法，该定理对于任意整数 $i > j$ 成立。
-] <thm:1>
+]
 
 更进一步地，也可以证明对于任意 $i > j$，$mathbf(r)_i^T mathbf(r)_j = 0$。
 
-#quote(block: true)[
-引理：
-
+#lemma[
 $ mathbf(p)_k^T A mathbf(p)_k = mathbf(p)_k^T A mathbf(r)_k $
+]
 
-证明：令 $gamma_(k i) = (mathbf(r)_k^T A mathbf(p)_i)/(mathbf(p)_i^T A mathbf(p)_i)$，则有
+#proof[
+令 $gamma_(k i) = (mathbf(r)_k^T A mathbf(p)_i)/(mathbf(p)_i^T A mathbf(p)_i)$，则有
 
 $ mathbf(p)_k^T A mathbf(p)_k &= mathbf(p)_k^T A (mathbf(r)_k - sum_(i=0)^(k-1) gamma_(k i) mathbf(p)_i) \
   &= mathbf(p)_k^T A mathbf(r)_k - sum_(i=0)^(k-1) gamma_(k i) mathbf(p)_k^T A mathbf(p)_i \
   &= mathbf(p)_k^T A mathbf(r)_k $
 ]
 
-#quote(block: true)[
-定理2：$forall 0 <= j < i < n, thin chevron.l mathbf(r)_i, mathbf(p)_j chevron.r = mathbf(r)_i^T mathbf(r)_j = 0$
+#theorem[
+$forall 0 <= j < i < n, thin chevron.l mathbf(r)_i, mathbf(p)_j chevron.r = mathbf(r)_i^T mathbf(r)_j = 0$
+]
 
-证明：
-
+#proof[
 + 该定理对于 $k+1$ 和$k$成立
 
   $ mathbf(r)_(k+1)^T mathbf(r)_k &= (mathbf(r)_k - alpha_k A mathbf(p)_k)^T mathbf(r)_k \
@@ -184,7 +186,7 @@ $ mathbf(p)_k^T A mathbf(p)_k &= mathbf(p)_k^T A (mathbf(r)_k - sum_(i=0)^(k-1) 
     &= mathbf(r)_k^T mathbf(r)_k - (mathbf(r)_k - sum_(i=0)^(k-1) gamma_(k i) mathbf(p)_i)^T mathbf(r)_k \
     &= (mathbf(r)_k^T mathbf(r)_k - mathbf(r)_k^T mathbf(r)_k) + sum_(i=0)^(k-1) gamma_(k i) mathbf(p)_i^T mathbf(r)_k $
 
-  由#link(<thm:1>)[定理1]进一步化简得：
+  由 @thm:1 进一步化简得：
 
   $ mathbf(r)_(k+1)^T mathbf(r)_k = 0 $
 
@@ -204,27 +206,27 @@ $ mathbf(p)_k^T A mathbf(p)_k &= mathbf(p)_k^T A (mathbf(r)_k - sum_(i=0)^(k-1) 
     &= 0 + alpha_(k+l) dot 0 \
     &= 0 $
 
-由数学归纳法，证毕。
+由数学归纳法，
 ]
 
 这个性质非常奇特。我们看似随机地取了一系列向量 $mathbf(p)_k$，由此计算出的残差向量 $mathbf(r)_k$ 居然是互相正交的。也就是说，这堆向量里，$brace.l mathbf(p)_k brace.r$ 关于内积 $chevron.l dot, dot chevron.r_A$ 正交，而 $brace.l mathbf(r)_k brace.r$ 关于一般意义上的向量内积 $chevron.l dot, dot chevron.r$ 正交。那么我们是否可以进一步利用 $mathbf(r)_k$ 的正交性来化简表达式呢？
 
 不难证明以下几条结论：
 
-#quote(block: true)[
-定理3：
-
+#theorem[
 $ mathbf(r)_k^T mathbf(p)_k = mathbf(r)_k^T mathbf(r)_k $
-
-证明：代入 $mathbf(p)_k = mathbf(r)_k - sum_(i=0)^(k-1) gamma_(k i) mathbf(p)_i$，化简即可
 ] <thm:3>
 
-#quote(block: true)[
-定理4：
+#proof[
+代入 $mathbf(p)_k = mathbf(r)_k - sum_(i=0)^(k-1) gamma_(k i) mathbf(p)_i$，化简即可
+]
 
+#theorem[
 $ mathbf(r)_k^T A mathbf(p)_i = cases((1)/(alpha_k) mathbf(r)_k^T mathbf(r)_k = mathbf(p)_k^T A mathbf(p)_k & i = k, -(1)/(alpha_(k-1)) mathbf(r)_k^T mathbf(r)_k & i = k - 1, 0 & "otherwise") $
+] <thm:4>
 
-证明：由于
+#proof[
+由于
 
 $ mathbf(r)_(k+1) = mathbf(r)_k - alpha_k A mathbf(p)_k $
 
@@ -236,7 +238,7 @@ $ A mathbf(p)_k = (mathbf(r)_k - mathbf(r)_(k+1))/(alpha_k) $
 
 $ mathbf(r)_k^T A mathbf(p)_i = (1)/(alpha_i) mathbf(r)_k^T (mathbf(r)_i - mathbf(r)_(i+1)) $
 
-当 $i=k$ 时，$mathbf(r)_k^T mathbf(r)_(i+1)$ 项为0。又根据#link(<thm:3>)[定理3]，有 $alpha_k = (mathbf(r)_k^T mathbf(p)_k)/(mathbf(p)_k^T A mathbf(p)_k) = (mathbf(r)_k^T mathbf(r)_k)/(mathbf(p)_k^T A mathbf(p)_k)$。右侧表达式变为：
+当 $i=k$ 时，$mathbf(r)_k^T mathbf(r)_(i+1)$ 项为0。又根据 @thm:3，有 $alpha_k = (mathbf(r)_k^T mathbf(p)_k)/(mathbf(p)_k^T A mathbf(p)_k) = (mathbf(r)_k^T mathbf(r)_k)/(mathbf(p)_k^T A mathbf(p)_k)$。右侧表达式变为：
 
 $ mathbf(r)_k^T A mathbf(p)_k = (1)/(alpha_k) mathbf(r)_k^T mathbf(r)_k = mathbf(p)_k^T A mathbf(p)_k $
 
@@ -245,13 +247,13 @@ $ mathbf(r)_k^T A mathbf(p)_k = (1)/(alpha_k) mathbf(r)_k^T mathbf(r)_k = mathbf
 $ mathbf(r)_k^T A mathbf(p)_(k-1) = -(1)/(alpha_(k-1)) mathbf(r)_k^T mathbf(r)_k = -(mathbf(r)_k^T mathbf(r)_k)/(mathbf(r)_(k-1)^T mathbf(r)_(k-1)) mathbf(p)_(k-1)^T A mathbf(p)_(k-1) $
 
 其余情况下，右侧的两个内积均为0，因此表达式为0。
-] <thm:4>
+]
 
 回忆一下，之前表达式中耗时最多的式子是这个：
 
 $ mathbf(p)_k := mathbf(r)_k - sum_(i=0)^(k-1) (mathbf(r)_k^T A mathbf(p)_i)/(mathbf(p)_i^T A mathbf(p)_i) mathbf(p)_i $
 
-根据#link(<thm:4>)[定理4]，$i$从$0$到$k-1$中，$mathbf(r)_k A mathbf(p)_i$ 仅有一项非零，其余项全都是0。也就是说，我们根本不需要算这个求和符号，而是可以直接展开这个式子：
+根据 @thm:4，$i$从$0$到$k-1$中，$mathbf(r)_k A mathbf(p)_i$ 仅有一项非零，其余项全都是0。也就是说，我们根本不需要算这个求和符号，而是可以直接展开这个式子：
 
 $ mathbf(p)_k := mathbf(r)_k + (mathbf(r)_k^T mathbf(r)_k)/(mathbf(r)_(k-1)^T mathbf(r)_(k-1)) mathbf(p)_(k-1) $
 

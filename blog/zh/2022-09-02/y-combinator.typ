@@ -4,7 +4,7 @@
 // category: tech
 // html-heads: app/lambda-playground/lambda-playground.css, app/lambda-playground/lambda-playground.js
 
-#import "../../template.typ": article
+#import "../../template.typ": article, lemma
 
 #show: article.with(
   title: "Y combinator 和递归",
@@ -372,9 +372,7 @@ r' = λf. λNIL. (pair 1 (f NIL))
                   (nth (cdr (Y r')) (n-1)))
 ```
 
-#quote(block: true)[
-引理：
-
+#lemma[
 ```lisp
 (car (Y r')) = (car (r' (Y r')))
              = (car (λNIL. pair 1 (Y r' NIL)))
