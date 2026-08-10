@@ -7,11 +7,11 @@
 // Controls: drag a point to move it on the sphere, drag elsewhere to orbit,
 // and buttons to randomize the points or reset the view.
 export default async function (scene, camera, canvas, initialView, helpers) {
-    const { THREE, OBJLoader, mergeVertices } = helpers;
+    const { THREE } = helpers;
     const cameraControls = helpers.cameraControls.createOrbit();
 
-    // 1. White sphere.
-    const sphereGeometry = await loadSphere(THREE, OBJLoader, mergeVertices);
+    // 1. White sphere (built-in).
+    const sphereGeometry = new THREE.SphereGeometry(1, 96, 64);
     const sphere = new THREE.Mesh(
         sphereGeometry,
         new THREE.MeshPhongMaterial({ color: 0xffffff, side: THREE.DoubleSide }),
@@ -160,22 +160,4 @@ export default async function (scene, camera, canvas, initialView, helpers) {
     });
 
     randomize();
-}
-
-// Loads the sphere OBJ (merged vertices, smooth normals).
-async function loadSphere(THREE, OBJLoader, mergeVertices) {
-    const response = await fetch('/blog/zh/2026-08-08/sphere.obj');
-    if (!response.ok) throw new Error(`Failed to fetch sphere.obj (${response.status})`);
-    const object = new OBJLoader().parse(await response.text());
-    const meshes = [];
-    object.traverse((child) => {
-        if (child.isMesh) meshes.push(child);
-    });
-    if (meshes.length === 0) throw new Error('No mesh found in sphere.obj');
-
-    let geometry = meshes[0].geometry;
-    geometry.deleteAttribute('normal');
-    geometry = mergeVertices(geometry, 1e-4);
-    geometry.computeVertexNormals();
-    return geometry;
 }

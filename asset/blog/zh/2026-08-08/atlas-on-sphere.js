@@ -11,11 +11,11 @@
 //
 // Controls: drag to orbit, scroll to zoom, and checkboxes to toggle charts.
 export default async function (scene, camera, canvas, initialView, helpers) {
-    const { THREE, OBJLoader, mergeVertices } = helpers;
+    const { THREE } = helpers;
     const cameraControls = helpers.cameraControls.createOrbit();
 
-    // 1. White sphere from OBJ (no wireframe).
-    const sphereGeometry = await loadSphere(THREE, OBJLoader, mergeVertices);
+    // 1. White sphere (built-in, no wireframe).
+    const sphereGeometry = new THREE.SphereGeometry(1, 96, 64);
     const sphere = new THREE.Mesh(
         sphereGeometry,
         new THREE.MeshPhongMaterial({ color: 0xffffff, side: THREE.DoubleSide }),
@@ -24,7 +24,7 @@ export default async function (scene, camera, canvas, initialView, helpers) {
 
     // 2. Chart definitions (theta: polar angle from the north pole).
     const R = 1.0;            // sphere radius
-    const R_SURFACE = 1.003;  // charts sit a hair above the sphere (no z-fighting)
+    const R_SURFACE = 1.01;   // charts sit a hair above the sphere (no z-fighting)
     const OFFSET = 0.35;      // flat counterparts offset outward by this much
     const FLAT_RADIUS = 0.5;  // radius of the polar flat disks
     const FLAT_SCALE = 0.6;   // scale of the equatorial flat rectangles
@@ -102,24 +102,6 @@ export default async function (scene, camera, canvas, initialView, helpers) {
             cameraControls.update();
         },
     });
-}
-
-// Loads the sphere OBJ (merged vertices, smooth normals).
-async function loadSphere(THREE, OBJLoader, mergeVertices) {
-    const response = await fetch('/blog/zh/2026-08-08/sphere.obj');
-    if (!response.ok) throw new Error(`Failed to fetch sphere.obj (${response.status})`);
-    const object = new OBJLoader().parse(await response.text());
-    const meshes = [];
-    object.traverse((child) => {
-        if (child.isMesh) meshes.push(child);
-    });
-    if (meshes.length === 0) throw new Error('No mesh found in sphere.obj');
-
-    let geometry = meshes[0].geometry;
-    geometry.deleteAttribute('normal');
-    geometry = mergeVertices(geometry, 1e-4);
-    geometry.computeVertexNormals();
-    return geometry;
 }
 
 // Builds a chart's curved mesh (on the sphere) and its flat counterpart.
