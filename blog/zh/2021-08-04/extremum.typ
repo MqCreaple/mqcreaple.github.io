@@ -38,7 +38,7 @@ $ (dif f) / (dif x) = 0 $
 
 对于某个多元函数，偏导数就是在某个特定方向上的导数。例如 $(partial f(x,y)) / (partial x)$ 就是函数某点在 $x$ 轴截面上的导数，$(partial f(x,y)) / (partial y)$ 同理。
 
-类比导数的定义：$ (dif f(x)) / (dif x) = lim_(Delta x -> 0) (f(x + Delta x) - f(x)) / (Delta x) $，我们可以给出偏导数的定义：
+类比导数的定义：$(dif f(x)) / (dif x) = lim_(Delta x -> 0) (f(x + Delta x) - f(x)) / (Delta x)$，我们可以给出偏导数的定义：
 
 $ (partial f(x,y)) / (partial x) = lim_(Delta x -> 0) (f(x + Delta x, y) - f(x,y)) / (Delta x) $
 

@@ -1,4 +1,4 @@
-<script>
+﻿<script>
   // Three.js core plus OrbitControls for interactive camera dragging.
   import * as THREE from 'three';
   import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -16,6 +16,8 @@
         label: string;
         min?: number;
         max?: number;
+        value?: number;
+        step?: number;
         action: (value: number) => void;
       };
 
@@ -23,18 +25,30 @@
     THREE: typeof THREE;
     makeTextSprite: (message: string, color: string) => THREE.Sprite;
     resetView: () => void;
+    addControlWidget: (def: ControlDef) => void;
     toggleLabels: (labelSprites: THREE.Sprite[]) => () => void;
     OBJLoader: typeof OBJLoader;
     mergeGeometries: typeof mergeGeometries;
     mergeVertices: typeof mergeVertices;
+    // Register a per-frame callback (dt in seconds), invoked before the
+    // active camera controls update and before the scene is rendered.
+    onFrame: (callback: (dt: number) => void) => void;
+    // Camera controls are opt-in: a scene script creates the controls it
+    // needs (orbit, or a player-following camera) through this module.
+    cameraControls: {
+      createOrbit: () => OrbitControls;
+      createPlayerFollowing: (
+        player: THREE.Object3D,
+        canvas: HTMLCanvasElement,
+      ) => PlayerFollowingControls;
+    };
   }
 
   type DiagramBuilder = (
     scene: THREE.Scene,
     camera: THREE.PerspectiveCamera,
-    cameraControls: OrbitControls,
+    canvas: HTMLCanvasElement,
     initialView: InitialView,
-    addControlWidget: (def: ControlDef) => void,
     helpers: DiagramHelpers,
   ) => void;
 
@@ -69,15 +83,152 @@
     return sprite;
   }
 
-  // Points the camera back at the scene origin from the initial view.
-  function resetView(
+  // A camera control that follows a player object from behind, keeping the
+  // camera upright relative to the player's "up" axis (e.g. the surface
+  // normal), so the local surface appears flat like a ground plane.
+  // Horizontal dragging on the canvas rotates the player around its up axis.
+  class PlayerFollowingControls {
+    camera: THREE.PerspectiveCamera;
+    player: THREE.Object3D;
+    canvas: HTMLCanvasElement;
+    distance: number;
+    height: number;
+    lookAhead: number;
+    rotateSpeed: number;
+    positionSmoothing: number;
+    orientationSmoothing: number;
+
+    private dragging = false;
+    private lastX = 0;
+    private targetPosition = new THREE.Vector3();
+    private targetLook = new THREE.Vector3();
+
+    private onPointerDown: (event: PointerEvent) => void;
+    private onPointerMove: (event: PointerEvent) => void;
+    private onPointerUp: (event: PointerEvent) => void;
+
+    constructor(
+      camera: THREE.PerspectiveCamera,
+      player: THREE.Object3D,
+      canvas: HTMLCanvasElement,
+    ) {
+      this.camera = camera;
+      this.player = player;
+      this.canvas = canvas;
+      this.distance = 4;
+      this.height = 1.4;
+      this.lookAhead = 1;
+      this.rotateSpeed = 0.004;
+      this.positionSmoothing = 8;
+      this.orientationSmoothing = 8;
+
+      this.onPointerDown = (event) => {
+        this.dragging = true;
+        this.lastX = event.clientX;
+        this.canvas.setPointerCapture?.(event.pointerId);
+      };
+      this.onPointerMove = (event) => {
+        if (!this.dragging) return;
+        const dx = event.clientX - this.lastX;
+        this.lastX = event.clientX;
+        this.player.rotateOnWorldAxis(this.player.up, -dx * this.rotateSpeed);
+      };
+      this.onPointerUp = (event) => {
+        this.dragging = false;
+        this.canvas.releasePointerCapture?.(event.pointerId);
+      };
+      this.canvas.addEventListener('pointerdown', this.onPointerDown);
+      this.canvas.addEventListener('pointermove', this.onPointerMove);
+      this.canvas.addEventListener('pointerup', this.onPointerUp);
+    }
+
+    dispose(): void {
+      this.canvas.removeEventListener('pointerdown', this.onPointerDown);
+      this.canvas.removeEventListener('pointermove', this.onPointerMove);
+      this.canvas.removeEventListener('pointerup', this.onPointerUp);
+    }
+
+    // Called by the builder every frame with the frame time delta (seconds).
+    update(dt = 0): void {
+      const position = this.player.getWorldPosition(new THREE.Vector3());
+      const forward = this.player.getWorldDirection(new THREE.Vector3());
+      const up = this.player.up;
+
+      this.targetPosition
+        .copy(position)
+        .addScaledVector(forward, -this.distance)
+        .addScaledVector(up, this.height);
+      const t = 1 - Math.exp(-this.positionSmoothing * dt);
+      this.camera.position.lerp(this.targetPosition, t);
+
+      this.targetLook
+        .copy(position)
+        .addScaledVector(forward, this.lookAhead)
+        .addScaledVector(up, this.height * 0.5);
+      this.camera.up.copy(up);
+      this.camera.lookAt(this.targetLook);
+    }
+  }
+
+  // The active controls share a per-frame update entry point.
+  type ActiveControls = { update: (dt?: number) => void };
+
+  interface CameraControlsModule {
+    _active: (OrbitControls | PlayerFollowingControls) | null;
+    createOrbit: () => OrbitControls;
+    createPlayerFollowing: (
+      player: THREE.Object3D,
+      canvas: HTMLCanvasElement,
+    ) => PlayerFollowingControls;
+    update: (dt: number) => void;
+    resetView: () => void;
+  }
+
+  // Builds the camera-controls module exposed to scene scripts as
+  // helpers.cameraControls. The module tracks whichever controls the scene
+  // script created so the builder can update them each frame.
+  function createCameraControlsModule(
     camera: THREE.PerspectiveCamera,
-    controls: OrbitControls,
+    canvas: HTMLCanvasElement,
     initialView: InitialView,
-  ): void {
-    controls.target.set(0, 0, 0);
-    camera.position.set(...initialView);
-    controls.update();
+  ): CameraControlsModule {
+    const module: CameraControlsModule = {
+      _active: null,
+
+      createOrbit() {
+        const controls = new OrbitControls(camera, canvas);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.2;
+        controls.screenSpacePanning = false;
+        controls.minDistance = 2;
+        controls.maxDistance = 30;
+        this._active = controls;
+        return controls;
+      },
+
+      createPlayerFollowing(player, followCanvas) {
+        const controls = new PlayerFollowingControls(camera, player, followCanvas);
+        this._active = controls;
+        return controls;
+      },
+
+      update(dt) {
+        const active = this._active as ActiveControls | null;
+        active?.update(dt);
+      },
+
+      resetView() {
+        camera.up.set(0, 1, 0);
+        camera.position.set(...initialView);
+        camera.lookAt(0, 0, 0);
+        const active = this._active;
+        if (active && 'target' in active) {
+          active.target.set(0, 0, 0);
+          active.update();
+        }
+      },
+    };
+    return module;
   }
 
   // Builds an action that toggles a set of label sprites on and off.
@@ -129,6 +280,8 @@
         input.id = id;
         if (def.min !== undefined) input.min = String(def.min);
         if (def.max !== undefined) input.max = String(def.max);
+        if (def.value !== undefined) input.value = String(def.value);
+        if (def.step !== undefined) input.step = String(def.step);
         input.addEventListener('input', () => def.action(parseFloat(input.value)));
         wrap.appendChild(label);
         wrap.appendChild(input);
@@ -191,13 +344,10 @@
     };
     setSize();
 
-    // Damped OrbitControls give the figure an ergonomic, slightly heavier feel.
-    const cameraControls = new OrbitControls(camera, renderer.domElement);
-    cameraControls.enableDamping = true;
-    cameraControls.dampingFactor = 0.2;
-    cameraControls.screenSpacePanning = false;
-    cameraControls.minDistance = 2;
-    cameraControls.maxDistance = 30;
+    // Frame loop bookkeeping: per-frame callbacks and the opt-in controls.
+    const clock = new THREE.Clock();
+    const frameCallbacks: Array<(dt: number) => void> = [];
+    const cameraControlsModule = createCameraControlsModule(camera, canvas, initialView);
 
     // Simple ambient + directional lighting so materials are visible.
     scene.add(new THREE.AmbientLight(0xffffff, 0.6));
@@ -217,10 +367,13 @@
       controlElements.push(element);
     };
 
-    // Render loop: apply orbit damping, then draw the scene each frame.
+    // Render loop: run per-frame callbacks, update the active camera controls,
+    // then draw the scene each frame.
     function animate(): void {
       requestAnimationFrame(animate);
-      cameraControls.update();
+      const dt = clock.getDelta();
+      for (const callback of frameCallbacks) callback(dt);
+      cameraControlsModule.update(dt);
       renderer.render(scene, camera);
     }
     animate();
@@ -233,11 +386,16 @@
     const helpers: DiagramHelpers = {
       THREE,
       makeTextSprite,
-      resetView: () => resetView(camera, cameraControls, initialView),
+      resetView: () => cameraControlsModule.resetView(),
+      addControlWidget,
       toggleLabels,
       OBJLoader,
       mergeGeometries,
       mergeVertices,
+      onFrame: (callback) => {
+        frameCallbacks.push(callback);
+      },
+      cameraControls: cameraControlsModule,
     };
 
     // Load the post's construction script and let it populate the scene.
@@ -246,7 +404,7 @@
       if (typeof module.default !== 'function') {
         throw new Error(`Module ${src} does not export a default builder function`);
       }
-      module.default(scene, camera, cameraControls, initialView, addControlWidget, helpers);
+      module.default(scene, camera, canvas, initialView, helpers);
     } catch (error) {
       console.error(`ThreeJsDiagramBuilder: failed to build diagram from ${src}`, error);
       showError(container, 'Failed to load the Three.js diagram script.');
