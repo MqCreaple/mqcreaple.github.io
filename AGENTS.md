@@ -22,6 +22,10 @@ The build script compiles every `.typ` file to an HTML fragment for Astro and a 
 
 HTML export is enabled with Typst's runtime `--features html` flag; the build script passes it automatically.
 
+## Researching hard problems
+
+Whenever you meet a hard problem that is not obvious to solve, always search for relevant GitHub issues, Stack Overflow posts, or other posts online related to that issue before inventing a solution from scratch.
+
 ## Embedding HTML in articles
 
 Typst 0.13+ HTML export supports raw HTML:

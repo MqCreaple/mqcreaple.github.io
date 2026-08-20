@@ -371,7 +371,7 @@ $ tilde(u)_i = (J^(-1))^j_i u_j, dif tilde(x)^i = J^i_j dif x^j $
 一般来说，矩阵（也就是 $T_p M arrow.r T_p M$ 的线性变换）可以看作是一个二维张量 $A in T_p M times T^*_p M$。矩阵在某个坐标系的分量的第一个维度是逆变的、第二个维度是协变的。也就是说，矩阵的坐标分量需要写成 $A^i_j$。举一个矩阵乘法的例子：
 
 $
-  A^(-1)^i_j A^j_k = delta^i_k
+  (A^(-1))^i_j A^j_k = delta^i_k
 $
 
 这里的 $delta$ 就是之前我们见过的克罗内克符号。$delta^i_k$ 就相当于是单位矩阵。

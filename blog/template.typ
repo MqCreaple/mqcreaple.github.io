@@ -7,91 +7,40 @@
 // taking an extra `lang` parameter.
 #let article-lang = state("article-lang", "en")
 
-// State used to measure and apply per-equation baseline shifts for inline math
-// in HTML export (see shift-inline-math and finalize-inline-math below).
-#let inline-math-pending = state("inline-math-pending", ())
-#let inline-math-count = counter("inline-math-count")
-#let inline-math-depths = state("inline-math-depths", ())
-
 // Render inline math as SVG via html.frame() and shift it so that the
 // equation's baseline aligns with the surrounding text baseline (method
 // ported from https://1024th.top/posts/typst/typst-html-export). The bounds
 // text edges make the SVG viewBox match the equation's true bounding box. The
-// depth below the baseline cannot be measured directly here: Typst's inline
-// equation layout subtracts `0.7 * leading` from the equation's descent when
-// the text bottom edge is the baseline, and querying label positions inside an
-// html.frame reports zeroes in current Typst versions. So each equation is
-// queued in inline-math-pending together with its true bounding height, and
-// its depth is computed once in finalize-inline-math() (after the document)
-// with a huge leading, then fed back through inline-math-depths as a
-// per-equation `vertical-align` offset.
+// depth below the baseline is measured with the zero-width probe trick from
+// https://github.com/cetz-package/cetz/issues/794: next to the equation we
+// place a zero-width box whose baseline is at its top and whose height exceeds
+// the equation's descent, so the combined box's height equals the equation's
+// ascent plus the probe's descent. Subtracting the probe height gives the
+// ascent, and the depth is the difference between the total bounds height and
+// the ascent. This relies only on measure(), so it works in HTML export
+// (unlike label/position based methods, which report zero positions there).
 #let shift-inline-math(body) = context {
-  let formula-cnt = inline-math-count.get().first()
-  inline-math-count.step()
   let wrapper = text.with(top-edge: "bounds", bottom-edge: "bounds")
-  // The equation's true bounding height at its own location, where the
-  // article's show rules (e.g. #show math.equation: math.display) apply. Used
-  // in finalize-inline-math() to detect and reproduce the effective layout.
-  let ref-total = measure(wrapper(body.body)).height
-  inline-math-pending.update(arr => arr + ((body.body, ref-total),))
+  let bounded-eq = wrapper(body.body)
+  let total-height = measure(bounded-eq).height
+  // The probe must be taller than the equation's descent; total + 1pt
+  // suffices since the descent is never larger than the total height.
+  let probe-descent = total-height + 1pt
+  let probe = box(width: 0pt, height: probe-descent, baseline: top)
+  let combined = box[#box(bounded-eq)#probe]
+  let combined-height = measure(combined).height
+  let ascent = combined-height - probe-descent
+  let depth = total-height - ascent
   html.elem(
     "span",
     html.frame(wrapper(body)),
     attrs: (
       style: "vertical-align: -"
-        + str(calc.round(inline-math-depths.final().at(formula-cnt, default: 0), digits: 2))
+        + str(calc.round(depth / text.size, digits: 2))
         + "em;",
       class: "typst-math-inline",
     ),
   )
-}
-
-// The depth below the baseline of `eq`, in em units, measured with the huge
-// leading set by finalize-inline-math(). With bottom-edge "bounds" measure()
-// yields the full bounding height (top-to-bottom), and with the default
-// bottom-edge "baseline" plus a huge leading the descent term of the
-// equation's frame vanishes, so the difference is the true depth. The em
-// value is invariant under the font size, so measuring at the article's base
-// size is correct even for equations inside larger text (e.g. headings).
-#let inline-math-depth(eq) = {
-  let full = measure(text.with(top-edge: "bounds", bottom-edge: "bounds")(eq)).height
-  let top-to-base = measure(text.with(top-edge: "bounds")(eq)).height
-  (full - top-to-base) / text.size
-}
-
-// Measure the depth below the baseline of every queued inline equation. Called
-// after `doc` in article(), where the huge leading cannot affect any visible
-// content. Since show rules declared inside `doc` (such as the article's
-// `#show math.equation: math.display`) are not in scope here, the raw equation
-// body may no longer reproduce its effective layout; compare its bounding
-// height against the reference captured in shift-inline-math() and, if it
-// differs, retry with display style forced via math.equation + math.display.
-#let finalize-inline-math() = {
-  if sys.inputs.at("format", default: "pdf") == "html" {
-    set par(leading: 100em)
-    context {
-      let pending = inline-math-pending.get()
-      let new-depths = ()
-      for (eq, ref-total) in pending {
-        let plain-total = measure(text.with(top-edge: "bounds", bottom-edge: "bounds")(eq)).height
-        let depth = if plain-total == ref-total {
-          inline-math-depth(eq)
-        } else {
-          let disp-eq = math.equation(block: false, math.display(eq))
-          let disp-total = measure(text.with(top-edge: "bounds", bottom-edge: "bounds")(disp-eq)).height
-          if disp-total == ref-total {
-            inline-math-depth(disp-eq)
-          } else {
-            // Fall back to the plain measurement (best effort).
-            inline-math-depth(eq)
-          }
-        }
-        new-depths += (depth,)
-      }
-      inline-math-depths.update(new-depths)
-      []
-    }
-  }
 }
 
 // Articles and Sections
@@ -147,11 +96,6 @@
   // Content
   outline()
   doc
-  // Compute and apply the per-equation baseline shifts for inline math. This
-  // runs after all content so the huge leading used for measurement cannot
-  // affect any visible layout; it is a no-op in PDF export (no equations are
-  // queued there).
-  finalize-inline-math()
 }
 
 #let appendix(body) = {
