@@ -1,0 +1,17 @@
+.typst-diagram svg [fill="#000000"] {
+  fill: currentColor;
+}
+
+.typst-diagram svg [stroke="#000000"] {
+  stroke: currentColor;
+}
+
+.typst-diagram {
+  margin: 1em 0;
+  text-align: center;
+}
+
+.typst-diagram svg {
+  display: block !important;
+  margin: 0 auto;
+}

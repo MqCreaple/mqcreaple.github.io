@@ -1,0 +1,39 @@
+/* Typst math equations rendered as SVG via html.frame() (see blog/template.typ). */
+
+/* Recolor the SVG glyphs to follow the article text color (dark/light mode).
+   Typst hardcodes fill/stroke="#000000" on the <use> and <path> elements, so
+   we only override the explicitly black elements and leave fill="none" alone. */
+.typst-math-inline svg [fill="#000000"],
+.typst-math-block svg [fill="#000000"] {
+  fill: currentColor;
+}
+
+.typst-math-inline svg [stroke="#000000"],
+.typst-math-block svg [stroke="#000000"] {
+  stroke: currentColor;
+}
+
+/* Inline equations. Each equation is rendered as an SVG whose viewBox matches
+   the equation's true bounding box (the template wraps it with
+   top-edge/bottom-edge: "bounds"). The span carries a per-equation
+   `vertical-align` offset computed from the measured depth below the baseline,
+   so the equation's baseline aligns with the surrounding text baseline. */
+.typst-math-inline {
+  display: inline-block;
+}
+
+.typst-math-inline svg {
+  display: inline-block !important;
+  overflow: visible;
+}
+
+/* Block equations: centered with breathing room above and below. */
+.typst-math-block {
+  margin: 1em 0;
+  text-align: center;
+}
+
+.typst-math-block svg {
+  display: block !important;
+  margin: 0 auto;
+}

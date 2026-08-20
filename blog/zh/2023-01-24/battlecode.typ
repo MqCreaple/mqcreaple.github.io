@@ -3,8 +3,8 @@
 // tags: battlecode, algorithm
 // category: tech
 
-#import "../../template.typ": article
-#import "@preview/fletcher:0.5.8": diagram, edge, node, shapes
+#import "../../template.typ": article, diagram
+#import "@preview/fletcher:0.5.8": edge, node, shapes
 
 #show: article.with(
   title: "battlecode 开发日志",
@@ -140,7 +140,7 @@ _以下问题按照产生的时间从早到晚排序_
 
 这个问题源于整数的类型转换。
 
-由于 battlecode 提供的内存相关的 API 都使用`int`，而我们的代码里记录内存使用的是`short`。当我把`short`的最高位设成1的时候，它就会成为一个负数，而转化成`int`之后仍然是个负数，它就会因为超出$0$到$2^16-1$的范围而无法被存入共享内存中。
+由于 battlecode 提供的内存相关的 API 都使用`int`，而我们的代码里记录内存使用的是`short`。当我把`short`的最高位设成1的时候，它就会成为一个负数，而转化成`int`之后仍然是个负数，它就会因为超出$0$到 $2^16-1$ 的范围而无法被存入共享内存中。
 
 由于 Adamantium 矿的类型标记是`01`，而 Mana 矿的类型标记是`10`，Mana 矿的最高二进制位是1，所以只有 Adamantium 的坐标被存入了共享内存，而 Mana 则没有。
 
@@ -158,20 +158,18 @@ return (int) rnd.nextFloat() * CONSTANT;
 
 这里运算符的计算顺序是这样的：
 
-#html.frame[
-  #diagram(
-    node-stroke: 0.6pt,
-    node((0, 0), [\*], shape: circle),
-    node((-1.5, 1), [int], shape: shapes.pill),
-    node((1.5, 1), [CONSTANT]),
-    node((-2.5, 2), [rnd.nextFloat]),
-    edge((0, 0), (-1.5, 1), "->"),
-    edge((0, 0), (1.5, 1), "->"),
-    edge((-1.5, 1), (-2.5, 2), "->"),
-  )
-]
+#diagram(
+  node-stroke: 0.6pt,
+  node((0, 0), [`*`], shape: circle),
+  node((-1.5, 1), [`int`], shape: shapes.pill),
+  node((1.5, 1), [`CONSTANT`]),
+  node((-2.5, 2), [`rnd.nextFloat`]),
+  edge((0, 0), (-1.5, 1), "->"),
+  edge((0, 0), (1.5, 1), "->"),
+  edge((-1.5, 1), (-2.5, 2), "->"),
+)
 
-也就是说，生成的浮点数会先被转化成整数，再进行乘法。而`rnd.nextFloat()`生成的浮点数永远在$[0, 1)$区间内，所以先转化成整数时就会永远变成0。
+也就是说，生成的浮点数会先被转化成整数，再进行乘法。而`rnd.nextFloat()`生成的浮点数永远在 $[0, 1)$ 区间内，所以先转化成整数时就会永远变成0。
 
 修复这个 bug 可以这样写：
 

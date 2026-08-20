@@ -3,8 +3,8 @@
 // tags: git, github
 // category: tech
 
-#import "../../template.typ": article
-#import "@preview/fletcher:0.5.8": diagram, edge, node, shapes
+#import "../../template.typ": article, diagram
+#import "@preview/fletcher:0.5.8": edge, node, shapes
 
 #show: article.with(
   title: "git原理简介",
@@ -71,76 +71,70 @@ git hash-object 文件名
 
 当整个项目只有一个分支时，所有的 commit 形成一条链：
 
-#html.frame[
-  #diagram(
-    node-stroke: 0.6pt,
-    spacing: (1em, 3em),
-    node((0, 0), [commit #linebreak() ......]),
-    node((1, 0), [commit #linebreak() 4375]),
-    node((2, 0), [commit #linebreak() 729f]),
-    node((3, 0), [commit #linebreak() 9cd6]),
-    node((4, 0), [commit #linebreak() 3d97]),
-    node((5, 0), [commit #linebreak() a5e2]),
-    node((4.5, -0.9), [master: head], stroke: none, fill: none, inset: 2pt),
-    edge((5, 0), (4, 0), "->"),
-    edge((4, 0), (3, 0), "->"),
-    edge((3, 0), (2, 0), "->"),
-    edge((2, 0), (1, 0), "->"),
-    edge((1, 0), (0, 0), "->"),
-  )
-]
+#diagram(
+  node-stroke: 0.6pt,
+  spacing: (1em, 3em),
+  node((0, 0), [commit #linebreak() ......]),
+  node((1, 0), [commit #linebreak() 4375]),
+  node((2, 0), [commit #linebreak() 729f]),
+  node((3, 0), [commit #linebreak() 9cd6]),
+  node((4, 0), [commit #linebreak() 3d97]),
+  node((5, 0), [commit #linebreak() a5e2]),
+  node((4.5, -0.9), [master: head], stroke: none, fill: none, inset: 2pt),
+  edge((5, 0), (4, 0), "->"),
+  edge((4, 0), (3, 0), "->"),
+  edge((3, 0), (2, 0), "->"),
+  edge((2, 0), (1, 0), "->"),
+  edge((1, 0), (0, 0), "->"),
+)
 
 有多个分支时，则是这样的：
 
-#html.frame[
-  #diagram(
-    node-stroke: 0.6pt,
-    spacing: (1em, 3em),
-    node((0, 0), [commit #linebreak() ......]),
-    node((1, 0), [commit #linebreak() 4375]),
-    node((2, 0), [commit #linebreak() 729f]),
-    node((3, 0), [commit #linebreak() 9cd6]),
-    node((4, 0), [commit #linebreak() 3d97]),
-    node((5, 0), [commit #linebreak() a5e2]),
-    node((1, 1.6), [commit #linebreak() fc6a]),
-    node((1, 3.2), [commit #linebreak() 7032]),
-    node((4.5, -0.9), [master: head], stroke: none, fill: none, inset: 2pt),
-    node((0.5, 4.1), [branch1: head], stroke: none, fill: none, inset: 2pt),
-    edge((5, 0), (4, 0), "->"),
-    edge((4, 0), (3, 0), "->"),
-    edge((3, 0), (2, 0), "->"),
-    edge((2, 0), (1, 0), "->"),
-    edge((1, 0), (0, 0), "->"),
-    edge((1, 1.6), (1, 0), "->"),
-    edge((1, 3.2), (1, 1.6), "->"),
-  )
-]
+#diagram(
+  node-stroke: 0.6pt,
+  spacing: (1em, 3em),
+  node((0, 0), [commit #linebreak() ......]),
+  node((1, 0), [commit #linebreak() 4375]),
+  node((2, 0), [commit #linebreak() 729f]),
+  node((3, 0), [commit #linebreak() 9cd6]),
+  node((4, 0), [commit #linebreak() 3d97]),
+  node((5, 0), [commit #linebreak() a5e2]),
+  node((1, 1.6), [commit #linebreak() fc6a]),
+  node((1, 3.2), [commit #linebreak() 7032]),
+  node((4.5, -0.9), [master: head], stroke: none, fill: none, inset: 2pt),
+  node((0.5, 4.1), [branch1: head], stroke: none, fill: none, inset: 2pt),
+  edge((5, 0), (4, 0), "->"),
+  edge((4, 0), (3, 0), "->"),
+  edge((3, 0), (2, 0), "->"),
+  edge((2, 0), (1, 0), "->"),
+  edge((1, 0), (0, 0), "->"),
+  edge((1, 1.6), (1, 0), "->"),
+  edge((1, 3.2), (1, 1.6), "->"),
+)
 
 = 文件和目录
 
 之前说过，blob 对象和 tree 对象都存在 `/.git/objects/` 目录下。Tree 对象存储了其他一系列文件的哈希值，可以理解成是一个多叉树的结点，而一般文件是叶节点。
 
-#html.frame[
-  #diagram(
-    node-stroke: 0.6pt,
-    spacing: (2.75em, 3em),
-    node((0, 0), [root], extrude: (0, 2)),
-    node((-3, 1.6), [readme.md], shape: shapes.pill),
-    node((-1.8, 1.6), [.gitignore], shape: shapes.pill),
-    node((-0.6, 1.6), [src], extrude: (0, 2)),
-    node((1.6, 1.6), [test], extrude: (0, 2)),
-    node((-1.2, 3.2), [main.cpp], shape: shapes.pill),
-    node((0, 3.2), [main.h], shape: shapes.pill),
-    node((1.6, 3.2), [test.cpp], shape: shapes.pill),
-    edge((0, 0), (-3, 1.6), "->"),
-    edge((0, 0), (-1.8, 1.6), "->"),
-    edge((0, 0), (-0.6, 1.6), "->"),
-    edge((0, 0), (1.6, 1.6), "->"),
-    edge((-0.6, 1.6), (-1.2, 3.2), "->"),
-    edge((-0.6, 1.6), (0, 3.2), "->"),
-    edge((1.6, 1.6), (1.6, 3.2), "->"),
-  )
-]
+#diagram(
+  node-stroke: 0.6pt,
+  spacing: (2.75em, 3em),
+  node((0, 0), [root], extrude: (0, 2)),
+  node((-3, 1.6), [readme.md], shape: shapes.pill),
+  node((-1.8, 1.6), [.gitignore], shape: shapes.pill),
+  node((-0.6, 1.6), [src], extrude: (0, 2)),
+  node((1.6, 1.6), [test], extrude: (0, 2)),
+  node((-1.2, 3.2), [main.cpp], shape: shapes.pill),
+  node((0, 3.2), [main.h], shape: shapes.pill),
+  node((1.6, 3.2), [test.cpp], shape: shapes.pill),
+  edge((0, 0), (-3, 1.6), "->"),
+  edge((0, 0), (-1.8, 1.6), "->"),
+  edge((0, 0), (-0.6, 1.6), "->"),
+  edge((0, 0), (1.6, 1.6), "->"),
+  edge((-0.6, 1.6), (-1.2, 3.2), "->"),
+  edge((-0.6, 1.6), (0, 3.2), "->"),
+  edge((1.6, 1.6), (1.6, 3.2), "->"),
+)
 
 暂存区/索引对应着 `/.git/index` 文件，它记录了当前暂存的所有文件和目录的哈希值。每一次执行 `git add` 指令，程序就会在 `/.git/objects` 目录中生成一个对应着该文件的 blob 对象，同时将这个对象的地址加到 `/.git/index` 中。
 

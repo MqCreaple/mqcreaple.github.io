@@ -34,7 +34,7 @@
 
 $ f(x) = 2 x $
 
-它输入一个变量$x$，输出一个数，并且满足输出的数一定是输入的两倍。
+它输入一个变量 $x$，输出一个数，并且满足输出的数一定是输入的两倍。
 
 接下来我们介绍一种新的记号，用来表示同一个函数：
 
@@ -62,13 +62,13 @@ $ f(x, y) = x + 2y $
 
 $ f = lambda x. thin lambda y. thin x + 2y $
 
-表达式前面有两个$lambda$，就表示函数接受两个参数。比如：
+表达式前面有两个 $lambda$，就表示函数接受两个参数。比如：
 
 $ (f thin 2 thin 3) & = ((lambda x. thin lambda y. thin x + 2y) thin 2 thin 3) \
   &= 2 + 2 dot 3 \
   &= 8 $
 
-同时，这个表达式还有一种解读方法。我们将$f$看作一个关于$x$的单值函数，但函数返回了另一个λ表达式：
+同时，这个表达式还有一种解读方法。我们将 $f$ 看作一个关于 $x$ 的单值函数，但函数返回了另一个λ表达式：
 
 $ f = lambda x. thin (lambda y. thin x + 2y) $
 
@@ -117,7 +117,7 @@ $ (= thin 2) $
 
 $ R = lambda f. thin lambda x. thin (f thin (f thin x)) $
 
-这个表达式$R$的意义就是：传入一个函数和一个值，把这个函数在值上做两遍。
+这个表达式 $R$ 的意义就是：传入一个函数和一个值，把这个函数在值上做两遍。
 
 举个例子：
 
@@ -126,11 +126,11 @@ $ (R thin (lambda x. thin x^2) thin 2) & = ((lambda f. thin lambda x. thin (f th
   &= ((lambda x. thin x^2) thin 4) \
   &= 16 $
 
-下面是一个简单的演示。点击图中的$R$将其展开，拖动函数参数到对应的λ位置来进行参数替换。
+下面是一个简单的演示。点击图中的 $R$ 将其展开，拖动函数参数到对应的λ位置来进行参数替换。
 
 #demo("[ \"R\", [ \"λx\", [ \"^\", \"x\", \"2\" ] ], \"2\" ]", repl-table: "{ \"R\": [ \"λf\", \"λx\", [ \"f\", [ \"f\", \"x\" ] ] ] }")
 
-当然，使用前面*柯里化*的思想，我们也可以这样看：$R$输入一个λ表达式，输出一个λ表达式，其中输出的表达式是输入的表达式重复两遍的结果。
+当然，使用前面*柯里化*的思想，我们也可以这样看：$R$ 输入一个λ表达式，输出一个λ表达式，其中输出的表达式是输入的表达式重复两遍的结果。
 
 $ (R thin f) = lambda x. thin (f thin (f thin x)) $
 
@@ -138,11 +138,11 @@ $ (R thin f) = lambda x. thin (f thin (f thin x)) $
 
 $ (f thin (g thin x)) $
 
-就是变量$x$先被$g$作用再被$f$作用，而
+就是变量 $x$ 先被 $g$ 作用再被 $f$ 作用，而
 
 $ (f thin g thin x) $
 
-则是函数$g$和变量$x$同时传入$f$中。
+则是函数 $g$ 和变量 $x$ 同时传入 $f$ 中。
 
 = 逻辑运算
 
@@ -164,7 +164,7 @@ $ F := lambda x. thin lambda y. thin y $
 
 $ (not) := lambda a. thin (a thin F thin T) $
 
-不要忘记了$T$和$F$的含义：$T$表示选择第一个东西，而$F$表示选择第二个东西。也就是说，如果$a=T$，它就会选择第一个参数，也就是$F$；反之，如果$a=F$，它就会选第二个参数，就是$T$。
+不要忘记了 $T$ 和 $F$ 的含义：$T$ 表示选择第一个东西，而 $F$ 表示选择第二个东西。也就是说，如果 $a=T$，它就会选择第一个参数，也就是 $F$；反之，如果 $a=F$，它就会选第二个参数，就是 $T$。
 
 如果你没有理解这个定义，不妨看下面的演示。请你按照以下顺序操作：
 
@@ -181,13 +181,13 @@ $ (not) := lambda a. thin (a thin F thin T) $
 
 逻辑与的定义则相对复杂，因为它需要接受两个参数。
 
-不难发现，计算$a and b$时，假如$a$为真，则运算结果就等于$b$，反之如果$a$为假，则运算结果一定是假。
+不难发现，计算 $a and b$ 时，假如 $a$ 为真，则运算结果就等于 $b$，反之如果 $a$ 为假，则运算结果一定是假。
 
 因此我们给出了逻辑与的λ定义：
 
 $ (and) := lambda a. thin lambda b. thin (a thin b thin F) $
 
-类似地，如果$a=T$，那么就会选择第一个参数$b$，它的返回值就取决于$b$的值；而如果$a=F$，它就一定会返回$F$。
+类似地，如果 $a=T$，那么就会选择第一个参数 $b$，它的返回值就取决于 $b$ 的值；而如果 $a=F$，它就一定会返回 $F$。
 
 同样你也可以看这里的演示：
 
@@ -225,7 +225,7 @@ $ "xor" := lambda a. thin lambda b. thin (a thin (not thin b) thin b) $
 
 == 谓词和逻辑运算
 
-我们定义，如果有一个λ表达式$p$的返回值要么是$T$，要么是$F$，则$p$称为一个*谓词*。
+我们定义，如果有一个λ表达式 $p$ 的返回值要么是 $T$，要么是 $F$，则 $p$ 称为一个*谓词*。
 
 比如，判断两个自然数相等的运算：
 
@@ -238,12 +238,12 @@ $ (= thin a thin b) $
 回想一下自然数的五条公理：
 
 1. $0$是自然数
-2. 每一个自然数$n$都有一个后继，记为$n^+$
+2. 每一个自然数 $n$ 都有一个后继，记为 $n^+$
 3. 任何两个不同的元素，它们的后继也不同
-   - 或者说，$(n^+)$这个函数是$NN -> NN$的单射
+   - 或者说，$(n^+)$ 这个函数是 $NN -> NN$ 的单射
 4. 除了$0$以外每一个自然数都有一个前驱
-5. 假如命题$p$满足：$p(0)$为真，且任何$p(n)$为真可以推出$p(n+1)$为真，则任何$k in NN$都有$p(k)$为真
-   - 或者说，数学归纳法在$NN$上成立
+5. 假如命题 $p$ 满足：$p(0)$ 为真，且任何 $p(n)$ 为真可以推出 $p(n+1)$ 为真，则任何 $k in NN$ 都有 $p(k)$ 为真
+   - 或者说，数学归纳法在 $NN$ 上成立
 
 一个可行的构造是由λ演算的提出者 Alonzo Church 提出的方案，我们称其为*Church 计数*。其自然数的构造如下：
 
@@ -252,16 +252,16 @@ $ & 0 := lambda f. thin lambda x. thin x \
   & 2 := lambda f. thin lambda x. thin (f thin (f thin x)) \
   & 3 := lambda f. thin lambda x. thin (f thin (f thin (f thin x))) \
   & dots.v \
-  & n := lambda f. thin lambda x. thin (f^(circle n) thin x) \
+  & n := lambda f. thin lambda x. thin (f^(compose n) thin x) \
   & dots.v $
 
-也就是说，第$n$个自然数，就是将一个函数重复$n$遍。
+也就是说，第 $n$ 个自然数，就是将一个函数重复 $n$ 遍。
 
 那么自然数的后继就可以这样定义：
 
 $ "succ" := lambda n. thin lambda f. thin lambda x. thin (f thin (n thin f thin x)) $
 
-注意：你可能会以为$"succ"$接受三个参数，但使用它时，只用一个参数$n$，返回一个带有两个参数$f, x$的λ表达式。
+注意：你可能会以为 $"succ"$ 接受三个参数，但使用它时，只用一个参数 $n$，返回一个带有两个参数 $f, x$ 的λ表达式。
 
 举个例子，我们想要计算$1$的后继：
 
@@ -279,7 +279,7 @@ $ ("succ" thin 1) & = ((lambda n. thin lambda f. thin lambda x. thin (f thin (n 
 
 $ (+) := lambda m. thin lambda n. thin lambda f. thin lambda x. thin (m thin f thin (n thin f thin x)) $
 
-根据定义，$(n thin f thin x)$是函数$f$在$x$上重复数字$n$遍，而$(m thin f)$又是函数$f$重复数字$m$遍。两者复合之后就是函数$f$重复了$m+n$遍。
+根据定义，$(n thin f thin x)$ 是函数 $f$ 在 $x$ 上重复数字 $n$ 遍，而 $(m thin f)$ 又是函数 $f$ 重复数字 $m$ 遍。两者复合之后就是函数 $f$ 重复了 $m+n$ 遍。
 
 这里就不手打示例公式了，大家可以在下面操作一下。
 
@@ -289,7 +289,7 @@ $ (+) := lambda m. thin lambda n. thin lambda f. thin lambda x. thin (m thin f t
 
 $ (+) := lambda m. thin lambda n. thin (m thin "succ" thin n) $
 
-相当于在数$n$上使用$m$次$"succ"$函数。
+相当于在数 $n$ 上使用 $m$ 次 $"succ"$ 函数。
 
 == 乘法
 
@@ -297,13 +297,13 @@ $ (+) := lambda m. thin lambda n. thin (m thin "succ" thin n) $
 
 $ (times) := lambda m. thin lambda n. thin (m thin (+ thin n) thin 0) $
 
-不要忘了，$(+ thin n)$是一个λ表达式，输入一个数，输出它加上$n$的结果。这个表达式的含义就是：从$0$开始，重复$m$次操作，每次给数加上$n$。那么最后得到的就是数$m times n$。
+不要忘了，$(+ thin n)$ 是一个λ表达式，输入一个数，输出它加上 $n$ 的结果。这个表达式的含义就是：从$0$开始，重复 $m$ 次操作，每次给数加上 $n$。那么最后得到的就是数 $m times n$。
 
 但是，它还有一个更简洁的形式：
 
 $ (times) := lambda m. thin lambda n. thin lambda f. thin (m thin (n thin f)) $
 
-其中$(n thin f)$返回一个λ表达式，表示将函数$f$重复$n$遍，而$(m thin (n thin f))$则是进一步把$(n thin f)$重复了$m$遍。那么$f$总共就被重复了$m times n$遍。
+其中 $(n thin f)$ 返回一个λ表达式，表示将函数 $f$ 重复 $n$ 遍，而 $(m thin (n thin f))$ 则是进一步把 $(n thin f)$ 重复了 $m$ 遍。那么 $f$ 总共就被重复了 $m times n$ 遍。
 
 可以看一下这个演示：
 
@@ -317,19 +317,19 @@ $ (times) := lambda m. thin lambda n. thin lambda f. thin (m thin (n thin f)) $
 
 $ 3 = lambda f. thin lambda x. thin (f thin (f thin (f thin x))) stretch(-->)^"pred" 2 = lambda f. thin lambda x. thin (f thin (f thin x)) $
 
-我们想到，假如能够构造出一个函数$R$，使得它第一次作用在某个值$x$上得到的是它本身，而第二、三、四、...次之后，每次往$x$上面套一层$f$。那么只需要：
+我们想到，假如能够构造出一个函数 $R$，使得它第一次作用在某个值 $x$ 上得到的是它本身，而第二、三、四、...次之后，每次往 $x$ 上面套一层 $f$。那么只需要：
 
 $ (n thin R thin x) $
 
-就可以得到$(f^(∘(n-1)) thin x)$了。
+就可以得到 $(f^(∘(n-1)) thin x)$ 了。
 
-可惜，你想得美。这种函数不可能存在，因为$R$这个函数不是一个纯函数。
+可惜，你想得美。这种函数不可能存在，因为 $R$ 这个函数不是一个纯函数。
 
 如果我们已知：
 
 $ (R thin x) = x $
 
-那么将$R$在$x$上作用两遍的结果一定也是：
+那么将 $R$ 在 $x$ 上作用两遍的结果一定也是：
 
 $ (R thin (R thin x)) & = (R thin x) \
   &= x $
@@ -346,7 +346,7 @@ $ (T thin (lambda u. thin x)) & = lambda h. thin (h thin ((lambda u. thin x) thi
 
 #demo("[\"T\", [\"λu\", \"x\"]]", repl-table: "{ \"T\": [\"λg\", \"λh\", [\"h\", [\"g\", \"f\"]]] }")
 
-如果再把$T$作用到刚刚算得的结果上，就是：
+如果再把 $T$ 作用到刚刚算得的结果上，就是：
 
 $ (T thin (T thin (lambda u. thin x))) & = (T thin (lambda u. thin (u thin x))) \
   &= lambda h. thin (h thin ((lambda u. thin (u thin x)) thin f)) \
@@ -355,22 +355,22 @@ $ (T thin (T thin (lambda u. thin x))) & = (T thin (lambda u. thin (u thin x))) 
 
 #demo("[\"T\", [\"λu\", [\"u\", \"x\"]]]", repl-table: "{ \"T\": [\"λg\", \"λh\", [\"h\", [\"g\", \"f\"]]] }")
 
-进一步的，如果作用三次$T$，就会得到：
+进一步的，如果作用三次 $T$，就会得到：
 
 $ lambda u. thin (u thin (f thin (f thin x))) $
 
 #demo("[\"T\", [\"λu\", [\"u\", [\"f\", \"x\"]]]]", repl-table: "{ \"T\": [\"λg\", \"λh\", [\"h\", [\"g\", \"f\"]]] }")
 
-通过归纳法不难得到，在$(lambda u. thin x)$上作用$n$次$T$，得到的结果就是：
+通过归纳法不难得到，在 $(lambda u. thin x)$ 上作用 $n$ 次 $T$，得到的结果就是：
 
 $ lambda u. thin (u thin (f^(∘(n-1)) thin x)) $
 
-注意到我们在这个表达式里发现了一个$(f^(∘(n-1)) thin x)$，这就是要求的值！最后一步就是消去函数$u$，一个简单的方法就是将$u$代入单位函数$"id" = lambda v. thin v$即可。
+注意到我们在这个表达式里发现了一个 $(f^(∘(n-1)) thin x)$，这就是要求的值！最后一步就是消去函数 $u$，一个简单的方法就是将 $u$ 代入单位函数 $"id" = lambda v. thin v$ 即可。
 
 $ (lambda u. thin (u thin (f^(∘(n-1)) thin x)) thin (lambda v. thin v)) & = ((lambda v. thin v) thin (f^(∘(n-1)) thin x)) \
   &= (f^(∘(n-1)) thin x) $
 
-综合上述结果，我们得到了前驱$"pred"$的λ表达式，若传入的$n gt 0$，那么它返回$n - 1$，否则返回$0$：
+综合上述结果，我们得到了前驱 $"pred"$ 的λ表达式，若传入的 $n gt 0$，那么它返回 $n - 1$，否则返回$0$：
 
 $ "pred" := lambda n. thin lambda f. thin lambda x. thin ((n thin T thin (lambda u. thin x)) thin "id") $
 
@@ -386,7 +386,7 @@ $ "pred" := lambda n. thin lambda f. thin lambda x. thin ((n thin T thin (lambda
 
 $ (-) := lambda m. thin lambda n. thin (n thin "pred" thin m) $
 
-当然，由于自然数没有负数，假如被减数$m$小于$n$，减法运算的结果就是$0$。
+当然，由于自然数没有负数，假如被减数 $m$ 小于 $n$，减法运算的结果就是$0$。
 
 == 判断
 
@@ -394,7 +394,7 @@ $ (-) := lambda m. thin lambda n. thin (n thin "pred" thin m) $
 
 $ "iszero" := lambda n. thin (n thin (lambda u. thin F) thin T) $
 
-函数$(lambda u. thin F)$是一个永远返回$F$的常值函数。所以，只要$n gt 0$，$("iszero" thin n)$就会返回$F$。
+函数 $(lambda u. thin F)$ 是一个永远返回 $F$ 的常值函数。所以，只要 $n gt 0$，$("iszero" thin n)$ 就会返回 $F$。
 
 再加上之前定义的减法，我们就可以定义“大于等于”函数：
 
@@ -413,7 +413,7 @@ $ (=) := lambda m. thin lambda n. thin (and thin (>= thin m thin n) thin (>= thi
 
 $ ("pair" thin a thin b) $
 
-来构造一个对象，并使用$("first" thin p)$和$("second" thin p)$来获取一个pair的第一和第二个值。
+来构造一个对象，并使用 $("first" thin p)$ 和 $("second" thin p)$ 来获取一个pair的第一和第二个值。
 ]
 
 你能在这个结构的基础上，用λ演算来定义所有的*整数*及其相应的数值和逻辑运算吗？

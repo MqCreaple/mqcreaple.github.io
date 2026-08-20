@@ -148,21 +148,21 @@ fac = λf. λx. (if (x==0)
           = 5!
 ```
 
-更一般地，对于一个函数$f$：
+更一般地，对于一个函数 $f$：
 
 $ f = lambda x_1. thin lambda x_2. thin lambda x_3. thin dots.c thin lambda x_n. thin ["BODY"] $
 
-而$f$的函数体中使用了递归（即：调用了自己），那么我们可以将$f$改写为$f'$使得它能够在我们的λ代数中运行：
+而 $f$ 的函数体中使用了递归（即：调用了自己），那么我们可以将 $f$ 改写为 $f'$ 使得它能够在我们的λ代数中运行：
 
 $ f' = lambda g. thin lambda x_1. thin lambda x_2. thin dots.c thin lambda x_n. thin ["BODY"][f := g] $
 
-后面的 $["BODY"][f := g]$ 表示将函数体里所有出现的$f$全部替换成$g$。如果你没有理解为什么要这样做，可以仔细思考一下上面阶乘的例子。
+后面的 $["BODY"][f := g]$ 表示将函数体里所有出现的 $f$ 全部替换成 $g$。如果你没有理解为什么要这样做，可以仔细思考一下上面阶乘的例子。
 
 进行求值的时候，只需要：
 
 $ ((Y thin f') thin x_1 thin x_2 thin x_3 thin dots.c thin x_n) $
 
-就相当于计算了递归函数$f$代入参数$x_1$到$x_n$的值。
+就相当于计算了递归函数 $f$ 代入参数 $x_1$ 到 $x_n$ 的值。
 
 = 列表和懒惰求值
 

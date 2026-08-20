@@ -12,17 +12,17 @@
 
 前几个月写了一篇有关#link("/zh/posts/2026-01-08/truss/")[桁架结构受力计算的文章]，最后提到了共轭梯度算法，但是没有详细展开。在这里把之前的坑填上。
 
-前情提要：对于大规模稀疏线性系统 $A mathbf(x) = mathbf(b)$，之前提到了基于不动点的高斯-赛德尔迭代和逐次超松弛迭代法，但是这两个算法都无法保证一定能在有限步内取得精确解。相比之下，*共轭梯度法（Conjugate Gradient Method，CG）*既保证了随着迭代次数增加、解会逐渐变得精确，同时也保证了对于 $n times n$ 的矩阵$A$，至多需要$n$步迭代就可以保证获得精确解。由于这两条性质足够好，现在大部分物理引擎在解稀疏线性系统时都使用的是基于共轭梯度法的改良算法。
+前情提要：对于大规模稀疏线性系统 $A mathbf(x) = mathbf(b)$，之前提到了基于不动点的高斯-赛德尔迭代和逐次超松弛迭代法，但是这两个算法都无法保证一定能在有限步内取得精确解。相比之下，*共轭梯度法（Conjugate Gradient Method，CG）*既保证了随着迭代次数增加、解会逐渐变得精确，同时也保证了对于 $n times n$ 的矩阵 $A$，至多需要 $n$ 步迭代就可以保证获得精确解。由于这两条性质足够好，现在大部分物理引擎在解稀疏线性系统时都使用的是基于共轭梯度法的改良算法。
 
-共轭梯度法只能求解对称正定的矩阵$A$。如果你想要求解的问题中$A$不是对称正定的，可以参考#link("/zh/posts/2026-01-08/truss/")[之前这篇桁架结构的文章]中提到的方法，将问题变成求解对称正定矩阵的问题。
+共轭梯度法只能求解对称正定的矩阵 $A$。如果你想要求解的问题中 $A$ 不是对称正定的，可以参考#link("/zh/posts/2026-01-08/truss/")[之前这篇桁架结构的文章]中提到的方法，将问题变成求解对称正定矩阵的问题。
 
 = 基本概念
 
-首先明确一下记号：待解方程为 $A mathbf(x) = mathbf(b)$，其中$A$为对称正定矩阵，有 $A^T = A$。设 $mathbf(x)_*$ 为该方程的精确解，$mathbf(x)_k$ 为第$k$步迭代给出的结果。我们需要设计一个算法让 $mathbf(x)_k$ 在$k$增大时不断逼近 $mathbf(x)_*$。
+首先明确一下记号：待解方程为 $A mathbf(x) = mathbf(b)$，其中 $A$ 为对称正定矩阵，有 $A^T = A$。设 $mathbf(x)_*$ 为该方程的精确解，$mathbf(x)_k$ 为第 $k$ 步迭代给出的结果。我们需要设计一个算法让 $mathbf(x)_k$ 在 $k$ 增大时不断逼近 $mathbf(x)_*$。
 
-与不动点法不同，共轭梯度法的基础思想是：从一个零维空间开始，逐步增大搜索空间的维度，在第$k$步迭代时会计算一个$k$维子空间里最接近我想要的解的那个向量。每一步迭代都会往当前的$k$维空间上加一个维度，并在这个新的维度上寻找能够最小化误差的向量。这也是为什么共轭梯度法能够保证在$n$步内一定能找到精确解，因为$n$步过后搜索空间就变成了$n$维，覆盖了整个向量空间。
+与不动点法不同，共轭梯度法的基础思想是：从一个零维空间开始，逐步增大搜索空间的维度，在第 $k$ 步迭代时会计算一个 $k$ 维子空间里最接近我想要的解的那个向量。每一步迭代都会往当前的 $k$ 维空间上加一个维度，并在这个新的维度上寻找能够最小化误差的向量。这也是为什么共轭梯度法能够保证在 $n$ 步内一定能找到精确解，因为 $n$ 步过后搜索空间就变成了 $n$ 维，覆盖了整个向量空间。
 
-具体来说，我们要构建一系列向量空间 $V_1 subset V_2 subset dots.c subset V_n = RR^n$，使得：$mathbf(x)_k in V_k$ 且 $mathbf(x)_k$ 是 $V_k$ 中使得某个损失函数 $l(mathbf(x))$ 最小化的那个向量（即 $mathbf(x)_k = op("argmin")_(mathbf(x)) l(mathbf(x))$）。同时，$l(mathbf(x))$ 需要满足：当$k$等于总维数$n$时，其最小值等于我们要求的方程的解（即 $mathbf(x)_* = A^(-1) mathbf(b)$）。
+具体来说，我们要构建一系列向量空间 $V_1 subset V_2 subset dots.c subset V_n = RR^n$，使得：$mathbf(x)_k in V_k$ 且 $mathbf(x)_k$ 是 $V_k$ 中使得某个损失函数 $l(mathbf(x))$ 最小化的那个向量（即 $mathbf(x)_k = op("argmin")_(mathbf(x)) l(mathbf(x))$）。同时，$l(mathbf(x))$ 需要满足：当 $k$ 等于总维数 $n$ 时，其最小值等于我们要求的方程的解（即 $mathbf(x)_* = A^(-1) mathbf(b)$）。
 
 你可能还记得上一篇文章中用到的损失函数
 
@@ -32,13 +32,13 @@ $ l(mathbf(x)) = 1/2 mathbf(x)^T A mathbf(x) - mathbf(x)^T mathbf(b) $
 
 $ l_1(mathbf(x)) = 1/2 (mathbf(x)_* - mathbf(x))^T A (mathbf(x)_* - mathbf(x)) $
 
-这个函数与$l$只相差了一个常数，对其取一阶、二阶微分的结果与$l$完全一致。读者自证不难。
+这个函数与 $l$ 只相差了一个常数，对其取一阶、二阶微分的结果与 $l$ 完全一致。读者自证不难。
 
-当然，我们不仅想让算法在$n$步内找到最优解，同时我们也希望算法能够在远小于$n$的步数内找到一个足够精确的解。为了实现这个目标，我们不妨吸取一些梯度下降的经验，在第$k$步扩展搜索空间时去向 $mathbf(x)_k$ 的梯度方向扩展。这样在逐步扩大搜索范围的时候会优先查找梯度下降更快的方向，在前面几步找到的近似解也就会更精确。
+当然，我们不仅想让算法在 $n$ 步内找到最优解，同时我们也希望算法能够在远小于 $n$ 的步数内找到一个足够精确的解。为了实现这个目标，我们不妨吸取一些梯度下降的经验，在第 $k$ 步扩展搜索空间时去向 $mathbf(x)_k$ 的梯度方向扩展。这样在逐步扩大搜索范围的时候会优先查找梯度下降更快的方向，在前面几步找到的近似解也就会更精确。
 
 = 朴素共轭梯度法（Conjugate Gradient）
 
-不妨令第$k$步向搜索空间中添加的向量为 $mathbf(p)_k$，且 $brace.l mathbf(p)_k brace.r_(k=0)^(n-1)$ 在以$A$为权重的内积下正交（之后的推导中会看到为什么要这样做）。即：
+不妨令第 $k$ 步向搜索空间中添加的向量为 $mathbf(p)_k$，且 $brace.l mathbf(p)_k brace.r_(k=0)^(n-1)$ 在以 $A$ 为权重的内积下正交（之后的推导中会看到为什么要这样做）。即：
 
 $ V_k = "span" brace.l mathbf(p)_0, mathbf(p)_1, dots.c, mathbf(p)_(k-1) brace.r $
 
@@ -51,7 +51,7 @@ $ mathbf(x)_k = sum_(i=0)^(k-1) alpha_i mathbf(p)_i = mathbf(x)_(k-1) + alpha_(k
 （以上记号全部与文章撰写日期#link("https://en.wikipedia.org/wiki/Conjugate_gradient_method")[维基百科词条]中的记号保持统一）
 
 #lemma[
-对于向量空间 $RR^n$ 和 $n times n$ 的对称正定矩阵$A$，函数 $chevron.l mathbf(u), mathbf(v) chevron.r_A = mathbf(u)^T A mathbf(v)$ 是一个内积。
+对于向量空间 $RR^n$ 和 $n times n$ 的对称正定矩阵 $A$，函数 $chevron.l mathbf(u), mathbf(v) chevron.r_A = mathbf(u)^T A mathbf(v)$ 是一个内积。
 ]
 
 #proof[
@@ -63,7 +63,7 @@ $ mathbf(x)_k = sum_(i=0)^(k-1) alpha_i mathbf(p)_i = mathbf(x)_(k-1) + alpha_(k
 
   $ chevron.l c_1 mathbf(u)_1 + c_2 mathbf(u)_2, mathbf(v) chevron.r_A = (c_1 mathbf(u)_1 + c_2 mathbf(u)_2)^T A mathbf(v) = c_1 mathbf(u)_1^T A mathbf(v) + c_2 mathbf(u)_2^T A mathbf(v) = c_1 chevron.l mathbf(u)_1, mathbf(v) chevron.r_A + c_2 chevron.l mathbf(u)_2, mathbf(v) chevron.r_A $
 
-+ 正定性：由于矩阵$A$正定，
++ 正定性：由于矩阵 $A$ 正定，
 
   $ chevron.l mathbf(u), mathbf(u) chevron.r_A = mathbf(u)^T A mathbf(u) >= 0 $
 
@@ -71,22 +71,22 @@ $ mathbf(x)_k = sum_(i=0)^(k-1) alpha_i mathbf(p)_i = mathbf(x)_(k-1) + alpha_(k
 ]
 
 #definition[
-若向量$mathbf(u)$和 $mathbf(v)$ 满足 $mathbf(u)^T A mathbf(v) = 0$，则称两个向量关于矩阵$A$*共轭*\/*正交*。
+若向量 $mathbf(u)$ 和 $mathbf(v)$ 满足 $mathbf(u)^T A mathbf(v) = 0$，则称两个向量关于矩阵 $A$*共轭*\/*正交*。
 ]
 
 根据刚刚的分析，我们希望每次添加的向量 $mathbf(p)_k$ 朝向 $l(mathbf(x))$ 的梯度方向的反方向，又知 $l(mathbf(x))$ 梯度为：
 
 $ nabla l(mathbf(x)_k) = A mathbf(x)_k - mathbf(b) $
 
-我们不妨定义负的这个量为第$k$步的*残差（residual）* $mathbf(r)_k$。$mathbf(r)_k$ 也可以理解成 $A mathbf(x)$ 到 $mathbf(b)$ 的差距有多大。
+我们不妨定义负的这个量为第 $k$ 步的*残差（residual）* $mathbf(r)_k$。$mathbf(r)_k$ 也可以理解成 $A mathbf(x)$ 到 $mathbf(b)$ 的差距有多大。
 
 $ mathbf(r)_k = mathbf(b) - A mathbf(x)_k $
 
-那么能不能直接把 $mathbf(r)_k$ 添加到搜索空间里，令 $mathbf(p)_k = mathbf(r)_k$ 呢？显然不行，因为这样违反了上面给出的约束条件，$mathbf(p)_i$ 和 $mathbf(p)_j$ 不一定关于$A$正交了。为了保持正交性，需要在 $mathbf(r)_k$ 中减去前面已经添加过的 $mathbf(p)_k$ 的分量。
+那么能不能直接把 $mathbf(r)_k$ 添加到搜索空间里，令 $mathbf(p)_k = mathbf(r)_k$ 呢？显然不行，因为这样违反了上面给出的约束条件，$mathbf(p)_i$ 和 $mathbf(p)_j$ 不一定关于 $A$ 正交了。为了保持正交性，需要在 $mathbf(r)_k$ 中减去前面已经添加过的 $mathbf(p)_k$ 的分量。
 
 $ mathbf(p)_k = mathbf(r)_k - sum_(i < k) (chevron.l mathbf(r)_k, mathbf(p)_i chevron.r_A)/(chevron.l mathbf(p)_i, mathbf(p)_i chevron.r_A) mathbf(p)_i = mathbf(r)_k - sum_(i < k) (mathbf(r)_k^T A mathbf(p)_i)/(mathbf(p)_i^T A mathbf(p)_i) mathbf(p)_i $
 
-换句话说，每次向搜索空间中添加的向量 $mathbf(p)_k$ 是 $l(mathbf(x))$ 梯度与之前所有向量关于$A$的共轭向量，这也是共轭梯度法名称的来源。
+换句话说，每次向搜索空间中添加的向量 $mathbf(p)_k$ 是 $l(mathbf(x))$ 梯度与之前所有向量关于 $A$ 的共轭向量，这也是共轭梯度法名称的来源。
 
 接下来就可以计算系数 $alpha_k$ 了。由于我们希望 $mathbf(x)_k$ 在 $k=n$ 时收敛到解 $mathbf(x)_*$，有：
 
@@ -100,7 +100,7 @@ $ A mathbf(x)_* = sum_(i=0)^(n-1) alpha_k A mathbf(p)_i = mathbf(b) $
 
 $ mathbf(p)_k^T mathbf(b) = mathbf(p)_k^T A mathbf(x)_* = sum_(i=0)^(n-1) alpha_k mathbf(p)_k^T A mathbf(p)_i = alpha_k mathbf(p)_k^T A mathbf(p)_k $
 
-最后一个等式利用了 $brace.l mathbf(p)_k brace.r$ 关于$A$的正交性。这也是为什么一开始会需要规定 $brace.l mathbf(p)_k brace.r$ 关于$A$正交。由上式不难得到：
+最后一个等式利用了 $brace.l mathbf(p)_k brace.r$ 关于 $A$ 的正交性。这也是为什么一开始会需要规定 $brace.l mathbf(p)_k brace.r$ 关于 $A$ 正交。由上式不难得到：
 
 $ alpha_k = (mathbf(p)_k^T mathbf(b))/(mathbf(p)_k^T A mathbf(p)_k) $
 
@@ -108,7 +108,7 @@ $ alpha_k = (mathbf(p)_k^T mathbf(b))/(mathbf(p)_k^T A mathbf(p)_k) $
 
 #quote(block: true)[
 + $ mathbf(x)_0 := mathbf(0) $
-+ 循环遍历 $k=0$ 到$n$：
++ 循环遍历 $k=0$ 到 $n$：
   + $ mathbf(r)_k := mathbf(b) - A mathbf(x)_k $
   + $ mathbf(p)_k := mathbf(r)_k - sum_(i < k) (mathbf(r)_k^T A mathbf(p)_i)/(mathbf(p)_i^T A mathbf(p)_i) mathbf(p)_i $
   + $ alpha_k := (mathbf(p)_k^T mathbf(b))/(mathbf(p)_k^T A mathbf(p)_k) $
@@ -116,7 +116,7 @@ $ alpha_k = (mathbf(p)_k^T mathbf(b))/(mathbf(p)_k^T A mathbf(p)_k) $
 + 当 $k=n$，或 $mathbf(r)_k$ 足够小时，返回 $mathbf(x)_k$。
 ]
 
-这个算法看起来能运行了，但是还有一个重大的问题：循环中的第2步使用了一个求和符号，遍历了所有 $i < k$。这是一个 $O(N)$ 的操作。再加上循环里面的矩阵乘法等运算，即使假设$A$是一个元素个数为 $O(N)$ 级别的稀疏矩阵，整个算法的时间复杂度仍然是 $O(N^3)$ 级别的。这个效率甚至不如直接做高斯消元。肯定是哪里还藏着一些可以优化的细节。
+这个算法看起来能运行了，但是还有一个重大的问题：循环中的第2步使用了一个求和符号，遍历了所有 $i < k$。这是一个 $O(N)$ 的操作。再加上循环里面的矩阵乘法等运算，即使假设 $A$ 是一个元素个数为 $O(N)$ 级别的稀疏矩阵，整个算法的时间复杂度仍然是 $O(N^3)$ 级别的。这个效率甚至不如直接做高斯消元。肯定是哪里还藏着一些可以优化的细节。
 
 == 一些数学优化
 
@@ -141,14 +141,14 @@ $forall 0 <= j < i < n, thin chevron.l mathbf(r)_i, mathbf(p)_j chevron.r = math
 ] <thm:1>
 
 #proof[
-+ 该定理对于 $k+1$ 和$k$成立
++ 该定理对于 $k+1$ 和 $k$ 成立
 
   $ mathbf(r)_(k+1)^T mathbf(p)_k &= (mathbf(r)_k - alpha_k A mathbf(p)_k)^T mathbf(p)_k \
     &= mathbf(r)_k^T mathbf(p)_k - (mathbf(p)_k^T mathbf(r)_k)/(mathbf(p)_k^T A mathbf(p)_k) dot mathbf(p)_k^T A mathbf(p)_k \
     &= mathbf(r)_k^T mathbf(p)_k - mathbf(p)_k^T mathbf(r)_k \
     &= 0 $
 
-+ 假设该定理对于 $k+l$ 和$k$成立（$l >= 1$），则该定理对 $k+l+1$ 和$k$成立
++ 假设该定理对于 $k+l$ 和 $k$ 成立（$l >= 1$），则该定理对 $k+l+1$ 和 $k$ 成立
 
   $ mathbf(r)_(k+l+1)^T mathbf(p)_k &= (mathbf(r)_(k+l) - alpha_(k+l) A mathbf(p)_(k+l))^T mathbf(p)_k \
     &= mathbf(r)_(k+l)^T mathbf(p)_k - alpha_(k+l) mathbf(p)_(k+l)^T A mathbf(p)_k \
@@ -177,7 +177,7 @@ $forall 0 <= j < i < n, thin chevron.l mathbf(r)_i, mathbf(p)_j chevron.r = math
 ]
 
 #proof[
-+ 该定理对于 $k+1$ 和$k$成立
++ 该定理对于 $k+1$ 和 $k$ 成立
 
   $ mathbf(r)_(k+1)^T mathbf(r)_k &= (mathbf(r)_k - alpha_k A mathbf(p)_k)^T mathbf(r)_k \
     &= mathbf(r)_k^T mathbf(r)_k - alpha_k mathbf(p)_k^T A mathbf(r)_k \
@@ -190,7 +190,7 @@ $forall 0 <= j < i < n, thin chevron.l mathbf(r)_i, mathbf(p)_j chevron.r = math
 
   $ mathbf(r)_(k+1)^T mathbf(r)_k = 0 $
 
-+ 假设该定理对于 $k+l$ 和$k$成立（$l >= 1$），则该定理对 $k+l+1$ 和$k$成立
++ 假设该定理对于 $k+l$ 和 $k$ 成立（$l >= 1$），则该定理对 $k+l+1$ 和 $k$ 成立
 
   $ mathbf(r)_(k+l+1)^T mathbf(r)_k &= (mathbf(r)_(k+1) - alpha_(k+l) A mathbf(p)_(k+l))^T mathbf(r)_k \
     &= mathbf(r)_(k+l)^T mathbf(r)_k - alpha_(k+l) mathbf(p)_(k+l)^T A mathbf(r)_k $
@@ -253,7 +253,7 @@ $ mathbf(r)_k^T A mathbf(p)_(k-1) = -(1)/(alpha_(k-1)) mathbf(r)_k^T mathbf(r)_k
 
 $ mathbf(p)_k := mathbf(r)_k - sum_(i=0)^(k-1) (mathbf(r)_k^T A mathbf(p)_i)/(mathbf(p)_i^T A mathbf(p)_i) mathbf(p)_i $
 
-根据 @thm:4，$i$从$0$到$k-1$中，$mathbf(r)_k A mathbf(p)_i$ 仅有一项非零，其余项全都是0。也就是说，我们根本不需要算这个求和符号，而是可以直接展开这个式子：
+根据 @thm:4，$i$ 从$0$到 $k-1$ 中，$mathbf(r)_k A mathbf(p)_i$ 仅有一项非零，其余项全都是0。也就是说，我们根本不需要算这个求和符号，而是可以直接展开这个式子：
 
 $ mathbf(p)_k := mathbf(r)_k + (mathbf(r)_k^T mathbf(r)_k)/(mathbf(r)_(k-1)^T mathbf(r)_(k-1)) mathbf(p)_(k-1) $
 
@@ -271,7 +271,7 @@ $ mathbf(p)_k := mathbf(r)_k + beta_(k-1) mathbf(p)_(k-1) $
 + $ mathbf(x)_0 := mathbf(0) $
 + $ mathbf(r)_0 := mathbf(b) $
 + $ mathbf(p)_0 := mathbf(r)_0 $
-+ 循环遍历 $k=0$ 到$n$：
++ 循环遍历 $k=0$ 到 $n$：
   + $ alpha_k := (mathbf(r)_k^T mathbf(r)_k)/(mathbf(p)_k^T A mathbf(p)_k) $
   + $ mathbf(x)_(k+1) := mathbf(x)_k + alpha_k mathbf(p)_k $
   + $ mathbf(r)_(k+1) := mathbf(r)_k - alpha_k A mathbf(p)_k $
@@ -361,7 +361,7 @@ pub fn solve(a: &CsrMatrix<f64>, b: &na::DVector<f64>, epsilon: f64) -> na::DVec
 
 = 预条件共轭梯度法（Preconditioned Conjugate Gradient，PCG）
 
-如果$A$的性质不够好，收敛速度不够快，我们完全可以将$x$换到另一个坐标系上。比如，定义：
+如果 $A$ 的性质不够好，收敛速度不够快，我们完全可以将 $x$ 换到另一个坐标系上。比如，定义：
 
 $ hat(mathbf(x)) = E^T mathbf(x) $
 
@@ -403,7 +403,7 @@ $ mathbf(r)_(k+1) = E hat(mathbf(r))_(k+1) = E (hat(mathbf(r))_k - alpha_k E^(-1
 
 $ mathbf(p)_(k+1) = E^(-T) hat(mathbf(p))_(k+1) = E^(-T) (hat(mathbf(r))_k + beta_k hat(mathbf(p))_k) = (E E^T)^(-1) mathbf(r)_k + beta_k mathbf(p)_k $
 
-（由于残差项 $hat(mathbf(r))_k = hat(mathbf(b)) - hat(A) hat(mathbf(x))_k = E^(-1) mathbf(b) - E^(-1) A mathbf(x)$，在将 $hat(mathbf(r))$ 变回 $mathbf(r)$ 时需要乘矩阵$E$而非矩阵 $E^(-T)$）
+（由于残差项 $hat(mathbf(r))_k = hat(mathbf(b)) - hat(A) hat(mathbf(x))_k = E^(-1) mathbf(b) - E^(-1) A mathbf(x)$，在将 $hat(mathbf(r))$ 变回 $mathbf(r)$ 时需要乘矩阵 $E$ 而非矩阵 $E^(-T)$）
 
 接下来计算 $alpha_k$ 和 $beta_k$：
 
@@ -418,7 +418,7 @@ $ beta_k = ((mathbf(r)_(k+1)^T E^(-T)) (E^(-1) mathbf(r)_(k+1)))/((mathbf(r)_k^T
 + $ mathbf(r)_0 := mathbf(b) $
 + $ mathbf(z)_0 := M^(-1) mathbf(r)_0 $
 + $ mathbf(p)_0 := mathbf(z)_0 $
-+ 循环遍历 $k=0$ 到$n$：
++ 循环遍历 $k=0$ 到 $n$：
   + $ alpha_k := (mathbf(r)_k^T mathbf(z)_k)/(mathbf(p)_k^T A mathbf(p)_k) $
   + $ mathbf(x)_(k+1) := mathbf(x)_k + alpha_k mathbf(p)_k $
   + $ mathbf(r)_(k+1) := mathbf(r)_k - alpha_k A mathbf(p)_k $
@@ -428,8 +428,8 @@ $ beta_k = ((mathbf(r)_(k+1)^T E^(-T)) (E^(-1) mathbf(r)_(k+1)))/((mathbf(r)_k^T
 + 当 $k=n$ 或 $mathbf(r)_k$ 足够小时，返回 $mathbf(x)_k$。
 ]
 
-如果矩阵$E$的性质足够好，让 $E^(-1) A E^(-T)$ 尽可能接近单位矩阵，那么迭代过程将会快很多。直观上可以这样理解：$hat(A) = E^(-1) A E^(-T)$ 越接近单位矩阵，那么二次型 $l(hat(mathbf(x))) = 1/2 hat(mathbf(x))^T hat(A) hat(mathbf(x)) - hat(mathbf(x))^T hat(mathbf(b))$ 的等势面就会越接近一个个同心圆，而我们又知道同心圆的梯度永远指向圆心（也就是这个二次型的极值点），所以这样就可以用更少的迭代步数收敛到圆心位置。如图所示。
+如果矩阵 $E$ 的性质足够好，让 $E^(-1) A E^(-T)$ 尽可能接近单位矩阵，那么迭代过程将会快很多。直观上可以这样理解：$hat(A) = E^(-1) A E^(-T)$ 越接近单位矩阵，那么二次型 $l(hat(mathbf(x))) = 1/2 hat(mathbf(x))^T hat(A) hat(mathbf(x)) - hat(mathbf(x))^T hat(mathbf(b))$ 的等势面就会越接近一个个同心圆，而我们又知道同心圆的梯度永远指向圆心（也就是这个二次型的极值点），所以这样就可以用更少的迭代步数收敛到圆心位置。如图所示。
 
 #image("cg-preconditioning.svg", width: 70%)
 
-至于具体怎么找一个满足条件的$E$矩阵，之后有机会再写了（
+至于具体怎么找一个满足条件的 $E$ 矩阵，之后有机会再写了（

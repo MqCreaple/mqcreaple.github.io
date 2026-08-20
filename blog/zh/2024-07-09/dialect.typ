@@ -3,8 +3,8 @@
 // tags: linguistics, society
 // category: humanity
 
-#import "../../template.typ": article
-#import "@preview/fletcher:0.5.8": diagram, edge, node
+#import "../../template.typ": article, diagram
+#import "@preview/fletcher:0.5.8": edge, node
 
 #show: article.with(
   title: "再回洛带：洛带古镇地区的方言态度调查",
@@ -21,18 +21,16 @@
 
 如果将古镇的三大群体——游客、商户、房东——做一个非常抽象的概括，大概是这样的：
 
-#html.frame[
-  #diagram(
-    node-stroke: 0.6pt,
-    node((0, 0), [游客]),
-    node((2, 0), [商户]),
-    node((4, 0), [房东]),
-    edge((0, 0), (2, 0), "->", label: [钱], bend: 25deg),
-    edge((2, 0), (0, 0), "->", label: [零售、娱乐等], bend: 25deg),
-    edge((2, 0), (4, 0), "->", label: [房租], bend: 25deg),
-    edge((4, 0), (2, 0), "->", label: [场地], bend: 25deg),
-  )
-]
+#diagram(
+  node-stroke: 0.6pt,
+  node((0, 0), [游客]),
+  node((2, 0), [商户]),
+  node((4, 0), [房东]),
+  edge((0, 0), (2, 0), "->", label: [钱], bend: 25deg),
+  edge((2, 0), (0, 0), "->", label: [零售、娱乐等], bend: 25deg),
+  edge((2, 0), (4, 0), "->", label: [房租], bend: 25deg),
+  edge((4, 0), (2, 0), "->", label: [场地], bend: 25deg),
+)
 
 根据我了解到的信息，古镇里面大部分本地人担任了房东的角色，少部分人（以附近农区的中老年人为主）在路边卖自己种的水果或者小商品。当然，这个概括并不绝对，比如我们在访谈中就找到了几位在古镇开店和来古镇旅游的本地人。但总体来说，古镇里的大部分人都不属于“游客”和“商户”这两个标签。也就是说，我们在古镇中找到的本地人和真正具有客家文化背景的本地人之间会有一个系统性的偏差，这也让此次访谈变得更加困难。
 
