@@ -1,0 +1,176 @@
+/* Header search box (Pagefind JS API) */
+
+.search-box {
+  position: relative;
+}
+
+.search-box-input {
+  width: 10rem;
+  padding: 0.45rem 0.75rem 0.45rem 2rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text);
+  font-size: 0.9rem;
+  transition: width 0.2s ease, border-color 0.2s ease;
+}
+
+.search-box-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  width: 14rem;
+}
+
+.search-box-input::placeholder {
+  color: var(--muted);
+}
+
+.search-box-icon {
+  position: absolute;
+  left: 0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 0.85rem;
+  pointer-events: none;
+}
+
+.search-box-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 26rem;
+  max-width: min(26rem, calc(100vw - 1rem));
+  max-height: min(70vh, 30rem);
+  overflow-y: auto;
+  background: var(--surface);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-radius: var(--radius);
+  z-index: 30;
+}
+
+.search-box-dropdown[hidden],
+.search-box-status[hidden],
+.search-result-sections[hidden] {
+  display: none;
+}
+
+.search-box-status {
+  padding: 0.75rem 1rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* Results: transparent list rows separated by hairline rules.
+   No card backgrounds or explicit borders. */
+.search-result {
+  background: transparent;
+}
+
+.search-result + .search-result {
+  border-top: 1px solid var(--border); /* horizontal separator */
+}
+
+.search-result-main {
+  display: flex;
+  align-items: stretch;
+}
+
+.search-result-link {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.7rem 0.9rem;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.search-result-link:hover .search-result-title {
+  color: var(--accent-strong);
+}
+
+.search-result-title {
+  font-weight: 600;
+  color: var(--heading);
+}
+
+.search-result-excerpt {
+  font-size: 0.82rem;
+  color: var(--muted);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.search-result-excerpt mark {
+  background: transparent;
+  color: var(--accent-strong);
+  font-weight: 600;
+}
+
+/* Toggle for the collapsed section list, split off by a vertical line. */
+.search-result-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0 0.8rem 0 0.4rem;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.search-result-toggle:hover {
+  color: var(--accent-strong);
+}
+
+.search-result-toggle .fa-chevron-down {
+  transition: transform 0.2s ease;
+}
+
+.search-result-toggle.open .fa-chevron-down {
+  transform: rotate(180deg);
+}
+
+/* Collapsed section titles: indented under a vertical guide line, each
+   row separated by a horizontal rule. */
+.search-result-sections {
+  list-style: none;
+  margin: 0 0 0.5rem 0.9rem;
+  padding: 0.3rem 0 0 0.9rem;
+  border-left: 1px solid var(--border); /* vertical guide line */
+}
+
+.search-result-sections li + li {
+  border-top: 1px solid var(--border); /* horizontal separator */
+}
+
+.search-result-section-link {
+  display: block;
+  padding: 0.35rem 0.6rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.search-result-section-link:hover {
+  color: var(--accent-strong);
+}
+
+@media (max-width: 768px) {
+  .search-box-input {
+    width: 7rem;
+  }
+
+  .search-box-input:focus {
+    width: 9rem;
+  }
+
+  .search-box-dropdown {
+    width: min(24rem, calc(100vw - 1rem));
+  }
+}

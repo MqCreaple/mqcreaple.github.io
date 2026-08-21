@@ -6,6 +6,7 @@ import '../styles/typst-math.css';
 import '../styles/typst-diagram.css';
 import '../styles/shadertoy.css';
 import '../styles/threejs.css';
+import '../styles/search.css';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import translations from '../i18n/translations.json';
@@ -51,7 +52,7 @@ const langLinks = languageLinks(Astro.url.pathname);
   </head>
   <body>
     <SiteHeader lang={lang} links={langLinks} />
-    <main class="site-main">
+    <main class="site-main" data-pagefind-body>
       <div
         class:list={['layout-split', { 'layout-split--aside': Astro.slots.has('aside') }]}
       >
@@ -60,7 +61,7 @@ const langLinks = languageLinks(Astro.url.pathname);
         </div>
         {
           Astro.slots.has('aside') && (
-            <aside class="layout-aside">
+            <aside class="layout-aside" data-pagefind-ignore>
               <slot name="aside" />
             </aside>
           )

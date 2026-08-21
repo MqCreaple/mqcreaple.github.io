@@ -32,6 +32,14 @@ npm run preview  # preview the built site
 Apps and PDFs are copied into `output/app/` and `output/pdf/` after the Astro
 build; during development they are served from `app/` and a local cache.
 
+## Search
+
+Full-text search is powered by [Pagefind](https://pagefind.app). `npm run build`
+indexes the generated site into `output/pagefind/`; a search box in the site
+header shows article results in a dropdown, with each article's section titles
+collapsed behind a toggle. In `npm run dev`, search works after a production
+build (the dev server serves `/pagefind/*` from `output/`).
+
 ## Content layout
 
 ```text

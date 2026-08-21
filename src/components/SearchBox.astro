@@ -1,0 +1,240 @@
+---
+import translations from '../i18n/translations.json';
+
+interface Props {
+  lang?: string;
+}
+
+const { lang = 'en' } = Astro.props;
+const t = translations[lang as keyof typeof translations] ?? translations.en;
+---
+
+<div
+  class="search-box"
+  data-no-results={t.searchNoResults}
+  data-sections-label={t.searchSections}
+>
+  <i class="fa-solid fa-magnifying-glass search-box-icon" aria-hidden="true"></i>
+  <input
+    class="search-box-input"
+    type="search"
+    placeholder={t.searchPlaceholder}
+    aria-label={t.search}
+    autocomplete="off"
+    spellcheck="false"
+    enterkeyhint="search"
+  />
+  <div class="search-box-dropdown" role="listbox" aria-label={t.search} hidden>
+    <div class="search-box-status" hidden></div>
+  </div>
+</div>
+
+<script>
+  interface SubResult {
+    title: string;
+    url: string;
+    excerpt: string;
+  }
+
+  interface ResultData {
+    url: string;
+    excerpt: string;
+    meta: { title: string };
+    sub_results: SubResult[];
+  }
+
+  interface PagefindResult {
+    data: () => Promise<ResultData>;
+  }
+
+  interface PagefindModule {
+    debouncedSearch: (term: string) => Promise<{ results: PagefindResult[] } | null>;
+    preload: (term: string) => void;
+  }
+
+  const MAX_RESULTS = 8;
+
+  const box = document.querySelector<HTMLElement>('.search-box');
+  if (box) {
+    const input = box.querySelector<HTMLInputElement>('.search-box-input');
+    const dropdown = box.querySelector<HTMLElement>('.search-box-dropdown');
+    const status = box.querySelector<HTMLElement>('.search-box-status');
+
+    let pagefind: PagefindModule | null = null;
+
+    async function getPagefind(): Promise<PagefindModule | null> {
+      if (pagefind) return pagefind;
+      try {
+        pagefind = (await import(
+          /* @vite-ignore */ `${import.meta.env.BASE_URL}pagefind/pagefind.js`
+        )) as PagefindModule;
+        return pagefind;
+      } catch (error) {
+        console.warn('SearchBox: Pagefind bundle unavailable (run a production build first).', error);
+        return null;
+      }
+    }
+
+    function open(): void {
+      dropdown?.removeAttribute('hidden');
+      input?.setAttribute('aria-expanded', 'true');
+    }
+
+    function close(): void {
+      dropdown?.setAttribute('hidden', '');
+      input?.setAttribute('aria-expanded', 'false');
+    }
+
+    function setStatus(message: string | null): void {
+      if (!status) return;
+      if (message === null) {
+        status.setAttribute('hidden', '');
+        status.textContent = '';
+      } else {
+        status.textContent = message;
+        status.removeAttribute('hidden');
+      }
+    }
+
+    function renderResult(result: ResultData): HTMLElement {
+      const item = document.createElement('div');
+      item.className = 'search-result';
+
+      const main = document.createElement('div');
+      main.className = 'search-result-main';
+
+      const link = document.createElement('a');
+      link.className = 'search-result-link';
+      link.href = result.url;
+      link.setAttribute('role', 'option');
+      const title = document.createElement('span');
+      title.className = 'search-result-title';
+      title.textContent = result.meta.title || result.url;
+      link.appendChild(title);
+      if (result.excerpt) {
+        const excerpt = document.createElement('span');
+        excerpt.className = 'search-result-excerpt';
+        // Pagefind escapes entities before adding <mark>, so this is safe.
+        excerpt.innerHTML = result.excerpt;
+        link.appendChild(excerpt);
+      }
+      main.appendChild(link);
+
+      const sections = result.sub_results ?? [];
+      const sectionsList = document.createElement('ul');
+      sectionsList.className = 'search-result-sections';
+      sectionsList.hidden = true;
+
+      if (sections.length > 0) {
+        const toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'search-result-toggle';
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.title = box?.dataset.sectionsLabel ?? 'sections';
+        const chevron = document.createElement('i');
+        chevron.className = 'fa-solid fa-chevron-down';
+        const count = document.createElement('span');
+        count.className = 'search-result-toggle-count';
+        count.textContent = String(sections.length);
+        toggle.append(chevron, count);
+        main.appendChild(toggle);
+
+        toggle.addEventListener('click', () => {
+          const expand = (sectionsList.hidden == "until-found") ? true : sectionsList.hidden;
+          sectionsList.hidden = !expand;
+          toggle.setAttribute('aria-expanded', String(expand));
+          toggle.classList.toggle('open', expand);
+        });
+
+        for (const sub of sections) {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.className = 'search-result-section-link';
+          a.href = sub.url;
+          a.textContent = sub.title;
+          li.appendChild(a);
+          sectionsList.appendChild(li);
+        }
+      }
+
+      item.append(main, sectionsList);
+      return item;
+    }
+
+    function renderResults(results: ResultData[]): void {
+      if (!dropdown) return;
+      dropdown.querySelectorAll('.search-result').forEach((el) => el.remove());
+      for (const result of results) {
+        dropdown.appendChild(renderResult(result));
+      }
+      setStatus(null);
+    }
+
+    async function runSearch(term: string): Promise<void> {
+      const pf = await getPagefind();
+      if (!pf || !input) return;
+      const trimmed = term.trim();
+      if (!trimmed) {
+        renderResults([]);
+        close();
+        return;
+      }
+      const search = await pf.debouncedSearch(trimmed);
+      if (search === null || input.value.trim() !== trimmed) return; // superseded or stale
+      if (search.results.length === 0) {
+        renderResults([]);
+        setStatus(box?.dataset.noResults ?? 'No results');
+        open();
+        return;
+      }
+      const items = await Promise.all(search.results.slice(0, MAX_RESULTS).map((r) => r.data()));
+      renderResults(items);
+      open();
+    }
+
+    input?.addEventListener('focus', () => {
+      void getPagefind();
+    });
+
+    input?.addEventListener('input', () => {
+      const term = input.value.trim();
+      if (!term) {
+        renderResults([]);
+        setStatus(null);
+        close();
+        return;
+      }
+      void runSearch(term);
+    });
+
+    input?.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        close();
+        return;
+      }
+      if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+      const focusable = Array.from(
+        dropdown?.querySelectorAll<HTMLElement>(
+          '.search-result-link, .search-result-section-link',
+        ) ?? [],
+      ).filter((el) => !el.closest('[hidden]'));
+      if (focusable.length === 0) return;
+      event.preventDefault();
+      const current = document.activeElement as HTMLElement | null;
+      if (current !== null) {
+        const index = focusable.indexOf(current);
+        let next: number;
+        if (event.key === 'ArrowDown') {
+          next = (index + 1) % focusable.length;
+        } else {
+          next = (index - 1 + focusable.length) % focusable.length;
+        }
+        focusable[next].focus();
+      }
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!box.contains(event.target as Node)) close();
+    });
+  }
+</script>

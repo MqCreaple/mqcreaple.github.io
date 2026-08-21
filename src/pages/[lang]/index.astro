@@ -4,6 +4,7 @@ import Base from '../../layouts/Base.astro';
 import TagCloud from '../../components/TagCloud.astro';
 import translations from '../../i18n/translations.json';
 import posts from '../../generated/index.json';
+import CategoryBar from '../../components/CategoryBar.astro';
 
 export function getStaticPaths() {
   return ['en', 'zh'].map((lang) => ({ params: { lang } }));
@@ -13,11 +14,11 @@ const { lang = 'en' } = Astro.params;
 const list = posts
   .filter((post) => post.lang === lang)
   .sort((a, b) => b.date.localeCompare(a.date));
-const t = translations[lang] ?? translations.en;
+const t = translations[lang as keyof typeof translations] ?? translations.en;
 ---
 
 <Base title={`${t.posts} · ${t.siteTitle}`} lang={lang}>
-  <section class="post-index">
+  <section class="post-index" data-pagefind-ignore>
     <div class="quote-panel">
       {
         t.quotes.map((quote) => (
@@ -29,16 +30,7 @@ const t = translations[lang] ?? translations.en;
         ))
       }
     </div>
-    <nav class="category-links" aria-label="Categories">
-      {
-        Object.entries(t.categories).map(([key, label]) => (
-          <a href={`/${lang}/category/${key}/`}>
-            <i class={t.categoryIcons[key]}></i>
-            <span>{label}</span>
-          </a>
-        ))
-      }
-    </nav>
+    <CategoryBar />
     <h1>{t.posts}</h1>
     <ol class="post-list">
       {

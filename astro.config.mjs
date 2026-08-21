@@ -31,7 +31,9 @@ function serveGeneratedFiles() {
           ? path.join('app', pathname.slice('/app/'.length))
           : pathname.startsWith('/pdf/')
             ? path.join('node_modules', '.cache', 'pdfs', pathname.slice('/pdf/'.length))
-            : null;
+            : pathname.startsWith('/pagefind/')
+              ? path.join('output', 'pagefind', pathname.slice('/pagefind/'.length))
+              : null;
         if (!relative) return next();
 
         const base = path.join(root, relative);

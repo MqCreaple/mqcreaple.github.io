@@ -1,0 +1,7 @@
+# Pagefind search index configuration.
+# The site directory is also passed on the CLI; keeping it here documents it.
+site: output
+exclude_selectors:
+  - ".post-list"
+  - ".quote-panel"
+  - ".category-links"

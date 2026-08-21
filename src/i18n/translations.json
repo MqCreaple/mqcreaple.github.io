@@ -7,6 +7,10 @@
       "app": "app"
     },
     "posts": "Posts",
+    "search": "Search",
+    "searchPlaceholder": "Search...",
+    "searchNoResults": "No results found",
+    "searchSections": "Sections",
     "quotes": [
       {
         "text": "愿对未知的渴望，指引我们抵达群星",
@@ -45,6 +49,10 @@
       "app": "应用"
     },
     "posts": "文章",
+    "search": "搜索",
+    "searchPlaceholder": "搜索...",
+    "searchNoResults": "没有找到相关结果",
+    "searchSections": "小节",
     "quotes": [
       {
         "text": "愿对未知的渴望，指引我们抵达群星",

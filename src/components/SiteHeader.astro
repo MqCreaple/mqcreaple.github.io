@@ -2,6 +2,7 @@
 import translations from '../i18n/translations.json';
 import LangSwitcher from './LangSwitcher.astro';
 import ThemeToggle from './ThemeToggle.astro';
+import SearchBox from './SearchBox.astro';
 
 interface Props {
   lang?: string;
@@ -33,6 +34,7 @@ const navLinks: { href: string; label: string; icon: string }[] = [
       </nav>
     </div>
     <div class="site-actions">
+      <SearchBox lang={lang} />
       <LangSwitcher currentLang={lang} links={links} />
       <ThemeToggle />
     </div>

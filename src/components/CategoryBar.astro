@@ -1,0 +1,17 @@
+---
+import translations from '../i18n/translations.json';
+
+const { lang = 'en' } = Astro.params;
+const t = translations[lang as keyof typeof translations] ?? translations.en;
+---
+
+<nav class="category-links" aria-label="Categories">
+    {
+    Object.entries(t.categories).map(([key, label]) => (
+        <a href={`/${lang}/category/${key}/`}>
+        <i class={t.categoryIcons[key as keyof typeof t.categoryIcons]}></i>
+        <span>{label}</span>
+        </a>
+    ))
+    }
+</nav>

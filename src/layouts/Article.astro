@@ -52,11 +52,11 @@ const headHtml = headAssets(htmlHeads);
   <article class="post">
     <header class="post-header">
       <h1>{title}</h1>
-      <p class="post-meta"><time datetime={date}>{dateLabel}</time></p>
+      <p class="post-meta" data-pagefind-ignore><time datetime={date}>{dateLabel}</time></p>
     </header>
     <div class="typst-content" set:html={fragment} />
     {pdf && (
-      <p class="post-pdf">
+      <p class="post-pdf" data-pagefind-ignore>
         <a href={pdf}>
           <i class="fa-solid fa-file-pdf"></i>
           {t.downloadPdf}

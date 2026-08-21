@@ -2,9 +2,9 @@
 
 1. Bold texts are enclosed by asterisks. Italic texts are enclosed by underlines. Example: `*bold*, _italic_`.
 2. Headings are denoted by equal signs. Example: `= Heading 1`, `== Heading 2`. Always use heading 1 for the highest level headings. Titles does not count as headings.
-3. Code blocks have the same syntax as markdown. I.e. ```<lang>  code  ```  denotes block codes and `code` denotes inline code.
+3. Code blocks have the same syntax as markdown. I.e. ```lang  code  ```  denotes block codes and `code` denotes inline code.
 4. `#function(parameter1: value1, parameter2: value2)[body]` is the standard notation of functions. `parameter`s are identifiers, `value`s can be literals (int, float, string, bool, etc.) or other variables, and `body` is a block of content that is written with the same syntax as the main document. Some functions might have parameter names omitted. Some functions might have no body.
-5. `#link("https://example.com/")[example content]` is the notation for links. For in-document references (e.g. references to figures, tables, equations, and bibliography), use `<label>` to define a label and use `@label` to reference to that label.
+5. `#link("https://example.com/")[example content]` is the notation for links. For in-document references (e.g. references to figures, tables, equations, and bibliography), use `<label>` to define a label and use `@label` to reference to that label. The label name should reflect the type of content being labeled. For example, figures should be labeled as @fig:label and equations should be labeled as @eq:label.
 6. Both inline and block math equations are enclosed by single dollar sign `$`. Unlike that in LaTeX, math equations in Typst are based on variables. For example, `xyz` will be identified as a single variable called `xyz` instead of three separate letters.
    1. Every single letter (upper- or lower-case) is a predefined variable. Example: `x y z` denotes three letters (equivalent to LaTeX `xyz`).
    2. Common math functions are predefined variables, e.g. `sin`, `cos`, `log`, `sqrt`, ... Therefore, you don't need to have backslashes like LaTeX to represent these math functions.
