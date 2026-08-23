@@ -1,4 +1,4 @@
-﻿// Atlas on the sphere: a white sphere (loaded from sphere.obj) covered by
+// Atlas on the sphere: a white sphere (loaded from sphere.obj) covered by
 // four charts, each with a flat counterpart offset from the sphere to
 // illustrate the homeomorphism between the chart and a subset of R^2:
 //   - red   : north polar cap (theta 0 .. pi/6)
@@ -50,7 +50,7 @@ export default async function (scene, camera, canvas, initialView, helpers) {
         },
     ];
 
-    const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0x141414 });
+    const wireframeMaterial = new THREE.LineBasicMaterial({ color: helpers.themeColors.text });
 
     // 3. Build each chart group (curved chart + flat counterpart, both with
     //    wireframes) and a checkbox to toggle it.

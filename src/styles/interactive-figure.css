@@ -1,0 +1,260 @@
+/* Interactive figures (Three.js, Plotly, Shadertoy)
+   Shared styling for figure containers, control toolbars, and error states. */
+
+/* --- Figure containers --- */
+
+.three-js-figure,
+.plotly-figure,
+.shadertoy-figure {
+  position: relative;
+  width: 100%;
+}
+
+/* Bordered figure box (Three.js canvas and Plotly chart) */
+.three-js-figure,
+.plotly-figure {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.three-js-canvas {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.three-js-canvas canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.shadertoy-figure {
+  margin: 1.5em 0;
+}
+
+.shadertoy-canvas {
+  display: block;
+  margin: 0 auto;
+  cursor: crosshair;
+}
+
+.plotly-canvas {
+  width: 100%;
+  min-height: 420px;
+}
+
+/* --- Control toolbar --- */
+
+.figure-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.5em 0.75em;
+  font-size: 0.9em;
+  background-color: color-mix(in srgb, var(--surface) 80%, transparent);
+  border-radius: var(--radius);
+}
+
+
+/* Each widget is a flex group (label + input) */
+.figure-controls > div {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.figure-controls button {
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+  background-color: var(--accent-strong);
+  color: var(--bg);
+  border: none;
+  border-radius: 3px;
+  padding: 0.3em 0.6em;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.figure-controls button:hover {
+  background-color: var(--accent);
+}
+
+.figure-controls label {
+  font-size: 0.9em;
+  color: var(--text);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.figure-controls input[type="checkbox"],
+.figure-controls input[type="radio"] {
+  accent-color: var(--accent);
+  cursor: pointer;
+  width: 1em;
+  height: 1em;
+}
+
+.figure-controls input[type="number"] {
+  background-color: var(--accent-strong);
+  color: var(--bg);
+  border: none;
+  border-radius: 3px;
+  padding: 0.2em 0.4em;
+  font-size: 0.9em;
+  width: 5em;
+  text-align: center;
+}
+
+.figure-controls input[type="number"]:focus {
+  outline: 1px solid var(--accent);
+}
+
+.figure-controls select {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.15em 0.3em;
+  font-size: 0.9em;
+}
+
+.figure-controls input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  background: transparent;
+  width: 8em;
+  height: 1em;
+}
+
+.figure-controls input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+}
+
+.figure-controls input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 14px;
+  width: 14px;
+  border-radius: 50%;
+  background: var(--accent-strong);
+  margin-top: -5px;
+  cursor: pointer;
+}
+
+.figure-controls input[type="range"]::-moz-range-track {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  border: none;
+}
+
+.figure-controls input[type="range"]::-moz-range-thumb {
+  height: 14px;
+  width: 14px;
+  border-radius: 50%;
+  background: var(--accent-strong);
+  border: none;
+  cursor: pointer;
+}
+
+/* Status text pushed to the toolbar's right edge (Shadertoy) */
+.shadertoy-status {
+  font-size: 0.9em;
+  color: var(--muted);
+  margin-left: auto;
+}
+
+/* --- Loading / error states --- */
+
+.plotly-loading {
+  padding: 2em;
+  text-align: center;
+  color: var(--muted);
+}
+
+.figure-error {
+  display: grid;
+  place-items: center;
+  padding: 1em;
+  color: var(--error);
+  background: var(--bg);
+  text-align: center;
+}
+
+.three-js-error {
+  position: absolute;
+  inset: 0;
+}
+
+.plotly-error {
+  min-height: 420px;
+}
+
+
+
+/* Shadertoy's error keeps its boxed look */
+.shadertoy-error {
+  background-color: var(--error-bg);
+  border: 1px solid var(--error-border);
+  border-radius: 4px;
+  padding: 1em;
+  text-align: center;
+  color: var(--error);
+}
+
+
+
+.shadertoy-error .fa {
+  margin-right: 0.5em;
+}
+
+/* --- Shadertoy collapsible GLSL source panel --- */
+
+.shadertoy-code-container {
+  margin-top: 1em;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.shadertoy-code-header {
+  background-color: var(--surface);
+  color: var(--text);
+  padding: 0.5em 1em;
+  cursor: pointer;
+  font-family: monospace;
+  font-size: 0.9em;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.shadertoy-code-header:hover {
+  background-color: color-mix(in srgb, var(--surface), var(--text) 8%);
+}
+
+.shadertoy-code-header .fa {
+  margin-right: 0.5em;
+}
+
+.shadertoy-code-content {
+  padding: 0;
+  background-color: var(--code-bg);
+}
+
+.shadertoy-code-content pre {
+  margin: 0;
+  padding: 1em;
+  overflow-x: auto;
+}

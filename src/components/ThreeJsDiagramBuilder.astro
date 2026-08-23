@@ -1,31 +1,34 @@
-﻿<script>
+<script>
   // Three.js core plus OrbitControls for interactive camera dragging.
   import * as THREE from 'three';
   import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
   import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
   import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
+  import {
+    computeThemeColors,
+    createControlRegistry,
+    loadFigureScript,
+    showFigureError,
+    type ControlDef,
+    type ThemeColors,
+  } from './InteractiveDiagramBuilder';
 
   // Contract between the builder and the per-post scene construction scripts.
   type InitialView = [number, number, number];
-
-  type ControlDef =
-    | { type: 'button'; label: string; action: () => void }
-    | { type: 'checkbox'; label: string; checked?: boolean; action: (checked: boolean) => void }
-    | {
-        type: 'number' | 'range';
-        label: string;
-        min?: number;
-        max?: number;
-        value?: number;
-        step?: number;
-        action: (value: number) => void;
-      };
 
   interface DiagramHelpers {
     THREE: typeof THREE;
     makeTextSprite: (message: string, color: string) => THREE.Sprite;
     resetView: () => void;
     addControlWidget: (def: ControlDef) => void;
+    // Returns the current value of a widget created with addControlWidget.
+    getControlValue<T>(id: string): T | undefined;
+    // Registers a callback invoked whenever a widget value changes.
+    onControlChange(id: string, callback: (value: unknown) => void): void;
+    // Current site theme ('dark' | 'light').
+    getTheme: () => 'dark' | 'light';
+    // The site theme colors (from the CSS variables in global.css).
+    readonly themeColors: ThemeColors;
     toggleLabels: (labelSprites: THREE.Sprite[]) => () => void;
     OBJLoader: typeof OBJLoader;
     mergeGeometries: typeof mergeGeometries;
@@ -241,80 +244,21 @@
   }
 
   // Creates the DOM element for one scene control (button, checkbox, slider).
-  function createControlElement(figureId: string, def: ControlDef, index: number): HTMLDivElement {
-    const id = `${figureId}-control-${index}`;
-    const wrap = document.createElement('div');
-    wrap.style.display = 'flex';
-    wrap.style.alignItems = 'center';
-    wrap.style.gap = '4px';
-
-    switch (def.type) {
-      case 'button': {
-        const button = document.createElement('button');
-        button.id = id;
-        button.textContent = def.label;
-        button.addEventListener('click', def.action);
-        wrap.appendChild(button);
-        break;
-      }
-      case 'checkbox': {
-        const label = document.createElement('label');
-        label.textContent = def.label;
-        label.htmlFor = id;
-        const input = document.createElement('input');
-        input.type = 'checkbox';
-        if (def.checked) input.checked = true;
-        input.id = id;
-        input.addEventListener('change', () => def.action(input.checked));
-        wrap.appendChild(label);
-        wrap.appendChild(input);
-        break;
-      }
-      case 'number':
-      case 'range': {
-        const label = document.createElement('label');
-        label.textContent = def.label;
-        label.htmlFor = id;
-        const input = document.createElement('input');
-        input.type = def.type;
-        input.id = id;
-        if (def.min !== undefined) input.min = String(def.min);
-        if (def.max !== undefined) input.max = String(def.max);
-        if (def.value !== undefined) input.value = String(def.value);
-        if (def.step !== undefined) input.step = String(def.step);
-        input.addEventListener('input', () => def.action(parseFloat(input.value)));
-        wrap.appendChild(label);
-        wrap.appendChild(input);
-        break;
-      }
-      default:
-        console.warn('ThreeJsDiagramBuilder: unknown control type');
-    }
-
-    return wrap;
-  }
-
-  // Shows a fallback message inside the figure when something goes wrong.
-  function showError(container: HTMLElement, message: string): void {
-    const error = document.createElement('div');
-    error.className = 'three-js-error';
-    error.textContent = message;
-    container.appendChild(error);
-  }
-
   // Main entry point: sets up one Three.js scene inside a figure container.
   async function buildDiagram(container: HTMLElement, figureId: string): Promise<void> {
     const src = container.dataset.src;
     if (!src) return;
 
     const initialView = parseInitialView(container.dataset.initialView);
+    const canvasWrap = document.createElement('div');
+    canvasWrap.className = 'three-js-canvas';
     const canvas = document.createElement('canvas');
-    canvas.className = 'three-js-canvas';
-    container.appendChild(canvas);
+    canvasWrap.appendChild(canvas);
+    container.appendChild(canvasWrap);
 
     // Base scene and perspective camera, initially looking at the origin.
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf0f0f0);
+    scene.background = new THREE.Color(computeThemeColors().background);
 
     const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 50);
     camera.position.set(...initialView);
@@ -326,7 +270,7 @@
       renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     } catch (error) {
       console.error('ThreeJsDiagramBuilder: WebGL is not available', error);
-      showError(container, 'Three.js diagram requires WebGL support.');
+      showFigureError(container, 'Three.js diagram requires WebGL support.', 'three-js-error');
       return;
     }
 
@@ -356,16 +300,9 @@
     scene.add(directionalLight);
 
     const controlWidgetContainer = document.createElement('div');
-    controlWidgetContainer.className = 'three-js-controls';
+    controlWidgetContainer.className = 'figure-controls';
     container.appendChild(controlWidgetContainer);
-
-    // Scene scripts append interactive control widgets through addControl.
-    const controlElements: HTMLDivElement[] = [];
-    const addControlWidget = (def: ControlDef): void => {
-      const element = createControlElement(figureId, def, controlElements.length);
-      controlWidgetContainer.appendChild(element);
-      controlElements.push(element);
-    };
+    const controlRegistry = createControlRegistry(controlWidgetContainer, figureId);
 
     // Render loop: run per-frame callbacks, update the active camera controls,
     // then draw the scene each frame.
@@ -382,12 +319,23 @@
     const resizeObserver = new ResizeObserver(setSize);
     resizeObserver.observe(container);
 
+    // Keep the scene background in sync with the site theme toggle.
+    window.addEventListener('themechange', () => {
+      scene.background = new THREE.Color(computeThemeColors().background);
+    });
+
     // Utilities exposed to the loaded scene script.
     const helpers: DiagramHelpers = {
       THREE,
       makeTextSprite,
       resetView: () => cameraControlsModule.resetView(),
-      addControlWidget,
+      addControlWidget: (def) => controlRegistry.add(def),
+      getControlValue: controlRegistry.get,
+      onControlChange: controlRegistry.onChange,
+      getTheme: () => (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'),
+      get themeColors(): ThemeColors {
+        return computeThemeColors();
+      },
       toggleLabels,
       OBJLoader,
       mergeGeometries,
@@ -399,15 +347,16 @@
     };
 
     // Load the post's construction script and let it populate the scene.
+    const builder = await loadFigureScript<DiagramBuilder>(src);
+    if (!builder) {
+      showFigureError(container, 'Failed to load the Three.js diagram script.', 'three-js-error');
+      return;
+    }
     try {
-      const module = (await import(/* @vite-ignore */ src)) as { default?: DiagramBuilder };
-      if (typeof module.default !== 'function') {
-        throw new Error(`Module ${src} does not export a default builder function`);
-      }
-      module.default(scene, camera, canvas, initialView, helpers);
+      builder(scene, camera, canvas, initialView, helpers);
     } catch (error) {
       console.error(`ThreeJsDiagramBuilder: failed to build diagram from ${src}`, error);
-      showError(container, 'Failed to load the Three.js diagram script.');
+      showFigureError(container, 'Failed to build the Three.js diagram.', 'three-js-error');
     }
   }
 

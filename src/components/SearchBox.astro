@@ -96,6 +96,32 @@ const t = translations[lang as keyof typeof translations] ?? translations.en;
       }
     }
 
+    function navigateSearchResults(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        close();
+        return;
+      }
+      if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+      const focusable = Array.from(
+        dropdown?.querySelectorAll<HTMLElement>(
+          '.search-result-link, .search-result-section-link',
+        ) ?? [],
+      ).filter((el) => !el.closest('[hidden]'));
+      if (focusable.length === 0) return;
+      event.preventDefault();
+      const current = document.activeElement as HTMLElement | null;
+      if (current !== null) {
+        let index = focusable.indexOf(current);
+        let next: number;
+        if (event.key === 'ArrowDown') {
+          next = (index + 1) % focusable.length;
+        } else {
+          next = (index == -1) ? (focusable.length - 1) : (index - 1 + focusable.length) % focusable.length;
+        }
+        focusable[next].focus();
+      }
+    };
+
     function renderResult(result: ResultData): HTMLElement {
       const item = document.createElement('div');
       item.className = 'search-result';
@@ -118,6 +144,7 @@ const t = translations[lang as keyof typeof translations] ?? translations.en;
         excerpt.innerHTML = result.excerpt;
         link.appendChild(excerpt);
       }
+      link.addEventListener('keydown', navigateSearchResults);
       main.appendChild(link);
 
       const sections = result.sub_results ?? [];
@@ -153,6 +180,7 @@ const t = translations[lang as keyof typeof translations] ?? translations.en;
           a.href = sub.url;
           a.textContent = sub.title;
           li.appendChild(a);
+          a.addEventListener('keydown', navigateSearchResults);
           sectionsList.appendChild(li);
         }
       }
@@ -207,31 +235,7 @@ const t = translations[lang as keyof typeof translations] ?? translations.en;
       void runSearch(term);
     });
 
-    input?.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') {
-        close();
-        return;
-      }
-      if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
-      const focusable = Array.from(
-        dropdown?.querySelectorAll<HTMLElement>(
-          '.search-result-link, .search-result-section-link',
-        ) ?? [],
-      ).filter((el) => !el.closest('[hidden]'));
-      if (focusable.length === 0) return;
-      event.preventDefault();
-      const current = document.activeElement as HTMLElement | null;
-      if (current !== null) {
-        const index = focusable.indexOf(current);
-        let next: number;
-        if (event.key === 'ArrowDown') {
-          next = (index + 1) % focusable.length;
-        } else {
-          next = (index - 1 + focusable.length) % focusable.length;
-        }
-        focusable[next].focus();
-      }
-    });
+    input?.addEventListener('keydown', navigateSearchResults);
 
     document.addEventListener('click', (event) => {
       if (!box.contains(event.target as Node)) close();

@@ -1,4 +1,4 @@
-﻿// Counterexamples to manifolds, loaded from OBJ assets:
+// Counterexamples to manifolds, loaded from OBJ assets:
 //   cross.obj - two perpendicular planes intersecting along their common
 //               midline (the intersection line is non-manifold)
 //   ring.obj  - a flat cylindrical ring whose thickness varies as
@@ -22,7 +22,7 @@ export default async function (scene, camera, canvas, initialView, helpers) {
     });
 
     // Wireframe overlay copied from manifold-0.js.
-    const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0x141414 });
+    const wireframeMaterial = new THREE.LineBasicMaterial({ color: helpers.themeColors.text });
     const wireframeOverlays = [];
 
     const addMesh = (geometry, x, rotationY = 0) => {
@@ -42,10 +42,10 @@ export default async function (scene, camera, canvas, initialView, helpers) {
     // Load both counterexample meshes. The ring is rotated so its pinch point
     // P (with the red triangles) faces the camera.
     const results = await Promise.allSettled([
-        loadColoredObj('/blog/zh/2026-08-08/cross.obj', THREE, OBJLoader).then(
+        loadColoredObj('/blog/zh/2026-08-08/cross.obj', THREE, OBJLoader, helpers).then(
             (geometry) => addMesh(geometry, -1.6),
         ),
-        loadColoredObj('/blog/zh/2026-08-08/ring.obj', THREE, OBJLoader).then(
+        loadColoredObj('/blog/zh/2026-08-08/ring.obj', THREE, OBJLoader, helpers).then(
             (geometry) => addMesh(geometry, 1.6, -Math.PI / 2),
         ),
     ]);
@@ -84,7 +84,7 @@ export default async function (scene, camera, canvas, initialView, helpers) {
 // Loads an OBJ and colors its faces: the last `# red-faces: N` faces (per the
 // OBJ header) are red (highlighting the non-manifold features), the rest are
 // the base teal.
-async function loadColoredObj(url, THREE, OBJLoader) {
+async function loadColoredObj(url, THREE, OBJLoader, helpers) {
     const response = await fetch(url);
     if (!response.ok) throw new Error(`Failed to fetch ${url} (${response.status})`);
     const text = await response.text();
@@ -105,8 +105,8 @@ async function loadColoredObj(url, THREE, OBJLoader) {
 
     const count = geometry.attributes.position.count;
     const triCount = count / 3;
-    const base = new THREE.Color(0xaefae4);
-    const red = new THREE.Color(0xef4444);
+    const base = new THREE.Color(helpers.themeColors.accentSoft);
+    const red = new THREE.Color(helpers.themeColors.error);
     const colors = new Float32Array(count * 3);
     const redStart = Math.max(0, triCount - redCount);
     for (let t = 0; t < triCount; t++) {

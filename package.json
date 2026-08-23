@@ -20,6 +20,7 @@
     "astro": "^7.2.4",
     "jquery": "^4.0.0",
     "lucide": "^1.33.0",
+    "plotly.js-dist-min": "^3.7.0",
     "three": "^0.185.1"
   },
   "devDependencies": {

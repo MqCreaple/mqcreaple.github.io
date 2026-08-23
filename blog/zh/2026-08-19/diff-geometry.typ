@@ -3,7 +3,7 @@
 // tags: mathematics, differential-geometry
 // category: tech
 
-#import "../../template.typ": article, mathbf, three-js-figure, theorem, definition, proof, example, corollary
+#import "../../template.typ": article, mathbf, three-js-figure, plotly-figure, theorem, definition, proof, example, corollary
 #import "@preview/cetz:0.3.4"
 
 #show: article.with(
@@ -35,7 +35,7 @@ $ (c_1 v^* + c_2 w^*)(x) = c_1 v^*(x) + c_2 w^*(x) $
 
 对偶空间的一大重要性质是：原空间 $V$ 可以自然嵌入（不依赖基向量选取的嵌入）对偶空间的对偶空间 $V^(**)$ 中。嵌入映射如下：
 
-$ phi : V arrow.r V^(**), v arrow.r.bar phi(v) $
+$ phi : V arrow.r V^(**), v mapsto phi(v) $
 
 其中 $phi(v) : V^(**)$ 满足
 
@@ -98,8 +98,8 @@ $ phi(v)(w^*) = w^* (v) $
 我们想到，既然协向量是一个向量到 $RR$ 的线性函数，我们不妨用这个函数的等值线来表示协向量。由于函数是线性的，它的图像就是一系列平行的直线/平面。如 @fig:covector-plane 所示。平行线越密，所表示的协向量就越大，因为同样长度和方向的向量会穿过更多的等值线。
 
 #figure(
-  image("covector.png", width: 75%),
-  caption: [平面上的向量（蓝色箭头）和协向量（绿色平行直线）。协向量作用在向量上的取值可以直接读出。]
+  plotly-figure("/blog/zh/2026-08-19/covector-plot.js", body: [_（交互式图表，仅在网页版显示。）_]),
+  caption: [平面上的向量（箭头）和协向量（平行直线）。协向量作用在向量上的取值可以直接读出。]
 ) <fig:covector-plane>
 
 对于函数 $f : M arrow.r RR$，$dif f$ 给 $M$ 上的每个点都对应了一个协向量 $dif f_p : T_p M arrow.r RR$。这就是一个*协向量场*，也称为一个1-形式。流形上的协向量场可以用一系列弯曲的等值线来表示。在每个点局部，弯曲的等值线会近似变成平直的，也就是这个点局部的微分。将 $dif f_p$ 作用在点 $p$ 局部的一个向量上，得到的就是 $f$ 沿着这个向量往前走变化的速率。@fig:covector-sphere 展示了球面上的一个标量场 $f$ 和其微分 $dif f$ 对应的协向量场。
@@ -188,7 +188,7 @@ $ phi_alpha = mat(x_1, x_2, dots.c, x_n)^top $
 
 $ phi_beta = mat(tilde(x)_1, tilde(x)_2, dots.c, tilde(x)_n)^top $
 
-对于向量 $mathbf(v) = sum_(i=1)^m v_i partial_i = sum_(i=1)^m tilde(v)_i tilde(partial)_i$，可以使用微分的链式法则来描述 $v_i$ 与 $tilde(v)_i$ 之间的关系。根据我们最早对基向量 $partial_i$ 的定义，基向量就是坐标逆映射 $phi_alpha^(-1)$ 在某个方向上的偏微分。也就是说：
+记 $phi_alpha$ 和 $phi_beta$ 的基向量为 $partial_i = partial / (partial x^i)$ 和 $tilde(partial)_i = partial / partial tilde(x)^i$。对于向量 $mathbf(v) = sum_(i=1)^m v_i partial_i = sum_(i=1)^m tilde(v)_i tilde(partial)_i$，可以使用微分的链式法则来描述 $v_i$ 与 $tilde(v)_i$ 之间的关系。根据我们最早对基向量 $partial_i$ 的定义，基向量就是坐标逆映射 $phi_alpha^(-1)$ 在某个方向上的偏微分。也就是说：
 
 $
   tilde(partial)_i &= (dif phi_beta^(-1))_(phi_beta (p)) mathbf(delta)_i \
@@ -263,7 +263,7 @@ $
 #table(
   columns: 3,
   [], [*协变*], [*逆变*],
-  [从 $(U_alpha, phi_alpha)$ 变换到 $(U_beta, phi_beta)$], [右乘矩阵 $J^(-1) = (dif phi_(alpha beta))_(phi_beta (p))$], [左乘矩阵 $J = (dif phi_(beta alpha))_(phi_alpha (p))$],
+  [从 $(U_alpha, phi_alpha)$ 变换到 $(U_beta, phi_beta)$], [右乘矩阵 $J^(-1) = (dif phi_(alpha beta))_(phi_beta (p)) = (partial x_j) / (partial tilde(x)_i)$], [左乘矩阵 $J = (dif phi_(beta alpha))_(phi_alpha (p)) = (partial tilde(x)_i) / (partial x_j)$],
   [例子], [切空间基向量 $partial_i$、协变向量的分量 $u_i$], [余切空间基向量 $dif x_i$、逆变向量的分量 $v_i$]
 )
 
@@ -362,9 +362,9 @@ $ mathbf(u)^* = sum_(i=1)^m u_i dif x_i quad arrow.r quad mathbf(u)^* = u_i dif 
 
 对于没有成对出现的指标，我们称之为*自由指标（Free Index）*，自由指标必须在等式左右两端同时出现。如果等式两端同时包含某个自由指标，那么这个等式就是在描述某个数学对象在该指标下的分量。比如，使用雅可比矩阵做坐标变换的公式就可以写成：
 
-$ tilde(v)^i = J^i_j v^j, tilde(partial)_i = (J^(-1))^j_i partial_j $
+$ tilde(v)^i = (partial tilde(x)^i) / (partial x^j) v^j, tilde(partial)_i = (partial x^j) / (partial tilde(x)^i) partial_j $
 
-$ tilde(u)_i = (J^(-1))^j_i u_j, dif tilde(x)^i = J^i_j dif x^j $
+$ tilde(u)_i = (partial x^j) / (partial tilde(x)^i) u_j, dif tilde(x)^i = (partial tilde(x)^i) / (partial x^j) dif x^j $
 
 这四个公式中，左右两个等式共同包含的 $i$ 是自由指标，而右侧式子中的一对上下标 $j$ 则是*哑标（Dummy Index）*，哑标在右侧相当于省略了求和记号。
 
@@ -378,7 +378,7 @@ $
 
 既然矩阵的两个指标中一个是逆变的、一个是协变的，那么我们可以直接据此写出矩阵分量的坐标系变换公式：若某个矩阵 $A$ 在$alpha$ 坐标卡上的分量为 $A^i_j$、在 $beta$ 坐标卡上的分量为 $tilde(A)^i_j$，那么对于变换函数 $phi_(beta alpha)$ 和其雅可比矩阵 $J$，有：
 
-$ tilde(A)^i_j = J^i_k A^k_l (J^(-1))^l_j $
+$ tilde(A)^i_j = (partial tilde(x)^i) / (partial x^k) (partial x^l) / (partial tilde(x)^j) A^k_l $
 
 学过线性代数的你相信已经很熟悉这个表达式了——这就是矩阵的相似变换 $tilde(A) = J A J^(-1)$。在欧几里得空间中做矩阵的参考系变换也用的是同一个表达式。
 

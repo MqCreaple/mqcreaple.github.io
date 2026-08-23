@@ -1,0 +1,148 @@
+<script>
+  // Plotly is loaded lazily so the (large) Plotly bundle is only fetched on
+  // pages that actually contain a plotly figure. The full distribution is
+  // used so every trace type (including gl3d surfaces) works; swap
+  // 'plotly.js-dist-min' for a slimmer bundle if size becomes a concern.
+  import {
+    computeThemeColors,
+    createControlRegistry,
+    loadFigureScript,
+    showFigureError,
+    type ControlDef,
+    type ThemeColors,
+  } from './InteractiveDiagramBuilder';
+
+  type PlotlyObject = any;
+
+  // Helpers exposed to the per-post figure scripts.
+  interface PlotlyHelpers {
+    // Adds a control widget to the figure toolbar. The widget stores its
+    // current value internally; read it back any time with getControlValue.
+    addControlWidget: (def: ControlDef) => void;
+    // Returns the current value of a widget created with addControlWidget
+    // (checkbox -> boolean, number/range -> number, select -> string).
+    getControlValue<T>(id: string): T | undefined;
+    // Registers a callback invoked whenever a widget's value changes.
+    onControlChange(id: string, callback: (value: unknown) => void): void;
+    // Current site theme ('dark' | 'light').
+    getTheme: () => 'dark' | 'light';
+    // The site's theme colors (from the CSS variables in global.css), so
+    // figures can style paper/ink/accents without hardcoding hex values.
+    readonly themeColors: ThemeColors;
+    // Forces Plotly to re-measure the figure container. The builder also
+    // calls this automatically when the container changes size.
+    resize: () => void;
+  }
+
+  // Contract between the builder and the per-post figure construction scripts:
+  //
+  //   export default async function (Plotly, canvas, helpers) { ... }
+  //
+  //   - Plotly : the Plotly object; call Plotly.newPlot(canvas, data, layout,
+  //              { responsive: true }) (or Plotly.restyle/relayout later).
+  //   - canvas : the <div class="plotly-canvas"> element the plot is drawn
+  //              into. It starts empty (the builder removes its placeholder
+  //              once the script finishes).
+  //   - helpers: see PlotlyHelpers above. Add control widgets and read their
+  //              values with helpers.addControlWidget / helpers.getControlValue,
+  //              and use helpers.themeColors for theme-aware styling.
+  type PlotlyFigureBuilder = (
+    Plotly: PlotlyObject,
+    canvas: HTMLElement,
+    helpers: PlotlyHelpers,
+  ) => void;
+
+  // Main entry point: sets up one Plotly figure inside a container.
+  async function buildFigure(figure: HTMLElement, figureId: string): Promise<void> {
+    const src = figure.dataset.src;
+    if (!src) return;
+
+    // The element Plotly renders into.
+    const canvas = document.createElement('div');
+    canvas.className = 'plotly-canvas';
+    figure.appendChild(canvas);
+
+    const loading = document.createElement('div');
+    loading.className = 'plotly-loading';
+    loading.textContent = 'Loading plot...';
+    canvas.appendChild(loading);
+
+    // Toolbar for control widgets, laid out below the plot.
+    const controls = document.createElement('div');
+    controls.className = 'figure-controls';
+    figure.appendChild(controls);
+    const controlRegistry = createControlRegistry(controls, figureId);
+
+    // Load Plotly once; the module is cached after the first figure.
+    let Plotly: PlotlyObject;
+    try {
+      Plotly = (await import('plotly.js-dist-min')).default;
+    } catch (error) {
+      console.error('PlotlyDiagramBuilder: failed to load Plotly', error);
+      showFigureError(canvas, 'Failed to load the Plotly library.', 'plotly-error');
+      return;
+    }
+
+    const helpers: PlotlyHelpers = {
+      addControlWidget: (def) => controlRegistry.add(def),
+      getControlValue: controlRegistry.get,
+      onControlChange: controlRegistry.onChange,
+      getTheme: () => (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'),
+      get themeColors(): ThemeColors {
+        return computeThemeColors();
+      },
+      resize: () => {
+        try {
+          Plotly.Plots.resize(canvas);
+        } catch {
+          // Plot has not been rendered yet.
+        }
+      },
+    };
+
+    // Keep the plot in sync when the container changes size.
+    const resizeObserver = new ResizeObserver(() => helpers.resize());
+    resizeObserver.observe(figure);
+
+    // Re-theme the plot when the site theme toggles. Figures can still
+    // restyle trace-specific colors in their own themechange listener.
+    window.addEventListener('themechange', () => {
+      try {
+        const c = computeThemeColors();
+        Plotly.relayout(canvas, {
+          'paper_bgcolor': c.surface,
+          'plot_bgcolor': c.surface,
+          'font.color': c.text,
+          'xaxis.gridcolor': c.border,
+          'yaxis.gridcolor': c.border,
+          'xaxis.zerolinecolor': c.border,
+          'yaxis.zerolinecolor': c.border,
+        });
+      } catch {
+        // Plot has not been rendered yet.
+      }
+    });
+
+    // Load the post's figure script and let it draw the plot.
+    const builder = await loadFigureScript<PlotlyFigureBuilder>(src);
+    if (!builder) {
+      showFigureError(canvas, 'Failed to load the Plotly figure script.', 'plotly-error');
+      return;
+    }
+    try {
+      await builder(Plotly, canvas, helpers);
+      loading.remove();
+    } catch (error) {
+      console.error(`PlotlyDiagramBuilder: failed to build figure from ${src}`, error);
+      showFigureError(canvas, 'Failed to load the Plotly figure script.', 'plotly-error');
+    }
+  }
+
+  // Enhance every plotly-figure container emitted by Typst.
+  const figures = document.querySelectorAll<HTMLElement>('.plotly-figure[data-src]');
+  figures.forEach((figure, index) => {
+    const figureId = figure.id || `plotly-figure-${index}`;
+    figure.id = figureId;
+    void buildFigure(figure, figureId);
+  });
+</script>

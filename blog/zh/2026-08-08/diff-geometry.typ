@@ -281,7 +281,7 @@
 ]
 
 #theorem[
-  （自反映射的微分）映射 $id_M : M arrow.r M, p arrow.r.bar p$ 的微分为：
+  （自反映射的微分）映射 $id_M : M arrow.r M, p mapsto p$ 的微分为：
 
   $ dif id_M = id_(T_p M) $
 ]

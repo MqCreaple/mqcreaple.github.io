@@ -118,8 +118,8 @@ export default async function (scene, camera, canvas, initialView, helpers) {
         uPhase: uniforms.uPhase,
         uContourStep: { value: fRange / 8.0 },
         uContourWidth: { value: 0.04 },
-        uContourColor: { value: new THREE.Color(0x222222) },
-        uSphereColor: { value: new THREE.Color(0xf5f5f5) },
+        uContourColor: { value: new THREE.Color(helpers.themeColors.text) },
+        uSphereColor: { value: new THREE.Color(helpers.themeColors.background) },
     };
 
     setWaves(generateWaves());

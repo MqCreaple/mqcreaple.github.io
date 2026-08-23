@@ -1,4 +1,4 @@
-﻿// Tangent spaces at different points: two points p and q on a sphere, each
+// Tangent spaces at different points: two points p and q on a sphere, each
 // with its tangent plane and one vector on that plane. Dragging a point
 // moves it along the sphere (its tangent plane and vector follow), which
 // illustrates that T_p M and T_q M are different vector spaces. Dragging

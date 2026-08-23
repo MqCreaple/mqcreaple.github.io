@@ -100,3 +100,10 @@ Note: For loanwords already common in Chinese, such as `up` (up主), no space is
 ## Deployment
 
 The included GitHub Actions workflow builds with Typst and Astro, then deploys to GitHub Pages. Enable **Settings → Pages → Source: GitHub Actions** after pushing to `main`.
+
+## Sandbox: spawning Node processes
+
+When the agent works inside the filesystem sandbox, Node.js cannot spawn external binaries via `child_process` (`execFile`, `spawn`, ...). For example, `node scripts/build-articles.mjs` and `npm run articles` / `npm run build` fail with `spawn EPERM` (errno -4048) before Typst or Astro does any work. Direct shell invocations of the same binaries work fine inside the sandbox, so a single-article check like `typst compile blog zh/.../article.typ out.html --format html --features html --input format=html --root .` can be run without
+escalation.
+
+To run Node-based build commands, request escalated permissions (`sandbox_permissions: "require_escalated"`) so the Node process is allowed to spawn its child processes.

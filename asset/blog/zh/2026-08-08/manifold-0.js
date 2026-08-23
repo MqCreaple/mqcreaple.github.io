@@ -1,4 +1,4 @@
-﻿// Manifold examples: sphere, torus, Moebius strip, and cow.
+// Manifold examples: sphere, torus, Moebius strip, and cow.
 //
 // Renders four compact 2D manifolds side by side: the body uses a lighter
 // teal with smooth double-sided shading, and a wireframe overlay in the
@@ -18,14 +18,14 @@ export default async function (scene, camera, canvas, initialView, helpers) {
     // Lighter teal body, double-sided (the Moebius strip is one-sided in the
     // literal sense), smooth shading.
     const bodyMaterial = new THREE.MeshPhongMaterial({
-        color: 0xaefae4,
+        color: helpers.themeColors.accentSoft,
         side: THREE.DoubleSide,
         flatShading: false,
         shininess: 40,
     });
 
     // Wireframe overlay in the original teal color.
-    const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0x141414 });
+    const wireframeMaterial = new THREE.LineBasicMaterial({ color: helpers.themeColors.text });
     const wireframeOverlays = [];
 
     // Allow zooming in very close to the meshes.

@@ -1,4 +1,4 @@
-﻿// Cow manifold walk: a small character walks along (approximate) geodesics
+// Cow manifold walk: a small character walks along (approximate) geodesics
 // on the cow surface. The camera follows from behind, aligned with the local
 // tangent plane, so the surface looks locally flat like a ground plane.
 //
@@ -22,7 +22,7 @@ export default async function (scene, camera, canvas, initialView, helpers) {
     // -----------------------------------------------------------------
     const cowGeometry = await loadCowGeometry(THREE, OBJLoader, mergeVertices, COW_SCALE);
     const cowMaterial = new THREE.MeshPhongMaterial({
-        color: 0x5eead4,
+        color: helpers.themeColors.accentSoft,
         side: THREE.DoubleSide,
     });
     const cow = new THREE.Mesh(cowGeometry, cowMaterial);

@@ -2,6 +2,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import Avatar from '../components/Avatar.astro';
+import PlotlyDiagramBuilder from '../components/PlotlyDiagramBuilder.astro';
 import ShadertoyFigureBuilder from '../components/ShadertoyFigureBuilder.astro';
 import TagCloud from '../components/TagCloud.astro';
 import ThreeJsDiagramBuilder from '../components/ThreeJsDiagramBuilder.astro';
@@ -23,6 +24,7 @@ const fragmentPath = path.join(process.cwd(), 'src', 'generated', 'articles', `$
 const fragment = readFileSync(fragmentPath, 'utf-8');
 const hasThreeJsFigure = fragment.includes('three-js-figure');
 const hasShadertoyFigure = fragment.includes('shadertoy-figure');
+const hasPlotlyFigure = fragment.includes('plotly-figure');
 const t = translations[lang] ?? translations.en;
 const dateLabel = new Intl.DateTimeFormat(lang === 'zh' ? 'zh-CN' : 'en-US', {
   dateStyle: 'long',
@@ -66,6 +68,7 @@ const headHtml = headAssets(htmlHeads);
   </article>
   {hasThreeJsFigure && <ThreeJsDiagramBuilder />}
   {hasShadertoyFigure && <ShadertoyFigureBuilder />}
+  {hasPlotlyFigure && <PlotlyDiagramBuilder />}
   <Avatar slot="aside" lang={lang} />
   <TagCloud slot="aside" lang={lang} />
 </Base>

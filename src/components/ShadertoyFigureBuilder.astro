@@ -40,9 +40,9 @@
     const $original = $container.children();
     $container.empty();
 
-    createCodeView($container, $original, glslSource, index);
     const canvas = createCanvas($container[0], index);
     setupWebGL(canvas, glslSource, index);
+    createCodeView($container, $original, glslSource, index);
   }
 
   // 创建可折叠的代码面板，并尽量复用 Typst 已经高亮的 <pre><code>。
@@ -374,12 +374,12 @@ void main() {
     props: { paused: boolean; visible: boolean; warning: boolean },
   ): HTMLDivElement {
     const controls = document.createElement('div');
-    controls.className = 'shadertoy-controls';
+    controls.className = 'figure-controls';
     controls.innerHTML = `
-      <button class="shadertoy-control-btn" id="shadertoy-pause-${index}" title="暂停/继续">
+      <button type="button" id="shadertoy-pause-${index}" title="暂停/继续">
         <i class="fa ${props.paused ? 'fa-play' : 'fa-pause'}"></i>
       </button>
-      <button class="shadertoy-control-btn" id="shadertoy-reset-mouse-${index}" title="重置鼠标位置">
+      <button type="button" id="shadertoy-reset-mouse-${index}" title="重置鼠标位置">
         <i class="fa fa-undo"></i>
       </button>
       ${props.warning ? "<span class='warn'>显卡占用警告！</span>" : ''}
