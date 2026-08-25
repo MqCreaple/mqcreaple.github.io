@@ -42,11 +42,24 @@ build (the dev server serves `/pagefind/*` from `output/`).
 
 ## Content layout
 
+`asset/` is Astro's public directory, so everything under it is served verbatim
+at the site root. Interactive figure scene scripts live beside their posts under
+`asset/blog/<lang>/...`; shared scene-side helpers are in
+`asset/blog/shared/`, and shared 3D meshes are in `asset/3d/`.
+
 ```text
-blog/<lang>/<date>/<name>.typ   # Typst articles
+blog/<lang>/<date>/<name>.typ   # Typst article sources
 blog/<lang>/<date>/             # article-local assets and images
+asset/                          # Astro publicDir, served at the site root
+asset/blog/<lang>/<date>/       # per-article interactive figure scene scripts
+asset/blog/shared/              # shared scene-side JS helpers (no npm imports)
+asset/3d/                       # shared OBJ meshes
+asset/img/                      # shared site images, such as avatar.png
 src/layouts/                    # Astro page layouts
-src/components/                 # Astro components and custom elements
+src/components/                 # Astro components, custom elements, figure builders
+src/generated/articles/         # build-generated Typst HTML fragments
+src/styles/                     # global and figure CSS
+scripts/                        # build scripts (Typst -> HTML/PDF, output finalization)
 app/<name>/                     # standalone web apps (HTML/CSS/JS/WASM)
-asset/img/                      # shared site assets, such as avatar.png
+output/                         # static build output, deployable to GitHub Pages
 ```

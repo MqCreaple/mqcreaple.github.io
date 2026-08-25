@@ -1,8 +1,10 @@
 // AprilTag duality diagram — 具体三维对象定义
+import { makeTextSprite, toggleLabels } from '../../shared/text-sprite.js';
+
 export default function (scene, camera, canvas, initialView, helpers) {
     // Restore the default orbit-camera interaction for this figure.
     helpers.cameraControls.createOrbit();
-    const { THREE, makeTextSprite, toggleLabels } = helpers;
+    const { THREE } = helpers;
 
     // 将三维点投影到 z = -1 平面
     function projectToPlaneZ(point, planeZ = -1) {
@@ -24,13 +26,13 @@ export default function (scene, camera, canvas, initialView, helpers) {
     scene.add(axesHelper);
 
     const labelOffset = 0.3;
-    const xLabel = makeTextSprite('x', 'red');
+    const xLabel = makeTextSprite(THREE, 'x', 'red');
     xLabel.position.set(axisLength + labelOffset, 0, 0);
     scene.add(xLabel);
-    const yLabel = makeTextSprite('y', 'green');
+    const yLabel = makeTextSprite(THREE, 'y', 'green');
     yLabel.position.set(0, axisLength + labelOffset, 0);
     scene.add(yLabel);
-    const zLabel = makeTextSprite('z', 'blue');
+    const zLabel = makeTextSprite(THREE, 'z', 'blue');
     zLabel.position.set(0, 0, axisLength + labelOffset);
     scene.add(zLabel);
 

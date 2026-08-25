@@ -13,7 +13,7 @@
 
 = 向量的对偶空间
 
-继续#link("/zh/posts/2026-08-08/diff-geometry/")[上一篇文章]中的讨论。上次提到过，如果 $f : M arrow.r RR$ 是一个流形上的标量场，那么 $f$ 的微分 $dif f_p : T_p M arrow.r RR$ 是一个协向量场，也可以叫一个 $M$ 上的1-形式。可是，协向量又是什么？
+继续#link("/zh/posts/2026-08-08/diff-geometry/")[上一篇文章]中的讨论。上次提到过，如果 $f : M arrow.r RR$ 是一个流形上的标量场，那么 $f$ 的微分 $dif f_p : T_p M arrow.r RR$ 是一个协向量场，也可以叫一个 $M$ 上的(0, 1)型张量场，或者叫一个1-形式。可是，协向量又是什么？
 
 我们需要先明确向量空间的对偶空间的概念。
 
@@ -102,7 +102,7 @@ $ phi(v)(w^*) = w^* (v) $
   caption: [平面上的向量（箭头）和协向量（平行直线）。协向量作用在向量上的取值可以直接读出。]
 ) <fig:covector-plane>
 
-对于函数 $f : M arrow.r RR$，$dif f$ 给 $M$ 上的每个点都对应了一个协向量 $dif f_p : T_p M arrow.r RR$。这就是一个*协向量场*，也称为一个1-形式。流形上的协向量场可以用一系列弯曲的等值线来表示。在每个点局部，弯曲的等值线会近似变成平直的，也就是这个点局部的微分。将 $dif f_p$ 作用在点 $p$ 局部的一个向量上，得到的就是 $f$ 沿着这个向量往前走变化的速率。@fig:covector-sphere 展示了球面上的一个标量场 $f$ 和其微分 $dif f$ 对应的协向量场。
+对于函数 $f : M arrow.r RR$，$dif f$ 给 $M$ 上的每个点都对应了一个协向量 $dif f_p : T_p M arrow.r RR$。这就是一个*协向量场*，也称为一个*(0, 1)型张量场*。流形上的协向量场可以用一系列弯曲的等值线来表示。在每个点局部，弯曲的等值线会近似变成平直的，也就是这个点局部的微分。将 $dif f_p$ 作用在点 $p$ 局部的一个向量上，得到的就是 $f$ 沿着这个向量往前走变化的速率。@fig:covector-sphere 展示了球面上的一个标量场 $f$ 和其微分 $dif f$ 对应的协向量场。
 
 #figure(
   three-js-figure("/blog/zh/2026-08-19/covector-sphere.js", body: [
@@ -163,9 +163,9 @@ $
 
 $
   (dif x_i) (partial_j) = delta_(i j) = cases(1\, & i = j, 0\, & i != j)
-$
+$ <eq:dual-basis>
 
-此处的 $delta_(i j)$ 是一个线性代数和微分几何中非常常用的符号，称作*克罗内克δ符号（Kronecker delta）*。上面的公式也证明了，*切空间 $T_p M$ 中的基向量 ${partial_i}_(i=1)^m$ 与余切空间 $T^*_p M$ 的基向量 ${dif x_i}_(i=1)^m$ 互为对偶基*。从现在开始，我们就会将坐标映射 $phi_alpha = mat(x_1, x_2, dots.c, x_m)^top$ 下的逆变基和协变基记作 ${partial_i}$ 和 ${dif x_i}$。
+此处的 $delta_(i j)$ 是一个线性代数和微分几何中非常常用的符号，称作*克罗内克δ符号（Kronecker delta）*。@eq:dual-basis 也证明了，*切空间 $T_p M$ 中的基向量 ${partial_i}_(i=1)^m$ 与余切空间 $T^*_p M$ 的基向量 ${dif x_i}_(i=1)^m$ 互为对偶基*。从现在开始，我们就会将坐标映射 $phi_alpha = mat(x_1, x_2, dots.c, x_m)^top$ 下的逆变基和协变基记作 ${partial_i}$ 和 ${dif x_i}$。
 
 对于任何一个协向量 $mathbf(u)^* in T_p^* M$，同样可以将其展开成分量形式：
 
@@ -209,7 +209,7 @@ $
   tilde(partial)_i &= (dif phi_alpha^(-1))_(phi_alpha (p)) sum_(k=1)^m J^(-1)_(j k) delta_(i k) \
   &= (dif phi_alpha^(-1))_(phi_alpha (p)) J^(-1)_(j i) \
   &= sum_(j = 1)^m partial_j J^(-1)_(j i)
-$
+$ <eq:basis-vector-chart-change>
 
 而另一边，它的各个分量呢？我们可以将 $tilde(partial)_i$ 展开成 $partial_i$ 形式：
 
@@ -225,7 +225,7 @@ $ v_i = sum_(j=1)^m J^(-1)_(i j) tilde(v)_j $
 
 两边左乘上矩阵 $J$，得到：
 
-$ tilde(v)_i = sum_(i=1)^m J_(i j) v_j $
+$ tilde(v)_i = sum_(i=1)^m J_(i j) v_j $ <eq:vector-component-chart-change>
 
 注意到，“基向量本身”和“在该基向量上的分量”这两个量在做坐标变换的时候，一个是乘上矩阵 $J^(-1)_(j i)$，另一个是乘上矩阵 $J_(i j)$。我们称和基向量变换使用相同方式变换的这些量为*协变（Covariant）*，而和向量分量使用相同方式变换的这些量为*逆变（Contravariant）*。
 
@@ -236,7 +236,7 @@ $
   &= [dif (phi_(beta alpha) compose phi_alpha)_p]_i \
   &= [(dif phi_(beta alpha))_(phi_alpha (p))]_i compose (dif phi_alpha)_p \
   &= sum_(j=1)^m J_(i j) dif x_j
-$
+$ <eq:covector-basis-chart-change>
 
 相应的，协变向量的分量变换就是：
 
@@ -256,7 +256,7 @@ $
 
 $
   tilde(u)_i = sum_(j=1)^m u_j J^(-1)_(j i)
-$
+$ <eq:covector-component-chart-change>
 
 注意到，余切空间的基 $dif x_i$ 的变换规则和_切空间的分量_是一样的，也就是说，余切空间的基是_逆变_的，而协向量的分量反而是_协变_的。这一点与切空间中的向量刚好是反过来的。
 
@@ -294,13 +294,13 @@ $
   mathbf(v) = mat(partial_1, partial_2, dots.c, partial_m) vec(v_1, v_2, dots.v, v_m)
 $
 
-从 $(U_alpha, phi_alpha)$ 图卡变到 $(U_beta, phi_beta)$ 时，分量的变换需要左乘上雅可比矩阵：
+由 @eq:vector-component-chart-change 知，从 $(U_alpha, phi_alpha)$ 图卡变到 $(U_beta, phi_beta)$ 时，分量的变换需要左乘上雅可比矩阵：
 
 $
   vec(tilde(v)_1, tilde(v)_2, dots.v, tilde(v)_m) = J vec(v_1, v_2, dots.v, v_m) = mat( (partial tilde(x)_1) / (partial x_1), (partial tilde(x)_1) / (partial x_2), dots.c, (partial tilde(x)_1) / (partial x_m); (partial tilde(x)_2) / (partial x_1), (partial tilde(x)_2) / (partial x_2), dots.c, (partial tilde(x)_2) / (partial x_m); dots.c; (partial tilde(x)_m) / (partial x_1), (partial tilde(x)_m) / (partial x_2), dots.c, (partial tilde(x)_m) / (partial x_m)) vec(v_1, v_2, dots.v, v_m)
 $
 
-而基向量的变换需要右乘上雅可比的逆矩阵：
+而 @eq:basis-vector-chart-change 告诉我们：基向量的变换需要右乘上雅可比的逆矩阵
 
 $
   mat(tilde(partial)_1, tilde(partial)_2, dots.c, tilde(partial)_m) = mat(partial_1, partial_2, dots.c, partial_m) J^(-1) = mat(partial_1, partial_2, dots.c, partial_m) mat( (partial x_1) / (partial tilde(x)_1), (partial x_1) / (partial tilde(x)_2), dots.c, (partial x_1) / (partial tilde(x)_m); (partial x_2) / (partial tilde(x)_1), (partial x_2) / (partial tilde(x)_2), dots.c, (partial x_2) / (partial tilde(x)_m); dots.c; (partial x_m) / (partial tilde(x)_1), (partial x_m) / (partial tilde(x)_2), dots.c, (partial x_m) / (partial tilde(x)_m) )
@@ -360,7 +360,7 @@ $ mathbf(v) = sum_(i=1)^m v_i partial_i quad arrow.r quad mathbf(v) = v^i partia
 
 $ mathbf(u)^* = sum_(i=1)^m u_i dif x_i quad arrow.r quad mathbf(u)^* = u_i dif x^i $
 
-对于没有成对出现的指标，我们称之为*自由指标（Free Index）*，自由指标必须在等式左右两端同时出现。如果等式两端同时包含某个自由指标，那么这个等式就是在描述某个数学对象在该指标下的分量。比如，使用雅可比矩阵做坐标变换的公式就可以写成：
+对于没有成对出现的指标，我们称之为*自由指标（Free Index）*，自由指标必须在等式左右两端同时出现。如果等式两端同时包含某个自由指标，那么这个等式就是在描述某个数学对象在该指标下的分量。比如，@eq:vector-component-chart-change、@eq:basis-vector-chart-change、@eq:covector-component-chart-change 和 @eq:covector-basis-chart-change 就可以写成：
 
 $ tilde(v)^i = (partial tilde(x)^i) / (partial x^j) v^j, tilde(partial)_i = (partial x^j) / (partial tilde(x)^i) partial_j $
 
@@ -374,7 +374,7 @@ $
   (A^(-1))^i_j A^j_k = delta^i_k
 $
 
-这里的 $delta$ 就是之前我们见过的克罗内克符号。$delta^i_k$ 就相当于是单位矩阵。
+这里的 $delta$ 就是之前在 @eq:dual-basis 中见过的克罗内克符号。$delta^i_k$ 就相当于是单位矩阵。
 
 既然矩阵的两个指标中一个是逆变的、一个是协变的，那么我们可以直接据此写出矩阵分量的坐标系变换公式：若某个矩阵 $A$ 在$alpha$ 坐标卡上的分量为 $A^i_j$、在 $beta$ 坐标卡上的分量为 $tilde(A)^i_j$，那么对于变换函数 $phi_(beta alpha)$ 和其雅可比矩阵 $J$，有：
 

@@ -18,7 +18,10 @@ Create `blog/en/2026-08-04/my-post.typ` and put metadata in the first comment li
 )
 ```
 
-The build script compiles every `.typ` file to an HTML fragment for Astro and a PDF in `asset/pdf/`. URLs follow `/<lang>/posts/<date>/<name>/`.
+The build script compiles every `.typ` file to an HTML fragment in
+`src/generated/articles/` and a PDF in `node_modules/.cache/pdfs/`; finalization
+copies the PDFs into `output/pdf/`, served at `/pdf/...`. URLs follow
+`/<lang>/posts/<date>/<name>/`.
 
 HTML export is enabled with Typst's runtime `--features html` flag; the build script passes it automatically.
 
@@ -56,29 +59,61 @@ Plain `(x, y)` tuples are elastic row/column coordinates (the grid expands to fi
 )
 ```
 
+## Interactive figure helpers
+
+Pure scene-side helpers for interactive figures (geometry loaders,
+normalization, pointer/raycast math, sprite/label utilities, and similar
+Three.js-only functions) live in `asset/blog/shared/` as static ES modules.
+Those files are served without Vite bundling, so they must not import bare npm
+packages; pass `THREE` and any loader helpers as arguments instead.
+
+Helpers that need Vite-bundled dependencies or builder-owned state (the render
+loop, camera controls, theme colors, control widgets, `THREE`, `OBJLoader`,
+`mergeVertices`, `createNoise3D`, `interpolateViridis`, and so on) stay in
+`src/components/InteractiveDiagramBuilder.ts` or
+`src/components/ThreeJsDiagramBuilder.astro`, and are exposed to scene scripts
+through the injected `helpers` object.
+
+Each helper has exactly one canonical home. If a helper is pure enough for
+`asset/blog/shared/`, move it there and remove the builder-side copy; do not
+duplicate the same logic in both places.
+
 ## Verifying interactive figures
 
 Do not check the rendered figure yourself: the agent has no image recognition capability, and algorithmic pixel analysis of screenshots is not always reliable. Only verify the textual side - that the generated HTML fragment contains the expected `three-js-figure` (or `shadertoy-figure`) element with the correct `data-src`, that the caption is present, and that the build compiles. Leave visual verification of the rendered diagram to the user.
 
 ## Image captions
 
-In the old Markdown blog, an italic line right after an image is the image's caption. When migrating such a pair, wrap the image and the caption in a `#figure`; see item 9 of `.agents/typst-syntax-quick-guide.md` for the syntax.
+When migrating an old Markdown image and its italic caption line, wrap the pair
+in a `#figure`; see item 9 of `.agents/typst-syntax-quick-guide.md`.
 
 ## Math notation
 
-For `stretch(...)` labels above or below symbols, see item 6.7 of `.agents/typst-syntax-quick-guide.md`. To draw an arrow with text on top (like LaTeX `\xrightarrow{pred}`), use `stretch(-->)^"label"`; it renders in both HTML and PDF exports. Avoid the `xarrow` package for this: it relies on `place()`, which Typst's HTML export ignores, so the arrow glyphs are dropped and only the label remains.
+Use `stretch(-->)^"label"` for arrows with text labels (like LaTeX
+`\xrightarrow{pred}`); it renders in both HTML and PDF exports. Avoid the
+`xarrow` package, which relies on `place()` and loses its arrow glyphs in HTML
+export. For other `stretch(...)` uses, see item 6.7 of
+`.agents/typst-syntax-quick-guide.md`.
 
-In HTML export, `blog/template.typ` renders each inline equation as an SVG (`span.typst-math-inline`) with a per-equation `vertical-align` offset computed from the measured depth below the baseline, so the equation's baseline aligns with the surrounding text instead of sitting on the line bottom. Block equations become centered `div.typst-math-block`. Styling lives in `src/styles/typst-math.css`.
+For template math helpers and notation details not covered here (e.g. `vec(...)`
+for column vectors), see item 6 of `.agents/typst-syntax-quick-guide.md`.
 
-- Vector notation: use the template helper `mathbf(x)` (bold upright) for bold vector variables, and `arrow(x)` for arrow-accented vectors. `vec(x)` creates a column vector (see item 6.6 of the quick guide), not an arrow accent. E.g. 4-vectors use `mathbf(r)` and 3-vectors use `arrow(r)` in `2022-10-14-relativistic-renderer-0`.
+The template renders inline equations as `span.typst-math-inline` SVGs with
+baseline alignment and block equations as centered `div.typst-math-block`;
+styling lives in `src/styles/typst-math.css`. Use `mathbf(x)` for bold vectors
+and `arrow(x)` for arrow-accented vectors (e.g. `2022-10-14-relativistic-renderer-0`).
 
 ## Labels and references
 
-For defining labels with `<label>` and referencing them with `@label`, see item 5 of `.agents/typst-syntax-quick-guide.md`. Labels in this repo should have appropriate prefixes: `fig:` for figures, `tab:` for tables, `eq:` for equations, `sec:` for sections, etc. E.g. `@sec:context`.
+Define labels with `<label>` and reference them with `@label` (item 5 of
+`.agents/typst-syntax-quick-guide.md`). Prefix labels by type in this repo:
+`fig:`, `tab:`, `eq:`, `sec:`, etc.
 
 ## Typst symbol reference
 
-For symbol lookup, see item 6.4 of `.agents/typst-syntax-quick-guide.md`. The maps it points to are `.agents/typst-char-map.json` (Typst `sym.*` names to Unicode, extracted from <https://typst.app/docs/reference/symbols/sym/>) and `.agents/typst-symbol-shorthand.json` (ASCII shorthands to Unicode for markup and math modes, extracted from <https://typst.app/docs/reference/symbols/>).
+For symbol lookup, see item 6.4 of `.agents/typst-syntax-quick-guide.md`,
+which points to `.agents/typst-char-map.json` and
+`.agents/typst-symbol-shorthand.json`.
 
 ## Text style and citation rules
 

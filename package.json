@@ -18,12 +18,15 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.3.1",
     "astro": "^7.2.4",
+    "d3-scale-chromatic": "^3.1.0",
     "jquery": "^4.0.0",
     "lucide": "^1.33.0",
     "plotly.js-dist-min": "^3.7.0",
+    "simplex-noise": "^4.0.3",
     "three": "^0.185.1"
   },
   "devDependencies": {
+    "@types/d3-scale-chromatic": "^3.1.0",
     "@types/jquery": "^4.0.1",
     "@types/node": "^26.2.0",
     "@types/three": "^0.185.4",

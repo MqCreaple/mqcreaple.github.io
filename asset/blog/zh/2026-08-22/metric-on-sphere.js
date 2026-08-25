@@ -24,6 +24,8 @@
 // Controls: drag a marker to move it along the path (both move together),
 // drag elsewhere to orbit, scroll to zoom, buttons to reset the point or the
 // view, and a checkbox to toggle the Earth texture on the sphere and the chart.
+import { createPointerState, attachPointerDrag } from '../../shared/pointer-drag.js';
+
 export default async function (scene, camera, canvas, initialView, helpers) {
     const { THREE } = helpers;
 
@@ -301,18 +303,9 @@ export default async function (scene, camera, canvas, initialView, helpers) {
     // -----------------------------------------------------------------
     // Drag the marker along the path
     // -----------------------------------------------------------------
-    const raycaster = new THREE.Raycaster();
-    const pointer = new THREE.Vector2();
     const tmpV = new THREE.Vector3();
     let dragMode = null;
-
-    function updatePointer(e) {
-        const rect = canvas.getBoundingClientRect();
-        pointer.set(
-            ((e.clientX - rect.left) / rect.width) * 2 - 1,
-            -((e.clientY - rect.top) / rect.height) * 2 + 1,
-        );
-    }
+    const { update: updatePointer } = createPointerState(THREE, canvas, camera);
 
     // Closest path parameter t to a point on the unit sphere: maximize
     // P(t) . p over the sampled path P(t) = (-sin t cos 2t, cos t, sin t sin 2t).
@@ -333,8 +326,7 @@ export default async function (scene, camera, canvas, initialView, helpers) {
     }
 
     function onPointerDown(e) {
-        updatePointer(e);
-        raycaster.setFromCamera(pointer, camera);
+        const raycaster = updatePointer(e);
 
         const sphHits = raycaster.intersectObject(sphereMesh, false);
         if (sphHits.length > 0 && sphHits[0].point.distanceTo(sphereMarkerWorld) < 0.3) {
@@ -352,8 +344,7 @@ export default async function (scene, camera, canvas, initialView, helpers) {
 
     function onPointerMove(e) {
         if (!dragMode) return;
-        updatePointer(e);
-        raycaster.setFromCamera(pointer, camera);
+        const raycaster = updatePointer(e);
 
         if (dragMode === 'sphere') {
             // Project the hit point onto the path, then clamp to the chart
@@ -388,10 +379,7 @@ export default async function (scene, camera, canvas, initialView, helpers) {
         }
     }
 
-    canvas.addEventListener('pointerdown', onPointerDown);
-    canvas.addEventListener('pointermove', onPointerMove);
-    canvas.addEventListener('pointerup', onPointerUp);
-    canvas.addEventListener('pointercancel', onPointerUp);
+    attachPointerDrag(canvas, { onPointerDown, onPointerMove, onPointerUp });
 
     // -----------------------------------------------------------------
     // Camera and controls

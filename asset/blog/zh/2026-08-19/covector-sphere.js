@@ -9,6 +9,8 @@
 // Left sphere: colors show f(p). Right sphere: contour lines of f. The red
 // marker on the right sphere can be dragged; the small tangent plane around it
 // draws the covector df_p as parallel green lines.
+import { createPointerState, attachPointerDrag } from '../../shared/pointer-drag.js';
+
 export default async function (scene, camera, canvas, initialView, helpers) {
     const { THREE } = helpers;
     const cameraControls = helpers.cameraControls.createOrbit();
@@ -292,22 +294,11 @@ export default async function (scene, camera, canvas, initialView, helpers) {
     updateCovector(p);
 
     // Drag the red marker along the right sphere; drag elsewhere orbits.
-    const raycaster = new THREE.Raycaster();
-    const pointer = new THREE.Vector2();
+    const { update: updatePointer } = createPointerState(THREE, canvas, camera);
     let dragging = false;
 
-    function updatePointer(e) {
-        const rect = canvas.getBoundingClientRect();
-        pointer.set(
-            ((e.clientX - rect.left) / rect.width) * 2 - 1,
-            -((e.clientY - rect.top) / rect.height) * 2 + 1,
-        );
-    }
-
     function onPointerDown(e) {
-        updatePointer(e);
-        raycaster.setFromCamera(pointer, camera);
-        const hits = raycaster.intersectObject(rightSphere, false);
+        const hits = updatePointer(e).intersectObject(rightSphere, false);
         if (hits.length === 0) return;
         dragging = true;
         cameraControls.enabled = false;
@@ -316,9 +307,7 @@ export default async function (scene, camera, canvas, initialView, helpers) {
 
     function onPointerMove(e) {
         if (!dragging) return;
-        updatePointer(e);
-        raycaster.setFromCamera(pointer, camera);
-        const hits = raycaster.intersectObject(rightSphere, false);
+        const hits = updatePointer(e).intersectObject(rightSphere, false);
         if (hits.length > 0) updateCovector(hits[0].point);
     }
 
@@ -329,10 +318,7 @@ export default async function (scene, camera, canvas, initialView, helpers) {
         }
     }
 
-    canvas.addEventListener('pointerdown', onPointerDown);
-    canvas.addEventListener('pointermove', onPointerMove);
-    canvas.addEventListener('pointerup', onPointerUp);
-    canvas.addEventListener('pointercancel', onPointerUp);
+    attachPointerDrag(canvas, { onPointerDown, onPointerMove, onPointerUp });
 
     // Camera and controls.
     const home = new THREE.Vector3(0, 0.8, 4.2);

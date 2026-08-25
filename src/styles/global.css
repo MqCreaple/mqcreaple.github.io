@@ -32,7 +32,7 @@
   --error-bg: #3a1a1e;
   --error-border: #8a3a42;
   --code-bg: #182022;
-  --quote-bg: #47430499;
+  --quote-bg: #3f3b0999;
   color-scheme: dark;
 }
 
@@ -280,7 +280,7 @@ pre,
 }
 
 .post {
-  width: min(720px, 100%);
+  width: min(960px, 100%);
   margin: 0 auto;
 }
 

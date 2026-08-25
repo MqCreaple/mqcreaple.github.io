@@ -297,9 +297,9 @@ leftmost (NonLeaf a b) = (leftmost a)
 
 有时候你可能会见到用类似这样的记号书写类型系统：
 
-$ (Gamma, thin x: sigma tack.r t : tau)/(Gamma tack.r (lambda x. thin t): (sigma -> tau)) $
+$ (Gamma, thin x: sigma tack.r t : tau)/(Gamma tack.r (lambda x. thin t): (sigma -> tau)) $ <eq:function-type-deduction>
 
-其中的 $Gamma$ 就是我们说到的语境，$tack.r$ 记号表示类型推断，而横线则表示逻辑推断。比如上面这个公式就可以这么翻译：
+其中的 $Gamma$ 就是我们说到的语境，$tack.r$ 记号表示类型推断，而横线则表示逻辑推断。比如 @eq:function-type-deduction 就可以这么翻译：
 
 “如果在语境 $Gamma, thin x: sigma$ 中 $t$ 的类型为 $tau$，那么在语境 $Gamma$ 中表达式 $(lambda x. thin t)$ 的类型为 $(sigma -> tau)$。”
 

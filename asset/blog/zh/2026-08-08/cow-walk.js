@@ -5,6 +5,8 @@
 // Controls: W/A/S/D to move along two perpendicular tangent directions
 // (forward/back and strafe), horizontal drag to rotate the character, and a
 // checkbox to toggle a wireframe view of the cow.
+import { loadCowGeometry } from '../../shared/cow-loader.js';
+
 export default async function (scene, camera, canvas, initialView, helpers) {
     const { THREE, OBJLoader, mergeVertices } = helpers;
 
@@ -217,31 +219,3 @@ export default async function (scene, camera, canvas, initialView, helpers) {
     }
 }
 
-// Loads cow.obj, merges duplicate vertices, computes smooth normals, then
-// centers the mesh and scales it so its maximum dimension equals `scale`.
-async function loadCowGeometry(THREE, OBJLoader, mergeVertices, scale) {
-    const response = await fetch('/blog/zh/2026-08-08/cow.obj');
-    if (!response.ok) throw new Error(`Failed to fetch cow.obj (${response.status})`);
-
-    const object = new OBJLoader().parse(await response.text());
-    const meshes = [];
-    object.traverse((child) => {
-        if (child.isMesh) meshes.push(child);
-    });
-    if (meshes.length === 0) throw new Error('No mesh found in cow.obj');
-
-    let geometry = meshes[0].geometry;
-    geometry.deleteAttribute('normal');
-    geometry = mergeVertices(geometry, 1e-4);
-    geometry.computeVertexNormals();
-    geometry.computeBoundingBox();
-
-    const center = new THREE.Vector3();
-    geometry.boundingBox.getCenter(center);
-    geometry.translate(-center.x, -center.y, -center.z);
-
-    const size = geometry.boundingBox.getSize(new THREE.Vector3());
-    const maxDim = Math.max(size.x, size.y, size.z);
-    geometry.scale(scale / maxDim, scale / maxDim, scale / maxDim);
-    return geometry;
-}

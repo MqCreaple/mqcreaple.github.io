@@ -3,7 +3,7 @@
 // tags: mathematics, differential-geometry
 // category: tech
 
-#import "../../template.typ": article, mathbf, three-js-figure, theorem, definition, proof, cetz-canvas
+#import "../../template.typ": article, mathbf, three-js-figure, theorem, definition, proof, corollary, cetz-canvas
 #import "@preview/cetz:0.3.4"
 
 #show: article.with(
@@ -36,6 +36,12 @@
 #definition[
   一个*流形*$M$ 是一个点集，满足任何 $p in M$ 都有一个邻域同胚于一个欧几里得空间 $RR^m$ 的开子集。其中 $m$ 被称为流形 $M$ 的*维度*。
 ] <def:manifold-rough>
+
+显然，根据这个定义，欧几里得空间自身肯定是流形，因为它们每个点的局部本身就是欧氏空间，自然符合上述定义。
+
+#corollary[
+  欧几里得空间 $RR^m$ 是 $m$ 维流形。
+]
 
 我们也可以举出一些反例，比如下面这些东西就不是流形，因为这些图案上存在某些不同构于平直欧氏空间的点。比如，十字交叉图案上，交叉点附近的区域同时和四个方向的平面相邻，因此这些区域不可能同构于欧氏空间。
 
@@ -212,10 +218,10 @@
 #definition[
   对于 $m$ 维流形 $M$ 和 $n$ 维流形 $N$，若函数 $f: M arrow.r N$ 满足：对于任意点 $p in M$，存在 $M$ 上的坐标卡 $(U, phi)$ 和 $N$ 上的坐标卡 $(V, psi)$，使得
 
-  1. $ p in U, f(p) in V $
+  1. $p in U, f(p) in V$
   2. $(psi compose f compose phi^(-1))$ 是一个光滑函数。
 
-  则称映射 $f$*光滑*。
+  则称映射 $f$ *光滑*。
 ] <def:smooth>
 
 由于 $(psi compose f compose phi^(-1))$ 的定义域和值域为欧氏空间 $RR^m$ 和 $RR^n$ 的子集，这个函数的光滑性是已经有定义的。这个定义其实同样是把一般流形的性质用坐标卡变成我们熟悉的欧氏空间中的性质。
@@ -258,7 +264,7 @@
 1. 雅可比矩阵是线性的。$ J_(c_1 mathbf(f) + c_2 mathbf(g))(mathbf(p)) = c_1 J_mathbf(f) (mathbf(p)) + c_2 J_mathbf(g) (mathbf(p)) $
 2. $mathbf(f) : RR^n arrow.r RR^n$ 映射若在 $mathbf(p)$ 点局部可逆，则其逆映射 $mathbf(f)^(-1)$ 的雅可比矩阵为原映射雅可比的逆矩阵。 $ J_(mathbf(f)^(-1)) (mathbf(f)(mathbf(p))) = (J_mathbf(f) (mathbf(p)))^(-1) $
 3. 复合函数的雅可比矩阵满足链式法则。$ J_(mathbf(g) compose mathbf(f))(mathbf(p)) = J_mathbf(g) (mathbf(f)(mathbf(p))) J_mathbf(f) (mathbf(p)) $
-4. 自反函数 $id(mathbf(p)) = mathbf(p)$ 的雅可比矩阵为单位矩阵 $I$。
+4. 恒等函数 $id(mathbf(p)) = mathbf(p)$ 的雅可比矩阵为单位矩阵 $I$。
 
 这三条性质都可以在流形微分运算中找到对应。如下所示：
 
@@ -281,9 +287,43 @@
 ]
 
 #theorem[
-  （自反映射的微分）映射 $id_M : M arrow.r M, p mapsto p$ 的微分为：
+  （恒等映射的微分）映射 $id_M : M arrow.r M, p mapsto p$ 的微分为：
 
   $ dif id_M = id_(T_p M) $
 ]
 
 上述四条性质使用 $p$ 点附近的坐标映射都不难证明，此处就留作练习了。不难发现，一元函数的微分和多元函数的微分都可以看作是上面四个定理的特例——$RR^m arrow.r RR^n$ 的线性映射就是矩阵，而逆映射和复合映射就对应着矩阵的逆和矩阵相乘，而这在 $m = n = 1$ 时又退化为实数的倒数和乘法。
+
+= 流形上的场
+
+与欧氏空间上的场类似，只要我们给流形 $M$ 的每个点 $p in M$ 上放一个数学对象，那么就构成了一个流形上的*场*。我们在点上放的是什么对象，得到的就是什么场。比如，给流形的每个点上放一个实数 $RR$，那得到的就是一个标量场；给每个点 $p$ 放一个 $T_p M$ 空间中的向量，那得到的就是一个向量场。
+
+#figure(
+  three-js-figure("/blog/zh/2026-08-08/fields-on-cow.js", body: [_（交互式三维场景，仅在网页版显示。）_]),
+  caption: [牛表面上的标量场和向量场：左侧的牛上用色卡展示了一个标量场，右侧的牛上展示了一个向量场，可以拖拽向量场上的点来观察不同位置上的向量。],
+) <fig:fields-on-cow>
+
+只不过，微分几何通常只研究光滑的对象，也就是说，不是任何函数 $M arrow.r RR$ 都可以叫做一个标量场，只有 $M arrow.r RR$ 的光滑函数才能叫标量场。由于 $RR$ 本身就是一个流形，因此我们这里可以直接借用 @def:smooth 对光滑函数的定义。
+
+#definition[
+  一个光滑映射 $f : M arrow.r RR$ 又被称作一个*标量场*或者一个*(0, 0)型张量场*。
+] <def:scalar-field>
+
+要定义向量场的话会略微有点复杂，因为向量场需要给每个点 $p$ 分配一个 $T_p M$ 上的向量，而每个 $p$ 对应的 $T_p M$ 都是一个独立的向量空间，不同的 $T_p M$ 之间甚至都无法比较（至少不能用我们目前掌握的工具来比较），那我们该怎么定义什么样的向量场算是光滑的呢？
+
+不难想到，我们同样可以像之前一样，将某个点局部的向量场通过坐标映射来映射到欧氏空间中，而欧氏空间中的连续性同样是我们熟悉的，这样就可以定义向量场的连续性了。
+
+#definition[
+  （向量场的一种定义方式）定义流形 $M$ 上的*向量场*\/*(1, 0)型张量场*为映射 $X : M arrow.r T M$，满足：
+
+  1. $forall p in M, X(p) in T_p M$
+  2. 对于任意 $p in M$ 和任意包含点 $p$ 的坐标卡 $(U_alpha, phi_alpha) in scr(A)$，场
+
+    $ dif phi_alpha compose X compose phi_alpha^(-1) : RR^m arrow.r RR^m $
+
+    是一个光滑函数。
+] <def:vector-field>
+
+当然这个定义并不是微分几何里最经典的定义向量场的方式。向量场实际上的定义是在纤维丛上的一个光滑截面，只不过我们在这里就不纠结这些细节了，就将 @def:vector-field 作为我们对向量场的标准定义。
+
+你可能看到了我们还在定义后面标注了标量场和向量场分别是(0, 0)型和(1, 0)型张量场。这个标号的具体含义等到我们下一章中讲完协向量之后会更清晰。

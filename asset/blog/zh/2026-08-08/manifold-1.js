@@ -9,6 +9,8 @@
 //
 // Controls: drag to orbit, scroll to zoom, and a checkbox to toggle the
 // wireframe overlay (same as manifold-0.js).
+import { fetchText, parseObjGeometry } from '../../shared/obj-loader.js';
+
 export default async function (scene, camera, canvas, initialView, helpers) {
     const { THREE, OBJLoader } = helpers;
     const cameraControls = helpers.cameraControls.createOrbit();
@@ -42,10 +44,10 @@ export default async function (scene, camera, canvas, initialView, helpers) {
     // Load both counterexample meshes. The ring is rotated so its pinch point
     // P (with the red triangles) faces the camera.
     const results = await Promise.allSettled([
-        loadColoredObj('/blog/zh/2026-08-08/cross.obj', THREE, OBJLoader, helpers).then(
+        loadColoredObj('/3d/cross.obj', THREE, OBJLoader, helpers).then(
             (geometry) => addMesh(geometry, -1.6),
         ),
-        loadColoredObj('/blog/zh/2026-08-08/ring.obj', THREE, OBJLoader, helpers).then(
+        loadColoredObj('/3d/ring.obj', THREE, OBJLoader, helpers).then(
             (geometry) => addMesh(geometry, 1.6, -Math.PI / 2),
         ),
     ]);
@@ -85,23 +87,12 @@ export default async function (scene, camera, canvas, initialView, helpers) {
 // OBJ header) are red (highlighting the non-manifold features), the rest are
 // the base teal.
 async function loadColoredObj(url, THREE, OBJLoader, helpers) {
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(`Failed to fetch ${url} (${response.status})`);
-    const text = await response.text();
+    const text = await fetchText(url);
 
     const redMatch = text.match(/^#\s*red-faces:\s*(\d+)\s*$/m);
     const redCount = redMatch ? parseInt(redMatch[1], 10) : 0;
 
-    const object = new OBJLoader().parse(text);
-    const meshes = [];
-    object.traverse((child) => {
-        if (child.isMesh) meshes.push(child);
-    });
-    if (meshes.length === 0) throw new Error(`No mesh found in ${url}`);
-
-    let geometry = meshes[0].geometry;
-    geometry.deleteAttribute('normal');
-    geometry.computeVertexNormals();
+    const geometry = parseObjGeometry(text, OBJLoader);
 
     const count = geometry.attributes.position.count;
     const triCount = count / 3;

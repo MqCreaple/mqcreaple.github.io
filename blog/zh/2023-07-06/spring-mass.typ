@@ -32,9 +32,9 @@ $ mathbf(f)_1 = -mathbf(f)_2 = k (||mathbf(r)_12|| - l) hat(mathbf(r))_12 $
 
 假设弹簧阻尼正比于弹簧的速度，那么修正之后的表达式就是：
 
-$ mathbf(f)_1 = -mathbf(f)_2 = k (||mathbf(r)_12|| - l) hat(mathbf(r))_12 - c (dif mathbf(r)_12)/(dif t) $
+$ mathbf(f)_1 = -mathbf(f)_2 = k (||mathbf(r)_12|| - l) hat(mathbf(r))_12 - c (dif mathbf(r)_12)/(dif t) $ <eq:damped-spring-formula>
 
-将上述公式展开就是：
+将 @eq:damped-spring-formula 展开就是：
 
 $ mathbf(f)_1 = -mathbf(f)_2 = k (||mathbf(x)_2 - mathbf(x)_1|| - l) (mathbf(x)_2 - mathbf(x)_1)/(||mathbf(x)_2 - mathbf(x)_1||) - c ((dif mathbf(x)_2)/(dif t) - (dif mathbf(x)_1)/(dif t)) $
 
@@ -130,11 +130,11 @@ $ y(t_0) = y_0 $
 
 我们该怎么尽可能精确地求出 $y$ 在任意 $t$ 时刻的数值呢？
 
-你一定想到了，我们可以将时间 $t$ 离散化处理，取一个非常小的时间间隔 $Delta t$，接着循环迭代，每次计算 $y$ 的导数，并用公式
+你一定想到了，我们可以将时间 $t$ 离散化处理，取一个非常小的时间间隔 $Delta t$，接着循环迭代，每次计算 $y$ 的导数，并用 @eq:euler-method 来更新。
 
-$ y_(t+1) = y_t + (dif y)/(dif t) Delta t $
+$ y_(t+1) = y_t + (dif y)/(dif t) Delta t $ <eq:euler-method>
 
-来更新。这样只要 $Delta t$ 取得足够小，我们就可以得到任意精确的 $y(t)$ 了。这种方法被称为*欧拉法*。
+这样只要 $Delta t$ 取得足够小，我们就可以得到任意精确的 $y(t)$ 了。这种方法被称为*欧拉法*。
 
 但是，事实真的是这样吗？
 

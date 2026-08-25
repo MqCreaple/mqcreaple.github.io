@@ -98,9 +98,9 @@ $ A mathbf(x)_* = sum_(i=0)^(n-1) alpha_k A mathbf(p)_i = mathbf(b) $
 
 两侧同时对 $mathbf(p)_k$ 做内积，得到：
 
-$ mathbf(p)_k^T mathbf(b) = mathbf(p)_k^T A mathbf(x)_* = sum_(i=0)^(n-1) alpha_k mathbf(p)_k^T A mathbf(p)_i = alpha_k mathbf(p)_k^T A mathbf(p)_k $
+$ mathbf(p)_k^T mathbf(b) = mathbf(p)_k^T A mathbf(x)_* = sum_(i=0)^(n-1) alpha_k mathbf(p)_k^T A mathbf(p)_i = alpha_k mathbf(p)_k^T A mathbf(p)_k $ <eq:14>
 
-最后一个等式利用了 $brace.l mathbf(p)_k brace.r$ 关于 $A$ 的正交性。这也是为什么一开始会需要规定 $brace.l mathbf(p)_k brace.r$ 关于 $A$ 正交。由上式不难得到：
+最后一个等式利用了 $brace.l mathbf(p)_k brace.r$ 关于 $A$ 的正交性。这也是为什么一开始会需要规定 $brace.l mathbf(p)_k brace.r$ 关于 $A$ 正交。由 @eq:14 不难得到：
 
 $ alpha_k = (mathbf(p)_k^T mathbf(b))/(mathbf(p)_k^T A mathbf(p)_k) $
 
@@ -234,7 +234,7 @@ $ mathbf(r)_(k+1) = mathbf(r)_k - alpha_k A mathbf(p)_k $
 
 $ A mathbf(p)_k = (mathbf(r)_k - mathbf(r)_(k+1))/(alpha_k) $
 
-代入原式：
+两侧左乘向量 $r_k^T$
 
 $ mathbf(r)_k^T A mathbf(p)_i = (1)/(alpha_i) mathbf(r)_k^T (mathbf(r)_i - mathbf(r)_(i+1)) $
 

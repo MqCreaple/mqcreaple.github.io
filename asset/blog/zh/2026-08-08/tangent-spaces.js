@@ -6,6 +6,9 @@
 //
 // Controls: drag a point to move it on the sphere, drag elsewhere to orbit,
 // and buttons to randomize the points or reset the view.
+import { createPointerState, attachPointerDrag } from '../../shared/pointer-drag.js';
+import { makeTextSprite } from '../../shared/text-sprite.js';
+
 export default async function (scene, camera, canvas, initialView, helpers) {
     const { THREE } = helpers;
     const cameraControls = helpers.cameraControls.createOrbit();
@@ -48,7 +51,7 @@ export default async function (scene, camera, canvas, initialView, helpers) {
         );
         scene.add(d.arrow);
 
-        d.label = helpers.makeTextSprite(d.label, d.cssColor);
+        d.label = makeTextSprite(THREE, d.label, d.cssColor);
         scene.add(d.label);
     }
 
@@ -92,21 +95,11 @@ export default async function (scene, camera, canvas, initialView, helpers) {
 
     // 4. Drag a point along the sphere (raycast to the sphere); dragging
     //    elsewhere orbits (OrbitControls stays enabled).
-    const raycaster = new THREE.Raycaster();
-    const pointer = new THREE.Vector2();
+    const { update: updatePointer } = createPointerState(THREE, canvas, camera);
     let selected = null;
 
-    const updatePointer = (e) => {
-        const rect = canvas.getBoundingClientRect();
-        pointer.set(
-            ((e.clientX - rect.left) / rect.width) * 2 - 1,
-            -((e.clientY - rect.top) / rect.height) * 2 + 1,
-        );
-    };
     const onPointerDown = (e) => {
-        updatePointer(e);
-        raycaster.setFromCamera(pointer, camera);
-        const hits = raycaster.intersectObject(sphere, false);
+        const hits = updatePointer(e).intersectObject(sphere, false);
         if (hits.length === 0) return;
         const hit = hits[0].point;
         let best = null;
@@ -122,9 +115,7 @@ export default async function (scene, camera, canvas, initialView, helpers) {
     };
     const onPointerMove = (e) => {
         if (!selected) return;
-        updatePointer(e);
-        raycaster.setFromCamera(pointer, camera);
-        const hits = raycaster.intersectObject(sphere, false);
+        const hits = updatePointer(e).intersectObject(sphere, false);
         if (hits.length > 0) placePoint(selected, hits[0].point.clone());
     };
     const onPointerUp = () => {
@@ -133,10 +124,7 @@ export default async function (scene, camera, canvas, initialView, helpers) {
             cameraControls.enabled = true;
         }
     };
-    canvas.addEventListener('pointerdown', onPointerDown);
-    canvas.addEventListener('pointermove', onPointerMove);
-    canvas.addEventListener('pointerup', onPointerUp);
-    canvas.addEventListener('pointercancel', onPointerUp);
+    attachPointerDrag(canvas, { onPointerDown, onPointerMove, onPointerUp });
 
     // 5. Camera + controls.
     const home = new THREE.Vector3(0, 0.6, 3.2);

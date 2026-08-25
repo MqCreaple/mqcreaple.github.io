@@ -60,6 +60,7 @@
   show raw: set text(font: ("Consolas", "Courier New"))
   set document(title: title)
   set bibliography(style: "ieee")
+  set math.equation(numbering: "(1)")
   if sys.inputs.at("format", default: "pdf") != "html" {
     show image: it => align(center, it)
 
