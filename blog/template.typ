@@ -80,7 +80,16 @@
   // the else branch returns the equation unchanged.
   show math.equation.where(block: true): it => {
     if target() == "html" {
-      html.elem("div", html.frame(it), attrs: (class: "typst-math-block"))
+      html.elem(
+        "div",
+        [
+          #html.elem("span", html.frame(math.equation(block: true, numbering: none, it.body)), attrs: (class: "typst-math-block-body"))
+          #if it.numbering != none [
+            #html.elem("span", html.frame(counter(math.equation).display(it.numbering)), attrs: (class: "typst-math-block-number"))
+          ]
+        ],
+        attrs: (class: "typst-math-block"),
+      )
     } else {
       it
     }

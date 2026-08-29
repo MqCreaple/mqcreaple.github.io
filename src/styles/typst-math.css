@@ -29,8 +29,25 @@
 
 /* Block equations: centered with breathing room above and below. */
 .typst-math-block {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  position: relative;
   margin: 1em 0;
   text-align: center;
+}
+
+.typst-math-block-body {
+  display: inline-block;
+  min-width: 0;
+}
+
+.typst-math-block-number {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
 }
 
 .typst-math-block svg {
