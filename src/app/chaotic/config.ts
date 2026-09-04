@@ -187,7 +187,7 @@ export const INSTRUMENT_DEFS: InstrumentConfig[] = [
     reverb: { wet: { value: 0.4, env: 'lorenz-x', amplitude: 0.8 }, decay: 2.0 },
     comp: { threshold: -20, ratio: 5, attack: 0.002, release: 0.1 },
     lfo: { enabled: false, waveform: 'sine', rate: 0.5 },
-    out: { volume: { value: 0.7, env: 'lorenz-x', amplitude: -0.45 }, pan: -0.5 },
+    out: { volume: { value: 0.7, env: 'lorenz-x', amplitude: -0.45 }, pan: { value: 0.0, env: 'lorenz-x', amplitude: 0.6 } },
   },
   {
     id: 'lead',
