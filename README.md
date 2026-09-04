@@ -32,6 +32,24 @@ npm run preview  # preview the built site
 Apps and PDFs are copied into `output/app/` and `output/pdf/` after the Astro
 build; during development they are served from `app/` and a local cache.
 
+## Web apps
+
+Two ways to add a web app:
+
+- **Astro-native apps** (recommended for new apps): the page lives at
+  `src/pages/app/<name>/index.astro` and uses the shared
+  `src/layouts/Base.astro` layout. The default slot holds the main content
+  (left column) and the `aside` slot holds the right-hand sidebar, so
+  configuring either side is just a matter of passing content to the right slot. App scripts go in
+  `src/app/<name>/` (TypeScript) and stylesheet files in
+  `src/app/<name>/styles/`; import them in the page so Astro bundles them into the
+  build. `npm run typecheck` checks all TypeScript sources.
+
+- **Legacy standalone apps**: the app lives in `app/<name>/` with a
+  `metadata.json` (listing scripts/styles and `left.html`/`right.html` markup).
+  These pages use `src/layouts/AppLayoutClassical.astro` and their static
+  files are served verbatim from `app/`.
+
 ## Search
 
 Full-text search is powered by [Pagefind](https://pagefind.app). `npm run build`
@@ -59,6 +77,8 @@ src/layouts/                    # Astro page layouts
 src/components/                 # Astro components, custom elements, figure builders
 src/generated/articles/         # build-generated Typst HTML fragments
 src/styles/                     # global and figure CSS
+src/app/<name>/                 # scripts/modules of Astro-native web apps
+src/app/<name>/styles/          # stylesheet files of Astro-native web apps
 scripts/                        # build scripts (Typst -> HTML/PDF, output finalization)
 app/<name>/                     # standalone web apps (HTML/CSS/JS/WASM)
 output/                         # static build output, deployable to GitHub Pages

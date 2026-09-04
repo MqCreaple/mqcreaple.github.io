@@ -1,0 +1,22 @@
+---
+// Select.astro — server-rendered select control.
+
+interface Props {
+  inst: string;
+  param: string;
+  /** Original param spec (kept when a tabbed block resolves '[tab]'). */
+  paramPattern?: string;
+  label?: string;
+  options?: string[];
+  value?: string;
+}
+
+const { inst, param, paramPattern = '', label = '', options = [], value = '' } = Astro.props;
+---
+
+<label class="control control--select" data-control="select" data-inst={inst} data-param={param} data-param-pattern={paramPattern || undefined}>
+  <span class="control-label">{label}</span>
+  <select class="select-input">
+    {options.map((option) => <option value={option} selected={option === value}>{option}</option>)}
+  </select>
+</label>

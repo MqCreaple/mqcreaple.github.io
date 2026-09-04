@@ -1,0 +1,41 @@
+---
+// Instruments.astro — server-side construction of the virtual instruments.
+// The instrument header holds the name plus the per-instrument output strip
+// (volume slider + pan knob) and the mute/solo buttons. The chain below is
+// rendered from the shared SECTIONS layout in config.ts: every section
+// (title/key/optional plot/controls/blocks) turns into exactly the DOM
+// structure the app's CSS and client binder expect, keeping the data-*
+// attributes (data-control/data-inst/data-param/data-param-pattern/data-plot/
+// data-osc). Flexible separators between sections draw the vertical divider
+// lines centred in the inter-section gaps.
+
+import InstrumentSection from './InstrumentSection.astro';
+import ControlWidget from './ControlWidget.astro';
+import { INSTRUMENT_DEFS, OUTPUT_CONTROLS, SECTIONS } from '../config.ts';
+---
+
+{INSTRUMENT_DEFS.map((def) => (
+  <div class="instrument" data-id={def.id} data-inst={def.id}>
+    <div class="instrument-head">
+      <span class="instrument-name">{def.name}</span>
+      <div class="instrument-output">
+        <div class="instrument-output-controls">
+          {OUTPUT_CONTROLS.map((ctl) => <ControlWidget def={def} ctl={ctl} />)}
+        </div>
+        <span class="instrument-mutesolo">
+          <button type="button" class="chaotic-btn chaotic-btn--mute" data-control="toggle" data-inst={def.id} data-action="mute">Mute</button>
+          <button type="button" class="chaotic-btn chaotic-btn--solo" data-control="toggle" data-inst={def.id} data-action="solo">Solo</button>
+        </span>
+      </div>
+    </div>
+
+    <div class="instrument-chain">
+      {SECTIONS.flatMap((section, index) => [
+        ...(index > 0
+          ? [<div class="instrument-chain-separator" aria-hidden="true"></div>]
+          : []),
+        <InstrumentSection def={def} section={section} />,
+      ])}
+    </div>
+  </div>
+))}

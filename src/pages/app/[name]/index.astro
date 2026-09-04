@@ -1,7 +1,7 @@
 ---
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
-import AppLayout from '../../../layouts/AppLayout.astro';
+import AppLayoutClassical from '../../../layouts/AppLayoutClassical.astro';
 
 export function getStaticPaths() {
   const appsDir = path.join(process.cwd(), 'app');
@@ -18,20 +18,20 @@ const meta = existsSync(metaPath)
   ? JSON.parse(readFileSync(metaPath, 'utf-8'))
   : { title: name, introduction: '', scripts: [], styles: [] };
 
-function readAppFile(file) {
+function readAppFile(file: string) {
   const full = path.join(appDir, file);
   return existsSync(full) ? readFileSync(full, 'utf-8') : '';
 }
 
 const styles = (meta.styles ?? [])
-  .map((file) => `<link rel="stylesheet" href="/app/${name}/${file}" />`)
+  .map((file: string) => `<link rel="stylesheet" href="/app/${name}/${file}" />`)
   .join('\n');
 const scripts = (meta.scripts ?? [])
-  .map((file) => `<script src="/app/${name}/${file}"></script>`)
+  .map((file: string) => `<script src="/app/${name}/${file}"></script>`)
   .join('\n');
 ---
 
-<AppLayout
+<AppLayoutClassical
   title={meta.title}
   description={meta.introduction}
   headHtml={`${styles}\n${scripts}`}

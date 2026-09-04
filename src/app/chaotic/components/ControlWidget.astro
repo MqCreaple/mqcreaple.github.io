@@ -1,0 +1,64 @@
+---
+// ControlWidget.astro — renders one ControlSpec against an instrument def.
+// Thin adapter between the config-driven layout (config.ts SECTIONS) and the
+// widget components: it looks up the live value for the control's param,
+// resolves modulation source bindings, and picks the matching widget.
+// `paramPattern` keeps the original spec param (with any '[tab]' placeholder)
+// so the client can re-resolve the widget when a tabbed block switches tabs.
+
+import type { ControlSpec, ModulationSource } from '../config.ts';
+import { allowedModulationSourcesForPath, getConfig } from '../config.ts';
+import type { InstrumentConfig } from '../engine.ts';
+import Checkbox from './Checkbox.astro';
+import Knob from './Knob.astro';
+import NumberInput from './NumberInput.astro';
+import Select from './Select.astro';
+import Slider from './Slider.astro';
+
+interface Props {
+  def: InstrumentConfig;
+  ctl: ControlSpec;
+  /** Original (possibly '[tab]' templated) param, forwarded to the widget. */
+  paramPattern?: string;
+  /** Widgets are marked disabled when their enclosing block is switched off. */
+  disabled?: boolean;
+}
+
+const { def, ctl, paramPattern = '', disabled = false } = Astro.props;
+
+/** Base number + optional modulation source for knob/slider params. */
+function numericBinding(param: string): { value: number; mod?: { env: ModulationSource; amplitude: number } } {
+  const raw = getConfig(def, param);
+  if (raw && typeof raw === 'object' && !Array.isArray(raw)) {
+    const o = raw as { value: number; env: ModulationSource; amplitude: number };
+    return { value: o.value, mod: { env: o.env, amplitude: o.amplitude } };
+  }
+  return { value: raw as number };
+}
+---
+
+{ctl.kind === 'checkbox' && (
+  <Checkbox inst={def.id} param={ctl.param} paramPattern={paramPattern || undefined} label={ctl.label} checked={Boolean(getConfig(def, ctl.param))} />
+)}
+
+{ctl.kind === 'select' && (
+  <Select inst={def.id} param={ctl.param} paramPattern={paramPattern || undefined} label={ctl.label} options={ctl.options ?? []} value={String(getConfig(def, ctl.param) ?? '')} />
+)}
+
+{ctl.kind === 'number' && (
+  <NumberInput inst={def.id} param={ctl.param} paramPattern={paramPattern || undefined} label={ctl.label} value={Number(getConfig(def, ctl.param) ?? ctl.min ?? 1)} min={ctl.min ?? 1} max={ctl.max ?? 8} step={ctl.step ?? 1} />
+)}
+
+{ctl.kind === 'knob' && (() => {
+  const b = numericBinding(ctl.param);
+  return (
+    <Knob inst={def.id} param={ctl.param} paramPattern={paramPattern || undefined} label={ctl.label} min={ctl.min ?? 0} max={ctl.max ?? 1} step={ctl.step ?? 0.01} value={b.value} precision={ctl.precision ?? 2} unit={ctl.unit ?? ''} log={ctl.log ?? false} mod={b.mod} modSources={allowedModulationSourcesForPath(ctl.param)} disabled={disabled} />
+  );
+})()}
+
+{ctl.kind === 'slider' && (() => {
+  const b = numericBinding(ctl.param);
+  return (
+    <Slider inst={def.id} param={ctl.param} paramPattern={paramPattern || undefined} label={ctl.label} min={ctl.min ?? 0} max={ctl.max ?? 1} step={ctl.step ?? 0.01} value={b.value} precision={ctl.precision ?? 0} unit={ctl.unit ?? ''} log={ctl.log ?? false} mod={b.mod} modSources={allowedModulationSourcesForPath(ctl.param)} orientation={ctl.orientation ?? 'vertical'} disabled={disabled} />
+  );
+})()}

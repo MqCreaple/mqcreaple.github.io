@@ -25,7 +25,7 @@ const fragment = readFileSync(fragmentPath, 'utf-8');
 const hasThreeJsFigure = fragment.includes('three-js-figure');
 const hasShadertoyFigure = fragment.includes('shadertoy-figure');
 const hasPlotlyFigure = fragment.includes('plotly-figure');
-const t = translations[lang] ?? translations.en;
+const t = translations[lang as keyof typeof translations] ?? translations.en;
 const dateLabel = new Intl.DateTimeFormat(lang === 'zh' ? 'zh-CN' : 'en-US', {
   dateStyle: 'long',
 }).format(new Date(date));
@@ -49,7 +49,7 @@ function headAssets(heads: string[]): string {
 const headHtml = headAssets(htmlHeads);
 ---
 
-<Base title={`${title} · GMQ's Tech Haven`} description={summary} lang={lang}>
+<Base title={`${title} · ${t.siteTitle}`} description={summary} lang={lang}>
   {headHtml && <Fragment slot="head" set:html={headHtml} />}
   <article class="post">
     <header class="post-header">

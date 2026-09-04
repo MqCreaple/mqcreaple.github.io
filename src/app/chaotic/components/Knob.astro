@@ -1,0 +1,104 @@
+---
+// Knob.astro — server-rendered knob. Markup mirrors the runtime widget DOM
+// and exposes data-* attributes so the client binder can attach behaviour.
+
+import type { ModulationSource } from '../config.ts';
+import { modulationExtrema, toRangeNorm } from '../modulation-range.ts';
+
+interface Mod { env?: ModulationSource; amplitude?: number }
+
+interface Props {
+  inst: string;
+  param: string;
+  /** Original param spec (kept when a tabbed block resolves '[tab]'). */
+  paramPattern?: string;
+  label?: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  value?: number;
+  precision?: number;
+  unit?: string;
+  log?: boolean;
+  mod?: Mod | null;
+  modSources?: ModulationSource[];
+  disabled?: boolean;
+}
+
+const {
+  inst, param, paramPattern = '', label = '', min = 0, max = 1, step = 0.01, value = 0,
+  precision = 2, unit = '', log = false, mod = null, modSources = [], disabled = false,
+} = Astro.props;
+
+const SWEEP = 135;
+const CX = 22;
+const CY = 22;
+const IN_R = 16;
+const OUT_R = 19;
+
+const range = { min, max, logarithmic: log };
+const norm = toRangeNorm(value, range);
+const deg = -SWEEP + norm * 2 * SWEEP;
+
+const point = (r: number, d: number): { x: number; y: number } => ({
+  x: CX + r * Math.sin((d * Math.PI) / 180),
+  y: CY - r * Math.cos((d * Math.PI) / 180),
+});
+
+const dashEnd = point(IN_R, deg);
+
+const arcPath = (from: number, to: number): string => {
+  const a = point(OUT_R, from);
+  const b = point(OUT_R, to);
+  const large = Math.abs(to - from) > 180 ? 1 : 0;
+  const sweep = to > from ? 1 : 0;
+  return `M ${a.x.toFixed(2)} ${a.y.toFixed(2)} A ${OUT_R} ${OUT_R} 0 ${large} ${sweep} ${b.x.toFixed(2)} ${b.y.toFixed(2)}`;
+};
+
+let arcD = '';
+if (mod?.env) {
+  const [from, to] = modulationExtrema(value, mod.amplitude ?? 0, mod.env, range);
+  arcD = arcPath(
+    -SWEEP + toRangeNorm(from, range) * 2 * SWEEP,
+    -SWEEP + toRangeNorm(to, range) * 2 * SWEEP,
+  );
+}
+
+const valueText = (log || !Number.isInteger(step) ? value.toFixed(precision) : String(Math.round(value)))
+  + (unit ? ' ' + unit : '');
+---
+
+<div
+  class="chaotic-knob"
+  data-control="knob"
+  data-inst={inst}
+  data-param={param}
+  data-param-pattern={paramPattern || undefined}
+  data-min={min}
+  data-max={max}
+  data-step={step}
+  data-log={log ? '1' : '0'}
+  data-value={value}
+  data-precision={precision}
+  data-unit={unit}
+  data-env={mod?.env ?? ''}
+  data-amp={mod?.amplitude ?? 0}
+  data-mod-sources={modSources.join(',')}
+  role="slider"
+  tabindex={disabled ? '-1' : '0'}
+  aria-disabled={disabled ? 'true' : 'false'}
+  aria-label={label}
+  aria-valuenow={value}
+  aria-valuemin={min}
+  aria-valuemax={max}
+>
+  <svg class="knob-svg" viewBox="0 0 44 44" aria-hidden="true">
+    <circle class="knob-ring-outer" cx={CX} cy={CY} r={OUT_R} />
+    <path class="knob-mod-arc" d={arcD || undefined} />
+    <circle class="knob-ring" cx={CX} cy={CY} r={IN_R} />
+    <line class="knob-dash" x1={CX} y1={CY} x2={dashEnd.x.toFixed(2)} y2={dashEnd.y.toFixed(2)} />
+  </svg>
+  <div class="knob-hint" hidden></div>
+  <div class="chaotic-knob-value">{valueText}</div>
+  <div class="chaotic-knob-label">{label}</div>
+</div>

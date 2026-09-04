@@ -5,22 +5,46 @@ import Base from '../layouts/Base.astro';
 import translations from '../i18n/translations.json';
 
 const appsDir = path.join(process.cwd(), 'app');
-const apps = existsSync(appsDir)
+const astroPagesDir = path.join(process.cwd(), 'src', 'pages', 'app');
+const astroSourcesDir = path.join(process.cwd(), 'src', 'app');
+
+/** Read the shared metadata.json fields of one app folder. */
+function readAppMeta(dir: string, name: string) {
+  const metaPath = path.join(dir, name, 'metadata.json');
+  const meta = existsSync(metaPath) ? JSON.parse(readFileSync(metaPath, 'utf-8')) : {};
+  return {
+    name,
+    title: meta.title ?? name,
+    introduction: meta.introduction ?? '',
+    date: meta.date ?? '',
+  };
+}
+
+// Legacy standalone apps live in app/<name> with metadata alongside them.
+const legacyApps = existsSync(appsDir)
   ? readdirSync(appsDir, { withFileTypes: true })
       .filter((entry) => entry.isDirectory())
-      .map((entry) => {
-        const metaPath = path.join(appsDir, entry.name, 'metadata.json');
-        const meta = existsSync(metaPath)
-          ? JSON.parse(readFileSync(metaPath, 'utf-8'))
-          : { title: entry.name, introduction: '', date: '' };
-        return { name: entry.name, ...meta };
-      })
-      .sort((a, b) => (b.date ?? '').localeCompare(a.date ?? ''))
+      .map((entry) => readAppMeta(appsDir, entry.name))
   : [];
+
+// Astro-native apps live in src/pages/app/<name> with sources in src/app/<name>.
+const astroApps = existsSync(astroPagesDir)
+  ? readdirSync(astroPagesDir, { withFileTypes: true })
+      .filter(
+        (entry) =>
+          entry.isDirectory() &&
+          entry.name !== '[name]' &&
+          existsSync(path.join(astroPagesDir, entry.name, 'index.astro')),
+      )
+      .map((entry) => readAppMeta(astroSourcesDir, entry.name))
+  : [];
+
+// Both kinds share the /app/<name>/ URL space; merge newest first.
+const apps = [...legacyApps, ...astroApps].sort((a, b) => b.date.localeCompare(a.date));
 const t = translations['en'] ?? {};
 ---
 
-<Base title="Apps · mqc.blog">
+<Base title="Apps · GMQ's Tech Haven">
   <h1>Apps</h1>
   {apps.length === 0 ? (
     <p>No apps yet.</p>

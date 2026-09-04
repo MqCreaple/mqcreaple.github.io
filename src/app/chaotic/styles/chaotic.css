@@ -1,0 +1,743 @@
+/* chaotic.css — styling for the "chaotic" ambient-music app.
+   Consistent with the rest of the site: regions are divided by horizontal
+   and vertical lines instead of card-like panels. */
+
+.chaotic-app {
+  display: flex;
+  flex-direction: column;
+}
+
+.chaotic-muted {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* --- Instrument rows (horizontal lines between) ------------------------- */
+
+.chaotic-instruments {
+  display: flex;
+  flex-direction: column;
+}
+
+.instrument {
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.instrument:last-child {
+  border-bottom: none;
+}
+
+.instrument-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-bottom: 0.6rem;
+  margin-bottom: 0.9rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.instrument-name {
+  color: var(--heading);
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+/* Output strip: volume/pan on the left, mute/solo stacked on the right. */
+.instrument-output {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+.instrument-output-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.instrument-mutesolo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* Component chain: sections stretch to equal height, separated by vertical
+   lines that run the full height, with their content centered. */
+.instrument-chain {
+  display: flex;
+  align-items: stretch;
+  overflow-x: auto;
+  padding-bottom: 0.4rem;
+}
+
+/* Flexible gap between neighbouring sections. It absorbs the leftover width
+   and draws the vertical separator centred in that gap, so the line always
+   sits at the midpoint between two sections. */
+.instrument-chain-separator {
+  flex: 1 1 0;
+  min-width: 0.75rem;
+  background: linear-gradient(to right,
+    transparent 0,
+    transparent calc(50% - 0.5px),
+    var(--border) calc(50% - 0.5px),
+    var(--border) calc(50% + 0.5px),
+    transparent calc(50% + 0.5px));
+}
+
+.fx-section {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.55rem;
+  min-width: 4.6rem;
+  padding: 0.1rem 0.6rem 0.2rem;
+}
+
+.fx-section h3 {
+  margin: 0 0 0.15rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Distortion, delay, reverb, and compression share one compact column (in
+   that order, distortion first at the top of the FX chain). Its nested
+   blocks deliberately reuse the oscillator/LFO vertical control layout. */
+.fx-section--stacked {
+  min-width: 10.5rem;
+  align-items: stretch;
+}
+
+.fx-section--stacked > h3 {
+  align-self: center;
+}
+
+/* --- Knob: ring + rotating dash ---------------------------------------- */
+
+.chaotic-knob {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  cursor: ns-resize;
+  user-select: none;
+  touch-action: none;
+}
+
+.knob-svg {
+  width: 44px;
+  height: 44px;
+  overflow: visible;
+}
+
+.knob-ring {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 2;
+}
+
+.knob-dash {
+  stroke: var(--accent-strong);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.knob-ring-outer {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 1.5;
+  opacity: 0.85;
+}
+
+.knob-mod-arc {
+  fill: none;
+  stroke: var(--accent-soft);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.knob-hint {
+  position: absolute;
+  top: -0.15rem;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  z-index: 30;
+  padding: 0.15rem 0.5rem;
+  color: var(--heading);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.68rem;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.chaotic-knob-value,
+.chaotic-knob-label {
+  text-align: center;
+}
+
+.chaotic-knob-value {
+  color: var(--heading);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  min-height: 1rem;
+}
+
+.chaotic-knob-label {
+  color: var(--muted);
+  font-size: 0.68rem;
+  white-space: nowrap;
+}
+
+/* --- Slider: vertical track + horizontal dash thumb --------------------- */
+
+.chaotic-slider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  cursor: ns-resize;
+  user-select: none;
+  touch-action: none;
+}
+
+.slider-tracks {
+  position: relative;
+  width: 7px;
+  height: 96px;
+  margin: 0.3rem 0 0.1rem;
+}
+
+.slider-track,
+.slider-mod-track {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border-radius: 1px;
+}
+
+.slider-track {
+  /* Inner knob ring: the heavier side of the paired control axis. */
+  left: calc(50% + 0.5px);
+  width: 2px;
+  background: var(--border);
+}
+
+.slider-mod-track {
+  /* Outer knob ring: 3px centre-to-centre from the main track. */
+  left: calc(50% - 2.25px);
+  width: 1.5px;
+  background: color-mix(in srgb, var(--border) 60%, transparent);
+}
+
+.slider-mod-range {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 0;
+  border-radius: 1px;
+  background: var(--accent-soft);
+}
+
+.slider-thumb {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 18px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--accent-strong);
+  transform: translate(-50%, -50%);
+}
+
+/* --- In-section signal diagrams ------------------------------------------ */
+
+/* Sections that host a diagram get a bit more width so the plot is readable. */
+.fx-section--plot {
+  min-width: 12rem;
+}
+
+.signal-canvas {
+  width: 100%;
+  min-height: 130px;
+}
+
+/* Plot sections have room for a 2-column control grid. */
+.fx-section--plot .fx-controls {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 0.5rem 1rem;
+  justify-items: center;
+  align-items: center;
+}
+
+.fx-section--plot .fx-controls .control--select,
+.fx-section--plot .fx-controls .control--checkbox {
+  grid-column: 1 / -1;
+  justify-self: stretch;
+}
+
+.control--select {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.2rem;
+}
+
+.control-label {
+  color: var(--muted);
+  font-size: 0.68rem;
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* --- Checkbox ----------------------------------------------------------- */
+
+.control--checkbox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.4rem;
+}
+
+.checkbox-input {
+  width: 0.9rem;
+  height: 0.9rem;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.control--checkbox .control-label {
+  text-align: left;
+  cursor: pointer;
+}
+
+/* --- Number input ------------------------------------------------------- */
+
+.control--number {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.number-input {
+  width: 3.25rem;
+  padding: 0.15rem 0.25rem;
+  color: var(--heading);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font: inherit;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.number-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* --- Toggle buttons ----------------------------------------------------- */
+
+.chaotic-btn {
+  padding: 0.3rem 0.65rem;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.chaotic-btn:hover {
+  background: var(--accent-soft);
+}
+
+.chaotic-btn.active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+/* Mute = red, Solo = green */
+.chaotic-btn--mute.active {
+  background: var(--error-bg);
+  border-color: var(--error-border);
+  color: var(--error);
+}
+
+.chaotic-btn--solo.active {
+  background: #e7f6ec;
+  border-color: #7ed9a7;
+  color: #15803d;
+}
+
+[data-theme="dark"] .chaotic-btn--solo.active {
+  background: #0c2f1d;
+  border-color: #1f7a4d;
+  color: #4ade80;
+}
+
+.chaotic-btn--transport {
+  min-width: 5rem;
+  font-weight: 600;
+}
+
+/* --- Transport sidebar: BPM / master sliders -------------------------- */
+
+#chaotic-global-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 0.15rem 0 0.4rem;
+}
+
+/* --- Sidebar (horizontal lines between sections) ------------------------ */
+
+.chaotic-card {
+  padding: 0 0 1rem;
+  margin: 0 0 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.chaotic-card:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.chaotic-card h2 {
+  margin: 0 0 0.75rem;
+  color: var(--heading);
+  font-size: 1rem;
+}
+
+.chaotic-card .chaotic-muted {
+  margin-top: 0.75rem;
+}
+
+#chaotic-transport-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.chaotic-transport-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.chaotic-start-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.transport-status {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.transport-status::before {
+  content: '';
+  display: inline-block;
+  width: 0.6rem;
+  height: 0.6rem;
+  margin-right: 0.4rem;
+  border-radius: 50%;
+  background: var(--border);
+  vertical-align: middle;
+}
+
+.chaotic-start-stack:has(.chaotic-btn--transport.active) .transport-status::before {
+  background: var(--accent);
+  animation: chaotic-pulse var(--chaotic-beat, 1s) ease-in-out infinite;
+}
+
+@keyframes chaotic-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+/* Right-click modulation panel */
+.knob-panel[hidden] {
+  display: none;
+}
+
+.knob-panel {
+  position: fixed;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 150px;
+  padding: 0.5rem 0.6rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+}
+
+.knob-panel-title {
+  margin-bottom: 0.1rem;
+  color: var(--muted);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.knob-panel-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.knob-panel-row[hidden] {
+  display: none;
+}
+
+.knob-panel-name {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.knob-panel-toggle {
+  min-width: 2.6rem;
+  padding: 0.2rem 0.5rem;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.knob-panel-toggle.active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.knob-panel-amp {
+  display: flex;
+  justify-content: center;
+  padding-top: 0.2rem;
+  border-top: 1px solid var(--border);
+  margin-top: 0.15rem;
+}
+
+.knob-panel-amp--hidden {
+  display: none;
+}
+
+/* Horizontal slider variant */
+.chaotic-slider--horizontal {
+  cursor: ew-resize;
+}
+
+.chaotic-slider--horizontal .slider-tracks {
+  width: 120px;
+  height: 7px;
+  margin: 0.4rem 0.2rem 0.15rem;
+}
+
+.chaotic-slider--horizontal .slider-track,
+.chaotic-slider--horizontal .slider-mod-track {
+  width: 100%;
+}
+
+.chaotic-slider--horizontal .slider-track {
+  top: calc(50% + 0.5px);
+  left: 0;
+  height: 2px;
+}
+
+.chaotic-slider--horizontal .slider-mod-track {
+  top: calc(50% - 2.25px);
+  left: 0;
+  height: 1.5px;
+}
+
+.chaotic-slider--horizontal .slider-mod-range {
+  top: 0;
+  height: 100%;
+}
+
+.chaotic-slider--horizontal .slider-thumb {
+  width: 3px;
+  height: 18px;
+}
+
+/* --- Voice blocks (oscillators, LFO) ------------------------------------- */
+
+.voice-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.voice-count-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.3rem;
+}
+
+.voice-block {
+  padding: 0.3rem 0;
+}
+
+.voice-block + .voice-block {
+  border-top: 1px solid var(--border);
+}
+
+.voice-block-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.voice-block-title {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.voice-block-controls {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 0.5rem 1rem;
+  justify-items: center;
+  align-items: center;
+}
+
+.voice-block-controls .control--select,
+.voice-block-controls .chaotic-slider--horizontal {
+  grid-column: 1 / -1;
+  justify-self: stretch;
+}
+
+/* Waveform diagrams sit at block level and fill the full width, like the
+   envelope/filter plots in their sections. */
+.voice-block .signal-canvas {
+  width: 100%;
+  min-height: 130px;
+}
+
+/* Disabled voice: gray everything out and ignore pointer events. */
+.voice-block--disabled .voice-block-controls,
+.voice-block--disabled .signal-canvas {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+
+/* Tabbed blocks (e.g. Osc 1 / Osc 2): the tab selector and its Enable
+   checkbox share one row below the block title. */
+.voice-block-tabrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin: 0.15rem 0 0.3rem;
+}
+
+.voice-block-tab-select {
+  width: auto;
+  min-width: 5.2rem;
+  font-size: 0.75rem;
+}
+
+.voice-block-tabrow .control--checkbox {
+  justify-content: flex-end;
+}
+
+/* Keep the tab switcher + enable checkbox usable even when the active tab's
+   oscillator is switched off (so the user can still switch/re-enable). */
+.voice-block--disabled .voice-block-tabrow .control--checkbox {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+/* --- Lorenz attractor visualization (sidebar) ---------------------------- */
+
+.lorenz-viz {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.lorenz-viz-stage {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.lorenz-viz-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+.lorenz-viz-strips {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.lorenz-viz-strip {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.lorenz-viz-label {
+  flex: 0 0 1.1rem;
+  color: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.lorenz-viz-plot {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 92px;
+}
+
+.lorenz-viz-plot .u-wrap {
+  height: 100% !important;
+}

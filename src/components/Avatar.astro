@@ -2,7 +2,7 @@
 import translations from '../i18n/translations.json';
 
 const { lang = 'en' } = Astro.props;
-const t = translations[lang] ?? translations.en;
+const t = translations[lang as keyof typeof translations] ?? translations.en;
 const accounts = [
   { href: 'https://github.com/MqCreaple', icon: 'fa-brands fa-github', label: 'GitHub' },
   { href: 'https://space.bilibili.com/507017613', icon: 'fa-brands fa-bilibili', label: 'Bilibili' },

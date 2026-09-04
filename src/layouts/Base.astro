@@ -17,7 +17,7 @@ interface Props {
 }
 
 const { title, description = '', lang = 'en' } = Astro.props;
-const t = translations[lang] ?? translations.en;
+const t = translations[lang as keyof typeof translations] ?? translations.en;
 const pageTitle = title ?? `${t.siteTitle}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 

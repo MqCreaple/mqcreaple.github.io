@@ -1,0 +1,143 @@
+---
+// InstrumentSection.astro — renders one SECTIONS entry for an instrument.
+// A section is: an optional live plot, optional top-level controls, then
+// optional titled blocks. A block may expose a tab switcher (`tabs`): its
+// control params use 'osc.[tab].field' patterns, the tab selector + enable
+// checkbox share one row below the block title, and the active tab is the
+// first one on the server (the client switches tabs afterwards).
+
+import type { InstrumentConfig } from '../engine.ts';
+import type { ControlSpec, SectionSpec, TabSpec } from '../config.ts';
+import { getConfig, substituteTabParam } from '../config.ts';
+import ControlWidget from './ControlWidget.astro';
+
+interface Props {
+  def: InstrumentConfig;
+  section: SectionSpec;
+}
+
+const { def, section } = Astro.props;
+
+const blocks = section.blocks ?? [];
+const numberControls = section.controls.filter((ctl) => ctl.kind === 'number');
+const otherControls = section.controls.filter((ctl) => ctl.kind !== 'number');
+const hasPlot = section.plot !== undefined || blocks.some((block) => block.plot !== undefined);
+const sectionClass = hasPlot
+  ? 'fx-section fx-section--plot'
+  : blocks.length > 0
+    ? 'fx-section fx-section--stacked'
+    : 'fx-section';
+
+/** Turn a tab param like 'osc1' into the waveform plot index (1 or 2). */
+function plotOsc(tab: TabSpec): 1 | 2 | undefined {
+  const match = /(\d+)$/.exec(tab.param);
+  const osc = match ? Number(match[1]) : NaN;
+  return osc === 1 || osc === 2 ? osc : undefined;
+}
+
+/** Resolve a '[tab]' templated control spec for one concrete tab. */
+function resolveForTab(ctl: ControlSpec, tab: TabSpec): ControlSpec {
+  return { ...ctl, param: substituteTabParam(ctl.param, tab.param) };
+}
+---
+
+<section class={sectionClass} data-section={section.key}>
+  <h3>{section.title}</h3>
+
+  {section.plot && (
+    <div class="signal-canvas" data-plot={section.plot.kind} data-inst={def.id}></div>
+  )}
+
+  {otherControls.length > 0 && section.plot !== undefined && (
+    <div class="fx-controls">
+      {otherControls.map((ctl) => <ControlWidget def={def} ctl={ctl} />)}
+    </div>
+  )}
+  {otherControls.length > 0 && section.plot === undefined && (
+    otherControls.map((ctl) => <ControlWidget def={def} ctl={ctl} />)
+  )}
+
+  {(numberControls.length > 0 || blocks.length > 0) && (
+    <div class="voice-controls">
+      {numberControls.length > 0 && (
+        <div class="voice-count-row">
+          {numberControls.map((ctl) => <ControlWidget def={def} ctl={ctl} />)}
+        </div>
+      )}
+
+      {blocks.map((block) => {
+        const enableCtl = block.enableCheckbox
+          ? block.controls.find((ctl) => ctl.kind === 'checkbox')
+          : undefined;
+        const tabs = block.tabs && block.tabs.length > 0 ? block.tabs : null;
+
+        if (tabs) {
+          const activeTab = tabs[0];
+          const enableCtlTab = enableCtl ? resolveForTab(enableCtl, activeTab) : undefined;
+          const enabled = enableCtlTab ? Boolean(getConfig(def, enableCtlTab.param)) : true;
+          const bodyControls = block.controls
+            .filter((ctl) => ctl !== enableCtl)
+            .map((ctl) => ({ ctl: resolveForTab(ctl, activeTab), pattern: ctl.param }));
+          return (
+            <div
+              class={enabled ? 'voice-block' : 'voice-block voice-block--disabled'}
+              data-tabbed="1"
+              data-tabs={JSON.stringify(tabs)}
+            >
+              <div class="voice-block-head">
+                <span class="voice-block-title">{block.title}</span>
+              </div>
+              <div class="voice-block-tabrow">
+                <select class="voice-block-tab-select" aria-label={`${block.title} tab`}>
+                  {tabs.map((tab, index) => (
+                    <option value={tab.param} selected={index === 0}>{tab.name}</option>
+                  ))}
+                </select>
+                {enableCtl && enableCtlTab && (
+                  <span class="voice-block-toggle">
+                    <ControlWidget def={def} ctl={enableCtlTab} paramPattern={enableCtl.param} />
+                  </span>
+                )}
+              </div>
+
+              {block.plot && (
+                <div class="signal-canvas" data-plot={block.plot.kind} data-inst={def.id} data-osc={plotOsc(activeTab)}></div>
+              )}
+
+              <div class="voice-block-controls">
+                {bodyControls.map(({ ctl, pattern }) => (
+                  <ControlWidget def={def} ctl={ctl} paramPattern={pattern} disabled={!enabled} />
+                ))}
+              </div>
+            </div>
+          );
+        }
+
+        const enabled = enableCtl ? Boolean(getConfig(def, enableCtl.param)) : true;
+        const bodyControls = block.controls.filter((ctl) => ctl !== enableCtl);
+        return (
+          <div class={enabled ? 'voice-block' : 'voice-block voice-block--disabled'}>
+            <div class="voice-block-head">
+              <span class="voice-block-title">{block.title}</span>
+              {enableCtl && (
+                <span class="voice-block-toggle">
+                  <ControlWidget def={def} ctl={enableCtl} />
+                </span>
+              )}
+            </div>
+
+            {block.plot && (
+              <div class="signal-canvas" data-plot={block.plot.kind} data-inst={def.id} data-osc={block.plot.osc}></div>
+            )}
+
+            {bodyControls.length > 0 && (
+              <div class="voice-block-controls">
+                {bodyControls.map((ctl) => <ControlWidget def={def} ctl={ctl} disabled={!enabled} />)}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  )}
+</section>

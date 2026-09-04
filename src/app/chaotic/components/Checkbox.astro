@@ -1,0 +1,19 @@
+---
+// Checkbox.astro — server-rendered checkbox control.
+
+interface Props {
+  inst: string;
+  param: string;
+  /** Original param spec (kept when a tabbed block resolves '[tab]'). */
+  paramPattern?: string;
+  label?: string;
+  checked?: boolean;
+}
+
+const { inst, param, paramPattern = '', label = '', checked = false } = Astro.props;
+---
+
+<label class="control control--checkbox" data-control="checkbox" data-inst={inst} data-param={param} data-param-pattern={paramPattern || undefined}>
+  <input type="checkbox" class="checkbox-input" checked={checked} />
+  <span class="control-label">{label}</span>
+</label>

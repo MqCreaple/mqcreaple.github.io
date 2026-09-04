@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import worklet from './scripts/vite-plugin-worklet.mjs';
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 
@@ -58,6 +59,6 @@ export default defineConfig({
   outDir: 'output',
   trailingSlash: 'always',
   vite: {
-    plugins: [serveGeneratedFiles()],
+    plugins: [worklet(), serveGeneratedFiles()],
   },
 });

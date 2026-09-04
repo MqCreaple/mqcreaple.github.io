@@ -1,0 +1,22 @@
+---
+// NumberInput.astro — server-rendered bounded integer control.
+
+interface Props {
+  inst: string;
+  param: string;
+  /** Original param spec (kept when a tabbed block resolves '[tab]'). */
+  paramPattern?: string;
+  label?: string;
+  value?: number;
+  min?: number;
+  max?: number;
+  step?: number;
+}
+
+const { inst, param, paramPattern = '', label = '', value = 1, min = 1, max = 8, step = 1 } = Astro.props;
+---
+
+<label class="control control--number" data-control="number" data-inst={inst} data-param={param} data-param-pattern={paramPattern || undefined}>
+  <span class="control-label">{label}</span>
+  <input class="number-input" type="number" value={value} min={min} max={max} step={step} inputmode="numeric" />
+</label>

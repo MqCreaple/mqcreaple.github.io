@@ -13,7 +13,8 @@
     "build": "astro build && node scripts/finalize-output.mjs && pagefind --site output",
     "preview": "astro preview",
     "articles": "node scripts/build-articles.mjs",
-    "finalize": "node scripts/finalize-output.mjs"
+    "finalize": "node scripts/finalize-output.mjs",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.3.1",
@@ -23,13 +24,16 @@
     "lucide": "^1.33.0",
     "plotly.js-dist-min": "^3.7.0",
     "simplex-noise": "^4.0.3",
-    "three": "^0.185.1"
+    "three": "^0.185.1",
+    "tone": "^15.5.36",
+    "uplot": "^1.6.32"
   },
   "devDependencies": {
     "@types/d3-scale-chromatic": "^3.1.0",
     "@types/jquery": "^4.0.1",
     "@types/node": "^26.2.0",
     "@types/three": "^0.185.4",
-    "pagefind": "^1.5.2"
+    "pagefind": "^1.5.2",
+    "typescript": "^7.0.2"
   }
 }

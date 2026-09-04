@@ -21,7 +21,7 @@ const {
   leftHtml = '',
   rightHtml = '',
 } = Astro.props;
-const t = translations[lang] ?? translations.en;
+const t = translations[lang as keyof typeof translations] ?? translations.en;
 ---
 
 <Base title={`${title} · ${t.siteTitle}`} description={description} lang={lang}>

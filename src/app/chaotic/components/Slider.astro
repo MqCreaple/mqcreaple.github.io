@@ -1,0 +1,83 @@
+---
+import type { ModulationSource } from '../config.ts';
+import { modulationExtrema, toRangeNorm } from '../modulation-range.ts';
+
+// Slider.astro — server-rendered slider (vertical or horizontal).
+
+interface Mod { env?: ModulationSource; amplitude?: number }
+
+interface Props {
+  inst: string;
+  param: string;
+  /** Original param spec (kept when a tabbed block resolves '[tab]'). */
+  paramPattern?: string;
+  label?: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  value?: number;
+  precision?: number;
+  unit?: string;
+  log?: boolean;
+  orientation?: 'vertical' | 'horizontal';
+  mod?: Mod | null;
+  modSources?: ModulationSource[];
+  disabled?: boolean;
+}
+
+const {
+  inst, param, paramPattern = '', label = '', min = 0, max = 1, step = 0.01, value = 0,
+  precision = 0, unit = '', log = false, orientation = 'vertical', mod = null, modSources = [],
+  disabled = false,
+} = Astro.props;
+
+const horizontal = orientation === 'horizontal';
+const range = { min, max, logarithmic: log };
+const norm = toRangeNorm(value, range);
+const pos = horizontal ? norm * 100 : (1 - norm) * 100;
+const className = horizontal ? 'chaotic-slider chaotic-slider--horizontal' : 'chaotic-slider';
+const valueText = value.toFixed(precision) + (unit ? ' ' + unit : '');
+const thumbStyle = horizontal ? `left:${pos}%` : `top:${pos}%`;
+
+const [rangeFrom, rangeTo] = mod?.env
+  ? modulationExtrema(value, mod.amplitude ?? 0, mod.env, range)
+  : [value, value];
+const lower = toRangeNorm(rangeFrom, range);
+const upper = toRangeNorm(rangeTo, range);
+const rangeStyle = horizontal
+  ? `left:${lower * 100}%;width:${(upper - lower) * 100}%`
+  : `top:${(1 - upper) * 100}%;height:${(upper - lower) * 100}%`;
+---
+
+<div
+  class={className}
+  data-control="slider"
+  data-inst={inst}
+  data-param={param}
+  data-param-pattern={paramPattern || undefined}
+  data-min={min}
+  data-max={max}
+  data-step={step}
+  data-log={log ? '1' : '0'}
+  data-value={value}
+  data-precision={precision}
+  data-unit={unit}
+  data-orientation={orientation}
+  data-env={mod?.env ?? ''}
+  data-amp={mod?.amplitude ?? 0}
+  data-mod-sources={modSources.join(',')}
+  role="slider"
+  tabindex={disabled ? '-1' : '0'}
+  aria-disabled={disabled ? 'true' : 'false'}
+  aria-label={label}
+  aria-valuenow={value}
+  aria-valuemin={min}
+  aria-valuemax={max}
+>
+  <div class="slider-tracks">
+    <div class="slider-mod-track"><div class="slider-mod-range" style={rangeStyle}></div></div>
+    <div class="slider-track"><div class="slider-thumb" style={thumbStyle}></div></div>
+  </div>
+  <div class="chaotic-knob-value">{valueText}</div>
+  <div class="chaotic-knob-label">{label}</div>
+</div>

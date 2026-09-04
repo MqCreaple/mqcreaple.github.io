@@ -520,3 +520,22 @@ pre,
     font-size: 1.7rem;
   }
 }
+
+/* Input widgets (underline style, reusable component) */
+
+select {
+  width: 100%;
+  padding: 0.2rem 0;
+  color: var(--text);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+}
+
+select:focus,
+select:active {
+  outline: none;
+  border-bottom-color: var(--accent);
+}
+
