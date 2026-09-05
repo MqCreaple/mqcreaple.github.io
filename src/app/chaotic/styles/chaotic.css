@@ -163,7 +163,7 @@
 
 .knob-mod-arc {
   fill: none;
-  stroke: var(--accent-soft);
+  stroke: var(--quote-border);
   stroke-width: 2.5;
   stroke-linecap: round;
 }
@@ -250,7 +250,7 @@
   width: 100%;
   height: 0;
   border-radius: 1px;
-  background: var(--accent-soft);
+  background: var(--quote-border);
 }
 
 .slider-thumb {

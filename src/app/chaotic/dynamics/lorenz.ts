@@ -12,7 +12,7 @@ export interface LorenzOptions {
     sigma?: number;
     rho?: number;
     beta?: number;
-    dt?: number;
+    rate?: number;
     xmin?: number;
     xmax?: number;
     ymin?: number;
@@ -49,7 +49,7 @@ export class Lorenz extends Tone.ToneAudioNode {
             sigma = 10,
             rho = 28,
             beta = 8 / 3,
-            dt = 1 / this.context.sampleRate,
+            rate = 1.0,
             xmin = -21.3,
             xmax = 21.3,
             ymin = -29.7,
@@ -78,7 +78,7 @@ export class Lorenz extends Tone.ToneAudioNode {
                 sigma,
                 rho,
                 beta,
-                dt,
+                rate,
                 xmin,
                 xmax,
                 ymin,
@@ -142,7 +142,7 @@ export class Lorenz extends Tone.ToneAudioNode {
     }
 
     setParameters(
-        params: Partial<Pick<LorenzOptions, "sigma" | "rho" | "beta" | "dt">>,
+        params: Partial<Pick<LorenzOptions, "sigma" | "rho" | "beta" | "rate">>,
     ): void {
         this.worklet.port.postMessage({
             type: "parameters",

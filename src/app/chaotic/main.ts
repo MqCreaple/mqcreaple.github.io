@@ -163,6 +163,82 @@ function bindTabs(inst: Instrument, row: HTMLElement): void {
     });
   });
 }
+
+/** Bind control elements to their respective handlers. */
+export function bindControlElement(el: HTMLElement, inst: Instrument) {
+  const kind = el.dataset.control;
+  const pattern = el.dataset.paramPattern || el.dataset.param || '';
+  if (!pattern) return;
+  const paramFor = (): string => {
+    const tabParam = el.closest<HTMLElement>('.voice-block[data-tabbed]')?.dataset.currentTabParam;
+    return pattern.includes('[tab]') && tabParam ? pattern.split('[tab]').join(tabParam) : pattern;
+  };
+  if (kind === 'knob') {
+    const envRaw = el.dataset.env ?? '';
+    const modulationSource = isModulationSource(envRaw) ? envRaw : undefined;
+    const widget = initKnob(el, {
+      label: el.getAttribute('aria-label') ?? '',
+      min: parseNumber(el, 'min', 0),
+      max: parseNumber(el, 'max', 1),
+      step: parseNumber(el, 'step', 0.01),
+      value: parseNumber(el, 'value', 0),
+      log: el.dataset.log === '1',
+      precision: parseNumber(el, 'precision', 2),
+      unit: el.dataset.unit ?? '',
+      modulation: modulationSource ? { env: modulationSource, amplitude: Number(el.dataset.amp ?? 0) } : undefined,
+      allowedModSources: allowedModSources(el),
+      onChange: (v) => applyParam(inst, paramFor(), v),
+      onAmplitude: (a) => knobAmplitudeChanged(inst, el, paramFor(), a),
+      onModulationSourceChange: (kind) => modulationSourceChanged(inst, el, paramFor(), kind),
+      onRequestPanel: modPanelRequest,
+    });
+    widgetsByEl.set(el, widget);
+  } else if (kind === 'slider') {
+    const envRaw = el.dataset.env ?? '';
+    const modulationSource = isModulationSource(envRaw) ? envRaw : undefined;
+    const widget = initSlider(el, {
+      label: el.getAttribute('aria-label') ?? '',
+      min: parseNumber(el, 'min', 0),
+      max: parseNumber(el, 'max', 1),
+      step: parseNumber(el, 'step', 0.01),
+      value: parseNumber(el, 'value', 0),
+      log: el.dataset.log === '1',
+      precision: parseNumber(el, 'precision', 0),
+      unit: el.dataset.unit ?? '',
+      orientation: el.dataset.orientation === 'horizontal' ? 'horizontal' : 'vertical',
+      modulation: modulationSource ? { env: modulationSource, amplitude: Number(el.dataset.amp ?? 0) } : undefined,
+      allowedModSources: allowedModSources(el),
+      onAmplitude: (a) => knobAmplitudeChanged(inst, el, paramFor(), a),
+      onModulationSourceChange: (kind) => modulationSourceChanged(inst, el, paramFor(), kind),
+      onRequestPanel: modPanelRequest,
+      onChange: (v) => applyParam(inst, paramFor(), v),
+    });
+    widgetsByEl.set(el, widget);
+  } else if (kind === 'select') {
+    const select = el.querySelector<HTMLSelectElement>('select');
+    select?.addEventListener('change', () => applyParam(inst, paramFor(), select.value));
+  } else if (kind === 'checkbox') {
+    const input = el.querySelector<HTMLInputElement>('input[type="checkbox"]');
+    input?.addEventListener('change', () => {
+      const param = paramFor();
+      applyParam(inst, param, input.checked);
+      const block = el.closest<HTMLElement>('.voice-block');
+      if (block && (param.endsWith('.enabled') || param === 'lfo.enabled')) {
+        setBlockDisabled(block, !input.checked);
+      }
+    });
+  } else if (kind === 'number') {
+    const input = el.querySelector<HTMLInputElement>('input[type="number"]');
+    input?.addEventListener('change', () => {
+      const min = Number(input.min || 1);
+      const max = Number(input.max || 8);
+      const value = Math.min(max, Math.max(min, Math.round(Number(input.value) || min)));
+      input.value = String(value);
+      applyParam(inst, paramFor(), value);
+    });
+  }
+}
+
 // --- Instrument hydration ---------------------------------------------------
 
 function bindInstruments(): void {
@@ -224,79 +300,7 @@ function bindInstruments(): void {
     });
 
     // controls — params resolve at event time so tabbed blocks follow the tab
-    row.querySelectorAll<HTMLElement>('[data-control]').forEach((el) => {
-      const kind = el.dataset.control;
-      const pattern = el.dataset.paramPattern || el.dataset.param || '';
-      if (!pattern) return;
-      const paramFor = (): string => {
-        const tabParam = el.closest<HTMLElement>('.voice-block[data-tabbed]')?.dataset.currentTabParam;
-        return pattern.includes('[tab]') && tabParam ? pattern.split('[tab]').join(tabParam) : pattern;
-      };
-      if (kind === 'knob') {
-        const envRaw = el.dataset.env ?? '';
-        const modulationSource = isModulationSource(envRaw) ? envRaw : undefined;
-        const widget = initKnob(el, {
-          label: el.getAttribute('aria-label') ?? '',
-          min: parseNumber(el, 'min', 0),
-          max: parseNumber(el, 'max', 1),
-          step: parseNumber(el, 'step', 0.01),
-          value: parseNumber(el, 'value', 0),
-          log: el.dataset.log === '1',
-          precision: parseNumber(el, 'precision', 2),
-          unit: el.dataset.unit ?? '',
-          modulation: modulationSource ? { env: modulationSource, amplitude: Number(el.dataset.amp ?? 0) } : undefined,
-          allowedModSources: allowedModSources(el),
-          onChange: (v) => applyParam(inst, paramFor(), v),
-          onAmplitude: (a) => knobAmplitudeChanged(inst, el, paramFor(), a),
-          onModulationSourceChange: (kind) => modulationSourceChanged(inst, el, paramFor(), kind),
-          onRequestPanel: (el, x, y) => modPanelRequest(el, x, y),
-        });
-        widgetsByEl.set(el, widget);
-      } else if (kind === 'slider') {
-        const envRaw = el.dataset.env ?? '';
-        const modulationSource = isModulationSource(envRaw) ? envRaw : undefined;
-        const widget = initSlider(el, {
-          label: el.getAttribute('aria-label') ?? '',
-          min: parseNumber(el, 'min', 0),
-          max: parseNumber(el, 'max', 1),
-          step: parseNumber(el, 'step', 0.01),
-          value: parseNumber(el, 'value', 0),
-          log: el.dataset.log === '1',
-          precision: parseNumber(el, 'precision', 0),
-          unit: el.dataset.unit ?? '',
-          orientation: el.dataset.orientation === 'horizontal' ? 'horizontal' : 'vertical',
-          modulation: modulationSource ? { env: modulationSource, amplitude: Number(el.dataset.amp ?? 0) } : undefined,
-          allowedModSources: allowedModSources(el),
-          onAmplitude: (a) => knobAmplitudeChanged(inst, el, paramFor(), a),
-          onModulationSourceChange: (kind) => modulationSourceChanged(inst, el, paramFor(), kind),
-          onRequestPanel: (el, x, y) => modPanelRequest(el, x, y),
-          onChange: (v) => applyParam(inst, paramFor(), v),
-        });
-        widgetsByEl.set(el, widget);
-      } else if (kind === 'select') {
-        const select = el.querySelector<HTMLSelectElement>('select');
-        select?.addEventListener('change', () => applyParam(inst, paramFor(), select.value));
-      } else if (kind === 'checkbox') {
-        const input = el.querySelector<HTMLInputElement>('input[type="checkbox"]');
-        input?.addEventListener('change', () => {
-          const param = paramFor();
-          applyParam(inst, param, input.checked);
-          const block = el.closest<HTMLElement>('.voice-block');
-          if (block && (param.endsWith('.enabled') || param === 'lfo.enabled')) {
-            setBlockDisabled(block, !input.checked);
-          }
-        });
-      } else if (kind === 'number') {
-        const input = el.querySelector<HTMLInputElement>('input[type="number"]');
-        input?.addEventListener('change', () => {
-          const min = Number(input.min || 1);
-          const max = Number(input.max || 8);
-          const value = Math.min(max, Math.max(min, Math.round(Number(input.value) || min)));
-          input.value = String(value);
-          applyParam(inst, paramFor(), value);
-        });
-      }
-    });
+    row.querySelectorAll<HTMLElement>('[data-control]').forEach((el) => bindControlElement(el, inst));
 
     // tabbed blocks: wire the tab selector after their controls are bound
     bindTabs(inst, row);
@@ -326,6 +330,7 @@ function sliderOpts(el: HTMLElement): {
   label: string; min: number; max: number; step: number; value: number;
   log: boolean; precision: number; unit: string;
   orientation: 'vertical' | 'horizontal';
+  allowedModSources: ModulationSource[];
 } {
   return {
     label: el.getAttribute('aria-label') ?? '',
@@ -337,6 +342,7 @@ function sliderOpts(el: HTMLElement): {
     precision: parseNumber(el, 'precision', 0),
     unit: el.dataset.unit ?? '',
     orientation: (el.dataset.orientation === 'horizontal' ? 'horizontal' : 'vertical') as 'vertical' | 'horizontal',
+    allowedModSources: el.dataset.modSources?.split(',').map((s) => s.trim()).filter((v): v is ModulationSource => !!v) ?? [],
   };
 }
 
@@ -348,7 +354,29 @@ function buildGlobalPanel(): void {
     if (param === 'bpm') {
       initSlider(el, { ...sliderOpts(el), onChange: (v) => { transport.setBpm(v); syncBeatIndicator(); } });
     } else if (param === 'master') {
-      initSlider(el, { ...sliderOpts(el), onChange: (v) => engine.setMasterVolume(v) });
+      initSlider(el, {
+        ...sliderOpts(el),
+        onChange: (v) => engine.setMasterVolume(v),
+        onModulationSourceChange: (source) => {
+          const amplitude = modCtl(el)?.getAmplitude() ?? Number(el.dataset.amp ?? 0);
+          engine.setMasterVolumeModulation(
+            source ? { value: engine.getMasterVolume(), env: source, amplitude } : null,
+          );
+        },
+        onAmplitude: (amplitude) => {
+          const source = modCtl(el)?.getModulationSource() ?? null;
+          if (source) {
+            engine.setMasterVolumeModulation({
+              value: engine.getMasterVolume(),
+              env: source,
+              amplitude,
+            });
+          }
+        },
+        onRequestPanel: modPanelRequest,
+      });
+    } else if (param === 'dynrate') {
+      initSlider(el, { ...sliderOpts(el), onChange: (v) => { engine.lorenz?.setParameters({ rate: v }) } });
     }
   });
 }

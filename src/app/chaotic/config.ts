@@ -165,11 +165,11 @@ export const INSTRUMENT_DEFS: InstrumentConfig[] = [
     env: { attack: 0.6, decay: 0.4, sustain: 0.7, release: 1.6, curve: 'exponential' },
     filter: { type: 'bandpass', cutoff: { value: 500, env: 'env', amplitude: 0.2 }, q: 1.0, keyTracking: false },
     distortion: { drive: 0, wet: 0 },
-    delay: { time: 0.6, feedback: 0.45, wet: { value: 0.4, env: 'lorenz-x', amplitude: 0.4 } },
-    reverb: { wet: { value: 0.45, env: 'lorenz-x', amplitude: 0.8 }, decay: 4 },
+    delay: { time: 0.6, feedback: 0.45, wet: { value: 0.4, env: 'lorenz-x', amplitude: -0.6 } },
+    reverb: { wet: { value: 0.45, env: 'lorenz-x', amplitude: -0.7 }, decay: 4 },
     comp: { threshold: -16, ratio: 3, attack: 0.005, release: 0.2 },
     lfo: { enabled: true, waveform: 'sine', rate: 4.0 },
-    out: { volume: { value: 0.5, env: 'lorenz-x', amplitude: 0.45 }, pan: 0.1 },
+    out: { volume: { value: 0.5, env: 'lorenz-x', amplitude: 0.7 }, pan: 0.1 },
   },
   {
     id: 'pluck',
@@ -183,11 +183,11 @@ export const INSTRUMENT_DEFS: InstrumentConfig[] = [
     env: { attack: 0.002, decay: 0.35, sustain: 0.3, release: 0.6, curve: 'linear' },
     filter: { type: 'lowpass', cutoff: { value: 170, env: 'env', amplitude: 0.5 }, q: 2.5, keyTracking: true },
     distortion: { drive: 0.2, wet: 0.1 },
-    delay: { time: 0.3, feedback: 0.2, wet: { value: 0.4, env: 'lorenz-x', amplitude: 0.4 } },
-    reverb: { wet: { value: 0.4, env: 'lorenz-x', amplitude: 0.8 }, decay: 2.0 },
+    delay: { time: 0.3, feedback: 0.2, wet: { value: 0.4, env: 'lorenz-x', amplitude: 0.6 } },
+    reverb: { wet: { value: 0.4, env: 'lorenz-x', amplitude: 0.7 }, decay: 2.0 },
     comp: { threshold: -20, ratio: 5, attack: 0.002, release: 0.1 },
     lfo: { enabled: false, waveform: 'sine', rate: 0.5 },
-    out: { volume: { value: 0.7, env: 'lorenz-x', amplitude: -0.45 }, pan: { value: 0.0, env: 'lorenz-x', amplitude: 0.6 } },
+    out: { volume: { value: 0.7, env: 'lorenz-x', amplitude: -0.7 }, pan: { value: 0.0, env: 'lorenz-x', amplitude: 0.6 } },
   },
   {
     id: 'lead',
@@ -323,6 +323,13 @@ export const OUTPUT_CONTROLS: ControlSpec[] = [
   { kind: 'knob', param: 'out.pan', label: 'Pan', min: -1, max: 1, step: 0.01, precision: 2 },
 ];
 
+/** Transport/global controls shown in the sidebar. */
+export const GLOBAL_CONTROLS: ControlSpec[] = [
+  { kind: 'slider', param: 'bpm', label: 'BPM', min: 30, max: 200, step: 1, precision: 0, unit: 'bpm' },
+  { kind: 'slider', param: 'master', label: 'Master', min: 0, max: 1.2, step: 0.01, precision: 2 },
+  { kind: 'slider', param: 'dynrate', label: 'Dynamics Rate', log: true, min: 1/16, max: 16, step: 0.01, precision: 2 },
+];
+
 /** Params applied per voice (each voice gets its own modulation connection). */
 const VOICE_MODULATION_PATHS = [
   'osc.osc1.detune',
@@ -333,6 +340,10 @@ const VOICE_MODULATION_PATHS = [
   'osc.osc2.volume',
   'filter.cutoff',
   'filter.q',
+  'env.attack',
+  'env.decay',
+  'env.sustain',
+  'env.release',
 ];
 
 /** Params applied once per instrument. */
@@ -348,10 +359,11 @@ const INSTRUMENT_MODULATION_PATHS = [
   'comp.release',
   'out.volume',
   'out.pan',
+  'lfo.rate',
 ];
 
 
-const GLOBAL_MODULATION_PATHS = ['bpm', 'master'];
+const GLOBAL_MODULATION_PATHS = ['master'];
 
 /** Which audio parameter scope a control path belongs to, if it is modulatable. */
 export function modulationTargetScope(path: string): ModulationScope | null {
@@ -364,7 +376,11 @@ export function modulationTargetScope(path: string): ModulationScope | null {
 /** Sources that may drive the given control path. */
 export function allowedModulationSourcesForPath(path: string): ModulationSource[] {
   const scope = modulationTargetScope(path);
-  return scope ? modulationSourceIdsForTargetScope(scope) : [];
+  const sources = scope ? modulationSourceIdsForTargetScope(scope) : [];
+  return sources.filter((id) => {
+    // Exclude the envelope source from any control that is itself part of the envelope, to avoid feedback loops.
+    return !path.startsWith(id);
+  });
 }
 
 /** Replace the '[tab]' placeholder in a control param with a concrete value. */
@@ -372,17 +388,23 @@ export function substituteTabParam(param: string, tabParam: string): string {
   return param.includes('[tab]') ? param.split('[tab]').join(tabParam) : param;
 }
 
-/** Every concrete control widget, with tabbed params expanded per tab. */
-function allControls(): ControlSpec[] {
-  const controls: ControlSpec[] = [...OUTPUT_CONTROLS];
+/** Every concrete control widget keyed by param, with tabbed params expanded per tab. */
+function allControls(): Record<string, ControlSpec> {
+  const controls: Record<string, ControlSpec> = {};
+  for (const ctl of [...OUTPUT_CONTROLS, ...GLOBAL_CONTROLS]) controls[ctl.param] = ctl;
   for (const section of SECTIONS) {
-    controls.push(...section.controls);
+    for (const ctl of section.controls) controls[ctl.param] = ctl;
     for (const block of section.blocks) {
       const tabs = block.tabs && block.tabs.length > 0 ? block.tabs : null;
       for (const ctl of block.controls) {
-        controls.push(...(tabs
-          ? tabs.map((tab) => ({ ...ctl, param: substituteTabParam(ctl.param, tab.param) }))
-          : [ctl]));
+        if (tabs) {
+          for (const tab of tabs) {
+            const param = substituteTabParam(ctl.param, tab.param);
+            controls[param] = { ...ctl, param };
+          }
+        } else {
+          controls[ctl.param] = ctl;
+        }
       }
     }
   }
@@ -391,7 +413,7 @@ function allControls(): ControlSpec[] {
 
 /** The control-space bounds used by both the UI and audio-rate modulation. */
 export function getModulationRange(path: string): ModulationRange | null {
-  const control = allControls().find((item) => item.param === path);
+  const control = allControls()[path];
   if (!control || control.kind === 'select' || control.kind === 'checkbox' || control.kind === 'number') return null;
   return {
     min: control.min ?? 0,

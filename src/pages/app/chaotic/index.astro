@@ -5,6 +5,7 @@ import Slider from '../../../app/chaotic/components/Slider.astro';
 import ModulationPanel from '../../../app/chaotic/components/ModulationPanel.astro';
 import translations from '../../../i18n/translations.json';
 import '../../../app/chaotic/styles/chaotic.css';
+import { allowedModulationSourcesForPath } from '../../../app/chaotic/config.ts';
 
 const t = translations['en'] ?? translations.en;
 const pageTitle = `Chaotic · ${t.siteTitle}`;
@@ -29,8 +30,9 @@ const pageTitle = `Chaotic · ${t.siteTitle}`;
       <div id="chaotic-transport-controls">
         <div class="chaotic-transport-row">
           <div class="chaotic-transport-sliders" id="chaotic-global-controls">
-            <Slider inst="global" param="bpm" label="BPM" min={30} max={200} step={1} precision={0} unit="bpm" value={128} />
-            <Slider inst="global" param="master" label="Master" min={0} max={1} step={0.01} precision={2} value={0.8} />
+            <Slider inst="global" param="bpm" label="BPM" min={30} max={200} step={1} precision={0} unit="bpm" value={128} modSources={allowedModulationSourcesForPath('bpm')} />
+            <Slider inst="global" param="master" label="Master" min={0} max={1.2} step={0.01} precision={2} value={1.0} modSources={allowedModulationSourcesForPath('master')} />
+            <Slider inst="global" param="dynrate" label="Dynamics Rate" log min={1/16} max={16} step={0.01} precision={2} value={1.0} modSources={allowedModulationSourcesForPath('dynrate')} />
           </div>
           <div class="chaotic-start-stack">
             <button type="button" class="chaotic-btn chaotic-btn--transport" id="chaotic-transport-start">Start</button>

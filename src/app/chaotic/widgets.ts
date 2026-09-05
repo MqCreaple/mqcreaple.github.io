@@ -226,7 +226,7 @@ export function initKnob(el: HTMLElement, options: WidgetOptions): Widget<number
   let startNorm = 0;
 
   el.addEventListener('pointerdown', (e) => {
-    if (isDisabled()) return;
+    if (isDisabled() || e.button !== 0) return;
     e.preventDefault();
     dragging = true;
     startY = e.clientY;
@@ -399,7 +399,7 @@ export function initSlider(el: HTMLElement, options: WidgetOptions): Widget<numb
 
   let dragging = false;
   el.addEventListener('pointerdown', (e) => {
-    if (isDisabled()) return;
+    if (isDisabled() || e.button !== 0) return;
     e.preventDefault();
     dragging = true;
     setValue(valueFromPointer(e.clientX, e.clientY));

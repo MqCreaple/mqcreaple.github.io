@@ -13,6 +13,7 @@
   --error-border: #ff9999;
   --code-bg: #eaf0ef;
   --quote-bg: #fffdcc99;
+  --quote-border: #f5e6b3;
   --radius: 8px;
   --header-height: 3.5rem;
   color-scheme: light;
@@ -33,6 +34,7 @@
   --error-border: #8a3a42;
   --code-bg: #182022;
   --quote-bg: #3f3b0999;
+  --quote-border: #5c4e1f;
   color-scheme: dark;
 }
 

@@ -24,7 +24,8 @@ class LorenzProcessor extends AudioWorkletProcessor {
     private sigma: number;
     private rho: number;
     private beta: number;
-    private dt: number;
+    private rate: number;   // The rate at which the Lorenz equations are integrated, in seconds.
+                            // The dt between two consecutive samples is rate / sampleRate.
     private xmin: number;
     private xmax: number;
     private ymin: number;
@@ -43,7 +44,7 @@ class LorenzProcessor extends AudioWorkletProcessor {
         this.sigma = p.sigma ?? 10;
         this.rho = p.rho ?? 28;
         this.beta = p.beta ?? 8 / 3;
-        this.dt = p.dt ?? 1 / sampleRate;
+        this.rate = p.rate ?? 1.0;
         this.xmin = p.xmin ?? -21.3;
         this.xmax = p.xmax ?? 21.3;
         this.ymin = p.ymin ?? -29.7;
@@ -57,7 +58,7 @@ class LorenzProcessor extends AudioWorkletProcessor {
                 if (d.sigma !== undefined) this.sigma = d.sigma;
                 if (d.rho !== undefined) this.rho = d.rho;
                 if (d.beta !== undefined) this.beta = d.beta;
-                if (d.dt !== undefined) this.dt = d.dt;
+                if (d.rate !== undefined) this.rate = d.rate;
                 if (d.xmin !== undefined) this.xmin = d.xmin;
                 if (d.xmax !== undefined) this.xmax = d.xmax;
                 if (d.ymin !== undefined) this.ymin = d.ymin;
@@ -89,9 +90,10 @@ class LorenzProcessor extends AudioWorkletProcessor {
             /*
              * Euler integration
              */
-            this.x += dx * this.dt;
-            this.y += dy * this.dt;
-            this.z += dz * this.dt;
+            const dt = this.rate / sampleRate;
+            this.x += dx * dt;
+            this.y += dy * dt;
+            this.z += dz * dt;
 
             outX[i] = normalizeRange(this.x, this.xmin, this.xmax);
             outY[i] = normalizeRange(this.y, this.ymin, this.ymax);

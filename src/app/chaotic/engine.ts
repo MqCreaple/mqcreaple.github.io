@@ -859,6 +859,9 @@ export class AudioEngine {
   }
   private masterComp: Tone.Compressor;
   private masterGain: Tone.Gain;
+  private masterVolume = 0.8;
+  private masterModulation: ModParam | null = null;
+  private masterModulationConnection: ModulationConnection | null = null;
 
   constructor() {
     this.masterComp = new Tone.Compressor({
@@ -867,7 +870,7 @@ export class AudioEngine {
       attack: 0.003,
       release: 0.25,
     });
-    this.masterGain = new Tone.Gain(0.8);
+    this.masterGain = new Tone.Gain(this.masterVolume);
     this.masterGain.connect(this.masterComp);
     this.masterComp.connect(Tone.getDestination());
   }
@@ -878,8 +881,51 @@ export class AudioEngine {
     return inst;
   }
 
+  /** Current master volume, used as the base when modulation is active. */
+  getMasterVolume(): number {
+    return this.masterVolume;
+  }
+
   setMasterVolume(volume: number): void {
-    this.masterGain.gain.rampTo(volume, 0.1);
+    this.masterVolume = Math.min(1, Math.max(0, volume));
+    const modulation = this.masterModulation;
+    if (modulation) modulation.value = this.masterVolume;
+    if (modulation && this.masterModulationConnection) {
+      this.masterModulationConnection.update(this.masterVolume, modulation.amplitude);
+      return;
+    }
+    this.masterGain.gain.rampTo(this.masterVolume, 0.1);
+  }
+
+  /** Set or clear modulation on the master gain. */
+  setMasterVolumeModulation(modulation: ModParam | null): void {
+    const source = modulation ? getModulationSource(modulation.env) : undefined;
+    if (modulation && (!source || source.scope !== 'global')) return;
+    this.masterModulation = modulation ? { ...modulation } : null;
+    this.refreshMasterModulation();
+  }
+
+  private refreshMasterModulation(): void {
+    this.masterModulationConnection?.dispose();
+    this.masterModulationConnection = null;
+
+    const modulation = this.masterModulation;
+    if (!modulation) {
+      this.masterGain.gain.rampTo(this.masterVolume, 0.1);
+      return;
+    }
+
+    const source = this.getGlobalModulationSource(modulation.env);
+    const range = controlModulationRange('master');
+    if (!source || !range) return;
+    this.masterModulationConnection = new ModulationConnection({
+      source,
+      sourceKind: modulation.env,
+      target: this.masterGain.gain,
+      range,
+      base: modulation.value,
+      amplitude: modulation.amplitude,
+    });
   }
 
   /** Resolve an AudioEngine-owned source (Lorenz) for an instrument modulation. */
@@ -901,6 +947,7 @@ export class AudioEngine {
     if (this._lorenz) return;
     this._lorenz = await Lorenz.create();
     for (const inst of this.instruments) inst.refreshModulationSources();
+    this.refreshMasterModulation();
   }
 
   /** Resume the audio context (must be called from a user gesture). */

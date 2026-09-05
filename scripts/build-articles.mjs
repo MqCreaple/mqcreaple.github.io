@@ -77,13 +77,11 @@ function extractFragment(html) {
 
 async function compile(file, out, args) {
   try {
-    const { stderr } = await execFileAsync(
+    await execFileAsync(
       typstBin,
       ['compile', file, out, ...args, '--root', root],
       { maxBuffer: 64 * 1024 * 1024 },
     );
-    const text = (stderr ?? '').toString().trim();
-    if (text) console.error(text);
   } catch (err) {
     const text = (err.stderr ?? '').toString().trim();
     console.error(`Typst failed for ${path.relative(root, file)}:`);
