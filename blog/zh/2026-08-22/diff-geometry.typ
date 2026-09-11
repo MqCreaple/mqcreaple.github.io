@@ -13,11 +13,19 @@
 
 在#link("/zh/posts/2026-08-19/diff-geometry/", "上一篇文章")中，我们认识了与向量对偶的数学结构——协向量，以及看到了如何将向量和协向量在坐标卡上展开成分量形式。不过，我们还有一个很关键的量没有定义——*流形上的长度*。回忆一下，在欧氏空间中的曲线我们是怎么计算长度的？没错，我们给曲线分成无穷多段，然后对每一小段计算它的*切向量模长*：
 
-$ |L| = integral_(t_1)^(t_2) ||dot(L)(t)|| dif t  $
+$ |L| = integral_(t_1)^(t_2) ||dot(L)(t)|| dif t $
 
 同样的定义当然也适用于微分几何，毕竟流形上任何一点的局部都可以看作是一个欧氏空间。但是这里有一个关键的概念我们还没有定义——流形上的切向量怎么计算模长？为了回答这个问题，我们需要给流形的每个切空间上都引入一个*内积函数*：
 
-$ chevron.l dot.c, dot.c, chevron.r_p : T_p M times T_p M arrow.r RR $
+$ chevron.l dot, dot chevron.r_p : T_p M times T_p M -> RR $
+
+开始本文之前，先复习一下各个函数空间和场的记号：
+
++ $S -> T$ 表示集合 $S$ 与 $T$ 之间的一般映射，不加任何限制。
++ $cal(L)(S, T)$ 表示线性空间 $S$ 到 $T$ 之间的线性映射。
++ $C^infinity (S, T)$ 表示流形 $S$ 到 $T$ 之间的光滑映射。
++ $frak(X)(M)$ 表示流形 $M$ 上的向量场。
++ $Omega^1 (M)$ 表示流形 $M$ 上的协向量场。
 
 = 流形上的内积与度规
 
@@ -34,13 +42,13 @@ $ chevron.l dot.c, dot.c, chevron.r_p : T_p M times T_p M arrow.r RR $
 当然，由于我们在讨论微分流形上的内积，我们还需要额外加一条限制：内积函数必须是光滑的。
 
 #definition[
-  流形 $M$ 上的*内积* $g$ 是一个纤维丛 $M arrow.r T^* M times T^* M $ 的光滑截面，满足对于任意一点 $p in M$，
+  流形 $M$ 上的*内积* $g$ 是一个纤维丛 $M -> T^* M times T^* M $ 的光滑截面，满足对于任意一点 $p in M$，
   
-  $g_p : T_p M times T_p M arrow.r RR, (X, Y) mapsto chevron.l X, Y chevron.r_p $
+  $ g_p : T_p M times T_p M -> RR, (X, Y) mapsto chevron.l X, Y chevron.r_p $
   
   满足双线性、对称性、正定性，且对于任意 $M$ 上的光滑向量场 $X$ 和 $Y$，
 
-  $ g(X, Y) : M arrow.r RR, p mapsto chevron.l X_p, Y_p chevron.r_p $
+  $ g(X, Y) : M -> RR, p mapsto chevron.l X_p, Y_p chevron.r_p $
 
   是一个光滑函数。
 ] <def:inner-product>
@@ -61,31 +69,31 @@ $ chevron.l X, Y chevron.r = mat(X^1, X^2, dots.c, X^m) mat(g_(1 1), g_(1 2), do
 
 如果我们给一个向量空间定义了内积，那么就可以在该空间和其对偶空间之间建立一个很简洁的同构关系，这个同构关系同样不依赖于任何具体坐标系的选取。不要忘了对偶空间 $T^*_p M$ 就是所有向量到实数的线性映射 $cal(L) (T_p M, RR)$。
 
-$ (dot.c)^flat : T_p M arrow.r T^*_p M, X mapsto chevron.l X, dot.c, chevron.r_p $
+$ (dot)^flat : T_p M -> T^*_p M, X mapsto chevron.l X, dot, chevron.r_p $
 
-由于内积本身是双线性的，那么给内积里填上一个数之后就可以获得一个关于另一个参数线性的函数 $chevron.l X, dot.c chevron.r$。由于这个变换将逆变向量变成了协变向量，指标从上标变成了下标，因此数学家借用了音乐中的*降号*来表示这个变换：
+由于内积本身是双线性的，那么给内积里填上一个数之后就可以获得一个关于另一个参数线性的函数 $chevron.l X, dot chevron.r$。由于这个变换将逆变向量变成了协变向量，指标从上标变成了下标，因此数学家借用了音乐中的*降号*来表示这个变换：
 
-$ X^flat = chevron.l X, dot.c, chevron.r_p in T^*_p M $
+$ X^flat = chevron.l X, dot, chevron.r_p in T^*_p M $
 
-而反过来呢？任何一个协向量 $X^*$ 都能找到对应的逆向量 $X$ 使得与该逆向量做内积等价于与协向量作用吗？换句话说，$(dot.c)^flat$ 是双射吗？
+而反过来呢？任何一个协向量 $X^*$ 都能找到对应的逆向量 $X$ 使得与该逆向量做内积等价于与协向量作用吗？换句话说，$(dot)^flat$ 是双射吗？
 
 #theorem[
-  降号映射 $(dot.c)^flat$ 是双射。
+  降号映射 $(dot)^flat$ 是双射。
 ]
 
 #proof[
-  由于 $dim T_p M = dim T^*_p M$，且不难证明 $(dot.c)^flat$ 是线性映射，因此我们只需要证明 $(dot.c)^flat$ 是单射即可。
+  由于 $dim T_p M = dim T^*_p M$，且不难证明 $(dot)^flat$ 是线性映射，因此我们只需要证明 $(dot)^flat$ 是单射即可。
 
-  假设 $X, Y in T_p M$ 且 $X != Y$。如果 $chevron.l X, dot.c, chevron.r_p = chevron.l Y, dot.c, chevron.r_p$，那么一定有 $chevron.l X - Y, dot.c, chevron.r_p = 0$。取该函数作用在 $(X - Y)$ 上的结果：
+  假设 $X, Y in T_p M$ 且 $X != Y$。如果 $chevron.l X, dot chevron.r_p = chevron.l Y, dot chevron.r_p$，那么一定有 $chevron.l X - Y, dot chevron.r_p = 0$。取该函数作用在 $(X - Y)$ 上的结果：
 
   $ chevron.l X - Y, X - Y chevron.r_p = 0 $
 
-  由内积的对称正定性，一定可以推出 $X = Y$，与假设矛盾。因此，函数 $chevron.l X, dot.c chevron.r_p != chevron.l Y, dot.c chevron.r_p$，二者是两个不同的协向量。
+  由内积的对称正定性，一定可以推出 $X = Y$，与假设矛盾。因此，函数 $chevron.l X, dot chevron.r_p != chevron.l Y, dot chevron.r_p$，二者是两个不同的协向量。
   
-  上述推理保证了映射 $(dot.c)^flat$ 将两个不同的 $X, Y in T_p M$ 映射到了两个不同的协向量 $chevron.l X, dot.c chevron.r_p != chevron.l Y, dot.c chevron.r_p$ 上。因此 $(dot.c)^flat$ 是单射。
+  上述推理保证了映射 $(dot)^flat$ 将两个不同的 $X, Y in T_p M$ 映射到了两个不同的协向量 $chevron.l X, dot chevron.r_p != chevron.l Y, dot chevron.r_p$ 上。因此 $(dot)^flat$ 是单射。
 ]
 
-既然降号映射是双射，那就意味着这个映射有逆映射。你应该猜到了，这个映射的名称就是*升号映射* $(dot.c)^sharp : T^*_p M arrow.r T_p M$。通过升降号映射在 $T_p M$ 和 $T^*_p M$ 之间建立的自然同构就称为*音乐同构*#strike[虽然实际上它和音乐没有半毛钱关系]。
+既然降号映射是双射，那就意味着这个映射有逆映射。你应该猜到了，这个映射的名称就是*升号映射* $(dot)^sharp : T^*_p M -> T_p M$。通过升降号映射在 $T_p M$ 和 $T^*_p M$ 之间建立的自然同构就称为*音乐同构*#strike[虽然实际上它和音乐没有半毛钱关系]。
 
 降号映射也可以用分量形式写出来。不难看出，如果用 $X^i$ 表示向量 $X in T_p M$ 的分量，用 $X_i$ 表示其对应的协向量 $X^flat in T^*_p M$ 的分量，那么二者之间的变换函数就是度规张量 $g$：
 
@@ -149,15 +157,15 @@ $ ||X|| = sqrt(chevron.l X\, X chevron.r) $
 
 $ |gamma| = integral_(t_1)^(t_2) ||dot(gamma)(t)|| dif t $
 
-$||dot(gamma)(t)|| : I subset.eq RR arrow.r RR$ 是一个我们再熟悉不过的单值函数了，只需要写出表达式算积分即可。
+$||dot(gamma)(t)|| : I subset.eq RR -> RR$ 是一个我们再熟悉不过的单值函数了，只需要写出表达式算积分即可。
 
 有了内积之后，我们同样可以定义两个向量之间的夹角：
 
-$ cos(theta) = (chevron.l X, Y chevron.r) / (||X|| dot.c ||Y||) $
+$ cos(theta) = (chevron.l X, Y chevron.r) / (||X|| dot ||Y||) $
 
 == 一个例子
 
-先从我们熟悉的立体几何开始看起。考虑一个单位球面 $S^2$，以及球面上的球极坐标。坐标卡 $phi_alpha : lr(S^2 - {mat(sin theta, 0, cos theta)^top | theta in [0, pi]}) arrow.r RR^2 $ 给球面除了一条经线以外的所有点都分配了一个坐标 $(theta, phi)$，其中 $theta in (0, pi), phi in (0, 2 pi)$。由于球面是内嵌在一个三维空间中的，我们可以直接将切向量在三维空间中的内积借用过来作为二维流形上的度规。
+先从我们熟悉的立体几何开始看起。考虑一个单位球面 $S^2$，以及球面上的球极坐标。坐标卡 $phi_alpha : lr(S^2 - {mat(sin theta, 0, cos theta)^top | theta in [0, pi]}) -> RR^2 $ 给球面除了一条经线以外的所有点都分配了一个坐标 $(theta, phi)$，其中 $theta in (0, pi), phi in (0, 2 pi)$。由于球面是内嵌在一个三维空间中的，我们可以直接将切向量在三维空间中的内积借用过来作为二维流形上的度规。
 
 对于球面上的点 $(theta, phi)$，其对应的三维坐标为 $(sin theta cos phi, sin theta sin phi, cos theta)$。对其求导，得到沿着 $theta$ 和 $phi$ 方向的切线：
 
@@ -208,11 +216,7 @@ $
 在刚刚的例子中，流形 $S^2$ 是内嵌在三维欧氏空间 $RR^3$ 中的一个子流形，这让我们可以直接将 $RR^3$ 中的度规“借用”到 $S^2$ 上。这种方法其实也可以推广到更一般的两个流形中。首先我们可以定义*子流形*的概念：
 
 #definition[
-  对于 $m$ 维流形 $M$ 和 $n$ 维流形 $N$，若映射 $f : N arrow.r M$ 光滑，且满足对于任意一点 $p in N$ 都有：
-
-  $ dif f_p : T_p N arrow.r T_(f(p)) M $
-
-  是单射，那么 $f$ 被称为 $N$ 到 $M$ 的一个*浸入（Immersion）*。
+  对于 $m$ 维流形 $M$ 和 $n$ 维流形 $N$，若映射 $f : C^infinity (N, M)$，且满足对于任意一点 $p in N$ 都有 $dif f_p : T_p N -> T_(f(p)) M$ 是单射，那么 $f$ 被称为 $N$ 到 $M$ 的一个*浸入（Immersion）*。
 ] <def:immersion>
 
 浸入并不要求 $f$ 是单射，也不要求 $f$ 保持原来流形的拓扑结构。比如，将开区间 $(0, 4 pi)$ 通过映射 $t mapsto (cos(t), sin(t))$ 映射到单位圆 $S^1$ 上，这个映射是一个浸入，但显然这个映射不是单射（因为绕了单位圆两圈），这个映射也没有保持原来线段的全局拓扑结构，因此不是拓扑嵌入。
@@ -220,15 +224,15 @@ $
 当然，某些比较极端的映射则不属于浸入，比如将一个曲面压缩成一个点或者一条曲线的这种映射就不是浸入，因为它让曲面上每个点局部的切空间降维了。
 
 #definition[
-  对于拓扑空间 $M$ 和 $N$，若连续映射 $iota : N arrow.r M$ 为单射，且逆映射 $iota^(-1) : f(N) arrow.r N$ 连续（即 $iota : N arrow.r f(N)$ 是拓扑同胚），则称 $iota$ 为 $N$ 到 $M$ 的一个*拓扑嵌入（Topological Embedding）*。
+  对于拓扑空间 $M$ 和 $N$，若连续映射 $iota : N -> M$ 为单射，且逆映射 $iota^(-1) : f(N) -> N$ 连续（即 $iota : N -> f(N)$ 是拓扑同胚），则称 $iota$ 为 $N$ 到 $M$ 的一个*拓扑嵌入（Topological Embedding）*。
 ] <def:topological-embedding>
 
-一个比较显然的结论是，如果 $N$ 到 $M$ 有拓扑嵌入 $iota : N arrow.r M$，那么 $N$ 上的拓扑 $cal(O)_N$ 经过 $iota$ 映射之后就是 $cal(O)_M$ 在 $iota(N)$ 上的子空间拓扑（详见维基百科#link("https://en.wikipedia.org/wiki/Subspace_topology", "子空间拓扑")）。换句话说，将 $N$ 嵌入 $M$ 的过程也必须保持 $N$ 自身的拓扑结构，不能通过切断或者连接改变 $N$ 的拓扑结构。
+一个比较显然的结论是，如果 $N$ 到 $M$ 有拓扑嵌入 $iota : N -> M$，那么 $N$ 上的拓扑 $cal(O)_N$ 经过 $iota$ 映射之后就是 $cal(O)_M$ 在 $iota(N)$ 上的子空间拓扑（详见维基百科#link("https://en.wikipedia.org/wiki/Subspace_topology", "子空间拓扑")）。换句话说，将 $N$ 嵌入 $M$ 的过程也必须保持 $N$ 自身的拓扑结构，不能通过切断或者连接改变 $N$ 的拓扑结构。
 
 最后是流形嵌入和子流形的定义：
 
 #definition[
-  如果映射 $iota : N arrow.r M$ 同时是浸入和拓扑嵌入，那么称 $iota$ 为 $N$ 到 $M$ 的一个*光滑嵌入（Smooth Embedding）*，记作 $N arrow.r.hook M$。
+  如果映射 $iota : N -> M$ 同时是浸入和拓扑嵌入，那么称 $iota$ 为 $N$ 到 $M$ 的一个*光滑嵌入（Smooth Embedding）*，记作 $N arrow.r.hook M$。
 ] <def:embedding>
 
 #definition[
@@ -239,8 +243,8 @@ $
 
 #theorem[
   1. 光滑嵌入 $iota : N arrow.r.hook M$ 的像一定是一个 $M$ 的子流形。
-  2. 对于 $M$ 的子流形 $N subset M$，$id_N : N arrow.r M, p mapsto p$ 是一个光滑嵌入。
-  3. 对于 $m$ 维流形 $M$ 的 $n$ 维子流形 $N$ 以及点 $p in N$，可以构造 $p$ 的邻域 $U$ 上的一个坐标卡 $phi : U arrow.r RR^m$，使得
+  2. 对于 $M$ 的子流形 $N subset M$，$id_N : N -> M, p mapsto p$ 是一个光滑嵌入。
+  3. 对于 $m$ 维流形 $M$ 的 $n$ 维子流形 $N$ 以及点 $p in N$，可以构造 $p$ 的邻域 $U$ 上的一个坐标卡 $phi : U -> RR^m$，使得
 
     $ phi(U inter N) = phi(U) inter (RR^n times {mathbf(0)}) $
 
@@ -251,7 +255,7 @@ $
 
 == 光滑嵌入的微分性质
 
-对于任何光滑嵌入 $iota : N arrow.r.hook M$，@thm:smooth-embedding 告诉我们：$dif iota_p : T_p N arrow.r T_(iota(p)) M$ 的秩等于 $N$ 的维度 $n$。这个性质帮我们杜绝了很多退化情况，让我们可以放心地使用 $dif iota_p$ 作为连接 $T_p N$ 和 $T_(iota p) M$ 这两个切空间的桥梁。
+对于任何光滑嵌入 $iota : N arrow.r.hook M$，@thm:smooth-embedding 告诉我们：$dif iota_p : cal(L)(T_p N, T_(iota(p)) M)$ 的秩等于 $N$ 的维度 $n$。这个性质帮我们杜绝了很多退化情况，让我们可以放心地使用 $dif iota_p$ 作为连接 $T_p N$ 和 $T_(iota p) M$ 这两个切空间的桥梁。
 
 不妨用不带波浪号的 $X^i partial_i$ 表示 $N$ 上的量，带波浪号的 $tilde(X)^i tilde(partial)_i$ 表示 $M$ 上的量。可以用 $dif iota_p$ 将 $T_p N$ 上的向量 $X$ 给映射到 $T_p M$ 中。这个操作被称为*推前（Pushforward）*。
 

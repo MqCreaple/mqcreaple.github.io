@@ -122,6 +122,15 @@
 
 // Figure templates
 
+#let interactive-figure-fallback(body) = {
+  layout(size => block(
+    width: 100%,
+    height: size.width * 9 / 16,
+    stroke: 0.5pt + black,
+    align(center + horizon, body),
+  ))
+}
+
 #let shadertoy-figure(body, classes: ()) = {
   if sys.inputs.at("format", default: "pdf") == "html" {
     html.elem("div", attrs: (class: ("shadertoy-figure", ..classes).join(" ")))[#body]
@@ -133,7 +142,7 @@
   if sys.inputs.at("format", default: "pdf") == "html" {
     html.elem("div", attrs: (class: "three-js-figure", "data-src": src))[]
   } else if body != none {
-    body
+    interactive-figure-fallback(body)
   }
 }
 
@@ -141,7 +150,7 @@
   if sys.inputs.at("format", default: "pdf") == "html" {
     html.elem("div", attrs: (class: "plotly-figure", "data-src": src))[]
   } else if body != none {
-    body
+    interactive-figure-fallback(body)
   }
 }
 
@@ -182,6 +191,7 @@
     definition: "Definition",
     example: "Example",
     proof: "Proof",
+    assumption: "Assumption",
   ),
   zh: (
     theorem: "定理",
@@ -192,6 +202,7 @@
     definition: "定义",
     example: "例",
     proof: "证明",
+    assumption: "假设",
   ),
 )
 
@@ -237,6 +248,7 @@
 #let definition = thmenv-quote("definition", "Definition")
 #let example = thmenv-quote("example", "Example").with(numbering: none)
 #let proof = thmenv-quote("proof", "Proof", bodyfmt: proof-bodyfmt).with(numbering: none)
+#let assumption = thmenv-quote("assumption", "Assumption")
 
 // Utility functions
 

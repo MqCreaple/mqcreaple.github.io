@@ -11,9 +11,15 @@
   lang: "zh",
 )
 
+本文中统一使用以下记号来表示函数空间：
+
++ $S -> T$ 表示集合 $S$ 与 $T$ 之间的一般映射，不加任何限制。
++ $cal(L)(S, T)$ 表示线性空间 $S$ 到 $T$ 之间的线性映射。
++ $C^infinity (S, T)$ 表示流形 $S$ 到 $T$ 之间的光滑映射。
+
 = 向量的对偶空间
 
-继续#link("/zh/posts/2026-08-08/diff-geometry/")[上一篇文章]中的讨论。上次提到过，如果 $f : M arrow.r RR$ 是一个流形上的标量场，那么 $f$ 的微分 $dif f_p : T_p M arrow.r RR$ 是一个协向量场，也可以叫一个 $M$ 上的(0, 1)型张量场，或者叫一个1-形式。可是，协向量又是什么？
+继续#link("/zh/posts/2026-08-08/diff-geometry/")[上一篇文章]中的讨论。上次提到过，如果 $f : C^infinity (M, RR)$ 是一个流形上的标量场，那么 $f$ 的微分 $dif f_p : cal(L)(T_p M, RR)$ 是一个协向量场，也可以叫一个 $M$ 上的(0, 1)型张量场，或者叫一个1-形式。可是，协向量又是什么？
 
 我们需要先明确向量空间的对偶空间的概念。
 
@@ -27,7 +33,7 @@
 
 任何向量空间都可以构造其对偶空间。对偶空间的定义不依赖基向量的选取，因此即使没有选择公理也可以构造出向量空间的对偶空间，像是 $RR^infinity$ 或者是函数空间 $L^2[a, b]$ 这种空间都可以构造出其对偶空间。不过对于流形来说，我们只需要考虑有限维的 $RR^m$ 向量空间即可。
 
-对偶空间 $V^* : V arrow.r RR$ 可以使用一般函数上定义的加法和数乘运算，即
+对偶空间 $V^* : cal(L)(V, RR)$ 可以使用一般函数上定义的加法和数乘运算，即
 
 $ (c_1 v^* + c_2 w^*)(x) = c_1 v^*(x) + c_2 w^*(x) $
 
@@ -35,7 +41,7 @@ $ (c_1 v^* + c_2 w^*)(x) = c_1 v^*(x) + c_2 w^*(x) $
 
 对偶空间的一大重要性质是：原空间 $V$ 可以自然嵌入（不依赖基向量选取的嵌入）对偶空间的对偶空间 $V^(**)$ 中。嵌入映射如下：
 
-$ phi : V arrow.r V^(**), v mapsto phi(v) $
+$ phi : V -> V^(**), v mapsto phi(v) $
 
 其中 $phi(v) : V^(**)$ 满足
 
@@ -58,7 +64,7 @@ $ phi(v)(w^*) = w^* (v) $
 ] <thm:exist-unique-of-dual-basis>
 
 #proof[
-  任取一组空间 $V^*$ 的基 ${mathbf(v)^*_i}_(i=1)^m$，定义映射 $F : RR^m arrow.r RR^m$ 为
+  任取一组空间 $V^*$ 的基 ${mathbf(v)^*_i}_(i=1)^m$，定义映射 $F : RR^m -> RR^m$ 为
 
   $ F lr( vec(x_1, x_2, dots.v, x_m) ) = vec(mathbf(v)^*_1, mathbf(v)^*_2, dots.v, mathbf(v)^*_m) (x_1 mathbf(e)_1 + x_2 mathbf(e)_2 + dots.c + x_m mathbf(e)_m ) $
 
@@ -102,7 +108,7 @@ $ phi(v)(w^*) = w^* (v) $
   caption: [平面上的向量（箭头）和协向量（平行直线）。协向量作用在向量上的取值可以直接读出。]
 ) <fig:covector-plane>
 
-对于函数 $f : M arrow.r RR$，$dif f$ 给 $M$ 上的每个点都对应了一个协向量 $dif f_p : T_p M arrow.r RR$。这就是一个*协向量场*，也称为一个*(0, 1)型张量场*。流形上的协向量场可以用一系列弯曲的等值线来表示。在每个点局部，弯曲的等值线会近似变成平直的，也就是这个点局部的微分。将 $dif f_p$ 作用在点 $p$ 局部的一个向量上，得到的就是 $f$ 沿着这个向量往前走变化的速率。@fig:covector-sphere 展示了球面上的一个标量场 $f$ 和其微分 $dif f$ 对应的协向量场。
+对于函数 $f : C^infinity (M, RR)$，$dif f$ 给 $M$ 上的每个点都对应了一个协向量 $dif f_p : cal(L)(T_p M, RR)$。这就是一个*协向量场*，也称为一个*(0, 1)型张量场*，通常记作 $Omega^1 (M)$（等学完微分形式之后你会看到为什么要用这个记号）。与平面上的协向量用一系列平行直线表示类似，流形上的协向量场可以用一系列弯曲的等值线来表示。在每个点局部，弯曲的等值线会近似变成平直的，其表示的协向量就是这个点局部的微分。将 $dif f_p$ 作用在点 $p$ 局部的一个向量上，得到的就是 $f$ 沿着这个向量往前走变化的速率。@fig:covector-sphere 展示了球面上的一个标量场 $f$ 和其微分 $dif f$ 对应的协向量场。
 
 #figure(
   three-js-figure("/blog/zh/2026-08-19/covector-sphere.js", body: [
@@ -117,7 +123,7 @@ $ phi(v)(w^*) = w^* (v) $
 
 = 向量与协向量的坐标表示
 
-对于点 $p in M$ 的切空间 $T_p M$，每个覆盖了点 $p$ 邻域的坐标卡 $(U_alpha, phi_alpha)$ 都定义了 $p$ 点附近的一个近似欧氏的的坐标系。对 $phi_alpha$ 在 $p$ 点上取微分，得到 $dif phi_alpha : T_p M arrow.r RR^m$：这可以看作是给 $T_p M$ 向量空间定义了一个坐标系。
+对于点 $p in M$ 的切空间 $T_p M$，每个覆盖了点 $p$ 邻域的坐标卡 $(U_alpha, phi_alpha)$ 都定义了 $p$ 点附近的一个近似欧氏的的坐标系。对 $phi_alpha$ 在 $p$ 点上取微分，得到 $dif phi_alpha : cal(L)(T_p M, RR^m)$。映射 $dif phi_alpha$ 可以看作是给 $T_p M$ 向量空间定义了一个坐标系。
 
 定义基向量：
 
@@ -153,13 +159,17 @@ $
 
 在微分几何中，我们通常省略掉 $phi_alpha^(-1)$，直接将基向量写作 $partial / (partial x_i)$。甚至有些地方你还会见到直接简写为 $partial_i$ 的写法。我们在之后均采用这种简写，比如 $mathbf(v)$ 的分量形式就写作 $mathbf(v) = v_i partial_i$。
 
-那么切空间的对偶空间 $T_p^* M$（也就是*余切空间（Cotangent Space）*）的基向量呢？根据 @def:dual-basis，我们希望寻找一组线性函数 $mathbf(e)^*_i : T_p M arrow.r RR$，满足 $mathbf(e)^*_i (partial_j) = cases(1\, & i = j, 0\, & i != j)$。而我们刚刚的推导中就得到了一个类似的量：
+#quote(block: true)[
+  注：有些微分几何教材中使用纯代数的方法来构造切空间，将切空间 $T_p M$ 定义成一个点 $p$ 附近的所有方向导数算符 $X: C^infinity (M, RR) -> RR$ 所构成的空间。这个空间与我们之前采用路径关于 $~$ 的等价类定义的空间是同构的。如果采用这个定义，那么基向量用 $partial_i = partial / (partial x^i)$ 就不仅仅是一个简写，而是真的表示一个偏导算符。不过为了方便读者理解，我们还是采用了路径等价类的方法来定义。
+]
+
+那么切空间的对偶空间 $T_p^* M$（也就是*余切空间（Cotangent Space）*）的基向量呢？根据 @def:dual-basis，我们希望寻找一组线性函数 $mathbf(e)^*_i : cal(L)(T_p M, RR)$，满足 $mathbf(e)^*_i (partial_j) = cases(1\, & i = j, 0\, & i != j)$。而注意到我们刚刚的推导中就得到了一个类似的量：
 
 $
   (dif phi_alpha)_p (partial_i) = mathbf(delta)_i
 $
 
-如果把 $phi_alpha$ 的各个分量展开，也就是说，$phi_alpha (p) = mat(x_1 (p), x_2 (p), dots.c, x_m (p))^top$，其中 $x_i : T_p M arrow.r RR$。我们就能得到：
+如果把 $phi_alpha$ 的各个分量展开，也就是说，$phi_alpha (p) = mat(x_1 (p), x_2 (p), dots.c, x_m (p))^top$，其中 $x_i : C^infinity (T_p M, RR)$。我们就能得到：
 
 $
   (dif x_i) (partial_j) = delta_(i j) = cases(1\, & i = j, 0\, & i != j)
@@ -197,7 +207,7 @@ $
   &= (dif phi_alpha^(-1))_(phi_alpha (p)) compose (dif phi_(beta alpha))_(phi_alpha (p))^(-1) mathbf(delta)_i
 $
 
-注意到 $phi_(beta alpha) : RR^m arrow.r RR^m$ 是两个欧氏空间之间的映射，也就是说 $(dif phi_(beta alpha))_(phi_alpha (p))$ 是这个函数的雅可比矩阵，不妨记作 $J$。那么我们就有：
+注意到 $phi_(beta alpha) : RR^m -> RR^m$ 是两个欧氏空间之间的映射，也就是说 $(dif phi_(beta alpha))_(phi_alpha (p))$ 是这个函数的雅可比矩阵，不妨记作 $J$。那么我们就有：
 
 $
   tilde(partial)_i = (dif phi_alpha^(-1))_(phi_alpha (p)) J^(-1) mathbf(delta)_i
@@ -348,27 +358,32 @@ $
 
 从刚刚的推导中我们看到，一个逆变的量乘上一个协变的量就会得到一个独立于坐标系的不变量。只要不涉及二阶以上的微分，那么这条规则一定适用。不仅对于向量和协向量是如此，对于高维张量也是如此。
 
-这条规则的另一面是，如果一个不依赖具体坐标系的不变量在某个坐标系下展开，那么逆变指标和协变指标在求和式中必须一一匹配。比如：#link("/zh/posts/2026-08-08/diff-geometry/", [上一篇文章])中我们没有依赖任何坐标系来定义流形上的向量，也就是说，流形上的“向量”这个数学对象应该是坐标变换下的不变量，因此我们看到在给向量 $mathbf(v) in T_p M$ 展开成坐标形式 $mathbf(v) = sum_(i=1)^m v_i partial_i$ 时，一定会有一个逆变指标（此处为 $v_i$）和一个协变指标（此处为 $partial_i$）成对出现。同样的，协向量 $mathbf(u)^* : T_p M arrow.r RR$ 也是一个独立于具体坐标系选取的数学对象，那么协向量的坐标表示 $mathbf(u)^* = sum_(i=1)^m u_i dif x_i$ 也会有一个逆变指标（$dif x_i$）和一个协变指标（$u_i$）成对出现。
+这条规则的另一面是，如果一个不依赖具体坐标系的不变量在某个坐标系下展开，那么逆变指标和协变指标在求和式中必须一一匹配。比如：#link("/zh/posts/2026-08-08/diff-geometry/", [上一篇文章])中我们没有依赖任何坐标系来定义流形上的向量，也就是说，流形上的“向量”这个数学对象应该是坐标变换下的不变量，因此我们看到在给向量 $mathbf(v) in T_p M$ 展开成坐标形式 $mathbf(v) = sum_(i=1)^m v_i partial_i$ 时，一定会有一个逆变指标（此处为 $v_i$）和一个协变指标（此处为 $partial_i$）成对出现。同样的，协向量 $mathbf(u)^* : cal(L)(T_p M, RR)$ 也是一个独立于具体坐标系选取的数学对象，那么协向量的坐标表示 $mathbf(u)^* = sum_(i=1)^m u_i dif x_i$ 也会有一个逆变指标（$dif x_i$）和一个协变指标（$u_i$）成对出现。
 
-= 爱因斯坦求和记号
+= 爱因斯坦求和记号 <sec:einstein-notation>
 
 相信有了以上知识，*爱因斯坦求和记号*的出现就成为一个非常自然的事情了。
 
 首先，我们希望能够区分逆变指标和协变指标。我们不妨将逆变指标标成上标、协变指标标成下标。并且既然求和式中逆变指标和协变指标永远成对出现，并且求和符号写起来很费劲，那么我们不妨直接把求和符号省略掉，只要在式子里看到一对用同一个字母标注的上下标就知道需要给这组指标加一个求和符号。这样我们的向量记号就变成了：
 
-$ mathbf(v) = sum_(i=1)^m v_i partial_i quad arrow.r quad mathbf(v) = v^i partial_i $
+$
+mathbf(v) = sum_(i=1)^m v_i partial_i quad &-> quad mathbf(v) = v^i partial_i \
 
-$ mathbf(u)^* = sum_(i=1)^m u_i dif x_i quad arrow.r quad mathbf(u)^* = u_i dif x^i $
+mathbf(u)^* = sum_(i=1)^m u_i dif x_i quad &-> quad mathbf(u)^* = u_i dif x^i
+$
 
 对于没有成对出现的指标，我们称之为*自由指标（Free Index）*，自由指标必须在等式左右两端同时出现。如果等式两端同时包含某个自由指标，那么这个等式就是在描述某个数学对象在该指标下的分量。比如，@eq:vector-component-chart-change、@eq:basis-vector-chart-change、@eq:covector-component-chart-change 和 @eq:covector-basis-chart-change 就可以写成：
 
-$ tilde(v)^i = (partial tilde(x)^i) / (partial x^j) v^j, tilde(partial)_i = (partial x^j) / (partial tilde(x)^i) partial_j $
-
-$ tilde(u)_i = (partial x^j) / (partial tilde(x)^i) u_j, dif tilde(x)^i = (partial tilde(x)^i) / (partial x^j) dif x^j $
+$
+tilde(v)^i = (partial tilde(x)^i) / (partial x^j) v^j \
+tilde(partial)_i = (partial x^j) / (partial tilde(x)^i) partial_j \
+tilde(u)_i = (partial x^j) / (partial tilde(x)^i) u_j \
+dif tilde(x)^i = (partial tilde(x)^i) / (partial x^j) dif x^j
+$
 
 这四个公式中，左右两个等式共同包含的 $i$ 是自由指标，而右侧式子中的一对上下标 $j$ 则是*哑标（Dummy Index）*，哑标在右侧相当于省略了求和记号。
 
-一般来说，矩阵（也就是 $T_p M arrow.r T_p M$ 的线性变换）可以看作是一个二维张量 $A in T_p M times T^*_p M$。矩阵在某个坐标系的分量的第一个维度是逆变的、第二个维度是协变的。也就是说，矩阵的坐标分量需要写成 $A^i_j$。举一个矩阵乘法的例子：
+一般来说，矩阵（也就是线性变换 $cal(L)(T_p M, T_p M)$）可以看作是一个二维张量 $A in T_p M times T^*_p M$。矩阵在某个坐标系的分量的第一个维度是逆变的、第二个维度是协变的。也就是说，矩阵的坐标分量需要写成 $A^i_j$。举一个矩阵乘法的例子：
 
 $
   (A^(-1))^i_j A^j_k = delta^i_k

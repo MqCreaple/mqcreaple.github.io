@@ -109,7 +109,7 @@
 
      $ union.big_(alpha in A) U_alpha = M $
 
-     且 $phi_alpha: U_alpha arrow.r Omega_alpha, (Omega_alpha subset.eq RR^m)$ 是一个拓扑同胚。
+     且 $phi_alpha: U_alpha -> Omega_alpha, (Omega_alpha subset.eq RR^m)$ 是一个拓扑同胚。
   3. 对于任意点 $p in M$ 的开邻域 $p in U in cal(O)$，若存在 $alpha, beta$ 使得 $U subset.eq U_alpha$ 且 $U subset.eq U_beta$，则函数 $phi_beta compose phi_alpha^(-1)$ 是一个光滑函数（*$C^infinity$ 兼容*）。 
 ] <def:manifold>
 
@@ -173,7 +173,7 @@
 最后，只需要将 $[gamma]$ 定义为 $gamma$ 的切向量即可。
 
 #definition[
-  路径 $gamma: I arrow.r M$ 在点 $t = 0$ 处的*切向量*为该点在 $~$ 关系下的等价类，记作：
+  路径 $gamma: I -> M$ 在点 $t = 0$ 处的*切向量*为该点在 $~$ 关系下的等价类，记作：
 
   $ dot(gamma)(0) = [gamma] $
 
@@ -216,12 +216,12 @@
 有了切空间的概念，接下来就可以研究流形到流形的映射了。
 
 #definition[
-  对于 $m$ 维流形 $M$ 和 $n$ 维流形 $N$，若函数 $f: M arrow.r N$ 满足：对于任意点 $p in M$，存在 $M$ 上的坐标卡 $(U, phi)$ 和 $N$ 上的坐标卡 $(V, psi)$，使得
+  对于 $m$ 维流形 $M$ 和 $n$ 维流形 $N$，若函数 $f: M -> N$ 满足：对于任意点 $p in M$，存在 $M$ 上的坐标卡 $(U, phi)$ 和 $N$ 上的坐标卡 $(V, psi)$，使得
 
   1. $p in U, f(p) in V$
   2. $(psi compose f compose phi^(-1))$ 是一个光滑函数。
 
-  则称映射 $f$ *光滑*。
+  则称映射 $f$ *光滑*，记作 $f : C^infinity (M, N)$（有时也将 $C^infinity (M, N)$ 当作所有光滑函数的集合而非一个类型标记，所以也可以写成 $f in C^infinity (M, N)$）。
 ] <def:smooth>
 
 由于 $(psi compose f compose phi^(-1))$ 的定义域和值域为欧氏空间 $RR^m$ 和 $RR^n$ 的子集，这个函数的光滑性是已经有定义的。这个定义其实同样是把一般流形的性质用坐标卡变成我们熟悉的欧氏空间中的性质。
@@ -231,9 +231,9 @@
 对于光滑函数 $f$，可以定义函数的微分 $dif f$：
 
 #definition[
-  对于流形 $M$、$N$ 以及光滑映射 $f: M arrow.r N$，对 $M$ 上任何一点 $p$ 均可以定义 $f$ 在该点上的*微分*。
+  对于流形 $M$、$N$ 以及光滑映射 $f: M -> N$，对 $M$ 上任何一点 $p$ 均可以定义 $f$ 在该点上的*微分*。
 
-  $ dif f_p : T_p M arrow.r T_(f(p)) N $
+  $ dif f_p : T_p M -> T_(f(p)) N $
 
   满足：任何 $[gamma] in T_p M$，$dif f_p ([gamma]) = [f(gamma)]$。
 ] <def:differentiation>
@@ -246,9 +246,9 @@
 
 其实这个平直空间的特例可以帮助我们理解一般流形间映射的微分：对于一般的流形 $M$ 和 $N$，$p$ 点的微分映射 $dif f$ 可以看作是 $p$ 点和 $f(p)$ 点附近这两个近似欧氏空间的向量空间的某种“雅可比矩阵”——一个不严谨的比喻是，当点 $p_1$ 从点 $p$ 位移一个无穷小的向量之后，$dif f_p$ 将 $M$ 上的“切向量” $(p_1 - p)$ 映射到了 $N$ 上的“切向量” $(f(p_1) - f(p))$。
 
-如果 $M$ 和 $N$ 中一个是一般的流形、另一个是欧氏空间呢？比如，取 $N = RR^m$，此时函数 $f : M arrow.r RR^m$ 就可以理解为 $M$ 的一个坐标卡。这时，$dif f_p$ 的作用就是将 $T_p M$ 上的向量映射到坐标卡所表示的坐标空间中。反过来，如果 $M = RR^n$ 是一个欧氏空间，那么 $f$ 就是一个坐标映射的逆映射，$dif f$ 的功能就是将 $p$ 点上某个切向量的坐标表示给映射回 $T_f(p) N$ 空间中。
+如果 $M$ 和 $N$ 中一个是一般的流形、另一个是欧氏空间呢？比如，取 $N = RR^m$，此时函数 $f : M -> RR^m$ 就可以理解为 $M$ 的一个坐标卡。这时，$dif f_p$ 的作用就是将 $T_p M$ 上的向量映射到坐标卡所表示的坐标空间中。反过来，如果 $M = RR^n$ 是一个欧氏空间，那么 $f$ 就是一个坐标映射的逆映射，$dif f$ 的功能就是将 $p$ 点上某个切向量的坐标表示给映射回 $T_f(p) N$ 空间中。
 
-如果 $N = RR$，即 $f : M arrow.r RR$ 是流形 $M$ 上的一个单值函数，此时 $dif f_p : T_p M arrow.r RR$ 在 $M$ 上的每个点都定义了一个 $T_p M$ 空间到 $RR$ 的线性映射。这个东西叫*协向量（Covector / Covariant Vector）*，而 $dif f$ 所表示的协向量场又叫*微分1-形式（Differential 1-Form）*。这两个概念我们下一篇文章再详细说明。
+如果 $N = RR$，即 $f : M -> RR$ 是流形 $M$ 上的一个单值函数，此时 $dif f_p : T_p M -> RR$ 在 $M$ 上的每个点都定义了一个 $T_p M$ 空间到 $RR$ 的线性映射。这个东西叫*协向量（Covector / Covariant Vector）*，而 $dif f$ 所表示的协向量场又叫*微分1-形式（Differential 1-Form）*。这两个概念我们下一篇文章再详细说明。
 
 == 流形微分的性质
 
@@ -256,43 +256,43 @@
 
 1. 导数算符是线性的。$ (c_1 f + c_2 g)'(x) = c_1 f'(x) + c_2 g'(x) $
 2. 反函数的导数是原函数导数的倒数。$ (f^(-1))'(f(x)) = 1 / (f'(x)) $
-3. 复合函数的导数满足链式法则。$ (g compose f)(x) = g'(f(x)) dot.c f'(x) $
+3. 复合函数的导数满足链式法则。$ (g compose f)(x) = g'(f(x)) dot f'(x) $
 4. 函数 $f(x) = x$ 的微分处处为$1$。
 
 到了大学，学过多元函数微积分之后，你又会看到：
 
 1. 雅可比矩阵是线性的。$ J_(c_1 mathbf(f) + c_2 mathbf(g))(mathbf(p)) = c_1 J_mathbf(f) (mathbf(p)) + c_2 J_mathbf(g) (mathbf(p)) $
-2. $mathbf(f) : RR^n arrow.r RR^n$ 映射若在 $mathbf(p)$ 点局部可逆，则其逆映射 $mathbf(f)^(-1)$ 的雅可比矩阵为原映射雅可比的逆矩阵。 $ J_(mathbf(f)^(-1)) (mathbf(f)(mathbf(p))) = (J_mathbf(f) (mathbf(p)))^(-1) $
+2. $mathbf(f) : RR^n -> RR^n$ 映射若在 $mathbf(p)$ 点局部可逆，则其逆映射 $mathbf(f)^(-1)$ 的雅可比矩阵为原映射雅可比的逆矩阵。 $ J_(mathbf(f)^(-1)) (mathbf(f)(mathbf(p))) = (J_mathbf(f) (mathbf(p)))^(-1) $
 3. 复合函数的雅可比矩阵满足链式法则。$ J_(mathbf(g) compose mathbf(f))(mathbf(p)) = J_mathbf(g) (mathbf(f)(mathbf(p))) J_mathbf(f) (mathbf(p)) $
 4. 恒等函数 $id(mathbf(p)) = mathbf(p)$ 的雅可比矩阵为单位矩阵 $I$。
 
 这三条性质都可以在流形微分运算中找到对应。如下所示：
 
 #theorem[
-  （微分算符是线性的）对于流形 $M$ 和 $N$ 间的光滑映射 $f, g : M arrow.r N$，有：
+  （微分算符是线性的）对于流形 $M$ 和 $N$ 间的光滑映射 $f, g : M -> N$，有：
 
   $ dif (c_1 f + c_2 g)_p = c_1 dif f_p + c_2 dif g_p $
 ]
 
 #theorem[
-  （逆映射的微分）对于流形 $M$ 和 $N$ 间的光滑映射 $f : M arrow.r N$，有：
+  （逆映射的微分）对于流形 $M$ 和 $N$ 间的光滑映射 $f : M -> N$，有：
 
   $ dif (f^(-1))_(f(p)) = (dif f)^(-1)_p $
 ]
 
 #theorem[
-  （复合映射的微分）对于流形 $M$、$N$、$P$，以及光滑映射 $f : M arrow.r N$ 和 $g : N arrow.r P$，有：
+  （复合映射的微分）对于流形 $M$、$N$、$P$，以及光滑映射 $f : M -> N$ 和 $g : N -> P$，有：
 
   $ dif (g compose f)_p = dif g_(f(p)) compose dif f_p $
 ]
 
 #theorem[
-  （恒等映射的微分）映射 $id_M : M arrow.r M, p mapsto p$ 的微分为：
+  （恒等映射的微分）映射 $id_M : M -> M, p mapsto p$ 的微分为：
 
   $ dif id_M = id_(T_p M) $
 ]
 
-上述四条性质使用 $p$ 点附近的坐标映射都不难证明，此处就留作练习了。不难发现，一元函数的微分和多元函数的微分都可以看作是上面四个定理的特例——$RR^m arrow.r RR^n$ 的线性映射就是矩阵，而逆映射和复合映射就对应着矩阵的逆和矩阵相乘，而这在 $m = n = 1$ 时又退化为实数的倒数和乘法。
+上述四条性质使用 $p$ 点附近的坐标映射都不难证明，此处就留作练习了。不难发现，一元函数的微分和多元函数的微分都可以看作是上面四个定理的特例——$RR^m -> RR^n$ 的线性映射就是矩阵，而逆映射和复合映射就对应着矩阵的逆和矩阵相乘，而这在 $m = n = 1$ 时又退化为实数的倒数和乘法。
 
 = 流形上的场
 
@@ -303,10 +303,10 @@
   caption: [牛表面上的标量场和向量场：左侧的牛上用色卡展示了一个标量场，右侧的牛上展示了一个向量场，可以拖拽向量场上的点来观察不同位置上的向量。],
 ) <fig:fields-on-cow>
 
-只不过，微分几何通常只研究光滑的对象，也就是说，不是任何函数 $M arrow.r RR$ 都可以叫做一个标量场，只有 $M arrow.r RR$ 的光滑函数才能叫标量场。由于 $RR$ 本身就是一个流形，因此我们这里可以直接借用 @def:smooth 对光滑函数的定义。
+只不过，微分几何通常只研究光滑的对象，也就是说，不是任何函数 $M -> RR$ 都可以叫做一个标量场，只有 $C^infinity (M, RR)$ 的光滑函数才能叫标量场。由于 $RR$ 本身就是一个流形，因此我们这里可以直接借用 @def:smooth 对光滑函数的定义。
 
 #definition[
-  一个光滑映射 $f : M arrow.r RR$ 又被称作一个*标量场*或者一个*(0, 0)型张量场*。
+  一个光滑映射 $f : C^infinity (M, RR)$ 又被称作一个*标量场*或者一个*(0, 0)型张量场*。
 ] <def:scalar-field>
 
 要定义向量场的话会略微有点复杂，因为向量场需要给每个点 $p$ 分配一个 $T_p M$ 上的向量，而每个 $p$ 对应的 $T_p M$ 都是一个独立的向量空间，不同的 $T_p M$ 之间甚至都无法比较（至少不能用我们目前掌握的工具来比较），那我们该怎么定义什么样的向量场算是光滑的呢？
@@ -314,14 +314,16 @@
 不难想到，我们同样可以像之前一样，将某个点局部的向量场通过坐标映射来映射到欧氏空间中，而欧氏空间中的连续性同样是我们熟悉的，这样就可以定义向量场的连续性了。
 
 #definition[
-  （向量场的一种定义方式）定义流形 $M$ 上的*向量场*\/*(1, 0)型张量场*为映射 $X : M arrow.r T M$，满足：
+  （向量场的一种定义方式）定义流形 $M$ 上的*向量场*\/*(1, 0)型张量场*为映射 $X : M -> T M$，满足：
 
   1. $forall p in M, X(p) in T_p M$
   2. 对于任意 $p in M$ 和任意包含点 $p$ 的坐标卡 $(U_alpha, phi_alpha) in scr(A)$，场
 
-    $ dif phi_alpha compose X compose phi_alpha^(-1) : RR^m arrow.r RR^m $
+    $ dif phi_alpha compose X compose phi_alpha^(-1) : RR^m -> RR^m $
 
     是一个光滑函数。
+
+    记所有 $M$ 上的向量场所构成的集合为 $frak(X)(M)$。
 ] <def:vector-field>
 
 当然这个定义并不是微分几何里最经典的定义向量场的方式。向量场实际上的定义是在纤维丛上的一个光滑截面，只不过我们在这里就不纠结这些细节了，就将 @def:vector-field 作为我们对向量场的标准定义。
