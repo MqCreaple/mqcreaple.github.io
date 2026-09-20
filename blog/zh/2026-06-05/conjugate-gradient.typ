@@ -42,7 +42,7 @@ $ l_1(mathbf(x)) = 1/2 (mathbf(x)_* - mathbf(x))^T A (mathbf(x)_* - mathbf(x)) $
 
 $ V_k = "span" brace.l mathbf(p)_0, mathbf(p)_1, dots.c, mathbf(p)_(k-1) brace.r $
 
-$ chevron.l mathbf(p)_i, mathbf(p)_j chevron.r_A = mathbf(p)_i^T A mathbf(p)_j = 0 quad ("for" i != j) $
+$ chevron(mathbf(p)_i\, mathbf(p)_j)_A = mathbf(p)_i^T A mathbf(p)_j = 0 quad ("for" i != j) $
 
 $ mathbf(x)_k = sum_(i=0)^(k-1) alpha_i mathbf(p)_i = mathbf(x)_(k-1) + alpha_(k-1) mathbf(p)_(k-1) $
 
@@ -51,21 +51,25 @@ $ mathbf(x)_k = sum_(i=0)^(k-1) alpha_i mathbf(p)_i = mathbf(x)_(k-1) + alpha_(k
 （以上记号全部与文章撰写日期#link("https://en.wikipedia.org/wiki/Conjugate_gradient_method")[维基百科词条]中的记号保持统一）
 
 #lemma[
-对于向量空间 $RR^n$ 和 $n times n$ 的对称正定矩阵 $A$，函数 $chevron.l mathbf(u), mathbf(v) chevron.r_A = mathbf(u)^T A mathbf(v)$ 是一个内积。
+对于向量空间 $RR^n$ 和 $n times n$ 的对称正定矩阵 $A$，函数 $chevron(mathbf(u)\, mathbf(v))_A = mathbf(u)^T A mathbf(v)$ 是一个内积。
 ]
 
 #proof[
 + 对称性
 
-  $ chevron.l mathbf(u), mathbf(v) chevron.r_A = mathbf(u)^T A mathbf(v) = (mathbf(u)^T A mathbf(v))^T = mathbf(v)^T A^T mathbf(u) = mathbf(v)^T A mathbf(u) = chevron.l mathbf(v), mathbf(u) chevron.r_A $
+  $ chevron(mathbf(u)\, mathbf(v))_A = mathbf(u)^T A mathbf(v) = (mathbf(u)^T A mathbf(v))^T = mathbf(v)^T A^T mathbf(u) = mathbf(v)^T A mathbf(u) = chevron(mathbf(v)\, mathbf(u))_A $
 
 + 双线性
 
-  $ chevron.l c_1 mathbf(u)_1 + c_2 mathbf(u)_2, mathbf(v) chevron.r_A = (c_1 mathbf(u)_1 + c_2 mathbf(u)_2)^T A mathbf(v) = c_1 mathbf(u)_1^T A mathbf(v) + c_2 mathbf(u)_2^T A mathbf(v) = c_1 chevron.l mathbf(u)_1, mathbf(v) chevron.r_A + c_2 chevron.l mathbf(u)_2, mathbf(v) chevron.r_A $
+  $
+    chevron(c_1 mathbf(u)_1 + c_2 mathbf(u)_2\, mathbf(v))_A &= (c_1 mathbf(u)_1 + c_2 mathbf(u)_2)^T A mathbf(v) \
+    &= c_1 mathbf(u)_1^T A mathbf(v) + c_2 mathbf(u)_2^T A mathbf(v) \
+    &= c_1 chevron(mathbf(u)_1\, mathbf(v))_A + c_2 chevron(mathbf(u)_2\, mathbf(v))_A
+  $
 
 + 正定性：由于矩阵 $A$ 正定，
 
-  $ chevron.l mathbf(u), mathbf(u) chevron.r_A = mathbf(u)^T A mathbf(u) >= 0 $
+  $ chevron(mathbf(u)\, mathbf(u))_A = mathbf(u)^T A mathbf(u) >= 0 $
 
   且该函数当且仅当 $mathbf(u) = mathbf(0)$ 时为$0$。
 ]
@@ -84,7 +88,7 @@ $ mathbf(r)_k = mathbf(b) - A mathbf(x)_k $
 
 那么能不能直接把 $mathbf(r)_k$ 添加到搜索空间里，令 $mathbf(p)_k = mathbf(r)_k$ 呢？显然不行，因为这样违反了上面给出的约束条件，$mathbf(p)_i$ 和 $mathbf(p)_j$ 不一定关于 $A$ 正交了。为了保持正交性，需要在 $mathbf(r)_k$ 中减去前面已经添加过的 $mathbf(p)_k$ 的分量。
 
-$ mathbf(p)_k = mathbf(r)_k - sum_(i < k) (chevron.l mathbf(r)_k, mathbf(p)_i chevron.r_A)/(chevron.l mathbf(p)_i, mathbf(p)_i chevron.r_A) mathbf(p)_i = mathbf(r)_k - sum_(i < k) (mathbf(r)_k^T A mathbf(p)_i)/(mathbf(p)_i^T A mathbf(p)_i) mathbf(p)_i $
+$ mathbf(p)_k = mathbf(r)_k - sum_(i < k) (chevron(mathbf(r)_k\, mathbf(p)_i)_A)/(chevron(mathbf(p)_i\, mathbf(p)_i)_A) mathbf(p)_i = mathbf(r)_k - sum_(i < k) (mathbf(r)_k^T A mathbf(p)_i)/(mathbf(p)_i^T A mathbf(p)_i) mathbf(p)_i $
 
 换句话说，每次向搜索空间中添加的向量 $mathbf(p)_k$ 是 $l(mathbf(x))$ 梯度与之前所有向量关于 $A$ 的共轭向量，这也是共轭梯度法名称的来源。
 
@@ -134,10 +138,10 @@ $ mathbf(p)_k^T mathbf(r)_k = mathbf(p)_k^T (mathbf(b) - A sum_(i=0)^(k-1) alpha
 
 $ alpha_k = (mathbf(p)_k^T mathbf(b))/(mathbf(p)_k^T A mathbf(p)_k) = (mathbf(p)_k^T mathbf(r)_k)/(mathbf(p)_k^T A mathbf(p)_k) $
 
-接下来，注意到对于任意的 $i > j$，都有 $chevron.l mathbf(r)_i, mathbf(p)_j chevron.r = mathbf(r)_i^T mathbf(p)_j = 0$。证明如下：
+接下来，注意到对于任意的 $i > j$，都有 $chevron(mathbf(r)_i\, mathbf(p)_j) = mathbf(r)_i^T mathbf(p)_j = 0$。证明如下：
 
 #theorem[
-$forall 0 <= j < i < n, thin chevron.l mathbf(r)_i, mathbf(p)_j chevron.r = mathbf(r)_i^T mathbf(p)_j = 0$
+$forall 0 <= j < i < n, thin chevron(mathbf(r)_i\, mathbf(p)_j) = mathbf(r)_i^T mathbf(p)_j = 0$
 ] <thm:1>
 
 #proof[
@@ -173,7 +177,7 @@ $ mathbf(p)_k^T A mathbf(p)_k &= mathbf(p)_k^T A (mathbf(r)_k - sum_(i=0)^(k-1) 
 ]
 
 #theorem[
-$forall 0 <= j < i < n, thin chevron.l mathbf(r)_i, mathbf(p)_j chevron.r = mathbf(r)_i^T mathbf(r)_j = 0$
+$forall 0 <= j < i < n, thin chevron(mathbf(r)_i\, mathbf(p)_j) = mathbf(r)_i^T mathbf(r)_j = 0$
 ]
 
 #proof[
@@ -209,7 +213,7 @@ $forall 0 <= j < i < n, thin chevron.l mathbf(r)_i, mathbf(p)_j chevron.r = math
 由数学归纳法，
 ]
 
-这个性质非常奇特。我们看似随机地取了一系列向量 $mathbf(p)_k$，由此计算出的残差向量 $mathbf(r)_k$ 居然是互相正交的。也就是说，这堆向量里，$brace.l mathbf(p)_k brace.r$ 关于内积 $chevron.l dot, dot chevron.r_A$ 正交，而 $brace.l mathbf(r)_k brace.r$ 关于一般意义上的向量内积 $chevron.l dot, dot chevron.r$ 正交。那么我们是否可以进一步利用 $mathbf(r)_k$ 的正交性来化简表达式呢？
+这个性质非常奇特。我们看似随机地取了一系列向量 $mathbf(p)_k$，由此计算出的残差向量 $mathbf(r)_k$ 居然是互相正交的。也就是说，这堆向量里，$brace.l mathbf(p)_k brace.r$ 关于内积 $chevron(dot\, dot)_A$ 正交，而 $brace.l mathbf(r)_k brace.r$ 关于一般意义上的向量内积 $chevron(dot\, dot)$ 正交。那么我们是否可以进一步利用 $mathbf(r)_k$ 的正交性来化简表达式呢？
 
 不难证明以下几条结论：
 

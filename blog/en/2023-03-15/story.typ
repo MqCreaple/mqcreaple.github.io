@@ -1,6 +1,6 @@
 // title: Love, Is It?
 // summary: Is loving an AI really love?
-// tags: short-story, science-fiction
+// tags: short-story, science-fiction, artificial-intelligence
 // category: humanity
 
 #import "../../template.typ": article, hr

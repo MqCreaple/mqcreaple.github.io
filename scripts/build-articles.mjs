@@ -17,6 +17,9 @@ const generatedDir = path.join(root, 'src', 'generated');
 const articlesDir = path.join(generatedDir, 'articles');
 const pdfDir = path.join(root, 'node_modules', '.cache', 'pdfs');
 const tmpDir = path.join(root, 'node_modules', '.cache', 'articles');
+const assetDir = path.join(root, 'asset');
+const pagesDir = path.join(root, 'src', 'pages');
+const appDir = path.join(root, 'app');
 const localTypstCandidates = [
   path.join(root, '.tools', 'typst', 'typst.exe'),
   path.join(root, '.tools', 'typst', 'typst-x86_64-pc-windows-msvc', 'typst.exe'),
@@ -73,6 +76,141 @@ function extractFragment(html) {
   const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
   const body = bodyMatch ? bodyMatch[1] : html;
   return `${styles}\n${body}`;
+}
+
+function normalizeRoutePath(route) {
+  if (route === '/') return route;
+  return route.endsWith('/') ? route.slice(0, -1) : route;
+}
+
+function decodeRoutePath(route) {
+  try {
+    return decodeURIComponent(route);
+  } catch {
+    return route;
+  }
+}
+
+function decodeHtmlAttribute(value) {
+  return value.replace(
+    /&(?:#(\d+)|#x([\da-f]+)|amp|quot|apos|lt|gt);/gi,
+    (entity, decimal, hexadecimal) => {
+      if (decimal) return String.fromCodePoint(Number(decimal));
+      if (hexadecimal) return String.fromCodePoint(Number.parseInt(hexadecimal, 16));
+      return {
+        '&amp;': '&',
+        '&quot;': '"',
+        '&apos;': "'",
+        '&lt;': '<',
+        '&gt;': '>',
+      }[entity.toLowerCase()];
+    },
+  );
+}
+
+function extractLocalHrefs(fragment) {
+  const hrefs = [];
+  for (const match of fragment.matchAll(/<a\b[^>]*>/gi)) {
+    const href = match[0].match(/\s+href\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i);
+    if (href) hrefs.push(decodeHtmlAttribute(href[1] ?? href[2] ?? href[3] ?? ''));
+  }
+  return hrefs;
+}
+
+function collectStaticPageRoutes(dir, routes = new Set(), base = dir) {
+  if (!existsSync(dir)) return routes;
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      collectStaticPageRoutes(full, routes, base);
+      continue;
+    }
+
+    const extension = path.extname(entry.name);
+    if (!['.astro', '.html', '.md', '.mdx'].includes(extension)) continue;
+    const relative = path.relative(base, full).slice(0, -extension.length);
+    const parts = relative.split(path.sep);
+    if (parts.at(-1) === 'index') parts.pop();
+    if (parts.some((part) => part.includes('['))) continue;
+    routes.add(normalizeRoutePath(`/${parts.join('/')}${parts.length > 0 ? '/' : ''}`));
+  }
+  return routes;
+}
+
+function collectRouteTargets(tasks, entries) {
+  const routes = collectStaticPageRoutes(pagesDir);
+  routes.add('/');
+
+  for (const task of tasks) {
+    routes.add(normalizeRoutePath(`/${task.lang}/posts/${task.date}/${task.name}/`));
+    routes.add(normalizeRoutePath(`/pdf/${task.id}.pdf`));
+  }
+
+  for (const entry of entries) {
+    routes.add(normalizeRoutePath(`/${entry.lang}/`));
+    for (const tag of entry.tags ?? []) {
+      routes.add(normalizeRoutePath(`/${entry.lang}/tag/${tag}/`));
+    }
+    if (entry.category) {
+      routes.add(normalizeRoutePath(`/${entry.lang}/category/${entry.category}/`));
+    }
+  }
+
+  if (existsSync(appDir)) {
+    for (const entry of readdirSync(appDir, { withFileTypes: true })) {
+      if (entry.isDirectory()) routes.add(normalizeRoutePath(`/app/${entry.name}/`));
+    }
+  }
+
+  return routes;
+}
+
+function isPublicAsset(route) {
+  if (!route.startsWith('/')) return false;
+  const candidate = path.resolve(assetDir, route.slice(1));
+  if (candidate !== assetDir && !candidate.startsWith(assetDir + path.sep)) return false;
+  return existsSync(candidate);
+}
+
+function validateLocalLinks(tasks, entries) {
+  const routes = collectRouteTargets(tasks, entries);
+  let checked = 0;
+  let invalid = 0;
+
+  for (const task of tasks) {
+    const fragment = readFileSync(path.join(articlesDir, `${task.id}.html`), 'utf-8');
+    const baseUrl = new URL(`https://mqcreaple.local/${task.lang}/posts/${task.date}/${task.name}/`);
+
+    for (const href of extractLocalHrefs(fragment)) {
+      if (href === '') continue;
+
+      let target;
+      try {
+        target = new URL(href, baseUrl);
+      } catch {
+        invalid += 1;
+        console.warn(`[link-check] ${task.id}: invalid local hyperlink "${href}"`);
+        continue;
+      }
+
+      if (target.hostname !== baseUrl.hostname) continue;
+      checked += 1;
+
+      const route = normalizeRoutePath(decodeRoutePath(target.pathname));
+      if (routes.has(route) || isPublicAsset(route)) continue;
+
+      invalid += 1;
+      console.warn(
+        `[link-check] ${task.id}: invalid local hyperlink "${href}" (resolved to "${route}")`,
+      );
+    }
+  }
+
+  if (invalid > 0) {
+    console.warn(`[link-check] Found ${invalid} invalid local hyperlink(s) in ${checked} checked.`);
+  } else {
+    console.log(`[link-check] Checked ${checked} local hyperlink(s); all targets are valid.`);
+  }
 }
 
 async function compile(file, out, args) {
@@ -189,3 +327,10 @@ for (const task of tasks) {
 entries.sort((a, b) => b.date.localeCompare(a.date) || a.lang.localeCompare(b.lang));
 writeFileSync(path.join(generatedDir, 'index.json'), JSON.stringify(entries, null, 2), 'utf-8');
 console.log(`Built ${entries.length} article(s).`);
+
+try {
+  validateLocalLinks(tasks, entries);
+} catch (err) {
+  const message = err instanceof Error ? err.message : String(err);
+  console.warn(`[link-check] Skipped because the checker failed: ${message}`);
+}
