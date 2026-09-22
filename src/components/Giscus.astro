@@ -1,0 +1,105 @@
+---
+import { giscusConfig, isGiscusConfigured } from '../config/giscus';
+import translations from '../i18n/translations.json';
+
+interface Props {
+  lang?: string;
+  term: string;
+  showTopBorder?: boolean;
+}
+
+const { lang = 'en', term, showTopBorder = true } = Astro.props;
+const t = translations[lang as keyof typeof translations] ?? translations.en;
+const giscusLang = lang === 'zh' ? 'zh-CN' : 'en';
+const headingId = `giscus-comments-${term.replace(/[^a-zA-Z0-9_-]/g, '-')}`;
+const themeBase = new URL(
+  import.meta.env.BASE_URL,
+  import.meta.env.DEV ? Astro.url : Astro.site ?? Astro.url,
+);
+const lightThemeUrl = new URL('giscus-theme-light.css', themeBase).href;
+const darkThemeUrl = new URL('giscus-theme-dark.css', themeBase).href;
+---
+
+{
+  isGiscusConfigured && (
+    <section
+      class:list={['giscus-comments', { 'giscus-comments--no-top-border': !showTopBorder }]}
+      data-pagefind-ignore
+      aria-labelledby={headingId}
+    >
+      <h2 id={headingId}>{t.comments}</h2>
+      <div class="giscus" />
+      <script
+        is:inline
+        define:vars={{
+          repo: giscusConfig.repo,
+          repoId: giscusConfig.repoId,
+          category: giscusConfig.category,
+          categoryId: giscusConfig.categoryId,
+          term,
+          giscusLang,
+          lightThemeUrl,
+          darkThemeUrl,
+        }}
+      >
+        const container = document.querySelector('.giscus');
+        if (container) {
+          const themeUrls = {
+            light: lightThemeUrl,
+            dark: darkThemeUrl,
+          };
+          const theme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+          const script = document.createElement('script');
+          script.src = 'https://giscus.app/client.js';
+          script.async = true;
+          script.crossOrigin = 'anonymous';
+          script.dataset.repo = repo;
+          script.dataset.repoId = repoId;
+          script.dataset.category = category;
+          script.dataset.categoryId = categoryId;
+          script.dataset.mapping = 'specific';
+          script.dataset.term = term;
+          script.dataset.strict = '1';
+          script.dataset.reactionsEnabled = '1';
+          script.dataset.emitMetadata = '0';
+          script.dataset.inputPosition = 'bottom';
+          script.dataset.theme = themeUrls[theme];
+          script.dataset.lang = giscusLang;
+          script.dataset.loading = 'lazy';
+
+          container.parentElement?.appendChild(script);
+
+          document.documentElement.addEventListener('themechange', (event) => {
+            const iframe = document.querySelector('iframe.giscus-frame');
+            const nextTheme = event.detail?.theme === 'dark' ? 'dark' : 'light';
+            iframe?.contentWindow?.postMessage(
+              { giscus: { setConfig: { theme: themeUrls[nextTheme] } } },
+              'https://giscus.app',
+            );
+          });
+        }
+      </script>
+    </section>
+  )
+}
+
+<style>
+  .giscus-comments {
+    margin-top: 4rem;
+    padding-top: 2rem;
+  }
+
+  .giscus-comments:not(.giscus-comments--no-top-border) {
+    border-top: 1px solid var(--border);
+  }
+
+  .giscus-comments h2 {
+    margin: 0 0 1rem;
+    color: var(--heading);
+    font-size: 1.4rem;
+  }
+
+  .giscus {
+    min-height: 8rem;
+  }
+</style>

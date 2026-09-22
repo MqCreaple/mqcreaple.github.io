@@ -39,7 +39,8 @@
       "copyright": "Copyright © MqCreaple 2021 - {year}, Blog of MqCreaple",
       "contact": "Contact Me",
       "license": "This page is published with CC-BY-NC-SA 4.0 license."
-    }
+    },
+    "comments": "Comments"
   },
   "zh": {
     "siteTitle": "GMQ的技术避难所",
@@ -81,6 +82,7 @@
       "copyright": "版权所有 © MqCreaple 2021 - {year}，MqCreaple 的博客",
       "contact": "联系我",
       "license": "本页面以 CC-BY-NC-SA 4.0 许可发布。"
-    }
+    },
+    "comments": "评论"
   }
 }

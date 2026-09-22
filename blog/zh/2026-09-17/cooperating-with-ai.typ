@@ -1,6 +1,6 @@
 // title: AI时代的存在焦虑
 // summary: 当知识生产越来越依赖 AI 与算力，我们还能保留多少主体性？
-// tags: artificial-intelligence, research, existentialism
+// tags: artificial-intelligence, software-engineering, research, existentialism
 // category: humanity
 
 #import "../../template.typ": article, cetz-canvas

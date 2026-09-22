@@ -20,6 +20,10 @@ function serveGeneratedFiles() {
     name: 'serve-generated-files',
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
+        if (/^\/giscus-theme-(?:light|dark)\.css(?:\?|$)/.test(req.url ?? '')) {
+          res.setHeader('Access-Control-Allow-Origin', 'https://giscus.app');
+          res.setHeader('Access-Control-Allow-Private-Network', 'true');
+        }
         const url = new URL(req.url ?? '/', 'http://localhost');
         let pathname;
         try {
@@ -58,7 +62,15 @@ export default defineConfig({
   publicDir: 'asset',
   outDir: 'output',
   trailingSlash: 'always',
+  security: {
+    allowedDomains: [{ hostname: 'giscus.app', protocol: 'https' }],
+  },
   vite: {
+    server: {
+      cors: {
+        origin: 'https://giscus.app',
+      },
+    },
     plugins: [worklet(), serveGeneratedFiles()],
   },
 });

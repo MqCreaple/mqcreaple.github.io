@@ -6,6 +6,7 @@ import PlotlyDiagramBuilder from '../components/PlotlyDiagramBuilder.astro';
 import ShadertoyFigureBuilder from '../components/ShadertoyFigureBuilder.astro';
 import TagCloud from '../components/TagCloud.astro';
 import ThreeJsDiagramBuilder from '../components/ThreeJsDiagramBuilder.astro';
+import Giscus from '../components/Giscus.astro';
 import Base from './Base.astro';
 import translations from '../i18n/translations.json';
 
@@ -66,6 +67,7 @@ const headHtml = headAssets(htmlHeads);
       </p>
     )}
   </article>
+  <Giscus lang={lang} term={`post:${id}`} />
   {hasThreeJsFigure && <ThreeJsDiagramBuilder />}
   {hasShadertoyFigure && <ShadertoyFigureBuilder />}
   {hasPlotlyFigure && <PlotlyDiagramBuilder />}

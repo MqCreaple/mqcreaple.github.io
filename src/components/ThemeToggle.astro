@@ -17,7 +17,9 @@
   button?.addEventListener('click', () => {
     const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
     root.dataset.theme = next;
-    root.dispatchEvent(new CustomEvent('themechange', { detail: { theme: next } }));
+    root.dispatchEvent(
+      new CustomEvent('themechange', { detail: { theme: next }, bubbles: true }),
+    );
     localStorage.setItem('theme', next);
   });
 </script>

@@ -5,6 +5,7 @@ import TagCloud from '../../components/TagCloud.astro';
 import translations from '../../i18n/translations.json';
 import posts from '../../generated/index.json';
 import CategoryBar from '../../components/CategoryBar.astro';
+import Giscus from '../../components/Giscus.astro';
 
 export function getStaticPaths() {
   return ['en', 'zh'].map((lang) => ({ params: { lang } }));
@@ -46,6 +47,7 @@ const t = translations[lang as keyof typeof translations] ?? translations.en;
       }
     </ol>
   </section>
+  <Giscus lang={lang} term="site-homepage" showTopBorder={false} />
   <Avatar slot="aside" lang={lang} />
   <TagCloud slot="aside" lang={lang} />
 </Base>

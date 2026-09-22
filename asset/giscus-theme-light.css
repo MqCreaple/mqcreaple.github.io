@@ -1,0 +1,126 @@
+/* Site palette: mirror src/styles/global.css while preserving the imported
+   --color-prettylights-syntax-* values so code highlighting stays intact. */
+@import url("https://giscus.app/themes/light.css");
+
+main {
+  --color-canvas-default: #f5f7f7;
+  --color-canvas-overlay: #ffffff;
+  --color-canvas-inset: #f5f7f7;
+  --color-canvas-subtle: #eaf0ef;
+  --color-border-default: #d8e0de;
+  --color-border-muted: #d8e0de;
+  --color-neutral-muted: #eaf0ef;
+
+  --color-fg-default: #1a2322;
+  --color-fg-muted: #64736f;
+  --color-fg-subtle: #64736f;
+
+  --color-accent-fg: #0f766e;
+  --color-accent-emphasis: #0b5e57;
+  --color-accent-muted: rgb(15 118 110 / 40%);
+  --color-accent-subtle: #d7eeea;
+
+  --color-btn-text: #1a2322;
+  --color-btn-bg: #ffffff;
+  --color-btn-border: #d8e0de;
+  --color-btn-shadow: 0 0 transparent;
+  --color-btn-inset-shadow: 0 0 transparent;
+  --color-btn-hover-bg: #d7eeea;
+  --color-btn-hover-border: #0f766e;
+  --color-btn-active-bg: #d7eeea;
+  --color-btn-active-border: #0b5e57;
+  --color-btn-selected-bg: #d7eeea;
+  --color-btn-primary-text: #ffffff;
+  --color-btn-primary-bg: #0f766e;
+  --color-btn-primary-border: #0f766e;
+  --color-btn-primary-shadow: 0 0 transparent;
+  --color-btn-primary-inset-shadow: 0 0 transparent;
+  --color-btn-primary-hover-bg: #0b5e57;
+  --color-btn-primary-hover-border: #0b5e57;
+  --color-btn-primary-selected-bg: #0b5e57;
+
+  --color-segmented-control-bg: #eaf0ef;
+  --color-segmented-control-button-bg: #ffffff;
+  --color-segmented-control-button-selected-border: #0f766e;
+  --color-action-list-item-default-hover-bg: #d7eeea;
+  --color-scale-gray-1: #d7eeea;
+  --color-scale-blue-1: #d7eeea;
+  --color-social-reaction-bg-hover: #d7eeea;
+  --color-social-reaction-bg-reacted-hover: #d7eeea;
+
+  --color-danger-fg: #b91c1c;
+  --color-danger-muted: rgb(185 28 28 / 40%);
+  --color-danger-subtle: #ffe6e6;
+}
+.gsc-timeline {
+  gap: 0;
+}
+
+.gsc-comment {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--color-border-default);
+  border-radius: 0;
+}
+
+.gsc-comment:first-child {
+  border-top: 1px solid var(--color-border-default);
+}
+
+.gsc-comment > div {
+  background-color: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+
+.gsc-replies {
+  background-color: transparent !important;
+  border-radius: 0 !important;
+}
+
+.gsc-reply + .gsc-reply {
+  border-top: 1px solid var(--color-border-default);
+}
+
+.gsc-comment > div,
+.gsc-replies {
+  box-shadow: none;
+}
+
+.gsc-comment-box:not(.gsc-comment-box-is-reply),
+.gsc-reply-box {
+  background-color: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+
+.gsc-comment-box-textarea,
+.gsc-comment-box-textarea-extras,
+.gsc-reply-box .form-control {
+  background-color: transparent !important;
+  border-top: 0 !important;
+  border-right: 0 !important;
+  border-left: 0 !important;
+  border-radius: 0 !important;
+}
+
+.gsc-comment-box-textarea {
+  border-bottom: 0 !important;
+}
+
+.gsc-comment-box-textarea-extras,
+.gsc-reply-box .form-control {
+  border-bottom: 1px solid var(--color-border-default) !important;
+}
+
+/* Keep code surfaces and syntax token colors visible after removing cards. */
+.gsc-comment-content.markdown pre,
+.gsc-reply-content.markdown pre,
+.gsc-comment-box-preview.markdown pre {
+  background-color: var(--color-canvas-subtle) !important;
+}
+
+.gsc-comment-content.markdown code:not(pre > code),
+.gsc-reply-content.markdown code:not(pre > code),
+.gsc-comment-box-preview.markdown code:not(pre > code) {
+  background-color: var(--color-neutral-muted) !important;
+}
