@@ -11,20 +11,20 @@ const t = translations[lang as keyof typeof translations] ?? translations.en;
 
 <div
   class="search-box"
-  data-no-results={t.searchNoResults}
-  data-sections-label={t.searchSections}
+  data-no-results={t.search.noResults}
+  data-sections-label={t.search.sections}
 >
   <i class="fa-solid fa-magnifying-glass search-box-icon" aria-hidden="true"></i>
   <input
     class="search-box-input"
     type="search"
-    placeholder={t.searchPlaceholder}
-    aria-label={t.search}
+    placeholder={t.search.placeholder}
+    aria-label={t.search.title}
     autocomplete="off"
     spellcheck="false"
     enterkeyhint="search"
   />
-  <div class="search-box-dropdown" role="listbox" aria-label={t.search} hidden>
+  <div class="search-box-dropdown" role="listbox" aria-label={t.search.title} hidden>
     <div class="search-box-status" hidden></div>
   </div>
 </div>
