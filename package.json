@@ -1,6 +1,6 @@
 {
   "name": "mqc-blog",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "private": true,
   "type": "module",
   "engines": {
@@ -18,21 +18,23 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.3.1",
-    "astro": "^7.3.1",
+    "astro": "^7.3.5",
     "d3-scale-chromatic": "^3.1.0",
     "jquery": "^4.0.0",
-    "lucide": "^1.41.0",
-    "plotly.js-dist-min": "^4.0.0",
+    "katex": "^0.19.0",
+    "lucide": "^1.51.0",
+    "plotly.js-dist-min": "^4.1.1",
+    "reveal.js": "^6.0.2",
     "simplex-noise": "^4.0.3",
-    "three": "^0.185.1",
-    "tone": "^15.5.36",
+    "three": "^0.186.1",
+    "tone": "^15.5.44",
     "uplot": "^1.6.32"
   },
   "devDependencies": {
     "@types/d3-scale-chromatic": "^3.1.0",
     "@types/jquery": "^4.0.1",
-    "@types/node": "^26.4.1",
-    "@types/three": "^0.185.4",
+    "@types/node": "^26.6.4",
+    "@types/three": "^0.186.0",
     "pagefind": "^1.5.2",
     "typescript": "^7.0.2"
   }

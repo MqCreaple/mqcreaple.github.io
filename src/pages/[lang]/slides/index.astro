@@ -1,0 +1,53 @@
+---
+import Base from '../../../layouts/Base.astro';
+import translations from '../../../i18n/translations.json';
+import { slides } from '../../../lib/slides';
+
+export function getStaticPaths() {
+  return [...new Set(['en', 'zh', ...slides.map((slide) => slide.lang)])].map((lang) => ({ params: { lang } }));
+}
+const { lang = 'en' } = Astro.params;
+const t = translations[lang as keyof typeof translations] ?? translations.en;
+const title = t.slides.title;
+const list = slides.filter((slide) => slide.lang === lang);
+const sets = [...new Set(list.map((slide) => slide.set))].map((set) => ({
+  name: set,
+  title: list.find((slide) => slide.set === set)!.setTitle,
+  slides: list.filter((slide) => slide.set === set),
+}));
+---
+
+<Base title={`${title} · ${t.siteTitle}`} lang={lang}>
+  <section class="post-index" data-pagefind-ignore>
+    <h1>{title}</h1>
+    <ol class="post-list">
+      {sets.map((set) => (
+        <li>
+          <h2 class="set-title">{set.title}</h2>
+          <details>
+            <summary>{t.slides.view + " " + set.slides.length}</summary>
+            <ol class="slide-sublist">
+              {set.slides.map((slide) => (
+                <li>
+                  <a href={`/${lang}/slides/${set.name}/${slide.number}/`}>
+                    <span>{slide.number}. {slide.title}</span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </details>
+        </li>
+      ))}
+    </ol>
+    {sets.length === 0 && <p>{t.slides.empty}</p>}
+  </section>
+</Base>
+
+<style>
+  .set-title { margin: 0; font-size: 1rem; }
+  details { margin-top: 0.35rem; }
+  summary { color: var(--muted); cursor: pointer; }
+  .slide-sublist { margin: 0.65rem 0 0; padding-left: 1.25rem; list-style: none; }
+  .slide-sublist > li { padding: 0.45rem 0; border: 0; }
+  .slide-sublist a { font-weight: 400; }
+</style>

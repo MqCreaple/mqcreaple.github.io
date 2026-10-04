@@ -61,7 +61,7 @@ export default defineConfig({
   output: 'static',
   publicDir: 'asset',
   outDir: 'output',
-  trailingSlash: 'always',
+  trailingSlash: 'ignore',
   security: {
     allowedDomains: [{ hostname: 'giscus.app', protocol: 'https' }],
   },

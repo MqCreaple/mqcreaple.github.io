@@ -1,0 +1,16 @@
+---
+import Slides from '../../../../../layouts/Slides.astro';
+import { slides } from '../../../../../lib/slides';
+
+export function getStaticPaths() {
+  return slides.map((slide) => ({
+    params: { lang: slide.lang, set: slide.set, number: slide.number },
+    props: { slide },
+  }));
+}
+const { slide } = Astro.props;
+---
+
+<Slides title={`${slide.title} · ${slide.setTitle}`} lang={slide.lang}>
+  <Fragment set:html={slide.html} />
+</Slides>

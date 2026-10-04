@@ -1,0 +1,109 @@
+<!-- title: Introduction to Controls -->
+<section data-markdown>
+# Introduction to Controls
+
+Mingqi Geng, Yoonjae Hwang
+
+03 Oct 2026
+
+---
+
+## What Do We Do?
+
+1. Model physical systems with differential equations
+2. Design feedback to keep the system in the desired state in the presence of disturbances
+</section>
+
+<section>
+	<h2>A Simple Example</h2>
+	<div class="r-hstack">
+		<div class="r-stack" style="flex: 1; min-width: 0;">
+			<div class="fragment fade-out" data-fragment-index="2">
+				<p>Simple pendulum</p>
+				<p class="fragment" data-fragment-index="0">Use the pendulum angle $\theta$ to describe the system</p>
+				<p class="fragment" data-fragment-index="1">$$ \ddot{\theta} = -\frac{g}{l}\sin\theta + \frac{\tau}{m l^2} $$</p>
+			</div>
+			<div class="fragment fade-in" data-fragment-index="2">
+				<img src="./open-loop.svg" alt="Pendulum block diagram with torque input and angle output" style="width: 100%;">
+				<p>Open loop simulation</p>
+				<p>No feedback</p>
+			</div>
+		</div>
+		<canvas width="400" height="400" id="simple-pendulum-1" aria-label="Interactive pendulum" style="flex-shrink: 0; touch-action: none; cursor: grab;"></canvas>
+	</div>
+</section>
+
+<section>
+	<h2>A Simple Example</h2>
+	<div class="r-hstack">
+		<div>
+			<p>What if we want the pendulum to stay at its top position?</p>
+		</div>
+		<canvas width="400" height="400" id="simple-pendulum-2" aria-label="Interactive inverted pendulum" style="flex-shrink: 0; touch-action: none; cursor: grab;"></canvas>
+	</div>
+</section>
+
+<section>
+	<h2>A Simple Example</h2>
+	<div class="r-hstack">
+		<div style="flex: 1; min-width: 0;">
+			<img src="./closed-loop.svg" alt="Pendulum feedback diagram with controller and mouse disturbance" style="width: 100%;">
+			<p>Closed loop simulation</p>
+			<p>Use angle $\theta$ as feedback</p>
+		</div>
+		<canvas width="400" height="400" id="simple-pendulum-3" aria-label="Interactive PID-controlled inverted pendulum" style="flex-shrink: 0; touch-action: none; cursor: grab;"></canvas>
+	</div>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Controller Design
+
+![System, Controller, and Sensor](control-model.svg)  <!-- .element: style="width: 100%;" -->
+	
+---
+
+## What We Will Do
+
+- System Modelling -- 3 DoF model of a thrust-vector controlled rocket.
+- Controller Design -- full state feedback, LQR controllers
+- Observer design -- linear observer design and Kalman filters
+- Simulations in MATLAB Simulink
+- ...
+
+---
+
+## Further Resources
+
+- Åström and Murray’s textbook: [Feedback Systems PDF](https://www.cds.caltech.edu/~murray/books/AM08/pdf/fbs-public_24Jul2020.pdf) -- Great introduction to linear control theory and frequency domain methods
+- Brian Douglas’s YouTube Channel: [Brian Douglas](https://www.youtube.com/@BrianBDouglas)
+- Steve Brunton’s YouTube Channel: [Steve Brunton](https://www.youtube.com/@Eigensteve)
+- Journals: IFAC, IEEE, Automatica
+- Podcast: [InControl](https://www.incontrolpodcast.com/)
+- ...
+</script>
+</section>
+
+<script type="module">
+	import { createPendulum } from './pendulum.js';
+	import { createPIDController } from './pid-controller.js';
+
+	const pendulums = [
+		{ id: 'simple-pendulum-1', angle: Math.PI / 4 },
+		{ id: 'simple-pendulum-2', angle: Math.PI },
+		{ id: 'simple-pendulum-3', angle: Math.PI, control: createPIDController() },
+	].map(({ id, angle, control = angle => 0 }) => {
+		const canvas = document.getElementById(id);
+		return {
+			canvas,
+			pendulum: createPendulum(canvas, { angle, velocity: 0, control }),
+		};
+	});
+	const syncPendulum = () => pendulums.forEach(({ canvas, pendulum }) => {
+		pendulum.setRunning(
+			canvas.closest('section').hasAttribute('data-slide-active')
+		);
+	});
+	document.addEventListener('slideshowchange', syncPendulum);
+	syncPendulum();
+</script>

@@ -1,0 +1,157 @@
+<!-- title: Modelling Principles and State Space -->
+<section data-markdown data-separator="^\n---\n" data-separator-vertical="^\n--\n">
+<script type="text/template">
+# Modelling Principles and State Space
+
+Mingqi Geng, Yoonjae Hwang
+
+03 Oct 2026
+
+---
+
+## Why Do We Need Models?
+
+1. Models are mathematical representations of systems
+2. We can answer questions without performing physical experiments, using analysis and simulations
+3. Models are fundamentally approximations of reality
+4. The fidelity of the model comes at the cost of complexity, and it is the engineer’s decision as to which model to choose
+
+---
+
+## Mechanics
+
+Several mathematically equivalent approaches can be used to model a system's dynamics.
+
+- Newtonian: $$ m \ddot{x} = \sum F $$
+- Lagrangian: $$ \frac{\mathrm{d}}{\mathrm{d}t}\frac{\partial \mathcal{L}}{\partial \dot{q}} - \frac{\partial \mathcal{L}}{\partial q} = 0 $$
+- Hamiltonian: $$ \frac{\mathrm{d}q}{\mathrm{d}t} = \frac{\partial \mathcal{H}}{\partial p},\quad \frac{\mathrm{d}p}{\mathrm{d}t} = -\frac{\partial \mathcal{H}}{\partial q} $$
+
+---
+
+## Newtonian Mechanics
+
+Record each element's position (linear movement) or angle (angular movement) as functions of time.
+
+Second derivative of position $\ddot{x}$ (acceleration $a$) = total force / mass $\frac{\sum F}{m}$
+
+Second derivative of angle $\ddot{\theta}$ (angular acceleration $\alpha$) = total torque / moment of inertia $\frac{\sum \tau}{I}$
+
+--
+
+## Newtonian Mechanics
+
+For the pendulum example: two torques
+
+Torque by gravity: $\tau_G = -mgl\sin(\theta)$ <!-- .element: class="fragment" data-fragment-index="1" -->
+
+External torque: $\tau_\text{ext}$             <!-- .element: class="fragment" data-fragment-index="2" -->
+
+Moment of inertia: $I = ml^2$                  <!-- .element: class="fragment" data-fragment-index="3" -->
+
+Equation of motion: $I\ddot{\theta} = \tau_G + \tau_\text{ext}$, or  <!-- .element: class="fragment" data-fragment-index="4" -->
+
+$$ \ddot{\theta} = -\frac{g}{l}\sin(\theta) + \frac{\tau_\text{ext}}{m l^2} $$ <!-- .element: class="fragment" data-fragment-index="5" -->
+
+---
+
+## Lagrangian Mechanics
+
+Lagrangian = Kinetic Energy - Potential Energy
+
+$$ \mathcal{L}(t, \mathrm{q}, \mathrm{\dot{q}}) = T - V $$
+
+And the system follows the Euler-Lagrange equation:
+
+$$ \frac{\mathrm{d}}{\mathrm{d}t}\frac{\partial\mathcal{L}}{\partial\dot{q}_i} - \frac{\partial \mathcal{L}}{\partial q_i} = Q_i $$
+
+where $Q_i$ is the generalised force on the $i$th coordinate $q_i$.
+
+- $q_i$ is position → $\dot{q}_i$ is velocity, $Q_i$ is force.
+- $q_i$ is angle → $\dot{q}_i$ is angular velocity, $Q_i$ is torque.
+
+--
+
+## Lagrangian Mechanics
+
+For the pendulum example:
+
+$$ T = \frac12 I \dot{\theta}^2 = \frac12 ml^2 \dot{\theta}^2,\quad V = -mgl\cos(\theta) $$ <!-- .element: class="fragment" data-fragment-index="1" -->
+
+$$ \mathcal{L} = T - V = \frac12 ml^2 \dot{\theta}^2 + mgl\cos(\theta) $$ <!-- .element: class="fragment" data-fragment-index="2" -->
+
+General force here is the torque $\tau_\text{ext}$, and the Euler-Lagrange equation becomes: <!-- .element: class="fragment" data-fragment-index="3" -->
+
+$$ mgl\sin(\theta) + \frac{\mathrm{d}}{\mathrm{d}t}\left( ml^2\dot{\theta} \right) = \tau_{\text{ext}} $$ <!-- .element: class="fragment" data-fragment-index="4" -->
+
+$$ \ddot{\theta} = \frac{\tau_\text{ext}}{ml^2} - \frac{g}{l}\sin(\theta) $$ <!-- .element: class="fragment" data-fragment-index="5" -->
+
+---
+
+## State Space
+
+A mathematical trick to turn a second-order ODE into two first-order ODEs:
+
+$$ \ddot{\theta} = \frac{\tau_\text{ext}}{ml^2} - \frac{g}{l}\sin(\theta) \quad \rightarrow \quad \frac{\mathrm{d}}{\mathrm{d}t}\begin{bmatrix}\theta \newline \dot{\theta}\end{bmatrix} = \begin{bmatrix}\dot{\theta} \newline \frac{\tau_\text{ext}}{ml^2} - \frac{g}{l}\sin(\theta) \end{bmatrix} $$
+
+The space of vectors $\begin{bmatrix}\theta & \dot{\theta}\end{bmatrix}^T$ is called the **state space**, which includes all physically distinct states of the system.
+
+An equivalent definition uses generalised coordinates and conjugate momenta (in this case the angle $\theta$ and angular momentum $L$) as the state variables.
+
+For an unconstrained mechanical system described by $n$ second-order ODEs, its state has $2n$ elements.
+
+---
+
+## Formal Notation
+
+$\mathbf{x} = \begin{bmatrix} q_1 & \dots & q_n & \dot{q}_1 & \dots & \dot{q}_n \end{bmatrix}^T$ is the state vector.
+
+$\mathbf{u}$ is the control-input vector.
+
+$\mathbf{y}$ is the output vector.
+
+The system's dynamics can be expressed as a first-order ODE:
+
+$$ \dot{\mathbf{x}} = F(t, \mathbf{x}, \mathbf{u}) $$
+
+If $F$ does not depend on time, the system is called **time-invariant**.
+
+--
+
+## Formal Notation
+
+Usually, not all states are measurable. We use vector $\mathbf{y}$ to represent the measurable outputs, which can be expressed as a function of the states and inputs:
+
+$$ \mathbf{y} = H(t, \mathbf{x}, \mathbf{u}) $$
+
+In the case of the pendulum, we can measure the angle $\theta$ but not the angular velocity $\dot{\theta}$, so $\mathbf{y}$ only contains $\theta$.
+
+--
+
+## Formal Notation
+
+Our goal is to design a controller that can drive the system to a desired state $\mathbf{x}_d$ or output $\mathbf{y}_d$.
+
+$$ \mathbf{u} = K(t, \mathbf{y}, \mathbf{y}_d) $$
+
+![control loop](control-model.svg) <!-- .element: style="width: 75%;" -->
+
+---
+
+## MATLAB Simulation
+
+```matlab [6-11|1-3|4]
+x0 = [pi/4; 0]; % initial state
+u = 0; % no external torque
+x = ode45(@(t, x) simple_pendulum(t, x, u), [0 10], x0);
+plot(x.x, x.y(1, :)); xlabel('Time (s)'); ylabel('Angle (rad)'); title('Pendulum Simulation');
+
+% Simple Pendulum Simulation
+% x = [theta; theta_dot], u = tau_ext
+function dx = simple_pendulum(~, x, u)
+    g = 9.81; l = 1.0; m = 1.0;
+    dx = [x(2); u/(m*l^2) - g/l*sin(x(1))];
+end
+```
+
+</script>
+</section>

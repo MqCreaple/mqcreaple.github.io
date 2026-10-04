@@ -42,7 +42,12 @@
       "contact": "Contact Me",
       "license": "This page is published with CC-BY-NC-SA 4.0 license."
     },
-    "comments": "Comments"
+    "comments": "Comments",
+    "slides": {
+      "title": "Slides",
+      "view": "View slides",
+      "empty": "No slides yet."
+    }
   },
   "zh": {
     "siteTitle": "GMQ的技术避难所",
@@ -87,6 +92,11 @@
       "contact": "联系我",
       "license": "本页面以 CC-BY-NC-SA 4.0 许可发布。"
     },
-    "comments": "评论"
+    "comments": "评论",
+    "slides": {
+      "title": "讲稿",
+      "view": "查看讲稿",
+      "empty": "暂无讲稿"
+    }
   }
 }

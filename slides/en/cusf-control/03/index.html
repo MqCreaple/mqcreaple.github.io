@@ -1,0 +1,153 @@
+<!-- title: System Linearisation -->
+<section data-markdown data-separator="^\n---\n" data-separator-vertical="^\n--\n">
+<script type="text/template">
+# System Linearisation
+
+Mingqi Geng, Yoonjae Hwang
+
+04 Oct 2026
+
+---
+
+## LTI Systems
+
+If the system $\dot{\mathbf{x}} = F(t, \mathbf{x}, \mathbf{u})$ is linear with respect to $\mathbf{x}$ and $\mathbf{u}$, we can write it in the form of a matrix equation:
+
+$$ \dot{\mathbf{x}} = A(t)\mathbf{x} + B(t)\mathbf{u} $$
+
+More specifically, if the system is linear and time-invariant (LTI for short), we can write it as:
+
+$$ \dot{\mathbf{x}} = A\mathbf{x} + B\mathbf{u} $$
+
+where $A$ is the system matrix and $B$ is the input matrix. Linear systems are much easier to analyse and control.
+
+Similarly, if the system is LTI, we can write the output vector as:
+
+$$ \mathbf{y} = C\mathbf{x} + D\mathbf{u} $$
+
+---
+
+## Linearisation
+
+What if the system is nonlinear? We can linearise it around an equilibrium point $(\mathbf{x}_0, \mathbf{u}_0)$:
+
+$$ F(\mathbf{x}, \mathbf{u}) \approx F(\mathbf{x}_0, \mathbf{u}_0) + \frac{\partial F}{\partial \mathbf{x}} \bigg\vert\_{(\mathbf{x}_0, \mathbf{u}_0)} (\mathbf{x} - \mathbf{x}_0) + \frac{\partial F}{\partial \mathbf{u}} \bigg\vert\_{(\mathbf{x}_0, \mathbf{u}_0)} (\mathbf{u} - \mathbf{u}_0) $$
+
+Being an equilibrium point requires that $F(\mathbf{x}_0, \mathbf{u}_0) = 0$. Then, <!-- .element: class="fragment" data-fragment-index="1" -->
+
+$$ A = \frac{\partial F}{\partial \mathbf{x}} \bigg\vert\_{(\mathbf{x}_0, \mathbf{u}_0)},\quad B = \frac{\partial F}{\partial \mathbf{u}} \bigg\vert\_{(\mathbf{x}_0, \mathbf{u}_0)} $$ <!-- .element: class="fragment" data-fragment-index="2" -->
+
+Then, we can write the linearised system as: <!-- .element: class="fragment" data-fragment-index="3" -->
+
+$$ \dot{\mathbf{x}} \approx A(\mathbf{x} - \mathbf{x}_0) + B(\mathbf{u} - \mathbf{u}_0) $$ <!-- .element: class="fragment" data-fragment-index="3" -->
+
+--
+
+## Linearisation
+
+Since $\mathbf{x}_0$ is constant, $\frac{\mathrm{d}}{\mathrm{d}t}(\mathbf{x} - \mathbf{x}_0) = \dot{\mathbf{x}} - \dot{\mathbf{x}}_0 = \dot{\mathbf{x}}$. Defining $\tilde{\mathbf{x}} = \mathbf{x} - \mathbf{x}_0$ and $\tilde{\mathbf{u}} = \mathbf{u} - \mathbf{u}_0$, we can write the linearised system as:
+
+$$ \dot{\tilde{\mathbf{x}}} = A\tilde{\mathbf{x}} + B\tilde{\mathbf{u}} $$
+
+This enables us to use linear control techniques on nonlinear systems by linearising them around an equilibrium point.
+
+</script>
+</section>
+
+<section>
+	<section>
+		<h2>Example: Pendulum on a Cart</h2>
+		<div class="r-hstack">
+			<div class="r-stack" style="flex: 1; min-width: 0; grid-template-columns: minmax(0, 1fr);">
+				<div class="fragment fade-out" data-fragment-index="1" style="width: 100%; min-width: 0;">
+					<p>States: $ \mathbf{x} = \begin{bmatrix} x & \dot{x} & \theta & \dot{\theta} \end{bmatrix}^T $</p>
+					<p style="font-size: 24px;">$$ T = \frac12 M \dot{x}^2 + \frac12 m\left[\left(\dot{x} + l\cos\theta\,\dot{\theta}\right)^2 + \left(l\sin\theta\,\dot{\theta}\right)^2\right] $$</p>
+					<p style="font-size: 24px;">$$ V = mgl(1 - \cos\theta) $$</p>
+					<p>Lagrangian:</p>
+					<p style="font-size: 24px;">$$ \mathcal{L} = T - V $$</p>
+				</div>
+				<div class="fragment fade-in" data-fragment-index="1" style="width: 100%; min-width: 0;">
+					<p>Define:</p>
+					<p class="r-fit-text" style="font-size: 20px;">$$D = M + m\sin^2\theta, Q = ml\dot{\theta}^2\sin\theta, M_\text{tot} = M + m$$</p>
+					<p>Then the system equations derived from Lagrangian is:</p>
+					<p class="r-fit-text" style="font-size: 20px;">$$ \ddot{x} = \frac{F_\text{ext} + Q + mg\sin\theta\cos\theta - \tau_\mathrm{ext}\cos\theta/l}{D} $$</p>
+					<p class="r-fit-text" style="font-size: 20px;">$$ \ddot{\theta} = \frac{M_\text{tot}(\tau_\mathrm{ext} - mgl\sin\theta) - ml(F_\text{ext}+Q)\cos\theta}{ml^2D} $$</p>
+				</div>
+			</div>
+			<canvas width="400" height="400" id="pendulum-cart-1" aria-label="Interactive pendulum on a cart" style="flex-shrink: 0; touch-action: none; cursor: grab;"></canvas>
+		</div>
+	</section>
+	<section>
+		<h2>Example: Pendulum on a Cart</h2>
+		<p>Linearising the system around the topmost position $(x=0, \theta=\pi)$ gives the result:</p>
+		<p style="font-size: 20px;">$$ \frac{\mathrm{d}}{\mathrm{d}t}\begin{bmatrix}x \\ \dot{x} \\ \theta-\pi \\ \dot{\theta}\end{bmatrix} = \begin{bmatrix}0 & 1 & 0 & 0 \\ 0 & 0 & \frac{mg}{M} & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 0 & \frac{M_\text{tot}g}{Ml} & 0\end{bmatrix}\begin{bmatrix}x \\ \dot{x} \\ \theta-\pi \\ \dot{\theta}\end{bmatrix} + \begin{bmatrix}0 & 0 \\ \frac{1}{M} & \frac{1}{Ml} \\ 0 & 0 \\ \frac{1}{Ml} & \frac{M_\text{tot}}{Ml^2m}\end{bmatrix}\begin{bmatrix}F_\text{ext} \\ \tau_\mathrm{ext}\end{bmatrix} $$</p>
+	</section>
+	<section>
+		<h2>Example: Pendulum on a Cart</h2>
+		<canvas width="800" height="600" id="pendulum-cart-2" aria-label="Interactive pendulum on a cart" style="flex-shrink: 0; touch-action: none; cursor: grab;"></canvas>
+	</section>
+</section>
+
+<section data-markdown>
+<script type="text/template">
+## Symbolic Computation with MATLAB
+
+```matlab [1-2|4-11|13-18|20-29]
+% Define the symbolic variables
+syms M m l g x theta x_dot theta_dot F_ext tau_ext
+
+% Define the equations of motion
+D = M + m * sin(theta)^2;
+Q = m * l * theta_dot^2 * sin(theta);
+M_tot = M + m;
+x_ddot = (F_ext + Q + m * g * sin(theta) * cos(theta) ...
+		- tau_ext * cos(theta) / l) / D;
+theta_ddot = (M_tot * (tau_ext - m * g * l * sin(theta)) ...
+		- m * l * (F_ext + Q) * cos(theta)) / (m * l^2 * D);
+
+% Compute the Jacobian matrices
+X = [x; x_dot; theta; theta_dot];
+u = [F_ext; tau_ext];
+F = [x_dot; x_ddot; theta_dot; theta_ddot];
+A = jacobian(F, X);
+B = jacobian(F, u);
+
+% Linearise around the equilibrium point (x=0, theta=pi)
+M_val = 1; m_val = 1; l_val = 1; g_val = 9.81;
+X_eq = [0; 0; pi; 0];
+u_eq = [0; 0];
+A_lin = subs(A, [X; u; M; m; l; g], ...
+		[X_eq; u_eq; M_val; m_val; l_val; g_val]);
+B_lin = subs(B, [X; u; M; m; l; g], ...
+		[X_eq; u_eq; M_val; m_val; l_val; g_val]);
+disp('A_lin = '); disp(A_lin);
+disp('B_lin = '); disp(B_lin);
+```
+</script>
+</section>
+
+<script type="module">
+	import { createCartPendulum } from './cart-pendulum.js';
+
+	const demos = [
+		{
+			canvas: document.getElementById('pendulum-cart-1'),
+			options: { angle: Math.PI, velocity: 0 },
+		},
+		{
+			canvas: document.getElementById('pendulum-cart-2'),
+			options: { angle: Math.PI, velocity: 0, compareLinear: true },
+		},
+	].map(({ canvas, options }) => ({
+		canvas,
+		pendulum: createCartPendulum(canvas, options),
+	}));
+
+	const syncPendulumCarts = () => demos.forEach(({ canvas, pendulum }) => {
+		pendulum.setRunning(
+			canvas.closest('section').hasAttribute('data-slide-active')
+		);
+	});
+	document.addEventListener('slideshowchange', syncPendulumCarts);
+	syncPendulumCarts();
+</script>

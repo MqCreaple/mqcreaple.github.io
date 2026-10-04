@@ -1,0 +1,75 @@
+---
+import 'reveal.js/reset.css';
+import 'reveal.js/reveal.css';
+import 'reveal.js/theme/simple.css';
+import 'reveal.js/plugin/highlight/monokai.css';
+import 'katex/dist/katex.min.css';
+import '../styles/reveal-custom.css'
+
+interface Props {
+  title: string;
+  lang: string;
+}
+const { title, lang } = Astro.props;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides"><slot /></div>
+    </div>
+    <script>
+      import Reveal from 'reveal.js';
+      import Markdown from 'reveal.js/plugin/markdown';
+      import Highlight from 'reveal.js/plugin/highlight';
+      import Notes from 'reveal.js/plugin/notes';
+      import renderMathInElement from 'katex/contrib/auto-render';
+
+      const deck = new Reveal(document.querySelector<HTMLElement>('.reveal')!, {
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        markdown: { smartypants: true },
+        plugins: [Markdown, Highlight, Notes],
+      });
+
+      function notifySlideVisibility() {
+        const active = !document.hidden && !deck.isOverview() ? deck.getCurrentSlide() : null;
+        document.querySelectorAll('.slides section').forEach((section) => {
+          section.toggleAttribute('data-slide-active', section === active);
+        });
+        document.dispatchEvent(new Event('slideshowchange'));
+      }
+
+      deck.on('slidechanged', notifySlideVisibility);
+      deck.on('overviewshown', notifySlideVisibility);
+      deck.on('overviewhidden', notifySlideVisibility);
+      document.addEventListener('visibilitychange', notifySlideVisibility);
+
+      await deck.initialize();
+      // Markdown must be converted before rendering math. Bundle KaTeX locally.
+      if (deck.getSlidesElement() !== null) {
+        renderMathInElement(deck.getSlidesElement()!, {
+          delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false },
+            { left: '\\(', right: '\\)', display: false },
+            { left: '\\[', right: '\\]', display: true },
+          ],
+          throwOnError: false,
+        });
+      }
+      deck.layout();
+      notifySlideVisibility();
+    </script>
+  </body>
+</html>

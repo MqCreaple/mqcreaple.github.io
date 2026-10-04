@@ -50,6 +50,25 @@ Two ways to add a web app:
   These pages use `src/layouts/AppLayoutClassical.astro` and their static
   files are served verbatim from `app/`.
 
+## Slides
+
+Place one HTML fragment in `slides/<lang>/<set>/<number>/`, with a title comment
+such as `<!-- title: Introduction to Controls -->`. Use Reveal.js `<section>`
+elements (including `data-markdown` sections). Put the set's display title in
+`slides/<lang>/<set>/metadata.json`, for example `{ "title": "CUSF Control" }`.
+
+The deck is available at `/<lang>/slides/<set>/<number>/`; `/<lang>/slides/`
+lists sets with expandable deck lists. Decks are sorted by number. Companion
+assets, including nested folders, are served beside the deck, so relative image
+URLs and JavaScript imports work in development and production. HTML and Typst
+source files are not published as companion assets.
+
+`src/layouts/Slides.astro` provides the full-screen Reveal.js layout, Markdown,
+syntax highlighting, speaker notes, and locally bundled KaTeX math rendering.
+Keep Reveal imports and initialization out of deck fragments. Deck-specific
+scripts can listen for the document's `slideshowchange` event and check whether
+their section has `data-slide-active` to pause animations when hidden or in overview.
+
 ## Search
 
 Full-text search is powered by [Pagefind](https://pagefind.app). `npm run build`
