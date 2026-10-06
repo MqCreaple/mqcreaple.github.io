@@ -85,8 +85,11 @@ $$ mgl\sin(\theta) + \frac{\mathrm{d}}{\mathrm{d}t}\left( ml^2\dot{\theta} \righ
 
 $$ \ddot{\theta} = \frac{\tau_\text{ext}}{ml^2} - \frac{g}{l}\sin(\theta) $$ <!-- .element: class="fragment" data-fragment-index="5" -->
 
----
+</script>
+</section>
 
+<section>
+    <section data-markdown data-separator="^\n---\n" data-separator-vertical="^\n--\n">
 ## State Space
 
 A mathematical trick to turn a second-order ODE into two first-order ODEs:
@@ -98,9 +101,19 @@ The space of vectors $\begin{bmatrix}\theta & \dot{\theta}\end{bmatrix}^T$ is ca
 An equivalent definition uses generalised coordinates and conjugate momenta (in this case the angle $\theta$ and angular momentum $L$) as the state variables.
 
 For an unconstrained mechanical system described by $n$ second-order ODEs, its state has $2n$ elements.
+    </section>
+    <section>
+        <h2>State Space</h2>
+        <p>$$ \frac{\mathrm{d}}{\mathrm{d}t}\begin{bmatrix}\theta \newline \dot{\theta}\end{bmatrix} = \begin{bmatrix}\dot{\theta} \newline -\frac{g}{l}\sin(\theta) \end{bmatrix} $$</p>
+        <div class="r-hstack">
+            <canvas width="600" height="500" id="pendulum-state-space" aria-label="Pendulum state space with a vector field and trajectory" style="flex-shrink: 0; touch-action: none;"></canvas>
+            <canvas width="400" height="400" id="pendulum-simulation" aria-label="Interactive pendulum simulation" style="flex-shrink: 0; touch-action: none; cursor: grab;"></canvas>
+        </div>
+    </section>
+</section>
 
----
-
+<section data-markdown data-separator="^\n---\n" data-separator-vertical="^\n--\n">
+<script type="text/template">
 ## Formal Notation
 
 $\mathbf{x} = \begin{bmatrix} q_1 & \dots & q_n & \dot{q}_1 & \dots & \dot{q}_n \end{bmatrix}^T$ is the state vector.
@@ -155,3 +168,34 @@ end
 
 </script>
 </section>
+
+<script type="module">
+	import { createPendulum } from './pendulum.js';
+	import { createPendulumStateSpace } from './pendulum-state-space.js';
+
+	const pendulums = [
+		{ id: 'pendulum-simulation', angle: Math.PI / 4 },
+	].map(({ id, angle, control = angle => 0 }) => {
+		const canvas = document.getElementById(id);
+		return {
+			canvas,
+			pendulum: createPendulum(canvas, { angle, velocity: 0, control }),
+		};
+	});
+	const stateSpaceCanvas = document.getElementById('pendulum-state-space');
+	const stateSpace = createPendulumStateSpace(stateSpaceCanvas, {
+		getState: pendulums[0].pendulum.getState,
+	});
+	const syncPendulum = () => pendulums.forEach(({ canvas, pendulum }) => {
+		pendulum.setRunning(
+			canvas.closest('section').hasAttribute('data-slide-active')
+		);
+	});
+	const syncStateSpace = () => stateSpace.setRunning(
+		stateSpaceCanvas.closest('section').hasAttribute('data-slide-active')
+	);
+	document.addEventListener('slideshowchange', syncStateSpace);
+	syncStateSpace();
+	document.addEventListener('slideshowchange', syncPendulum);
+	syncPendulum();
+</script>

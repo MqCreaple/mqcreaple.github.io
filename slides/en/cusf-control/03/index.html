@@ -27,6 +27,81 @@ $$ \mathbf{y} = C\mathbf{x} + D\mathbf{u} $$
 
 ---
 
+## 1st Order LTI System
+
+A first-order LTI system can be described by:
+
+$$ \dot{\mathbf{x}} = A\mathbf{x} + B\mathbf{u} $$
+
+Ignoring the input $\mathbf{u}$, the system becomes:
+
+$$ \dot{\mathbf{x}} = A\mathbf{x} $$
+
+$$ \frac{\mathrm{d}}{\mathrm{d}t} \begin{bmatrix} x_1 \newline x_2 \newline \vdots \newline x_n \end{bmatrix} = \begin{bmatrix} a_{11} & a_{12} & \cdots & a_{1n} \newline a_{21} & a_{22} & \cdots & a_{2n} \newline \vdots & \vdots & \ddots & \vdots \newline a_{n1} & a_{n2} & \cdots & a_{nn} \end{bmatrix} \begin{bmatrix} x_1 \newline x_2 \newline \vdots \newline x_n \end{bmatrix} $$
+
+--
+
+## 1st Order LTI System
+
+A 2-dimensional first-order LTI system $\dot{\mathbf{x}} = A\mathbf{x}$ can exhibit different behaviors depending on the matrix $A$:
+
+| Value of $A$ | Behavior | Value of $A$ | Behavior |
+|:------------:|:--------:|:------------:|:--------:|
+| $\begin{bmatrix} 0 & 1 \newline -1 & 0 \end{bmatrix}$ | ![Center vector field](lti-example/center-vector-field.svg) | $\begin{bmatrix} -0.2 & 1 \newline -1 & 0.8 \end{bmatrix}$ | ![Unstable spiral vector field](lti-example/unstable-spiral-vector-field.svg) |
+| $\begin{bmatrix} -1.6 & 0.4 \newline 0.6 & -1.4 \end{bmatrix}$ | ![Stable node vector field](lti-example/stable-node-vector-field.svg) | $\begin{bmatrix} 0.2 & -0.8 \newline -1.2 & -0.2 \end{bmatrix}$ | ![Saddle vector field](lti-example/saddle-vector-field.svg) |
+
+--
+
+## 1st Order LTI System
+
+If $A\mathbf{v} = \lambda\mathbf{v}$, then $\mathbf{v}$ is an **eigenvector** of $A$ and $\lambda$ is the corresponding **eigenvalue**.
+
+If $\lambda$ is real, then for points on the direction of $\mathbf{v}$ (i.e. $\mathbf{x} = \alpha \mathbf{v}$ for some scalar $\alpha$), the system is guaranteed to evolve along that direction.
+
+$$ \dot{\mathbf{x}} = A\mathbf{x} = A(\alpha \mathbf{v}) = \alpha A\mathbf{v} = \alpha \lambda \mathbf{v} = \lambda (\alpha \mathbf{v}) = \lambda \mathbf{x} $$
+
+$$ \Rightarrow \mathbf{x}(t) = e^{\lambda t} \mathbf{x}(0) $$ <!-- .element: class="fragment" data-fragment-index="1" -->
+
+If $\lambda$ is positive, the system is unstable along that direction; otherwise, the system is stable along that direction. <!-- .element: class="fragment" data-fragment-index="2" -->
+
+--
+
+<!-- .slide: class="compact-lti" -->
+
+## 1st Order LTI System
+
+| $A$ | Eigenvalues | Behavior | Graph |
+|:---:|:-----------:|:--------:|:-----:|
+| $\begin{bmatrix} 1.5 & -0.5 \newline -0.5 & 1.5 \end{bmatrix}$ | $\lambda = 1, 2$ | Unstable | ![Unstable node vector field](lti-real-eigenvalues/unstable-node-vector-field.svg) |
+| $\begin{bmatrix} 0.5 & -1.5 \newline -1.5 & 0.5 \end{bmatrix}$ | $\lambda = -1, 2$ | Saddle | ![Saddle vector field](lti-real-eigenvalues/saddle-vector-field.svg) |
+| $\begin{bmatrix} -1.5 & 0.5 \newline 0.5 & -1.5 \end{bmatrix}$ | $\lambda = -2, -1$ | Stable | ![Stable node vector field](lti-real-eigenvalues/stable-node-vector-field.svg) |
+
+--
+
+## 1st Order LTI System
+
+Complex eigenvalues always come in conjugate pairs. If $\lambda = \alpha + i\beta$ is an eigenvalue of $A$, then $\bar{\lambda} = \alpha - i\beta$ is also an eigenvalue of $A$.
+
+A pair of complex eigenvalues $\lambda$ and $\bar{\lambda}$ corresponds to oscillatory behaviour in the subspace spanned by the corresponding eigenvectors.
+
+- $\alpha > 0$: Unstable spiral
+- $\alpha = 0$: Centre (behaving like a pure undamped oscillator)
+- $\alpha < 0$: Stable spiral
+
+--
+
+<!-- .slide: class="compact-lti" -->
+
+## 1st Order LTI System
+
+| $A$ | Eigenvalues | Behavior | Graph |
+|:---:|:-----------:|:--------:|:-----:|
+| $\begin{bmatrix} 0.5 & 1 \newline -1 & 0.5 \end{bmatrix}$ | $\lambda = 0.5 \pm i$ | Unstable | ![Unstable spiral vector field](lti-complex-eigenvalues/unstable-spiral-vector-field.svg) |
+| $\begin{bmatrix} 0 & 1 \newline -1 & 0 \end{bmatrix}$ | $\lambda = \pm i$ | Centre | ![Center vector field](lti-complex-eigenvalues/center-vector-field.svg) |
+| $\begin{bmatrix} -0.5 & 1 \newline -1 & -0.5 \end{bmatrix}$ | $\lambda = -0.5 \pm i$ | Stable | ![Stable spiral vector field](lti-complex-eigenvalues/stable-spiral-vector-field.svg) |
+
+---
+
 ## Linearisation
 
 What if the system is nonlinear? We can linearise it around an equilibrium point $(\mathbf{x}_0, \mathbf{u}_0)$:
@@ -50,6 +125,14 @@ Since $\mathbf{x}_0$ is constant, $\frac{\mathrm{d}}{\mathrm{d}t}(\mathbf{x} - \
 $$ \dot{\tilde{\mathbf{x}}} = A\tilde{\mathbf{x}} + B\tilde{\mathbf{u}} $$
 
 This enables us to use linear control techniques on nonlinear systems by linearising them around an equilibrium point.
+
+--
+
+## Linearisation
+
+$$ \dot{\theta} = -\frac{g}{l}\sin\theta $$
+
+![Pendulum phase portrait](pendulum-linearisation.svg)
 
 </script>
 </section>
@@ -88,7 +171,7 @@ This enables us to use linear control techniques on nonlinear systems by lineari
 	</section>
 </section>
 
-<section data-markdown>
+<section data-markdown data-separator="^\n---\n" data-separator-vertical="^\n--\n">
 <script type="text/template">
 ## Symbolic Computation with MATLAB
 
@@ -126,6 +209,17 @@ disp('B_lin = '); disp(B_lin);
 </script>
 </section>
 
+<style>
+	.compact-lti {
+		font-size: 0.85em;
+	}
+
+	.compact-lti table img {
+		width: 160px;
+		height: 160px;
+		object-fit: contain;
+	}
+</style>
 <script type="module">
 	import { createCartPendulum } from './cart-pendulum.js';
 
