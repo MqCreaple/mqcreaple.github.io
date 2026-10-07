@@ -1,9 +1,10 @@
 /**
  * Angles are in radians, measured from the downward vertical towards the right.
  * Initial velocity is in radians per second.
- * control(angle, dt) returns torque in N m; mouse torque is added to it.
- * dt is the simulation step in seconds (zero for initialization). Angle-only
- * callbacks still work. Stateful controllers update once per physics step.
+ * control(angle, dt, velocity) returns torque in N m; mouse torque is added
+ * to it. dt is the simulation step in seconds (zero for initialization).
+ * Angle-only callbacks still work. Stateful controllers update once per
+ * physics step.
  * The returned setControl(fn) replaces the controller without resetting motion.
  */
 export function createPendulum(canvas, {
@@ -30,7 +31,7 @@ export function createPendulum(canvas, {
 	let lastMove = 0;
 	let mouseTorque = 0;
 	let destroyed = false;
-	let controlTorque = control(angle, 0);
+	let controlTorque = control(angle, 0, velocity);
 
 	function acceleration(theta, externalTorque) {
 		// Math.sin(Math.PI) is not exactly zero; preserve exact equilibria.
@@ -99,7 +100,7 @@ export function createPendulum(canvas, {
 		if (time - lastMove > 80) mouseTorque = 0;
 		while (remainder >= step) {
 			// Sample feedback once and hold its torque through this physics step.
-			controlTorque = control(angle, step);
+			controlTorque = control(angle, step, velocity);
 			// Velocity Verlet preserves undamped oscillation with a small fixed step.
 			velocity += acceleration(angle, mouseTorque) * step / 2;
 			angle += velocity * step;
@@ -172,9 +173,12 @@ export function createPendulum(canvas, {
 
 	return {
 		setRunning,
+		getState() {
+			return { angle, velocity };
+		},
 		setControl(fn) {
 			control = fn;
-			controlTorque = control(angle, 0);
+			controlTorque = control(angle, 0, velocity);
 		},
 		destroy() {
 			setRunning(false);

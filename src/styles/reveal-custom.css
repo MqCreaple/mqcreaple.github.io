@@ -2,7 +2,15 @@
     --r-main-font-size: 30px;
 }
 
-code {
+.reveal code {
     font-size: 1.25em;
     line-height: 1.2em;
+}
+
+.reveal table td {
+  vertical-align: middle;
+}
+
+.reveal table img {
+  display: block;
 }

@@ -1,0 +1,321 @@
+<!-- title: Introduction to PID Control -->
+<section data-markdown data-separator="^\n---\n" data-separator-vertical="^\n--\n">
+<script type="text/template">
+# Introduction to PID Control
+
+Mingqi Geng, Yoonjae Hwang
+
+06 Oct 2026
+
+---
+
+## Recall: State Space Dynamics
+
+$$ \ddot{\theta} = -\frac{g}{l}\sin\theta $$
+
+![Pendulum phase portrait](../03/pendulum-linearisation.svg)
+
+--
+
+## Recall: Control Theory
+
+$$ \ddot{\theta} = -\frac{g}{l}\sin\theta + \frac{\tau_\text{ext}}{ml^2} $$
+
+![Control model](../01/control-model.svg) <!-- .element: width="100%" -->
+
+Our goal is to design a controller $\mathbf{u} = K(\theta, \theta_d)$ such that the system together with the controller exhibits the desired behaviour.
+</script>
+</section>
+
+<section>
+    <section data-markdown data-separator="^\n---\n" data-separator-vertical="^\n--\n">
+        <script type="text/template">
+## Proportional Controller
+
+Subtract the observed value $y$ from the desired observation $y_d$ (which obtains the **error** $e = y_d - y$), multiply by a constant $k_p$, and use that as the control input $u$.
+
+$$ u = k_p (y_d - y) = k_p e $$
+
+Can be thought of as adding a "restoring force" to the system that pulls it toward the desired state.
+
+In the pendulum example, observed value $y$ is the angle $\theta$, and the control input is the torque $\tau_\text{ext}$.
+        </script>
+    </section>
+    <section>
+        <h2>Proportional Controller</h2>
+        <p>$$ u = k_p e $$</p>
+        <table class="control-sliders">
+            <tr>
+                <td>
+                    <label class="control-slider">
+                        <span>$\theta_d$</span>
+                        <input id="p-control-target" type="range" min="-180" max="180" step="1" value="180">
+                        <output id="p-control-target-value" for="p-control-target">180&deg;</output>
+                    </label>
+                </td>
+                <td>
+                    <label class="control-slider">
+                        <span>$k_p$</span>
+                        <input id="p-control-kp" type="range" min="0" max="30" step="1" value="10">
+                        <output id="p-control-kp-value" for="p-control-kp">10</output>
+                    </label>
+                </td>
+            </tr>
+        </table>
+        <div class="r-hstack">
+            <canvas width="600" height="500" id="p-control-state-space" aria-label="Pendulum state space with a vector field and trajectory" style="flex-shrink: 0; touch-action: none;"></canvas>
+            <canvas width="400" height="400" id="p-control-simulation" aria-label="Interactive pendulum simulation" style="flex-shrink: 0; touch-action: none; cursor: grab;"></canvas>
+        </div>
+    </section>
+</section>
+
+<section>
+    <section data-markdown data-separator="^\n---\n" data-separator-vertical="^\n--\n">
+        <script type="text/template">
+## Proportional-Derivative Controller
+
+Adding a term proportional to the derivative of error to the proportional controller -- **PD controller**:
+
+$$ u = k_p e + k_d \frac{\mathrm{d}e}{\mathrm{d}t} $$
+
+The derivative term adds "damping" to the system, pulling the system toward the equilibrium, reducing overshooting.
+
+Steady-state error might still remain.
+        </script>
+    </section>
+    <section>
+        <h2>Proportional-Derivative Controller</h2>
+        <p style="font-size: 24px;">$$ u = k_p e + k_d \frac{\mathrm{d}e}{\mathrm{d}t} $$</p>
+        <table class="control-sliders">
+            <tr>
+                <td>
+                    <label class="control-slider">
+                        <span>$\theta_d$</span>
+                        <input id="pd-control-target" type="range" min="-180" max="180" step="1" value="180">
+                        <output id="pd-control-target-value" for="pd-control-target">180&deg;</output>
+                    </label>
+                </td>
+                <td>
+                    <label class="control-slider">
+                        <span>$k_p$</span>
+                        <input id="pd-control-kp" type="range" min="0" max="30" step="1" value="10">
+                        <output id="pd-control-kp-value" for="pd-control-kp">10</output>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td aria-hidden="true"></td>
+                <td>
+                    <label class="control-slider">
+                        <span>$k_d$</span>
+                        <input id="pd-control-kd" type="range" min="0" max="10" step="0.5" value="1">
+                        <output id="pd-control-kd-value" for="pd-control-kd">1</output>
+                    </label>
+                </td>
+            </tr>
+        </table>
+        <div class="r-hstack">
+            <canvas width="600" height="500" id="pd-control-state-space" aria-label="PD-controlled pendulum state space with a vector field and trajectory" style="flex-shrink: 0; touch-action: none;"></canvas>
+            <canvas width="400" height="400" id="pd-control-simulation" aria-label="Interactive PD-controlled pendulum simulation" style="flex-shrink: 0; touch-action: none; cursor: grab;"></canvas>
+        </div>
+    </section>
+</section>
+
+<section>
+    <section data-markdown data-separator="^\n---\n" data-separator-vertical="^\n--\n">
+        <script type="text/template">
+## PID Controller
+
+Adding an integral term on top of the PD controller gives the **PID (Proportional-Integral-Derivative) controller**:
+
+$$ u(t) = k_p e(t) + k_d \frac{\mathrm{d}e(t)}{\mathrm{d}t} + k_i \int_0^t e(\tau)\mathrm{d}\tau $$
+
+The integral term uses the accumulated steady-state error to correct the offset.
+
+After adding the integral term, the system is no longer static -- past trajectory affects the integral value, which changes $u$.
+        </script>
+    </section>
+    <section>
+        <h2>PID Controller</h2>
+        <p style="font-size: 24px;">$$ u = k_p e + k_d \frac{\mathrm{d}e}{\mathrm{d}t} + k_i \int_0^t e(\tau)\mathrm{d}\tau $$</p>
+        <table class="control-sliders">
+            <tr>
+                <td>
+                    <label class="control-slider">
+                        <span>$\theta_d$</span>
+                        <input id="pid-control-target" type="range" min="-180" max="180" step="1" value="120">
+                        <output id="pid-control-target-value" for="pid-control-target">120&deg;</output>
+                    </label>
+                </td>
+                <td>
+                    <label class="control-slider">
+                        <span>$k_p$</span>
+                        <input id="pid-control-kp" type="range" min="0" max="30" step="1" value="15">
+                        <output id="pid-control-kp-value" for="pid-control-kp">15</output>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="control-slider">
+                        <span>$k_i$</span>
+                        <input id="pid-control-ki" type="range" min="0" max="10" step="0.5" value="5">
+                        <output id="pid-control-ki-value" for="pid-control-ki">5</output>
+                    </label>
+                </td>
+                <td>
+                    <label class="control-slider">
+                        <span>$k_d$</span>
+                        <input id="pid-control-kd" type="range" min="0" max="10" step="0.5" value="5">
+                        <output id="pid-control-kd-value" for="pid-control-kd">5</output>
+                    </label>
+                </td>
+            </tr>
+        </table>
+        <div class="r-hstack">
+            <canvas width="600" height="500" id="pid-control-state-space" aria-label="PID-controlled pendulum state space with a vector field and trajectory" style="flex-shrink: 0; touch-action: none;"></canvas>
+            <canvas width="400" height="400" id="pid-control-simulation" aria-label="Interactive PID-controlled pendulum simulation" style="flex-shrink: 0; touch-action: none; cursor: grab;"></canvas>
+        </div>
+    </section>
+</section>
+
+<section data-markdown data-separator="^\n---\n" data-separator-vertical="^\n--\n">
+    <script type="text/template">
+## Realistic Controllers
+
+In reality, the output of the controller is limited by the physical hardware carrying out the control (e.g. motors, actuators, ...). The output value is saturated:
+
+$$ u = \text{clamp}_{[-u_m, u_m]} \left( k_p e + k_d \dot{e} + k_i \int_0^t e \mathrm{d}\tau \right) $$
+
+Other factors also affect the control signal applied to system:
+
+- Signal transport delay
+- Actuator dynamics: actuator delay, hysteresis, ...
+- Quantisation in digital signals
+- Noise and disturbances
+
+Takeaway point: theoretical model and physical implementation can differ. These factors need to be considered in controller designing.
+    </script>
+</section>
+
+<style>
+    .control-sliders {
+        margin-top: 12px;
+        margin-right: auto;
+        margin-bottom: 10px;
+        margin-left: auto;
+        border-collapse: collapse;
+        table-layout: fixed;
+    }
+
+    .control-sliders td {
+        width: 400px;
+        padding: 0;
+        vertical-align: middle;
+    }
+
+    .control-sliders td:first-child {
+        padding-right: 9px !important;
+    }
+
+    .control-sliders td:last-child {
+        padding-left: 9px !important;
+    }
+
+    .control-sliders tr + tr td {
+        padding-top: 8px !important;
+    }
+
+    .control-slider {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        column-gap: 18px;
+        font-size: 0.7em;
+    }
+
+    .control-slider input {
+        width: 100%;
+        margin: 0;
+        accent-color: #2878b5;
+        cursor: pointer;
+    }
+
+    .control-slider output {
+        min-width: 4.5em;
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+    }
+</style>
+
+<script type="module">
+	import { createPendulum } from '../01/pendulum.js';
+	import { createPendulumStateSpace } from '../02/pendulum-state-space.js';
+	import { createAngleController } from './angle-controller.js';
+
+	const demoDefinitions = [
+		{ prefix: 'p-control', gains: ['kp'] },
+		{ prefix: 'pd-control', gains: ['kp', 'kd'] },
+		{ prefix: 'pid-control', gains: ['kp', 'ki', 'kd'], showIntegral: true },
+	];
+	const demos = demoDefinitions.map(({ prefix, gains, showIntegral }) => {
+		const element = suffix => document.getElementById(`${prefix}-${suffix}`);
+		const targetInput = element('target');
+		const targetOutput = element('target-value');
+		const gainInputs = Object.fromEntries(
+			gains.map(gain => [gain, element(gain)]),
+		);
+		const controller = createAngleController({
+			target: Number(targetInput.value) * Math.PI / 180,
+			...Object.fromEntries(
+				Object.entries(gainInputs).map(([gain, input]) => [
+					gain,
+					Number(input.value),
+				]),
+			),
+		});
+		const pendulum = createPendulum(element('simulation'), {
+			angle: Math.PI / 4,
+			velocity: 0,
+			control: controller.control,
+		});
+		const stateSpaceCanvas = element('state-space');
+		const stateSpace = createPendulumStateSpace(stateSpaceCanvas, {
+			getState: pendulum.getState,
+			getTarget: controller.getTarget,
+			getIntegral: showIntegral ? controller.getIntegral : undefined,
+			derivative: controller.derivative,
+			velocityRange: 12,
+		});
+
+		targetInput.addEventListener('input', () => {
+			const degrees = Number(targetInput.value);
+			controller.setTarget(degrees * Math.PI / 180);
+			targetOutput.value = `${degrees}\u00b0`;
+			stateSpace.redraw();
+		});
+
+		Object.entries(gainInputs).forEach(([gain, input]) => {
+			const output = element(`${gain}-value`);
+			input.addEventListener('input', () => {
+				const value = Number(input.value);
+				controller.setGains({ [gain]: value });
+				output.value = `${value}`;
+				stateSpace.redraw();
+			});
+		});
+
+		return { pendulum, stateSpace, stateSpaceCanvas };
+	});
+
+	const syncRunning = () => {
+		demos.forEach(({ pendulum, stateSpace, stateSpaceCanvas }) => {
+			const active = stateSpaceCanvas.closest('section')
+				.hasAttribute('data-slide-active');
+			pendulum.setRunning(active);
+			stateSpace.setRunning(active);
+		});
+	};
+	document.addEventListener('slideshowchange', syncRunning);
+	syncRunning();
+</script>

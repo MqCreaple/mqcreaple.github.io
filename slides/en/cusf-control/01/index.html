@@ -20,8 +20,8 @@ Mingqi Geng, Yoonjae Hwang
 		<div class="r-stack" style="flex: 1; min-width: 0;">
 			<div class="fragment fade-out" data-fragment-index="2">
 				<p>Simple pendulum</p>
-				<p class="fragment" data-fragment-index="0">Use the pendulum angle $\theta$ to describe the system</p>
-				<p class="fragment" data-fragment-index="1">$$ \ddot{\theta} = -\frac{g}{l}\sin\theta + \frac{\tau}{m l^2} $$</p>
+				<p class="fragment" data-fragment-index="0">Use the pendulum angle $\theta$ to describe the system (bottom position = $0$)</p>
+				<p class="fragment" data-fragment-index="1">$$ \ddot{\theta} = -\frac{g}{l}\sin\theta + \frac{\tau_\text{ext}}{m l^2} $$</p>
 			</div>
 			<div class="fragment fade-in" data-fragment-index="2">
 				<img src="./open-loop.svg" alt="Pendulum block diagram with torque input and angle output" style="width: 100%;">
@@ -69,7 +69,7 @@ Mingqi Geng, Yoonjae Hwang
 
 ## What We Will Do
 
-- System Modelling -- 3 DoF model of a thrust-vector controlled rocket.
+- System Modelling -- 3 DoF model of a thrust-vector-controlled rocket.
 - Controller Design -- full state feedback, LQR controllers
 - Observer design -- linear observer design and Kalman filters
 - Simulations in MATLAB Simulink

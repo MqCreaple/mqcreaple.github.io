@@ -43,11 +43,11 @@ $$ \frac{\mathrm{d}}{\mathrm{d}t} \begin{bmatrix} x_1 \newline x_2 \newline \vdo
 
 ## 1st Order LTI System
 
-A 2-dimensional first-order LTI system $\dot{\mathbf{x}} = A\mathbf{x}$ can exhibit different behaviors depending on the matrix $A$:
+A 2-dimensional first-order LTI system $\dot{\mathbf{x}} = A\mathbf{x}$ can exhibit different behaviours depending on the matrix $A$:
 
-| Value of $A$ | Behavior | Value of $A$ | Behavior |
+| Value of $A$ | Behaviour | Value of $A$ | Behaviour |
 |:------------:|:--------:|:------------:|:--------:|
-| $\begin{bmatrix} 0 & 1 \newline -1 & 0 \end{bmatrix}$ | ![Center vector field](lti-example/center-vector-field.svg) | $\begin{bmatrix} -0.2 & 1 \newline -1 & 0.8 \end{bmatrix}$ | ![Unstable spiral vector field](lti-example/unstable-spiral-vector-field.svg) |
+| $\begin{bmatrix} 0 & 1 \newline -1 & 0 \end{bmatrix}$ | ![Centre vector field](lti-example/centre-vector-field.svg) | $\begin{bmatrix} -0.2 & 1 \newline -1 & 0.8 \end{bmatrix}$ | ![Unstable spiral vector field](lti-example/unstable-spiral-vector-field.svg) |
 | $\begin{bmatrix} -1.6 & 0.4 \newline 0.6 & -1.4 \end{bmatrix}$ | ![Stable node vector field](lti-example/stable-node-vector-field.svg) | $\begin{bmatrix} 0.2 & -0.8 \newline -1.2 & -0.2 \end{bmatrix}$ | ![Saddle vector field](lti-example/saddle-vector-field.svg) |
 
 --
@@ -62,7 +62,9 @@ $$ \dot{\mathbf{x}} = A\mathbf{x} = A(\alpha \mathbf{v}) = \alpha A\mathbf{v} = 
 
 $$ \Rightarrow \mathbf{x}(t) = e^{\lambda t} \mathbf{x}(0) $$ <!-- .element: class="fragment" data-fragment-index="1" -->
 
-If $\lambda$ is positive, the system is unstable along that direction; otherwise, the system is stable along that direction. <!-- .element: class="fragment" data-fragment-index="2" -->
+- If $\lambda > 0$, the system is unstable. <!-- .element: class="fragment" data-fragment-index="2" -->
+- If $\lambda = 0$, the system is marginally stable. <!-- .element: class="fragment" data-fragment-index="2" -->
+- If $\lambda < 0$, the system is stable. <!-- .element: class="fragment" data-fragment-index="2" -->
 
 --
 
@@ -70,17 +72,19 @@ If $\lambda$ is positive, the system is unstable along that direction; otherwise
 
 ## 1st Order LTI System
 
-| $A$ | Eigenvalues | Behavior | Graph |
+| $A$ | Eigenvalues | Behaviour | Graph |
 |:---:|:-----------:|:--------:|:-----:|
-| $\begin{bmatrix} 1.5 & -0.5 \newline -0.5 & 1.5 \end{bmatrix}$ | $\lambda = 1, 2$ | Unstable | ![Unstable node vector field](lti-real-eigenvalues/unstable-node-vector-field.svg) |
+| $\begin{bmatrix} 1.5 & -0.5 \newline -0.5 & 1.5 \end{bmatrix}$ | $\lambda = 1, 2$ | Unstable node | ![Unstable node vector field](lti-real-eigenvalues/unstable-node-vector-field.svg) |
 | $\begin{bmatrix} 0.5 & -1.5 \newline -1.5 & 0.5 \end{bmatrix}$ | $\lambda = -1, 2$ | Saddle | ![Saddle vector field](lti-real-eigenvalues/saddle-vector-field.svg) |
-| $\begin{bmatrix} -1.5 & 0.5 \newline 0.5 & -1.5 \end{bmatrix}$ | $\lambda = -2, -1$ | Stable | ![Stable node vector field](lti-real-eigenvalues/stable-node-vector-field.svg) |
+| $\begin{bmatrix} -1.5 & 0.5 \newline 0.5 & -1.5 \end{bmatrix}$ | $\lambda = -2, -1$ | Stable node | ![Stable node vector field](lti-real-eigenvalues/stable-node-vector-field.svg) |
 
 --
 
 ## 1st Order LTI System
 
-Complex eigenvalues always come in conjugate pairs. If $\lambda = \alpha + i\beta$ is an eigenvalue of $A$, then $\bar{\lambda} = \alpha - i\beta$ is also an eigenvalue of $A$.
+For real matrix $A$, its complex eigenvalues always come in conjugate pairs.
+
+If $\lambda = \alpha + i\beta$ is an eigenvalue of $A$, then $\bar{\lambda} = \alpha - i\beta$ is also an eigenvalue of $A$.
 
 A pair of complex eigenvalues $\lambda$ and $\bar{\lambda}$ corresponds to oscillatory behaviour in the subspace spanned by the corresponding eigenvectors.
 
@@ -94,17 +98,19 @@ A pair of complex eigenvalues $\lambda$ and $\bar{\lambda}$ corresponds to oscil
 
 ## 1st Order LTI System
 
-| $A$ | Eigenvalues | Behavior | Graph |
+| $A$ | Eigenvalues | Behaviour | Graph |
 |:---:|:-----------:|:--------:|:-----:|
-| $\begin{bmatrix} 0.5 & 1 \newline -1 & 0.5 \end{bmatrix}$ | $\lambda = 0.5 \pm i$ | Unstable | ![Unstable spiral vector field](lti-complex-eigenvalues/unstable-spiral-vector-field.svg) |
-| $\begin{bmatrix} 0 & 1 \newline -1 & 0 \end{bmatrix}$ | $\lambda = \pm i$ | Centre | ![Center vector field](lti-complex-eigenvalues/center-vector-field.svg) |
-| $\begin{bmatrix} -0.5 & 1 \newline -1 & -0.5 \end{bmatrix}$ | $\lambda = -0.5 \pm i$ | Stable | ![Stable spiral vector field](lti-complex-eigenvalues/stable-spiral-vector-field.svg) |
+| $\begin{bmatrix} 0.5 & 1 \newline -1 & 0.5 \end{bmatrix}$ | $\lambda = 0.5 \pm i$ | Unstable spiral | ![Unstable spiral vector field](lti-complex-eigenvalues/unstable-spiral-vector-field.svg) |
+| $\begin{bmatrix} 0 & 1 \newline -1 & 0 \end{bmatrix}$ | $\lambda = \pm i$ | Centre | ![Centre vector field](lti-complex-eigenvalues/centre-vector-field.svg) |
+| $\begin{bmatrix} -0.5 & 1 \newline -1 & -0.5 \end{bmatrix}$ | $\lambda = -0.5 \pm i$ | Stable spiral | ![Stable spiral vector field](lti-complex-eigenvalues/stable-spiral-vector-field.svg) |
 
 ---
 
 ## Linearisation
 
-What if the system is nonlinear? We can linearise it around an equilibrium point $(\mathbf{x}_0, \mathbf{u}_0)$:
+What if the system is nonlinear?
+
+If the system is nonlinear but time invariant, it can be linearised around an equilibrium point $(\mathbf{x}_0, \mathbf{u}_0)$:
 
 $$ F(\mathbf{x}, \mathbf{u}) \approx F(\mathbf{x}_0, \mathbf{u}_0) + \frac{\partial F}{\partial \mathbf{x}} \bigg\vert\_{(\mathbf{x}_0, \mathbf{u}_0)} (\mathbf{x} - \mathbf{x}_0) + \frac{\partial F}{\partial \mathbf{u}} \bigg\vert\_{(\mathbf{x}_0, \mathbf{u}_0)} (\mathbf{u} - \mathbf{u}_0) $$
 
@@ -130,7 +136,7 @@ This enables us to use linear control techniques on nonlinear systems by lineari
 
 ## Linearisation
 
-$$ \dot{\theta} = -\frac{g}{l}\sin\theta $$
+$$ \ddot{\theta} = -\frac{g}{l}\sin\theta $$
 
 ![Pendulum phase portrait](pendulum-linearisation.svg)
 
@@ -152,7 +158,7 @@ $$ \dot{\theta} = -\frac{g}{l}\sin\theta $$
 				<div class="fragment fade-in" data-fragment-index="1" style="width: 100%; min-width: 0;">
 					<p>Define:</p>
 					<p class="r-fit-text" style="font-size: 20px;">$$D = M + m\sin^2\theta, Q = ml\dot{\theta}^2\sin\theta, M_\text{tot} = M + m$$</p>
-					<p>Then the system equations derived from Lagrangian is:</p>
+					<p>Then the system equations derived from Lagrangian are:</p>
 					<p class="r-fit-text" style="font-size: 20px;">$$ \ddot{x} = \frac{F_\text{ext} + Q + mg\sin\theta\cos\theta - \tau_\mathrm{ext}\cos\theta/l}{D} $$</p>
 					<p class="r-fit-text" style="font-size: 20px;">$$ \ddot{\theta} = \frac{M_\text{tot}(\tau_\mathrm{ext} - mgl\sin\theta) - ml(F_\text{ext}+Q)\cos\theta}{ml^2D} $$</p>
 				</div>

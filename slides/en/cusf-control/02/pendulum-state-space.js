@@ -2,14 +2,14 @@ const COLOR = {
 	axis: '#000',
 	field: '#000',
 	state: '#2878b5',
+	target: '#d62728',
 };
 
 const HISTORY_SIZE = 256;
-const COLUMNS = 13;
-const ROWS = 7;
+const COLUMNS = 15;
+const ROWS = 11;
 const LABEL_HEIGHT = 44;
 const THETA_RANGE = Math.PI;
-const VELOCITY_RANGE = 9;
 
 function wrapAngle(angle) {
 	return ((angle + THETA_RANGE) % (2 * THETA_RANGE) + 2 * THETA_RANGE) %
@@ -18,8 +18,12 @@ function wrapAngle(angle) {
 
 export function createPendulumStateSpace(canvas, {
 	getState,
+	getTarget,
+	getIntegral,
+	derivative,
 	gravity = 9.81,
 	length = 1,
+	velocityRange = 9,
 } = {}) {
 	const ctx = canvas.getContext('2d');
 	const width = canvas.width;
@@ -36,7 +40,7 @@ export function createPendulumStateSpace(canvas, {
 		y: plot.y + plot.height / 2,
 	};
 	const pixelsPerTheta = plot.width / (2 * THETA_RANGE);
-	const pixelsPerVelocity = plot.height / (2 * VELOCITY_RANGE);
+	const pixelsPerVelocity = plot.height / (2 * velocityRange);
 	const historyTheta = new Float64Array(HISTORY_SIZE);
 	const historyVelocity = new Float64Array(HISTORY_SIZE);
 	const labels = {
@@ -49,8 +53,8 @@ export function createPendulumStateSpace(canvas, {
 	let frameId;
 	let destroyed = false;
 
-	labels.theta.src = './theta.svg';
-	labels.thetaDot.src = './theta-dot.svg';
+	labels.theta.src = '../02/theta.svg';
+	labels.thetaDot.src = '../02/theta-dot.svg';
 	labels.theta.addEventListener('load', draw);
 	labels.thetaDot.addEventListener('load', draw);
 
@@ -62,11 +66,9 @@ export function createPendulumStateSpace(canvas, {
 		return origin.y - velocity * pixelsPerVelocity;
 	}
 
-	function derivative(theta, velocity) {
-		return [
-			velocity,
-			-gravity / length * Math.sin(theta),
-		];
+	function evaluateDerivative(theta, velocity) {
+		if (derivative !== undefined) return derivative(theta, velocity);
+		return [velocity, -gravity / length * Math.sin(theta)];
 	}
 
 	function appendHistory(theta, velocity) {
@@ -114,7 +116,7 @@ export function createPendulumStateSpace(canvas, {
 				const theta = (x - origin.x) / pixelsPerTheta;
 				const velocity = (origin.y - y) / pixelsPerVelocity;
 				const [thetaDerivative, velocityDerivative] =
-					derivative(theta, velocity);
+					evaluateDerivative(theta, velocity);
 				const dx = thetaDerivative * pixelsPerTheta;
 				const dy = -velocityDerivative * pixelsPerVelocity;
 				const screenLength = Math.hypot(dx, dy);
@@ -126,7 +128,7 @@ export function createPendulumStateSpace(canvas, {
 		// Scaling by the longest vector guarantees that no arrow exceeds half a cell.
 		const scale = longestScreenVector === 0
 			? 0
-			: 0.5 * Math.min(cellWidth, cellHeight) / longestScreenVector;
+			: 0.8 * Math.min(cellWidth, cellHeight) / longestScreenVector;
 
 		ctx.strokeStyle = COLOR.field;
 		ctx.fillStyle = COLOR.field;
@@ -226,6 +228,28 @@ export function createPendulumStateSpace(canvas, {
 		ctx.fill();
 	}
 
+	function drawTarget() {
+		if (getTarget === undefined) return;
+
+		const x = thetaToX(wrapAngle(getTarget()));
+		const y = velocityToY(0);
+		ctx.strokeStyle = COLOR.target;
+		ctx.lineWidth = 3;
+		ctx.beginPath();
+		ctx.arc(x, y, 7, 0, 2 * Math.PI);
+		ctx.stroke();
+	}
+
+	function drawIntegral() {
+		if (getIntegral === undefined) return;
+
+		ctx.fillStyle = COLOR.state;
+		ctx.font = '600 16px sans-serif';
+		ctx.textAlign = 'right';
+		ctx.textBaseline = 'top';
+		ctx.fillText(`Integral e dt = ${getIntegral().toFixed(3)}`, width - 10, 8);
+	}
+
 	function draw() {
 		// Match the simulation canvas's device-pixel-ratio handling.
 		const ratio = window.devicePixelRatio || 1;
@@ -245,8 +269,10 @@ export function createPendulumStateSpace(canvas, {
 		drawAxes();
 		drawHistory();
 		drawState();
+		drawTarget();
 		ctx.restore();
 		drawLabels();
+		drawIntegral();
 	}
 
 	function frame() {
@@ -272,6 +298,7 @@ export function createPendulumStateSpace(canvas, {
 
 	return {
 		setRunning,
+		redraw: draw,
 		destroy() {
 			setRunning(false);
 			destroyed = true;
