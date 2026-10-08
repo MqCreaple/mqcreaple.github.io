@@ -123,7 +123,7 @@ Steady-state error might still remain.
 
 <section>
     <section data-markdown data-separator="^\n---\n" data-separator-vertical="^\n--\n">
-        <script type="text/template">
+    <script type="text/template">
 ## PID Controller
 
 Adding an integral term on top of the PD controller gives the **PID (Proportional-Integral-Derivative) controller**:
@@ -133,7 +133,23 @@ $$ u(t) = k_p e(t) + k_d \frac{\mathrm{d}e(t)}{\mathrm{d}t} + k_i \int_0^t e(\ta
 The integral term uses the accumulated steady-state error to correct the offset.
 
 After adding the integral term, the system is no longer static -- past trajectory affects the integral value, which changes $u$.
-        </script>
+
+---
+
+## PID Controller
+
+Another way to think about the additional integral term is: the system is **augmented** with a new variable that integrates the error.
+
+Before augmentation (two state variables):
+
+$$ \frac{\mathrm{d}}{\mathrm{d}t} \begin{bmatrix}\theta \newline \dot{\theta}\end{bmatrix} = \begin{bmatrix}\dot{\theta} \newline -\frac{g}{l}\sin\theta\ + \frac{1}{ml^2}(k_p (\theta_d - \theta) + k_d \dot{\theta}) \end{bmatrix} $$
+
+After augmentation (three state variables):
+
+$$ \frac{\mathrm{d}}{\mathrm{d}t} \begin{bmatrix}\theta \newline \dot{\theta} \newline z\end{bmatrix} = \begin{bmatrix}\dot{\theta} \newline -\frac{g}{l}\sin\theta\ + \frac{1}{ml^2}(k_p (\theta_d - \theta) + k_d \dot{\theta} + k_i z) \newline \theta_d - \theta \end{bmatrix} $$
+
+The state space of the PID controller on the simple pendulum is actually 3-dimensional rather than 2-dimensional.
+    </script>
     </section>
     <section>
         <h2>PID Controller</h2>
@@ -159,8 +175,8 @@ After adding the integral term, the system is no longer static -- past trajector
                 <td>
                     <label class="control-slider">
                         <span>$k_i$</span>
-                        <input id="pid-control-ki" type="range" min="0" max="10" step="0.5" value="5">
-                        <output id="pid-control-ki-value" for="pid-control-ki">5</output>
+                        <input id="pid-control-ki" type="range" min="0" max="20" step="1" value="10">
+                        <output id="pid-control-ki-value" for="pid-control-ki">10</output>
                     </label>
                 </td>
                 <td>
@@ -180,7 +196,7 @@ After adding the integral term, the system is no longer static -- past trajector
 </section>
 
 <section data-markdown data-separator="^\n---\n" data-separator-vertical="^\n--\n">
-    <script type="text/template">
+<script type="text/template">
 ## Realistic Controllers
 
 In reality, the output of the controller is limited by the physical hardware carrying out the control (e.g. motors, actuators, ...). The output value is saturated:
@@ -195,7 +211,15 @@ Other factors also affect the control signal applied to system:
 - Noise and disturbances
 
 Takeaway point: theoretical model and physical implementation can differ. These factors need to be considered in controller designing.
-    </script>
+
+---
+
+## Practice Problem
+
+For the 3-DoF rocket, use two PID controllers to control $F$ and $\phi$ so that the rocket stays upright while flying.
+
+The thrust should be capped to $10mg$, and the angle $\phi$ should be capped between $-10\degree$ and $10\degree$.
+</script>
 </section>
 
 <style>

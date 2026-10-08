@@ -212,6 +212,17 @@ B_lin = subs(B, [X; u; M; m; l; g], ...
 disp('A_lin = '); disp(A_lin);
 disp('B_lin = '); disp(B_lin);
 ```
+
+---
+
+## Practice Problem
+
+Verify that $(x=y=0, \theta=0, \dot{x}=\dot{y}=0, \dot{\theta}=0, F=mg, \phi=0)$ is an equilibrium point of the 3-DoF rocket's dynamics we modeled last time.
+
+Linearise the rocket dynamics around the point. Your final result should be given in the form:
+
+$$ \frac{\mathrm{d}}{\mathrm{d}t} \begin{bmatrix} x \newline y \newline \theta \newline \dot{x} \newline \dot{y} \newline \dot{\theta} \end{bmatrix} = A \begin{bmatrix} x \newline y \newline \theta \newline \dot{x} \newline \dot{y} \newline \dot{\theta} \end{bmatrix} + B \begin{bmatrix} F-mg \newline \phi \end{bmatrix} $$
+
 </script>
 </section>
 

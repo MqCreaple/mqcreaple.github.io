@@ -11,8 +11,13 @@
  * the linearised system around the inverted equilibrium. The ground remains
  * attached to the nonlinear simulation, so the linearised cart can drift away
  * from the centre of the canvas.
+ *
+ * control(state, dt) returns a force and/or torque command; mouse input is
+ * added to it. state contains position, velocity, angle, and angularVelocity.
+ * The returned setControl(fn) replaces the controller without resetting motion.
  */
 export function createCartPendulum(canvas, {
+	control = () => ({}),
 	angle = Math.PI,
 	velocity = 0,
 	gravity = 9.81,
@@ -22,6 +27,7 @@ export function createCartPendulum(canvas, {
 	dragGain = 0.004,
 	pixelsPerMetre = 72,
 	compareLinear = false,
+	showReset = compareLinear,
 } = {}) {
 	const ctx = canvas.getContext('2d');
 	const width = canvas.width;
@@ -60,6 +66,8 @@ export function createCartPendulum(canvas, {
 	let lastMove = 0;
 	let mouseForce = 0;
 	let mouseTorque = 0;
+	let controlForce = 0;
+	let controlTorque = 0;
 	let cartPosition = 0;
 	let cartVelocity = 0;
 	let theta = angle;
@@ -169,10 +177,12 @@ export function createCartPendulum(canvas, {
 	}
 
 	function integrateStep(dt) {
+		const totalForce = mouseForce + controlForce;
+		const totalTorque = mouseTorque + controlTorque;
 		const nonlinearState = [cartPosition, cartVelocity, theta, thetaVelocity];
 		const nextNonlinearState = integrate(
 			nonlinearState,
-			state => derivatives(state, mouseForce, mouseTorque),
+			state => derivatives(state, totalForce, totalTorque),
 			dt,
 		);
 		[cartPosition, cartVelocity, theta, thetaVelocity] = nextNonlinearState;
@@ -186,7 +196,7 @@ export function createCartPendulum(canvas, {
 			];
 			const nextLinearState = integrate(
 				linearState,
-				state => linearDerivatives(state, mouseForce, mouseTorque),
+				state => linearDerivatives(state, totalForce, totalTorque),
 				dt,
 			);
 			[
@@ -196,6 +206,17 @@ export function createCartPendulum(canvas, {
 				linearThetaVelocity,
 			] = nextLinearState;
 		}
+	}
+
+	function updateControl(dt) {
+		const command = control({
+			position: cartPosition,
+			velocity: cartVelocity,
+			angle: theta,
+			angularVelocity: thetaVelocity,
+		}, dt) ?? {};
+		controlForce = typeof command === 'number' ? command : command.force ?? 0;
+		controlTorque = typeof command === 'number' ? 0 : command.torque ?? 0;
 	}
 
 	function prepareCanvas() {
@@ -356,7 +377,7 @@ export function createCartPendulum(canvas, {
 	}
 
 	function pointInResetButton(point) {
-		return compareLinear &&
+		return showReset &&
 			point.x >= resetButton.x &&
 			point.x <= resetButton.x + resetButton.width &&
 			point.y >= resetButton.y &&
@@ -374,13 +395,15 @@ export function createCartPendulum(canvas, {
 		linearThetaVelocity = velocity;
 		mouseForce = 0;
 		mouseTorque = 0;
+		controlForce = 0;
+		controlTorque = 0;
 		remainder = 0;
 		previousTime = undefined;
 		draw();
 	}
 
 	function drawResetButton() {
-		if (!compareLinear) return;
+		if (!showReset) return;
 		ctx.save();
 		ctx.fillStyle = hoverReset ? '#e7f2ff' : '#ffffff';
 		ctx.strokeStyle = hoverReset ? accent : nonlinearColor;
@@ -417,8 +440,8 @@ export function createCartPendulum(canvas, {
 
 		drawCart(selected === 'cart', cartX, nonlinearColor);
 		drawPendulum(selected === 'pendulum', cartX, theta, nonlinearColor);
-		if (dragTarget === 'cart') drawForceArrow(mouseForce);
-		if (dragTarget === 'pendulum') drawTorqueArrow(mouseTorque);
+		drawForceArrow(mouseForce + controlForce);
+		drawTorqueArrow(mouseTorque + controlTorque);
 		drawResetButton();
 	}
 
@@ -432,6 +455,7 @@ export function createCartPendulum(canvas, {
 			mouseTorque = 0;
 		}
 		while (remainder >= step) {
+			updateControl(step);
 			integrateStep(step);
 			remainder -= step;
 		}
@@ -551,6 +575,19 @@ export function createCartPendulum(canvas, {
 
 	return {
 		setRunning,
+		getState() {
+			return {
+				position: cartPosition,
+				velocity: cartVelocity,
+				angle: theta,
+				angularVelocity: thetaVelocity,
+			};
+		},
+		setControl(fn) {
+			control = fn;
+			updateControl(0);
+			draw();
+		},
 		reset: resetSimulations,
 		destroy() {
 			setRunning(false);

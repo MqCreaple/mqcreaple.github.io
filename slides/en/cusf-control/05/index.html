@@ -1,0 +1,285 @@
+<!-- title: Optimal Control of Linear Systems -->
+<section data-markdown data-separator="^\n---\n" data-separator-vertical="^\n--\n">
+<script type="text/template">
+# Optimal Control of Linear Systems
+
+Mingqi Geng, Yoonjae Hwang
+
+08 Oct 2026
+
+---
+
+## Optimal Control
+
+As we design our controllers, often we are concerned with how to make the best controller for our given system. The 'best' control system is dependent on performance metrics we choose, which will be a case-by-case basis. We have to relate a qualitative performance metric to quantitative values.
+
+1. design a performance metric, and then
+2. optimise the controller parameters to maximise the performance metric.
+
+---
+
+## Performance Metric
+
+Usually, the performance metric should encourage
+
+- High performance, i.e. the state trajectory matches our expectation.
+- Low effort, i.e. low cost, low energy consumption, ...
+
+We usually express the performance metric as a **cost function**. The higher the cost function, the larger the penalty.
+
+Finding the optimal control function is solving for the minimum of the cost function on the entire time domain in which the system operates.
+
+---
+
+## Review: Linear System
+
+A **linear** system can be written as
+
+$$\dot{\mathbf{x}} = A\mathbf{x} + B\mathbf{u}$$
+
+The mathematics of linear systems is easy :)
+
+We are looking for a matrix $K$ such that $\mathbf{u}=-K\mathbf{x}$ gives the optimal control.
+
+--
+
+## A Bit of Linear Algebra
+
+A **quadratic form** of a vector $\mathbf{x}$ is any function of following form:
+
+$$ q(\mathbf{x}) = \mathbf{x}^\top A \mathbf{x} $$
+
+Quadratic forms are the same as multivariate quadratic functions.
+
+$$ \begin{bmatrix} x & y \end{bmatrix} \begin{bmatrix} 2 & 1 \newline 1 & -1 \end{bmatrix} \begin{bmatrix} x \newline y \end{bmatrix} = 2x^2 + 2xy - y^2 $$
+
+It is easy to verify that $A$, $A^\top$, and $\frac12(A + A^\top)$ give the same quadratic form. Thus, we can assume that matrix $A$ here is **symmetric** ($A=A^\top$).
+
+If $\forall \mathbf{x} \ne \mathbf{0}, \mathbf{x}^\top A \mathbf{x} > 0$, then $A$ is **positive-definite**.
+
+If $\forall \mathbf{x}, \mathbf{x}^\top A \mathbf{x} \ge 0$, then $A$ is **positive-semidefinite**.
+
+---
+
+## Linear Quadratic Regulator
+
+We express the cost function as:
+
+$$ J = \int_0^\infty (\mathbf{x}^\top Q \mathbf{x} + \mathbf{u}^\top R \mathbf{u})\mathrm{d}t $$
+
+Where $Q$ and $R$ are symmetric weight matrices. $Q$ needs to be positive-semidefinite, while $R$ needs to be positive-definite.
+
+$J$ is a function of the initial state $\mathbf{x}_0$ and a **functional** (a function of a function) of the control input function $\mathbf{u}$ \[*\].
+
+Our goal is to find the optimal $\mathbf{u}$ that minimises the cost:
+
+$$ \mathbf{u} = \argmin_{\mathbf{u}} J[\mathbf{x}_0, \mathbf{u}] $$
+
+[*]: here, $\mathbf{u}$ denotes the function $\mathbf{u}(\mathbf{x})$ instead of the vector at any specific $\mathbf{x}$. <!-- .element: style="font-size: 16px; color: #999;" -->
+
+---
+
+## Linear Quadratic Regulator
+
+For system $\dot{\mathbf{x}} = A\mathbf{x} + B\mathbf{u}$, the final result is given by:
+
+$$ \mathbf{u} = -K\mathbf{x}, K = R^{-1} B^\top S$$
+
+where $S$ is the matrix defining the optimal cost-to-go function and it satisfies the algebraic Riccati equation:
+
+$$ SA + A^\top S - SBR^{-1}B^\top S + Q = 0 $$
+
+Solving for matrix $S$ is nontrivial, as the algebraic Riccati equation is quadratic in $S$.
+
+We usually solve this equation numerically rather than symbolically.
+
+--
+
+## Derivation (for those who are interested)
+
+The optimal cost-to-go function $J^\ast(\mathbf{x}_0)$ is defined as the minimum cost function one may obtain when starting from a point.
+
+$$ J^\ast(\mathbf{x}\_0) = \min_{\mathbf{u}} J[\mathbf{x}_0, \mathbf{u}] $$
+
+If we only consider the space of linear controllers (i.e. controllers such that $\mathbf{u} = -K\mathbf{x}$), then
+
+$$ \dot{\mathbf{x}} = A\mathbf{x} + B\mathbf{u} = (A - BK)\mathbf{x} $$
+
+is a linear system. The solution $\mathbf{x} = \exp(t(A - BK))\mathbf{x}_0$ is linear in $\mathbf{x}_0$ for every $t$.
+
+--
+
+## Derivation (for those who are interested)
+
+The cost function $J[\mathbf{x}_0, \mathbf{u}]$ is a quadratic form of $\mathbf{x}_0$.
+
+$$
+\begin{align*}
+J[\mathbf{x}_0, \mathbf{u}] &= \int_0^\infty (\mathbf{x}^\top Q \mathbf{x} + \mathbf{u}^\top R \mathbf{u}) \mathrm{d}t \newline
+&= \int_0^\infty \mathbf{x}^\top (Q + K^\top R K) \mathbf{x} \mathrm{d}t \newline
+&= \mathbf{x}_0^\top \left( \int_0^\infty E^\top (Q + K^\top R K) E \mathrm{d}t \right) \mathbf{x}_0
+\end{align*}
+$$
+
+where $E=\exp(t(A - BK))$.
+
+Since the optimal cost-to-go function $J^\ast(\mathbf{x}_0)$ is the cost with a specifically chosen $\mathbf{u}$, it must also be a quadratic form of $\mathbf{x}_0$.
+
+--
+
+## Derivation (for those who are interested)
+
+Think of the space of possible $\mathbf{u}$s as the space of "action" one can take. The optimal action is the one that minimises the total cost, which can be broken down as the cost in $t \in [0, \delta t)$ and $t \in [\delta t, \infty)$.
+
+$$ J^\ast(\mathbf{x}) = \min_{\mathbf{u}} \left\\{ \int_0^{\delta t} (\mathbf{x}^\top Q \mathbf{x} + \mathbf{u}^\top R \mathbf{u}) \mathrm{d}t + J[\mathbf{x} + \delta\mathbf{x}, \mathbf{u}] \right\\} $$
+
+where $\delta\mathbf{x} = (A\mathbf{x} + B\mathbf{u})\delta t + O(\delta t^2)$.
+
+Since $J[\mathbf{x} + \delta\mathbf{x}, \mathbf{u}] \ge J^\ast(\mathbf{x} + \delta\mathbf{x})$, and equality only holds on the optimal choice of $\mathbf{u}$, the following equation must also hold:
+
+$$ J^\ast(\mathbf{x}) = \min_{\mathbf{u}} \left\\{ \int_0^{\delta t} (\mathbf{x}^\top Q \mathbf{x} + \mathbf{u}^\top R \mathbf{u}) \mathrm{d}t + J^\ast(\mathbf{x} + \delta\mathbf{x}) \right\\} $$
+
+This is the **Bellman equation** for continuous LTI systems.
+
+--
+
+## Derivation (for those who are interested)
+
+Taking the limit of Bellman equation as $\delta t \to 0$, we get:
+
+$$ \min_\mathbf{u} \left\\{ \mathbf{x}^\top Q \mathbf{x} + \mathbf{u}^\top R \mathbf{u} + \frac{\partial J^\ast}{\partial \mathbf{x}} (A\mathbf{x} + B\mathbf{u}) \right\\} = 0 $$
+
+Since $J^*(\mathbf{x})$ is a quadratic function of $\mathbf{x}$, we can denote the matrix of the quadratic form as $S$,
+
+$$ J^\ast(\mathbf{x}) = \mathbf{x}^\top S\mathbf{x} $$
+
+We then have $\frac{\partial J^\ast}{\partial\mathbf{x}} = 2\mathbf{x}^\top S $. The equation becomes
+
+$$ \min_\mathbf{u} \left\\{ \mathbf{x}^\top (Q + 2S A) \mathbf{x} + 2\mathbf{x}^\top S B \mathbf{u} + \mathbf{u}^\top R \mathbf{u} \right\\} = 0 $$
+
+$\mathbf{x}^\top (Q + 2S A) \mathbf{x}$ is independent of $\mathbf{u}$ and can be ignored.
+
+--
+
+## Derivation (for those who are interested)
+
+$$ f(\mathbf{u}) = 2\mathbf{x}^\top S B \mathbf{u} + \mathbf{u}^\top R \mathbf{u} $$
+
+is a convex function of $u$ -- there is only one global minimum at the stationary point.
+
+Solving for the stationary point of the function:
+
+$$ \frac{\partial f}{\partial \mathbf{u}} \bigg|_{\mathbf{u} = \mathbf{u^\ast}} = 2\mathbf{x}^\top SB + 2\mathbf{u}^{\ast\top} R = \mathbf{0} $$
+
+Since $R = R^\top, S = S^\top$, the optimal control policy $\mathbf{u}^\ast$ is:
+
+$$ \mathbf{u}^\ast = -R^{-1} B^\top S \mathbf{x} $$
+
+--
+
+## Derivation (for those who are interested)
+
+Substituting back,
+
+$$ \mathbf{x}^\top (Q + 2S A) \mathbf{x} + 2\mathbf{x}^\top S B (-R^{-1} B^\top S \mathbf{x}) + \mathbf{x}^\top S B R^{-1} B^\top S \mathbf{x} = \mathbf{0} $$
+
+$$ \mathbf{x}^\top (Q + 2SA - SBR^{-1}B^\top S) \mathbf{x} = \mathbf{0} $$
+
+The matrix in the quadratic form is not symmetric. We can symmetrise it into:
+
+$$ \mathbf{x}^\top (Q + SA + A^\top S - SBR^{-1}B^\top S) \mathbf{x} = \mathbf{0} $$
+
+This needs to hold for every $\mathbf{x}$. Therefore, the matrix must be zero.
+
+$$ SA + A^\top S - SBR^{-1}B^\top S + Q = 0 $$
+
+This is the algebraic Riccati equation.
+
+---
+
+## MATLAB Code
+
+Using LQR to stabilise an inverted pendulum on a cart.
+
+In this code, we only allow the controller to apply a force to the cart but not to the pendulum.
+
+```matlab [1-26|28-35]
+% Define the symbolic variables
+syms M m l g x theta x_dot theta_dot F_ext
+
+% Define the equations of motion
+D = M + m * sin(theta)^2;
+Q_dyn = m * l * theta_dot^2 * sin(theta);
+M_tot = M + m;
+x_ddot = (F_ext + Q_dyn + m * g * sin(theta) * cos(theta)) / D;
+theta_ddot = (-M_tot * m * g * l * sin(theta) ...
+		- m * l * (F_ext + Q_dyn) * cos(theta)) / (m * l^2 * D);
+
+% Compute the Jacobian matrices
+X = [x; x_dot; theta; theta_dot];
+u = [F_ext];
+F = [x_dot; x_ddot; theta_dot; theta_ddot];
+A = jacobian(F, X);
+B = jacobian(F, u);
+
+% Linearise around the equilibrium point (x=0, theta=pi)
+M_val = 1; m_val = 1; l_val = 1; g_val = 9.81;
+X_eq = [0; 0; pi; 0];
+u_eq = [0];
+A_lin = double(subs(A, [X; u; M; m; l; g], ...
+		[X_eq; u_eq; M_val; m_val; l_val; g_val]));
+B_lin = double(subs(B, [X; u; M; m; l; g], ...
+		[X_eq; u_eq; M_val; m_val; l_val; g_val]));
+
+% Compute the weighting matrices
+Q = [1, 0, 0, 0;
+     0, 0, 0, 0;
+     0, 0, 2, 0;
+     0, 0, 0, 0]; % weigh angle twice as much as position
+R = [1];
+[K, S, P] = lqr(A_lin, B_lin, Q, R);
+disp(K);
+
+% The equilibrium is X_eq = [0; 0; pi; 0], so the force command is:
+% F_ext = -K * (X - X_eq)
+```
+
+</script>
+</section>
+
+<section>
+	<h2>LQR Demo</h2>
+	<p>Drag the pendulum or the cart to disturb the system. The controller only applies a force to the cart.</p>
+	<canvas width="800" height="600" id="lqr-pendulum-cart" aria-label="LQR-controlled inverted pendulum on a cart" style="flex-shrink: 0; touch-action: none; cursor: grab;"></canvas>
+</section>
+
+<section data-markdown data-separator="^\n---\n" data-separator-vertical="^\n--\n">
+<script type="text/template">
+## Further resources
+
+- Theory of LQR: [MIT Underactuated](https://underactuated.mit.edu/lqr.html)
+- LQR in MATLAB: [lqr](https://uk.mathworks.com/help/control/ref/lti.lqr.html)
+
+</script>
+</section>
+
+<script type="module">
+	import { createCartPendulum } from '../03/cart-pendulum.js';
+	import { createLQRController } from './lqr-controller.js';
+
+	const canvas = document.getElementById('lqr-pendulum-cart');
+	const cartPendulum = createCartPendulum(canvas, {
+		angle: Math.PI - 0.18,
+		velocity: 0,
+		control: createLQRController({ forceLimit: 60 }),
+		showReset: true,
+	});
+
+	const syncRunning = () => {
+		cartPendulum.setRunning(
+			canvas.closest('section').hasAttribute('data-slide-active')
+		);
+	};
+	document.addEventListener('slideshowchange', syncRunning);
+	syncRunning();
+</script>
