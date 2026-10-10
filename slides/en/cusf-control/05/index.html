@@ -11,7 +11,7 @@ Mingqi Geng, Yoonjae Hwang
 
 ## Optimal Control
 
-As we design our controllers, often we are concerned with how to make the best controller for our given system. The 'best' control system is dependent on performance metrics we choose, which will be a case-by-case basis. We have to relate a qualitative performance metric to quantitative values.
+As we design our controllers, often we are concerned with how to make the best controller for our given system. The 'best' control system is dependent on performance metrics we choose, which will vary on a case-by-case basis. We have to relate a qualitative performance metric to quantitative values.
 
 1. design a performance metric, and then
 2. optimise the controller parameters to maximise the performance metric.
@@ -45,7 +45,7 @@ We are looking for a matrix $K$ such that $\mathbf{u}=-K\mathbf{x}$ gives the op
 
 ## A Bit of Linear Algebra
 
-A **quadratic form** of a vector $\mathbf{x}$ is any function of following form:
+A **quadratic form** of a vector $\mathbf{x}$ is any function of the following form:
 
 $$ q(\mathbf{x}) = \mathbf{x}^\top A \mathbf{x} $$
 
@@ -73,7 +73,7 @@ $J$ is a function of the initial state $\mathbf{x}_0$ and a **functional** (a fu
 
 Our goal is to find the optimal $\mathbf{u}$ that minimises the cost:
 
-$$ \mathbf{u} = \argmin_{\mathbf{u}} J[\mathbf{x}_0, \mathbf{u}] $$
+$$ \mathbf{u}^\ast = \argmin_{\mathbf{u}} J[\mathbf{x}_0, \mathbf{u}] $$
 
 [*]: here, $\mathbf{u}$ denotes the function $\mathbf{u}(\mathbf{x})$ instead of the vector at any specific $\mathbf{x}$. <!-- .element: style="font-size: 16px; color: #999;" -->
 
@@ -121,9 +121,11 @@ J[\mathbf{x}_0, \mathbf{u}] &= \int_0^\infty (\mathbf{x}^\top Q \mathbf{x} + \ma
 \end{align*}
 $$
 
-where $E=\exp(t(A - BK))$.
+where $E=\exp(t(A - BK))$ is an $n \times n$ matrix.
 
-Since the optimal cost-to-go function $J^\ast(\mathbf{x}_0)$ is the cost with a specifically chosen $\mathbf{u}$, it must also be a quadratic form of $\mathbf{x}_0$.
+Since the optimal cost-to-go function $J^\ast(\mathbf{x}_0)$ is $J$ with the optimal linear controller $\mathbf{u}^\ast$, $J^\ast (\mathbf{x}_0)$ must also be a quadratic form of $\mathbf{x}_0$.
+
+(It can also be proven that $J^\ast(\mathbf{x}_0)$ if we loosen the requirement of $\mathbf{u}$ to be any controller. You may look up the proof if interested.)
 
 --
 
@@ -248,17 +250,151 @@ disp(K);
 </section>
 
 <section>
-	<h2>LQR Demo</h2>
-	<p>Drag the pendulum or the cart to disturb the system. The controller only applies a force to the cart.</p>
-	<canvas width="800" height="600" id="lqr-pendulum-cart" aria-label="LQR-controlled inverted pendulum on a cart" style="flex-shrink: 0; touch-action: none; cursor: grab;"></canvas>
+	<section>
+		<h2>LQR Demo</h2>
+		<p style="font-size: 16px;">$$ Q = \begin{bmatrix} 1 & & & \newline & 0 & & \newline & & 2 & \newline & & & 0 \end{bmatrix}, R = \begin{bmatrix} 1 \end{bmatrix} $$</p>
+		<canvas width="800" height="600" id="lqr-pendulum-cart-1" aria-label="LQR-controlled inverted pendulum on a cart" style="flex-shrink: 0; touch-action: none; cursor: grab;"></canvas>
+	</section>
+	<section>
+		<h2>LQR Demo</h2>
+		<p style="font-size: 16px;">$$ Q = \begin{bmatrix} 10000 & & & \newline & 0 & & \newline & & 1 & \newline & & & 0 \end{bmatrix}, R = \begin{bmatrix} 1 \end{bmatrix} $$</p>
+		<canvas width="800" height="600" id="lqr-pendulum-cart-2" aria-label="LQR-controlled inverted pendulum on a cart" style="flex-shrink: 0; touch-action: none; cursor: grab;"></canvas>
+	</section>
+	<section>
+		<h2>LQR Demo</h2>
+		<p style="font-size: 16px;">$$ Q = \begin{bmatrix} 1 & & & \newline & 0 & & \newline & & 2 & \newline & & & 0 \end{bmatrix}, R = \begin{bmatrix} 100 \end{bmatrix} $$</p>
+		<canvas width="800" height="600" id="lqr-pendulum-cart-3" aria-label="LQR-controlled inverted pendulum on a cart" style="flex-shrink: 0; touch-action: none; cursor: grab;"></canvas>
+	</section>
 </section>
 
 <section data-markdown data-separator="^\n---\n" data-separator-vertical="^\n--\n">
 <script type="text/template">
+## Controllability
+
+In the pendulum-on-cart example, the system can be stabilised by only applying a force to the cart: only one input is sufficient to control the system.
+
+Some systems are obviously not controllable. Example: a pendulum separated from the cart. The pendulum's state is not controllable by applying forces on the cart.
+
+But the controllabilities of some systems are not that obvious. For example: controlling an inverted quadruple pendulum on a cart.
+
+<div class="r-hstack" style="align-items: flex-start; gap: 2em; margin-top: 1em;">
+	<figure style="flex: 1; margin: 0;">
+		<img src="./separated-pendulum-cart.svg" alt="A cart with no connection to an inverted pendulum mounted separately to the ground" style="width: 100%;">
+	</figure>
+	<figure style="flex: 1; margin: 0;">
+		<img src="./quadruple-pendulum-cart.svg" alt="An inverted quadruple pendulum mounted on a cart" style="width: 100%;">
+	</figure>
+</div>
+
+--
+
+## Controllability
+
+Consider the linear time-invariant system $\dot{\mathbf{x}} = A \mathbf{x} + B \mathbf{u}$, where $\dim\mathbf{x} = n$ and $\dim\mathbf{u} = r$. The system is uniquely characterised by its system matrix $A$ and control input matrix $B$.
+
+The system is **reachable** (or **controllable**) if one can reach any final state $\mathbf{x}_f$ from any initial state $\mathbf{x}_i$ in a finite time by tuning the control input $\mathbf{u}$.
+
+Formally, an LTI system $(A, B)$ is reachable/controllable if for all $\mathbf{x}_i, \mathbf{x}_f \in \mathbb{R}^n$, there exists a number $T > 0$, an admissible control $\mathbf{u}: [0, T] \to \mathbb{R}^r$, and a trajectory $\mathbf{x}: [0, T] \to \mathbb{R}^n$ such that:
+
+$$ \dot{\mathbf{x}} = A\mathbf{x} + B\mathbf{u}, \mathbf{x}(0) = \mathbf{x}_i, \mathbf{x}(T) = \mathbf{x}_f $$
+
+--
+
+## Controllability
+
+The controllability of LTI systems can be determined by an $n\times nr$ controllability matrix:
+
+$$ \mathcal{C} = \begin{bmatrix} B & AB & A^2 B & \cdots & A^{n-1}B \end{bmatrix} $$
+
+If $\text{rank }{\mathcal{C}} = n$ (i.e. $\mathcal{C}$ has full row rank), then the system is controllable.
+
+This test is only valid on LTI systems and assumes that $\mathbf{u}$ has no additional constraints. For nonlinear systems linearised around an equilibrium, the controllability test only indicates its controllability in the local region. For systems whose control inputs are constrained, $\text{rank }{\mathcal{C}} = n$ is no longer a reliable test.
+
+--
+
+## Proof (for Those Who are Interested)
+
+The **characteristic polynomial** of matrix $A$ is the polynomial you obtain when you are computing the eigenvalues:
+
+$$ p_A(\lambda) = \det(\lambda I - A) = a_0 + a_1\lambda + a_2\lambda^2 + \cdots + a_n\lambda^n $$
+
+**Cayley-Hamilton theorem** states that substituting $\lambda$ in $p_A(\lambda)$ with $A$ itself will give a zero matrix:
+
+$$ p_A(A) = a_0 I + a_1 A + a_2 A^2 + \cdots + a_n A^n = 0 $$
+
+A corollary of Cayley-Hamilton theorem is that: $A^n$ can be expressed as a linear combination of $I, A, A^2, \cdots, A^{n-1}$:
+
+$$ A^n = \frac{a_0}{a_n} I + \frac{a_1}{a_n} A + \frac{a_2}{a_n} A^2 + \cdots + \frac{a_{n-1}}{a_n} A^{n-1} $$
+
+--
+
+## Proof (for Those Who are Interested)
+
+Proof of Cayley-Hamilton theorem: for diagonalisable matrix $A$, perform eigendecomposition $A = Q \Lambda Q^{-1}$ and substitute it back:
+
+$$ p_A(A) = Q (a_0 I + a_1\Lambda + a_2\Lambda^2 + \cdots + a_n \Lambda^n) Q^{-1} $$
+
+Because any eigenvalue $\lambda_i$ satisfies $p_A(\lambda_i) = 0$ (that's how we compute eigenvalues!) and $\Lambda$ is a diagonal matrix of all eigenvalues, the terms in the bracket must sum up to $0$.
+
+Since diagonalisable matrices are dense in the set of all complex matrices, and $A \mapsto p_A(A)$ is continuous, the result $p_A(A) = 0$ can be expanded to the set of all matrices $\mathcal{M}_n(\mathbb{C})$, and thus $\mathcal{M}_n(\mathbb{R})$.
+
+--
+
+## Proof (for Those Who are Interested)
+
+It is easy to verify that the solution to system
+
+$$ \dot{\mathbf{x}}(t) = A\mathbf{x}(t) + B\mathbf{u}(t) $$
+
+with time varying input $\mathbf{u}$ is:
+
+$$ \mathbf{x}(\tau) = \exp(\tau A)\mathbf{x}(0) + \int_0^\tau \exp((\tau - t) A) B\mathbf{u}(t) \mathrm{d}t $$
+
+Using $s = \tau - t$, we get:
+
+$$ \mathbf{x}(\tau) = \exp(\tau A)\mathbf{x}(0) - \int_0^\tau \exp(s A) B \mathbf{u}(\tau - s) \mathrm{d}s $$
+
+The statement also means that as long as there is a path from $\mathbf{0}$ to $\mathbf{x}_f - \exp(T A)\mathbf{x}_i$, there must be a path from $\mathbf{x}_i$ to $\mathbf{x}_f$. We only need to prove that any state is reachable starting from the origin.
+
+--
+
+## Proof (for Those Who are Interested)
+
+*Proof of necessity*: assume that the system is controllable while $\mathcal{C} = \begin{bmatrix} B & AB & A^2 B & \cdots & A^{n-1}B \end{bmatrix}$ is not full rank, then there exists a direction $\mathbf{q} \in \mathbb{R}^n$ such that $\mathbf{q}$ is orthogonal to every column of $\mathcal{C}$.
+
+By Cayley-Hamilton theorem, $A^n$ is linearly dependent on $\\{ I, A, A^2, \cdots, A^{n-1} \\}$. Therefore, for any $k$, $A^k B$ can be decomposed into a linear combination of $B, AB, A^2B, \cdots, A^{n-1}B$. Thus, $\mathbf{q}$ is also orthogonal to any columns of $A^k B$.
+
+We can express $\exp(sA)$ as an infinite sum. Thus,
+
+$$ \mathbf{q}^\top \exp(sA) B = \mathbf{q}^\top \sum_{k=0}^\infty \frac{s^k}{k!} A^k B = \sum_{k=0}^\infty \frac{s^k}{k!} \mathbf{q}^\top A^k B = \mathbf{0} $$
+
+If we start at $\mathbf{x}(0) = \mathbf{0}$, then we can only stay on the hyperplane orthogonal to $\mathbf{q}$, and thus the system is not controllable. Contradiction.
+
+--
+
+## Proof (for Those Who are Interested)
+
+*Proof of sufficiency*: if $\mathcal{C}$ is full rank, by similar reasoning, a nonzero $\mathbf{q} \in \mathbb{R}^n$ will have $\mathbf{q}^\top \exp(s A) B$ being not identically $\mathbf{0}$ on $[0, T]$.
+
+The matrix
+
+$$ W_T = \int_0^T \exp(sA)BB^\top\exp(sA^\top)\mathrm{d}s $$
+
+is positive definite, thus invertible. We can then construct a control input
+
+$$\mathbf{u}(t) = B^\top \exp((T-t)A^\top) W_T^{-1} \mathbf{x}_f$$
+
+that yields $\mathbf{x}(T) = \mathbf{x}_f$ for an arbitrary $\mathbf{x}_f$. Therefore, the system is controllable.
+
+Combining the two arguments, $\text{rank}(\mathcal{C}) = n$ is a necessary and sufficient crietrion for the controllability of system $(A, B)$.
+
+---
+
 ## Further resources
 
 - Theory of LQR: [MIT Underactuated](https://underactuated.mit.edu/lqr.html)
-- LQR in MATLAB: [lqr](https://uk.mathworks.com/help/control/ref/lti.lqr.html)
+- LQR in MATLAB: [MathWorks - lqr](https://uk.mathworks.com/help/control/ref/lti.lqr.html)
+- Controlling inverted multiple pendulums: [YouTube - braintruffle](https://www.youtube.com/watch?v=2Q_EtJs1ubc)
 
 </script>
 </section>
@@ -267,18 +403,38 @@ disp(K);
 	import { createCartPendulum } from '../03/cart-pendulum.js';
 	import { createLQRController } from './lqr-controller.js';
 
-	const canvas = document.getElementById('lqr-pendulum-cart');
-	const cartPendulum = createCartPendulum(canvas, {
-		angle: Math.PI - 0.18,
-		velocity: 0,
-		control: createLQRController({ forceLimit: 60 }),
-		showReset: true,
-	});
+	const demoDefinitions = [
+		{
+			canvasId: 'lqr-pendulum-cart-1',
+			gains: [-1, -2.47837907, 49.74828959, 12.35241468],
+		},
+		{
+			canvasId: 'lqr-pendulum-cart-2',
+			gains: [-100, -78.48128708, 321.73427428, 99.53998002],
+		},
+		{
+			canvasId: 'lqr-pendulum-cart-3',
+			gains: [-0.1, -0.67841964, 42.19541999, 9.8539763],
+		},
+	];
+	const demos = [];
+	for (const { canvasId, gains } of demoDefinitions) {
+		const canvas = document.getElementById(canvasId);
+		const cartPendulum = createCartPendulum(canvas, {
+			angle: Math.PI - 0.18,
+			velocity: 0,
+			control: createLQRController({ gains, forceLimit: 60 }),
+			showReset: true,
+		});
+		demos.push({ canvas, cartPendulum });
+	}
 
 	const syncRunning = () => {
-		cartPendulum.setRunning(
-			canvas.closest('section').hasAttribute('data-slide-active')
-		);
+		for (const { canvas, cartPendulum } of demos) {
+			cartPendulum.setRunning(
+				canvas.closest('section').hasAttribute('data-slide-active')
+			);
+		}
 	};
 	document.addEventListener('slideshowchange', syncRunning);
 	syncRunning();
