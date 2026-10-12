@@ -97,14 +97,15 @@
     -u.at(0) * calc.cos(a-phi) + u.at(1) * calc.sin(a-phi),
     -u.at(1) * calc.cos(a-phi) - u.at(0) * calc.sin(a-phi),
   )
-  let thrust-end = add(tail, scale(thrust-direction, 2.05))
+  let thrust-end = add(tail, scale(thrust-direction, 2.0))
+  let thrust-centre = add(tail, scale(thrust-direction, 1.0))
   line(
-    tail,
     thrust-end,
+    tail,
     stroke: (paint: thrust, thickness: 1.35pt),
     mark: (end: (symbol: ">", fill: thrust, stroke: thrust)),
   )
-  content(add(thrust-end, (0.22, 0.10)), text(fill: thrust)[$F$])
+  content(add(thrust-centre, (0.50, 0.0)), text(fill: thrust)[$F$])
 
   let axis-angle = calc.atan2(-u.at(0), -u.at(1))
   let thrust-angle = calc.atan2(thrust-direction.at(0), thrust-direction.at(1))
