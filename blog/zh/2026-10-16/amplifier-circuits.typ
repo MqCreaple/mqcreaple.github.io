@@ -33,7 +33,7 @@
   caption: [一个简单的负反馈放大电路。]
 ) <fig:simple-amplifier>
 
-学过放大器分析的朋友们不难看出，这个电路是一个同相放大电路，放大倍数是 $(R_1 + R_2) / R_1$。使用虚短-虚断法足以分析这种简单电路——只需要假设点2和点3的电压始终相等，且流入2、3引脚的电流为 $0$，就可以将 $R_1$ 和 $R_2$ 看作一个分压电路，算得 $V_"out" = (R_1 + R_2) / R_1 V_"in"$。
+学过放大器分析的朋友们不难看出，这个电路是一个同相放大电路，放大倍数是 $(R_1 + R_2) / R_1$。使用虚短-虚断法足以分析这种简单电路——只需要假设点 2 和点 3 的电压始终相等，且流入 2、3 引脚的电流为 $0$，就可以将 $R_1$ 和 $R_2$ 看作一个分压电路，算得 $V_"out" = (R_1 + R_2) / R_1 V_"in"$。
 
 那么对于更复杂的电路，比如下面这个振荡电路呢？
 
@@ -68,7 +68,7 @@
 
 在这种表示方法下，每条线代表一个*信号*而非一条物理上的电线连接，每个节点则代表一个*算符*（或者叫一个*系统*）。*信号*可以理解为关于时间的函数 $f(t)$，而*算符*则是将一个信号变成另一个信号的某种操作。节点所表示的算符可以与时间无关，比如求和（$h(t) = f(t) + g(t)$）、求积（$h(t) = f(t)g(t)$）等；也可以与时间相关，比如延迟（$g(t) = f(t - tau)$）、求导（$g(t) = dif / (dif t) f(t)$）、滤波（$(a + b dif / (dif t)) g(t) = f(t)$）等。
 
-在这张图上，$Sigma$ 模块表示将输入的两个信号求和或者做差。此处一边标了加号、一边标了减号，因此图中的 $Sigma$ 对两个信号做差。指向右侧的三角形通常用来表示线性增益，比如这里的 $A$ 节点表示将输入信号放大 $A$ 倍，其中 $A$ 是放大器的开环增益。@fig:system-diagram-of-simple-amplifier 中的 $Sigma$ 和 $A$ 节点共同表示了一个理想运算放大器在电路中的功能。这里我们不一定需要取 $A -> infinity$ 的极限情况，将 $A$ 当作有限值来分析也是可以的。
+在这张图上，$Sigma$ 模块表示将输入的两个信号求和或者做差。此处一边标了加号、一边标了减号，因此图中的 $Sigma$ 对两个信号做差。指向右侧的三角形通常用来表示线性增益，比如这里的 $A$ 节点表示将输入信号放大 $A$ 倍，其中 $A$ 是放大器的开环增益。@fig:system-diagram-of-simple-amplifier 中的 $Sigma$ 和 $A$ 节点共同表示了一个理想运算放大器在电路中的功能。分析电路时不一定需要取 $A -> infinity$ 的极限情况，将 $A$ 当作有限值来分析也是可以的。
 
 此处的 $beta$ 表示了从运放输出电压 $V_"out"$ 到运放反相输入端电压 $V_-$ 的函数。对于一个同相放大器（如果不考虑信号延迟、寄生参数以及其他高频效应的话），这里的 $beta$ 就是一个线性增益。如果换成其他元件（比如将其中一个电阻换成电容可以制作微分器或积分器），那么 $beta$ 也可以变成一个作用在信号上的算符。
 
@@ -91,9 +91,9 @@ $ V_"out" = A / (1 + A beta) V_"in" $
 
 == 线性时不变系统假设 <sec:lti-assumption>
 
-注：以下统一使用方括号来表示算子作用在某个函数/信号上，圆括号表示函数在某个输入上的取值。如果方括号内的表达式包含 $t$，那么算符作用的函数以 $t$ 为自变量，若不包含 $t$ 则认为方括号内本身的表达式是一个函数。比如：$hat(P)[f]$ 和 $hat(P)[f(t)]$ 均表示将 $hat(P)$ 作用在信号 $f(t)$ 上。
+注：以下统一使用方括号来表示算子作用在某个函数/信号上，圆括号表示函数在某个输入上的取值。如果方括号内的表达式包含 $t$，那么算符作用的函数以 $t$ 为自变量，若不包含 $t$ 则认为方括号内本身是一个信号。比如：$hat(P)[f]$ 和 $hat(P)[f(t)]$ 均表示将 $hat(P)$ 作用在信号 $f(t)$ 上。
 
-为了分析方便，我们假设所有相关函数（比如之前出现的 $A$ 和 $beta$）均为线性时不变算符。
+为了分析方便，我们假设所有算符（比如之前出现的 $A$ 和 $beta$）均为线性时不变算符。
 
 #definition[
   算符 $hat(P)$ 满足以下两个条件时即为*线性时不变（Linear Time-Invariant, LTI）算符*。
@@ -137,11 +137,11 @@ $ cal(L)[integral_a^b w(u) f(t, u) dif u ] = integral_a^b w(u) cal(L)[f(t, u)] d
 
 $ cal(L)[f * g] =  cal(L)[integral_0^t f(tau)g(t-tau) dif tau] = cal(L)[f] dot cal(L)[g] $
 
-当拉普拉斯变换的收敛域包含虚轴时，将 $overline(f)(s)$ 中的 $s$ 替换成 $i omega$，即可得到对应信号的傅里叶变换。需要注意的是，这里使用的是单边拉普拉斯变换，它只依赖于 $t >= 0$ 的部分。比如，$sin(omega t)$ 的拉普拉斯变换是：
+当拉普拉斯变换的收敛域包含虚轴时，将 $overline(f)(s)$ 中的 $s$ 替换成 $i omega$，即可得到对应信号的傅里叶变换。需要注意的是，这里使用的是单边拉普拉斯变换，它只依赖于 $t >= 0$ 的部分。比如，$sin(omega_0 t)$ 的拉普拉斯变换是：
 
-$ cal(L)[sin(omega t)](s) = omega / (s^2 + omega^2) $
+$ cal(L)[sin(omega_0 t)](s) = omega_0 / (s^2 + omega_0^2) $
 
-直接将上式的 $s$ 替换成 $i omega$ 得到的不是 $sin(omega t)$ 的傅里叶变换，而是 $sin(omega t) u(t)$ 的傅里叶变换，其中 $u(t)$ 是单位阶梯函数。
+直接将上式的 $s$ 替换成 $i omega$ 得到的不是 $sin(omega_0 t)$ 的傅里叶变换，而是 $sin(omega_0 t) u(t)$ 的傅里叶变换，其中 $u(t)$ 是单位阶梯函数。
 
 $ u(t) = cases(1\,& t >= 0, 0\,& t < 0) $
 
@@ -190,7 +190,7 @@ $ cal(L)[hat(P)[f]](s) = cal(L)[hat(P)[delta]](s) dot cal(L)[f](s) = overline(P)
     nonumber[$ dif / (dif t) $], nonumber[$ s $],
     nonumber[$ dif^n / (dif^n t) $], nonumber[$ s^n $],
     nonumber[$ integral_0^t dif tau $], nonumber[$ 1/s $],
-    nonumber[$ T_(Delta t) $], nonumber[$ e^(-s Delta t) $],
+    nonumber[$ T_(Delta t) $], nonumber[$ e^(s Delta t) $],
   ),
   caption: [常见线性时不变算符的拉普拉斯传递函数。]
 )
@@ -243,9 +243,9 @@ $ overline(V_"out") approx overline(V_"in") + R C (s overline(V_"in")) $
 
 $ V_"out" approx V_"in" + R C (dif V_"in") / (dif t) $
 
-这个电路的输出会在输入信号上叠加上输入信号随时间的导数乘上倍数 $R C$。同样的结果也可以通过虚短虚断法来列微分方程得到。
+这个电路的输出会在 $V_"in"$ 本身之上叠加 $V_"in"$ 随时间的导数乘上倍数 $R C$。同样的结果也可以通过虚短虚断法来列微分方程得到。
 
-使用 @eq:closed-loop-gain-of-rc-feedback 分析电路行为还有一个好处：可以直观地看出这个近似在什么情况下会失效。将 $s$ 替换为 $i omega$，得到电路的频率响应函数。不难看出，当 $omega R C$ 与 $A$ 的数量级接近时，就不能再取 $A -> infinity$。假设电路的 $R C$ 时间常数为 $50 "ms"$，开环放大倍数 $A = 10^5$，那么当频率达到约 $A / (2 pi R C) = 320 "kHz"$ 时，这个近似会明显失效。
+使用 @eq:closed-loop-gain-of-rc-feedback 分析电路行为还有一个好处：可以直观地看出这个近似在什么情况下会失效。将 $s$ 替换为 $i omega$，得到电路的频率响应函数。不难看出，当 $omega R C$ 与 $A$ 的数量级接近时，就不能再取 $A -> infinity$。假设电路的 $R C$ 时间常数为 $50 "ms"$，开环放大倍数 $A = 10^5$，那么当频率达到约 $A / (2 pi R C) = 320 "kHz"$ 时，$A -> infinity$ 的近似会明显失效。
 
 再考虑下面这个反相放大电路：
 
@@ -294,7 +294,7 @@ $ overline(V_"out") / overline(V_"in") approx -(i omega tau_(12)) / (1 - omega^2
   caption: [@fig:rc-feedback-2 电路的波特图（假设 $A -> infinity$），选取参数 $R_1 = 15 "kΩ", C_1 = 3.3 "nF", R_2 = 1.5 "kΩ", C_2 = 100 "nF"$。]
 )
 
-类似地，这个系统只有在 $omega tau_1$ 和 $omega tau_2$ 均远小于 $A$ 时才能使用 $A -> infinity$ 的近似。如果频率过高，传递函数就不再是 @eq:transfer-function-of-rc-feedback-2 这么简单的形式。不过这个电路里的 $R C$ 都比较小，而且真实运算放大器在高频下的放大倍数会降低，因此在 $omega max(tau_1, tau_2)$ 接近 $A$ 之前，这个近似就会失效。
+类似地，这个系统只有在 $omega tau_1$ 和 $omega tau_2$ 均远小于 $A$ 时才能使用 $A -> infinity$ 的近似。如果频率过高，传递函数就不再是 @eq:transfer-function-of-rc-feedback-2 这么简单的形式。不过这个电路里的 $R C$ 都比较小，而且真实运算放大器在高频下的放大倍数会降低，因此在 $omega max(tau_1, tau_2)$ 达到开环放大倍数 $A$ 之前 $A -> infinity$ 的近似就会因为其他原因失效。
 
 = 系统的稳定性分析
 
@@ -302,7 +302,7 @@ $ overline(V_"out") / overline(V_"in") approx -(i omega tau_(12)) / (1 - omega^2
 
 $ overline(f)(s) = integral_0^infinity f(t) e^(-s t) dif t $
 
-如果 $f(t)$ 是一个有界函数，即 $forall t >= 0, |f(t)| <= M$，那么当 $Re(s) > 0$ 时有：
+如果 $f(t)$ 是一个有界函数，即 $forall t >= 0, |f(t)| <= M$。用 $Re(s)$ 表示 $s$ 的实数部分，那么当 $Re(s) > 0$ 时有：
 
 $ lr(|overline(f)(s)|) <= integral_0^infinity |f(t)| lr(|e^(-s t)|) dif t = M integral_0^infinity e^(-Re(s) t) dif t = M / (Re(s)) $
 
@@ -336,7 +336,7 @@ $ lr(|integral_0^infinity |hat(P)[delta](t)| e^(-s t) dif t|) = integral_0^infin
 
 也就是说，如果系统 $hat(P)$ 是 BIBO 稳定的，那么 $hat(P)[delta]$ 的拉普拉斯变换在包含虚数轴及其右侧半平面的区域（记作 $CC_(Re >= 0) = {s in CC | Re(s) >= 0}$）上都需要*绝对收敛*。
 
-注意：这里不仅要求 $integral_0^infinity hat(P)[delta](t) e^(-s t) dif t$ 本身收敛，还要求绝对值 $|hat(P)[delta](t)|$ 的拉普拉斯变换积分收敛。绝对收敛条件排除了 $dif / (dif t)$ 这一类算符：$cal(L)[dif / (dif t)delta(t)] = s$ 在整个复平面上都收敛，但 $cal(L)[lr(|dif / (dif t) delta(t)|)]$ 并不收敛，因此不满足绝对收敛条件。上面的讨论也说明 $dif / (dif t)$ 不是 BIBO 稳定的算符。我们可以构造一个振幅固定但频率逐渐升高的函数，如 $f(t) = sin(t^2)$，此时 $dif / (dif t) f(t)$ 无界。
+注意：这里不仅要求 $integral_0^infinity hat(P)[delta](t) e^(-s t) dif t$ 本身收敛，还要求绝对值 $|hat(P)[delta](t)|$ 的拉普拉斯变换积分收敛。绝对收敛条件排除了 $dif / (dif t)$ 这一类算符：$cal(L)[dif / (dif t)delta(t)] = s$ 在整个复平面上都收敛，但 $cal(L)[lr(|dif / (dif t) delta(t)|)]$ 并不收敛，因此不满足绝对收敛条件。这说明 $dif / (dif t)$ 不是 BIBO 稳定的算符——这一点也可以通过一个案例来印证。我们可以构造一个振幅固定但频率逐渐升高的函数，如 $f(t) = sin(t^2)$，此时 $dif / (dif t) f(t)$ 无界。
 
 如果传递函数 $overline(P)(s)$ 是一个有理函数（即可以写成两个多项式函数 $N(s)$ 与 $D(s)$ 之比的函数），那么判断 $overline(P)(s)$ 是否稳定只需要检查这两个条件：
 
@@ -580,14 +580,16 @@ $ integral.cont_gamma (f'(z)) / (f(z)) dif z = integral.cont_gamma (ln(f(z)))' d
 
 $ overline(A) / (1 + overline(A) overline(beta)) = A / (1 + A e^(-s Delta t)) $
 
-如果我们取 $A -> infinity$ 的极限，得到 $e^(s Delta t)$，那么这个函数的确在整个复平面上都没有极点。但如果 $A$ 是有限值，情况就不一定了：
+如果我们取 $A -> infinity$ 的极限，得到 $e^(s Delta t)$，那么这个函数的确在整个复平面上都没有极点。可是这意味着输出信号 $V_"out" (t) = V_"in" (t + Delta t)$，这显然违背了因果律，因此在分析这个电路时不可以取 $A -> infinity$ 的极限。
+
+但如果 $A$ 是有限值，函数就会有极点了，而且是无穷个极点。通过令分母为 $0$ 来计算极点：
 
 $
 1 + A e^(-s Delta t) = 0 \
 s = 1 / (Delta t) (ln A + (2 k + 1) pi i), k in NN
 $
 
-极点的实部为 $(ln A) / (Delta t)$，考虑到真实电路中 $A$ 很大同时 $Delta t$ 很小，这个极点会在正半平面非常靠右的位置。我们可以从拉普拉斯变换的角度来解读这个极点：在我们输入一个单位脉冲 $V_in (t) = delta(t)$ 之后，系统输出的电压 $V_"out" (t)$ 的拉普拉斯变换就是系统的传递函数：
+极点的实部为 $(ln A) / (Delta t)$，考虑到真实电路中 $A$ 很大同时 $Delta t$ 很小，这个极点会在正半平面非常靠右的位置。我们可以从拉普拉斯变换的角度来解读这个极点：在我们输入一个单位脉冲 $V_"in" (t) = delta(t)$ 之后，系统输出的电压 $V_"out" (t)$ 的拉普拉斯变换就是系统的传递函数：
 
 $ cal(L)[lr(V_"out"|)_(V_"in" (t) = delta(t))](s) = A / (1 + A e^(-s Delta t)) $
 
@@ -597,7 +599,7 @@ $ integral_0^infinity V_"out" e^(-s t) dif t in RR <=> Re(s) > (ln A) / (Delta t
 
 这意味着，$V_"out" (t)$ 的振幅包络会按 $exp((ln A) / (Delta t)t)$ 增长。同时，观察极点的虚部可以看出其振荡角频率应当形如 $omega = 1/(Delta t) (2k + 1) pi$。
 
-如果不追求完全严谨，也可以这样简明直观地理解：延迟线将信号延迟了一个固定的时长 $Delta t$，而这个时长对于不同频率的振荡来说对应着不同的相位差。如果输出信号的某个频率分量经过延迟线之后恰好延迟了 $k$ 个整数周期加上半个周期（即相位总体滞后了 $(2k + 1) pi$），那么就会将原本电路的负反馈变成正反馈，导致振幅不断增大。用这种方法能够较快判断出一个系统自激振荡的频率是多少，但是不能分析出来振荡的增幅会有多快。
+如果不追求完全严谨，也可以这样简明直观地理解：延迟线将信号延迟了一个固定的时长 $Delta t$，而这个时长对于不同频率的振荡来说对应着不同的相位差。如果输出信号的某个频率分量经过延迟线之后恰好延迟了 $k$ 个整数周期加上半个周期（即相位总体滞后了 $(2k + 1) pi$），那么就会将原本电路的负反馈变成正反馈，导致振幅不断增大。用这种方法能够较快判断出一个系统自激振荡的频率是多少，但是不能分析出来振荡幅度的增速会有多快。
 
 #figure(
   shadertoy-figure(classes: ("shadertoy-pause",))[
@@ -1086,7 +1088,7 @@ $ overline(F)(s) = (s((s + 1)^2 + 1)((s - 1)^2 + 4)) / (((s - 1)^2 + 1)((s + 1)^
   caption: [开环传递函数 $overline(F)(s)$ 的着色表示。]
 ) <fig:example-system-open-loop>
 
-由于 $overline(F)(s)$ 在复平面右侧有两个极点，$1 + overline(F)(s)$ 也一定有两个极点。又由于奈奎斯特图上曲线绕点 $-1$ 的圈数为 $0$，$1 + overline(F)(s)$ 在复平面右半边的零点数减去极点数也等于 $0$。二者结合，可以算出 $1 + overline(F)(s)$ 在复平面右侧的零点数为 2，因此闭环传递函数 $1 / (1 + overline(F)(s))$ 在右半平面也有两个极点。与 @fig:example-system-closed-loop 核对后可以确认，这个系统不稳定。
+由于 $overline(F)(s)$ 在复平面右侧有两个极点，$1 + overline(F)(s)$ 也一定有两个极点。又由于奈奎斯特图上曲线绕点 $-1$ 的圈数为 $0$，$1 + overline(F)(s)$ 在复平面右半边的零点数减去极点数也等于 $0$。二者结合，可以算出 $1 + overline(F)(s)$ 在复平面右侧的零点数为 2，因此闭环传递函数 $1 / (1 + overline(F)(s))$ 在右半平面也有两个极点。与 @fig:example-system-closed-loop 核对后可以确认其极点数的确为 2，因此这个系统不稳定。
 
 #figure(
   shadertoy-figure(classes: ("shadertoy-pause",))[
