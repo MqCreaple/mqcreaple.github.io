@@ -1,6 +1,6 @@
 // title: 用AprilTag做姿态估计是一个糟糕的方案
 // summary: AprilTag 正对相机时姿态估计的跳跃问题及其改进方法。
-// tags: computer-vision, robotics
+// tags: computer-vision, engineering, robotics
 // category: tech
 #import "../../template.typ": article, mathbf, shadertoy-figure, three-js-figure, theorem, proof
 

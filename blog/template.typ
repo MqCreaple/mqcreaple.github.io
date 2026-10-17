@@ -1,6 +1,6 @@
 #import "@preview/ctheorems:1.1.3": *
 #import "@preview/fletcher:0.5.8": diagram as _diagram
-#import "@preview/cetz:0.3.4": canvas as _cetz-canvas
+#import "@preview/cetz:0.5.2": canvas as _cetz-canvas
 
 // The language of the current article, stored as global state so that
 // appendix() and the theorem environments can localize themselves without
@@ -53,7 +53,7 @@
   doc,
 ) = {
   article-lang.update(lang)
-  set page(paper: "a4", margin: 2.5cm)
+  set page(paper: "a4", margin: 2.5cm, numbering: "1")
   set par(justify: true)
   set heading(numbering: "1.")
   set text(size: size, font: font, lang: lang)
@@ -102,11 +102,15 @@
     }
   }
   show: thmrules
+  // Allow page breaking of shadertoy figures
+  show figure.where(kind: raw): set block(breakable: true)
 
   // Content
   outline()
   doc
 }
+
+#let nonumber = math.equation.with(block: true, numbering: none)
 
 #let appendix(body) = {
   context {

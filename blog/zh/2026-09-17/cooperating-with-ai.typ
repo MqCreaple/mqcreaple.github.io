@@ -4,7 +4,7 @@
 // category: humanity
 
 #import "../../template.typ": article, cetz-canvas
-#import "@preview/cetz:0.3.4"
+#import "@preview/cetz:0.5.2"
 
 #show: article.with(
   title: "AI时代的存在焦虑",

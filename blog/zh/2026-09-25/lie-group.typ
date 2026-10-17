@@ -4,7 +4,7 @@
 // category: tech
 
 #import "../../template.typ": article, mathbf, three-js-figure, plotly-figure, theorem, definition, proof, example, corollary, assumption, lemma, cetz-canvas
-#import "@preview/cetz:0.3.4"
+#import "@preview/cetz:0.5.2"
 
 #show: article.with(
   title: "微分几何5：李群和李代数",

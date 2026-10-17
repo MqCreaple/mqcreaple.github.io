@@ -55,7 +55,9 @@ const { title, lang } = Astro.props;
       deck.on('overviewhidden', notifySlideVisibility);
       document.addEventListener('visibilitychange', notifySlideVisibility);
 
-      await deck.initialize();
+      await deck.initialize({
+        margin: 0.15,
+      });
       // Markdown must be converted before rendering math. Bundle KaTeX locally.
       if (deck.getSlidesElement() !== null) {
         renderMathInElement(deck.getSlidesElement()!, {

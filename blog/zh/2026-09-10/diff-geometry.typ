@@ -4,7 +4,7 @@
 // category: tech
 
 #import "../../template.typ": article, mathbf, three-js-figure, theorem, definition, proof, example, corollary, assumption
-#import "@preview/cetz:0.3.4"
+#import "@preview/cetz:0.5.2"
 
 #show: article.with(
   title: "微分几何4：平行移动与联络",
