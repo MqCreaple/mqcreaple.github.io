@@ -399,19 +399,45 @@ $ overline(P)(s) = (N(s)) / (D(s)) = (P_0(s - z_1)^(alpha_1)(s - z_2)^(alpha_2)(
       return 1.0 / (1.0 + exp(-x));
   }
 
-  void mainImage( out vec4 fragColor, in vec2 fragCoord )
-  {
-      vec2 uv = (fragCoord-iResolution.xy*0.5)/iResolution.y * 5.0;
+  float symmetric_fract(float x) {
+      return fract(x+0.5)-0.5;
+  }
+  float clamped_symmetric_fract(float x, float n) {
+      // Repeats the function between [-1/2, 1/2] when x is between [-n, n], and increase linearly for x outside [-n, n]
+      float cx = clamp(x, -n, n);
+      return (x-cx) + symmetric_fract(cx);
+  }
+
+  void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
+      float screen_y_range = 5.0;
+      vec2 uv = (fragCoord-iResolution.xy*0.5)/iResolution.y * screen_y_range;
       vec2 z = f(uv);
 
       float c = sigmoid(log(length(z)));
       vec3 hsl = vec3(cx_arg(z)/(PI*2.0), sqrt(c), 0.5*(1.0+c));
       vec3 rgb = hsl2rgb(hsl);
+    
+      // Radial and equimagnitude lines
+      vec3 line_color = vec3(0.0, 0.1, 0.4);
+      float equimagnitude_division = 1.0;
+      float equimagnitude = clamped_symmetric_fract(length(z) / equimagnitude_division, 12.) * equimagnitude_division;
+      float radial = symmetric_fract(cx_arg(z) * 4.0 / PI);
+      float d = min(abs(equimagnitude), abs(radial*length(z)));
+      vec2 epsilon = vec2(1e-4, 0.);
+      // Cradient correction to make lines appear equally thick on the screen
+      float f_grad = length(cx_div(f(uv+epsilon) - f(uv), epsilon));
+      float d_correct = d/f_grad; 
+      float lambda = exp(-32768.*d_correct*d_correct);
+      rgb = mix(rgb, line_color, lambda);
+      
+      // Grid lines and number axes
       vec2 c_grid_2 = abs((fract(uv/5.0+0.5)-0.5)*5.0);
       vec2 f_grid_2 = abs(fract(uv+0.5)-0.5);
-      float c_grid = min(c_grid_2.x, c_grid_2.y);
-      float f_grid = min(f_grid_2.x, f_grid_2.y);
-      float grid = max(exp(-8192.*c_grid*c_grid), exp(-32768.*f_grid*f_grid));
+      float axes = min(abs(uv.x), abs(uv.y)) / screen_y_range;
+      float c_grid = min(c_grid_2.x, c_grid_2.y) / screen_y_range;
+      float f_grid = min(f_grid_2.x, f_grid_2.y) / screen_y_range;
+      float grid = max(max(exp(-2e5*axes*axes), exp(-4e5*c_grid*c_grid)), exp(-8e5*f_grid*f_grid));
+  
       fragColor = vec4(rgb * (1.-0.5*grid), 1.0);
   }
   ```
@@ -463,19 +489,45 @@ $ overline(P)(s) = (N(s)) / (D(s)) = (P_0(s - z_1)^(alpha_1)(s - z_2)^(alpha_2)(
       return 1.0 / (1.0 + exp(-x));
   }
 
-  void mainImage( out vec4 fragColor, in vec2 fragCoord )
-  {
-      vec2 uv = (fragCoord-iResolution.xy*0.5)/iResolution.y * 5.0;
+  float symmetric_fract(float x) {
+      return fract(x+0.5)-0.5;
+  }
+  float clamped_symmetric_fract(float x, float n) {
+      // Repeats the function between [-1/2, 1/2] when x is between [-n, n], and increase linearly for x outside [-n, n]
+      float cx = clamp(x, -n, n);
+      return (x-cx) + symmetric_fract(cx);
+  }
+
+  void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
+      float screen_y_range = 5.0;
+      vec2 uv = (fragCoord-iResolution.xy*0.5)/iResolution.y * screen_y_range;
       vec2 z = f(uv);
 
       float c = sigmoid(log(length(z)));
       vec3 hsl = vec3(cx_arg(z)/(PI*2.0), sqrt(c), 0.5*(1.0+c));
       vec3 rgb = hsl2rgb(hsl);
+    
+      // Radial and equimagnitude lines
+      vec3 line_color = vec3(0.0, 0.1, 0.4);
+      float equimagnitude_division = 1.0;
+      float equimagnitude = clamped_symmetric_fract(length(z) / equimagnitude_division, 12.) * equimagnitude_division;
+      float radial = symmetric_fract(cx_arg(z) * 4.0 / PI);
+      float d = min(abs(equimagnitude), abs(radial*length(z)));
+      vec2 epsilon = vec2(1e-4, 0.);
+      // Cradient correction to make lines appear equally thick on the screen
+      float f_grad = length(cx_div(f(uv+epsilon) - f(uv), epsilon));
+      float d_correct = d/f_grad; 
+      float lambda = exp(-32768.*d_correct*d_correct);
+      rgb = mix(rgb, line_color, lambda);
+      
+      // Grid lines and number axes
       vec2 c_grid_2 = abs((fract(uv/5.0+0.5)-0.5)*5.0);
       vec2 f_grid_2 = abs(fract(uv+0.5)-0.5);
-      float c_grid = min(c_grid_2.x, c_grid_2.y);
-      float f_grid = min(f_grid_2.x, f_grid_2.y);
-      float grid = max(exp(-8192.*c_grid*c_grid), exp(-32768.*f_grid*f_grid));
+      float axes = min(abs(uv.x), abs(uv.y)) / screen_y_range;
+      float c_grid = min(c_grid_2.x, c_grid_2.y) / screen_y_range;
+      float f_grid = min(f_grid_2.x, f_grid_2.y) / screen_y_range;
+      float grid = max(max(exp(-2e5*axes*axes), exp(-4e5*c_grid*c_grid)), exp(-8e5*f_grid*f_grid));
+  
       fragColor = vec4(rgb * (1.-0.5*grid), 1.0);
   }
   ```
@@ -527,19 +579,45 @@ $ overline(P)(s) = (N(s)) / (D(s)) = (P_0(s - z_1)^(alpha_1)(s - z_2)^(alpha_2)(
       return 1.0 / (1.0 + exp(-x));
   }
 
-  void mainImage( out vec4 fragColor, in vec2 fragCoord )
-  {
-      vec2 uv = (fragCoord-iResolution.xy*0.5)/iResolution.y * 5.0;
+  float symmetric_fract(float x) {
+      return fract(x+0.5)-0.5;
+  }
+  float clamped_symmetric_fract(float x, float n) {
+      // Repeats the function between [-1/2, 1/2] when x is between [-n, n], and increase linearly for x outside [-n, n]
+      float cx = clamp(x, -n, n);
+      return (x-cx) + symmetric_fract(cx);
+  }
+
+  void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
+      float screen_y_range = 6.0;
+      vec2 uv = (fragCoord-iResolution.xy*0.5)/iResolution.y * screen_y_range;
       vec2 z = f(uv);
 
       float c = sigmoid(log(length(z)));
       vec3 hsl = vec3(cx_arg(z)/(PI*2.0), sqrt(c), 0.5*(1.0+c));
       vec3 rgb = hsl2rgb(hsl);
+    
+      // Radial and equimagnitude lines
+      vec3 line_color = vec3(0.0, 0.1, 0.4);
+      float equimagnitude_division = 1.0;
+      float equimagnitude = clamped_symmetric_fract(length(z) / equimagnitude_division, 15.) * equimagnitude_division;
+      float radial = symmetric_fract(cx_arg(z) * 4.0 / PI);
+      float d = min(abs(equimagnitude), abs(radial*length(z)));
+      vec2 epsilon = vec2(1e-4, 0.);
+      // Cradient correction to make lines appear equally thick on the screen
+      float f_grad = length(cx_div(f(uv+epsilon) - f(uv), epsilon));
+      float d_correct = d/f_grad; 
+      float lambda = exp(-32768.*d_correct*d_correct);
+      rgb = mix(rgb, line_color, lambda);
+      
+      // Grid lines and number axes
       vec2 c_grid_2 = abs((fract(uv/5.0+0.5)-0.5)*5.0);
       vec2 f_grid_2 = abs(fract(uv+0.5)-0.5);
-      float c_grid = min(c_grid_2.x, c_grid_2.y);
-      float f_grid = min(f_grid_2.x, f_grid_2.y);
-      float grid = max(exp(-8192.*c_grid*c_grid), exp(-32768.*f_grid*f_grid));
+      float axes = min(abs(uv.x), abs(uv.y)) / screen_y_range;
+      float c_grid = min(c_grid_2.x, c_grid_2.y) / screen_y_range;
+      float f_grid = min(f_grid_2.x, f_grid_2.y) / screen_y_range;
+      float grid = max(max(exp(-2e5*axes*axes), exp(-4e5*c_grid*c_grid)), exp(-8e5*f_grid*f_grid));
+  
       fragColor = vec4(rgb * (1.-0.5*grid), 1.0);
   }
   ```
@@ -651,19 +729,32 @@ $ integral_0^infinity V_"out" e^(-s t) dif t in RR <=> Re(s) > (ln A) / (Delta t
       return 1.0 / (1.0 + exp(-x));
   }
 
-  void mainImage( out vec4 fragColor, in vec2 fragCoord )
-  {
-      vec2 uv = (fragCoord-iResolution.xy*0.5)/iResolution.y * 24.0;
+  float symmetric_fract(float x) {
+      return fract(x+0.5)-0.5;
+  }
+  float clamped_symmetric_fract(float x, float n) {
+      // Repeats the function between [-1/2, 1/2] when x is between [-n, n], and increase linearly for x outside [-n, n]
+      float cx = clamp(x, -n, n);
+      return (x-cx) + symmetric_fract(cx);
+  }
+
+  void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
+      float screen_y_range = 24.0;
+      vec2 uv = (fragCoord-iResolution.xy*0.5)/iResolution.y * screen_y_range;
       vec2 z = f(uv);
 
       float c = sigmoid(log(length(z)));
       vec3 hsl = vec3(cx_arg(z)/(PI*2.0), sqrt(c), 0.5*(1.0+c));
       vec3 rgb = hsl2rgb(hsl);
+      
+      // Grid lines and number axes
       vec2 c_grid_2 = abs((fract(uv/5.0+0.5)-0.5)*5.0);
       vec2 f_grid_2 = abs(fract(uv+0.5)-0.5);
-      float c_grid = min(c_grid_2.x, c_grid_2.y);
-      float f_grid = min(f_grid_2.x, f_grid_2.y);
-      float grid = max(exp(-2048.*c_grid*c_grid), exp(-8192.*f_grid*f_grid));
+      float axes = min(abs(uv.x), abs(uv.y)) / screen_y_range;
+      float c_grid = min(c_grid_2.x, c_grid_2.y) / screen_y_range;
+      float f_grid = min(f_grid_2.x, f_grid_2.y) / screen_y_range;
+      float grid = max(max(exp(-2e5*axes*axes), exp(-4e5*c_grid*c_grid)), exp(-8e5*f_grid*f_grid));
+  
       fragColor = vec4(rgb * (1.-0.5*grid), 1.0);
   }
   ```
@@ -730,19 +821,32 @@ $ overline(V_"out") / overline(V_"in") = (A / (1 + s tau_0)) / (1 + A / (1 + s t
       return 1.0 / (1.0 + exp(-x));
   }
 
-  void mainImage( out vec4 fragColor, in vec2 fragCoord )
-  {
-      vec2 uv = (fragCoord-iResolution.xy*0.5)/iResolution.y * 24.0;
+  float symmetric_fract(float x) {
+      return fract(x+0.5)-0.5;
+  }
+  float clamped_symmetric_fract(float x, float n) {
+      // Repeats the function between [-1/2, 1/2] when x is between [-n, n], and increase linearly for x outside [-n, n]
+      float cx = clamp(x, -n, n);
+      return (x-cx) + symmetric_fract(cx);
+  }
+
+  void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
+      float screen_y_range = 24.0;
+      vec2 uv = (fragCoord-iResolution.xy*0.5)/iResolution.y * screen_y_range;
       vec2 z = f(uv);
 
       float c = sigmoid(log(length(z)));
       vec3 hsl = vec3(cx_arg(z)/(PI*2.0), sqrt(c), 0.5*(1.0+c));
       vec3 rgb = hsl2rgb(hsl);
+      
+      // Grid lines and number axes
       vec2 c_grid_2 = abs((fract(uv/5.0+0.5)-0.5)*5.0);
       vec2 f_grid_2 = abs(fract(uv+0.5)-0.5);
-      float c_grid = min(c_grid_2.x, c_grid_2.y);
-      float f_grid = min(f_grid_2.x, f_grid_2.y);
-      float grid = max(exp(-2048.*c_grid*c_grid), exp(-8192.*f_grid*f_grid));
+      float axes = min(abs(uv.x), abs(uv.y)) / screen_y_range;
+      float c_grid = min(c_grid_2.x, c_grid_2.y) / screen_y_range;
+      float f_grid = min(f_grid_2.x, f_grid_2.y) / screen_y_range;
+      float grid = max(max(exp(-2e5*axes*axes), exp(-4e5*c_grid*c_grid)), exp(-8e5*f_grid*f_grid));
+  
       fragColor = vec4(rgb * (1.-0.5*grid), 1.0);
   }
   ```
@@ -750,7 +854,7 @@ $ overline(V_"out") / overline(V_"in") = (A / (1 + s tau_0)) / (1 + A / (1 + s t
   caption: [加入低通滤波后的运放和延迟线构成的电压跟随器的传递函数 $A / (1 + s tau_0 + A e^(-s Delta t))$，取 $A = 2, Delta t = 1$，$tau_0$ 在 $0$ 与 $2$ 之间反复变化。纵向范围缩放至 $[-12, 12]$。]
 )
 
-可以看出，运算放大器在高频时放大倍数降低的特性并不是一个工程上的缺陷。恰恰相反，这个特性是保证运算放大器正常工作所必需的。
+可以看出，运算放大器在高频时放大倍数降低的特性并不是一个工程上的缺陷。恰恰相反，这个特性是保证运算放大器正常工作所必需的。有时如果运放自身的低通滤波不够强、电路仍然存在高频自激振荡，工程师还会在反馈回路上额外加电阻或者低通滤波来调整系统的传递函数。
 
 == 奈奎斯特判据
 
@@ -1068,19 +1172,45 @@ $ overline(F)(s) = (s((s + 1)^2 + 1)((s - 1)^2 + 4)) / (((s - 1)^2 + 1)((s + 1)^
       return 1.0 / (1.0 + exp(-x));
   }
 
-  void mainImage( out vec4 fragColor, in vec2 fragCoord )
-  {
-      vec2 uv = (fragCoord-iResolution.xy*0.5)/iResolution.y * 5.0;
+  float symmetric_fract(float x) {
+      return fract(x+0.5)-0.5;
+  }
+  float clamped_symmetric_fract(float x, float n) {
+      // Repeats the function between [-1/2, 1/2] when x is between [-n, n], and increase linearly for x outside [-n, n]
+      float cx = clamp(x, -n, n);
+      return (x-cx) + symmetric_fract(cx);
+  }
+
+  void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
+      float screen_y_range = 5.0;
+      vec2 uv = (fragCoord-iResolution.xy*0.5)/iResolution.y * screen_y_range;
       vec2 z = f(uv);
 
       float c = sigmoid(log(length(z)));
       vec3 hsl = vec3(cx_arg(z)/(PI*2.0), sqrt(c), 0.5*(1.0+c));
       vec3 rgb = hsl2rgb(hsl);
+    
+      // Radial and equimagnitude lines
+      vec3 line_color = vec3(0.0, 0.1, 0.4);
+      float equimagnitude_division = 1.0;
+      float equimagnitude = clamped_symmetric_fract(length(z) / equimagnitude_division, 12.) * equimagnitude_division;
+      float radial = symmetric_fract(cx_arg(z) * 4.0 / PI);
+      float d = min(abs(equimagnitude), abs(radial*length(z)));
+      vec2 epsilon = vec2(1e-4, 0.);
+      // Cradient correction to make lines appear equally thick on the screen
+      float f_grad = length(cx_div(f(uv+epsilon) - f(uv), epsilon));
+      float d_correct = d/f_grad; 
+      float lambda = exp(-32768.*d_correct*d_correct);
+      rgb = mix(rgb, line_color, lambda);
+      
+      // Grid lines and number axes
       vec2 c_grid_2 = abs((fract(uv/5.0+0.5)-0.5)*5.0);
       vec2 f_grid_2 = abs(fract(uv+0.5)-0.5);
-      float c_grid = min(c_grid_2.x, c_grid_2.y);
-      float f_grid = min(f_grid_2.x, f_grid_2.y);
-      float grid = max(exp(-8192.*c_grid*c_grid), exp(-32768.*f_grid*f_grid));
+      float axes = min(abs(uv.x), abs(uv.y)) / screen_y_range;
+      float c_grid = min(c_grid_2.x, c_grid_2.y) / screen_y_range;
+      float f_grid = min(f_grid_2.x, f_grid_2.y) / screen_y_range;
+      float grid = max(max(exp(-2e5*axes*axes), exp(-4e5*c_grid*c_grid)), exp(-8e5*f_grid*f_grid));
+  
       fragColor = vec4(rgb * (1.-0.5*grid), 1.0);
   }
   ```
@@ -1147,19 +1277,45 @@ $ overline(F)(s) = (s((s + 1)^2 + 1)((s - 1)^2 + 4)) / (((s - 1)^2 + 1)((s + 1)^
       return 1.0 / (1.0 + exp(-x));
   }
 
-  void mainImage( out vec4 fragColor, in vec2 fragCoord )
-  {
-      vec2 uv = (fragCoord-iResolution.xy*0.5)/iResolution.y * 5.0;
+  float symmetric_fract(float x) {
+      return fract(x+0.5)-0.5;
+  }
+  float clamped_symmetric_fract(float x, float n) {
+      // Repeats the function between [-1/2, 1/2] when x is between [-n, n], and increase linearly for x outside [-n, n]
+      float cx = clamp(x, -n, n);
+      return (x-cx) + symmetric_fract(cx);
+  }
+
+  void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
+      float screen_y_range = 5.0;
+      vec2 uv = (fragCoord-iResolution.xy*0.5)/iResolution.y * screen_y_range;
       vec2 z = f(uv);
 
       float c = sigmoid(log(length(z)));
       vec3 hsl = vec3(cx_arg(z)/(PI*2.0), sqrt(c), 0.5*(1.0+c));
       vec3 rgb = hsl2rgb(hsl);
+    
+      // Radial and equimagnitude lines
+      vec3 line_color = vec3(0.0, 0.1, 0.4);
+      float equimagnitude_division = 1.0;
+      float equimagnitude = clamped_symmetric_fract(length(z) / equimagnitude_division, 12.) * equimagnitude_division;
+      float radial = symmetric_fract(cx_arg(z) * 4.0 / PI);
+      float d = min(abs(equimagnitude), abs(radial*length(z)));
+      vec2 epsilon = vec2(1e-4, 0.);
+      // Cradient correction to make lines appear equally thick on the screen
+      float f_grad = length(cx_div(f(uv+epsilon) - f(uv), epsilon));
+      float d_correct = d/f_grad; 
+      float lambda = exp(-32768.*d_correct*d_correct);
+      rgb = mix(rgb, line_color, lambda);
+      
+      // Grid lines and number axes
       vec2 c_grid_2 = abs((fract(uv/5.0+0.5)-0.5)*5.0);
       vec2 f_grid_2 = abs(fract(uv+0.5)-0.5);
-      float c_grid = min(c_grid_2.x, c_grid_2.y);
-      float f_grid = min(f_grid_2.x, f_grid_2.y);
-      float grid = max(exp(-8192.*c_grid*c_grid), exp(-32768.*f_grid*f_grid));
+      float axes = min(abs(uv.x), abs(uv.y)) / screen_y_range;
+      float c_grid = min(c_grid_2.x, c_grid_2.y) / screen_y_range;
+      float f_grid = min(f_grid_2.x, f_grid_2.y) / screen_y_range;
+      float grid = max(max(exp(-2e5*axes*axes), exp(-4e5*c_grid*c_grid)), exp(-8e5*f_grid*f_grid));
+  
       fragColor = vec4(rgb * (1.-0.5*grid), 1.0);
   }
   ```
