@@ -345,9 +345,13 @@ $ tilde(g)_(i j) = (partial x^k) / (partial tilde(x)^i) (partial x^l) / (partial
 
 $ nabla_(dot(gamma)) dot(gamma) = (dot(gamma)^i partial_i dot(gamma)^k + Gamma^k_(i j) dot(gamma)^i dot(gamma)^j) partial_k = 0 $ <eq:geodesics-equation-1>
 
-如果我们只考虑 $gamma$ 在坐标卡 $(U_alpha, phi_alpha)$ 上的分量（即曲线 $(x^1 (t), x^2 (t), dots.c, x^m (t)) = (phi_alpha compose gamma)(t)$），那么 @eq:geodesics-equation-1 也可以变形为
+如果我们只考虑 $gamma$ 在坐标卡 $(U_alpha, phi_alpha)$ 上的分量（即曲线 $(x^1 (t), x^2 (t), dots.c, x^m (t)) = (phi_alpha compose gamma)(t)$），则有：
 
-$ (dif^2 x^k) / (dif t^2) + Gamma^k_(i j) (dif x^i) / (dif t) (dif x^j) / (dif t) = 0 $ <eq:geodesics-equation-2>
+$ dot(gamma)^i = (dif x^i) / (dif t) $
+
+那么 @eq:geodesics-equation-1 也可以用我们更熟悉的微积分语言写成测地线方程：
+
+$ (dif x^i) / (dif t) partial / (partial x^i) ((dif x^k) / (dif t)) + Gamma^k_(i j) (dif x^i) / (dif t) (dif x^j) / (dif t) = (dif^2 x^k) / (dif t^2) + Gamma^k_(i j) (dif x^i) / (dif t) (dif x^j) / (dif t) = 0 $ <eq:geodesics-equation-2>
 
 == 例子：球面上的测地线
 

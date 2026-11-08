@@ -111,11 +111,11 @@ _Nat.succ := λx:_Nat. λα:*. λzero:α. λsucc:(α→α). (succ (x α zero suc
 #quote(block: true)[
 参考：类型推导规则
 
-$ (Gamma tack.r m : (Pi_(x:sigma). thin tau) quad quad Gamma tack.r n : sigma) / (Gamma tack.r (m thin n) : tau[n/x]) $
+$ (Gamma tack.r m : (Pi_(x:sigma). thin tau) quad quad Gamma tack.r n : sigma) / (Gamma tack.r (m thin n) : tau[n\/x]) $
 
 $ (Gamma, thin x:sigma tack.r m : tau) / (Gamma tack.r (lambda x:sigma. thin m) : (Pi_(x:sigma). thin tau)) $
 
-其中 $a[b/c]$ 表示在 $a$ 表达式中用 $b$ 符号去替换所有 $c$ 符号。
+其中 $a[b\/c]$ 表示在 $a$ 表达式中用 $b$ 符号去替换所有 $c$ 符号。
 
 以及一个类型简写规则：若 $tau$ 类型不依赖 $sigma$ 类型，（即：$tau$ 的表达式中没有任何项的类型是 $sigma$），则：
 
@@ -160,7 +160,7 @@ _NatEq := λm:_Nat. λn:_Nat.
 _NatEq.rfl = λx:_Nat. λα:(_Nat→_Nat→*). λrfl:(Πy:_Nat. (α y y)). (rfl x)
 ```
 
-同样地，你可以尝试推导一下，`_NatEq.rfl x x` 的类型应当是 `(_NatEq x x)`。
+同样地，你可以尝试推导一下，`_NatEq.rfl x` 的类型应当是 `(_NatEq x x)`。
 
 `_Exists` 的定义则更复杂，因为 `_Exists` 传进来的参数 `α` 本身也是一个类型（当然这也意味着我们不能再用 `α` 作为占位类型的名称了）。但用同样的步骤我们也可以将其化成类型表达式：
 

@@ -1,4 +1,4 @@
-// title: 数值模拟之：弹簧质点系统
+// title: 数值模拟1：弹簧质点系统
 // summary: 从弹簧质点系统出发，聊聊数值模拟的稳定性。
 // tags: physics, computer-science, math-modeling
 // category: tech
@@ -6,7 +6,7 @@
 #import "../../template.typ": article, mathbf
 
 #show: article.with(
-  title: "数值模拟之：弹簧质点系统",
+  title: "数值模拟1：弹簧质点系统",
   lang: "zh",
 )
 

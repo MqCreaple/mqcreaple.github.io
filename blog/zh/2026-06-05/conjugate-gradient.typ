@@ -1,4 +1,4 @@
-// title: 数值模拟之：共轭梯度法
+// title: 数值模拟3：共轭梯度法
 // summary: 共轭梯度法，为什么 n 步之内一定能找到精确解？
 // tags: computation, mathematics, simulation
 // category: tech
@@ -6,7 +6,7 @@
 #import "../../template.typ": article, mathbf, theorem, lemma, definition, proof
 
 #show: article.with(
-  title: "数值模拟之：共轭梯度法",
+  title: "数值模拟3：共轭梯度法",
   lang: "zh",
 )
 

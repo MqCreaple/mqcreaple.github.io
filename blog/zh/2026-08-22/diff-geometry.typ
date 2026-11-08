@@ -42,7 +42,7 @@ $ chevron.l dot, dot chevron.r_p : T_p M times T_p M -> RR $
 当然，由于我们在讨论微分流形上的内积，我们还需要额外加一条限制：内积函数必须是光滑的。
 
 #definition[
-  流形 $M$ 上的*内积* $g$ 是一个纤维丛 $M -> T^* M times T^* M $ 的光滑截面，满足对于任意一点 $p in M$，
+  流形 $M$ 上的*内积* $g$ 是一个纤维丛 $M -> T^* M times T^* M $ 的光滑截面，即：对于任意一点 $p in M$，
   
   $ g_p : T_p M times T_p M -> RR, (X, Y) mapsto chevron.l X, Y chevron.r_p $
   

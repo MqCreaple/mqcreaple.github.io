@@ -1,4 +1,4 @@
-// title: 数值模拟之：桁架结构受力分析
+// title: 数值模拟2：桁架结构受力分析
 // summary: 桁架的受力分析，就是解一个矩阵方程。
 // tags: computation, mathematics, physics, simulation
 // category: tech
@@ -6,7 +6,7 @@
 #import "../../template.typ": article, mathbf
 
 #show: article.with(
-  title: "数值模拟之：桁架结构受力分析",
+  title: "数值模拟2：桁架结构受力分析",
   lang: "zh",
 )
 
